@@ -1,5 +1,8 @@
+from ..utils import index_x, angle_between, polar_angle_between
 
-from .Vol import Vol
+from .vol import Vol
+import numpy as np
+
 
 class CorrelationVol(Vol):
 
@@ -7,6 +10,10 @@ class CorrelationVol(Vol):
         Vol.__init__(self, nq,nq,ntheta, qmax, qmax, 180, fromfile=fromfile, path=path)
 
         self.plot_q1q2 = self.plot_xy
+        self.qmax = self.xmax
+        self.nq = self.nx
+        self.ntheta = self.nz
+
 
 
 
@@ -38,12 +45,8 @@ class CorrelationVol(Vol):
 
                     # add values to the corrlation and histograms
                     # in (q1,q2,t) and (q2,q1,t) positions
-                    if self.hflag:
-                        self.cvol[q_ind,q_prime_ind,theta_ind] +=1
-                        self.cvol[q_prime_ind,q_ind,theta_ind] +=1
-                    else:
-                        self.cvol[q_ind,q_prime_ind,theta_ind] +=q[-1]*q_prime[-1]
-                        self.cvol[q_prime_ind,q_ind,theta_ind] +=q[-1]*q_prime[-1]
+                    self.vol[q_ind,q_prime_ind,theta_ind] +=q[-1]*q_prime[-1]
+                    self.vol[q_prime_ind,q_ind,theta_ind] +=q[-1]*q_prime[-1]
 
         #correlating 3D vectors (qx,qy,qz, intensity)
         elif qti.shape[1] == 4:
@@ -72,66 +75,7 @@ class CorrelationVol(Vol):
 
                     # add values to the corrlation and histograms
                     # in (q1,q2,t) and (q2,q1,t) positions
-                    if self.hflag:
-                        self.cvol[q_ind,q_prime_ind,theta_ind] +=1
-                        self.cvol[q_prime_ind,q_ind,theta_ind] +=1
-                    else:
-                        self.cvol[q_ind,q_prime_ind,theta_ind] +=q[-1]*q_prime[-1]
-                        self.cvol[q_prime_ind,q_ind,theta_ind] +=q[-1]*q_prime[-1]
-
-
-
-
-
-
-
-
-
-
-# if __name__=='__main__':
-
-    # v = Vol(20,20,20,1,2,3)
-
-    # c = CorrelationVol(20,30,1)
-
-
-
-    # for i in range(c.nx):
-        # for j in range(c.ny):
-            # for k in range(c.nz):
-
-                # if i%5==0 and k%5==0:
-                    # c.vol[i,j,k] +=1
-
-
-
-    # c.plot_xy()
-
-    # c.vol = c.convolve()
-
-    # c.plot_q1q2()
-
-    # plt.show()
-
-
-
-    # print(v.vol)
-    # v.vol += 33
-
-    # v.save_dbin('testdata/x')
-    # print(v.vol)
-    # print(v.fname)
-
-
-    # v2 = Vol(fromfile=True, path='testdata/x')
-
-
-
-
-
-
-
-
-    
+                    self.vol[q_ind,q_prime_ind,theta_ind] +=q[-1]*q_prime[-1]
+                    self.vol[q_prime_ind,q_ind,theta_ind] +=q[-1]*q_prime[-1]
 
 
