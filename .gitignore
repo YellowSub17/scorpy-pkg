@@ -1,5 +1,6 @@
 data/
 __pycache__/
 
+*.bkup
 *.dbin
 *.egg-info

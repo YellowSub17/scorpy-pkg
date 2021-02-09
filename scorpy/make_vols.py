@@ -8,8 +8,31 @@ import time
 
 
 
+def x():
+    pass
 
 
+
+y = x() +1
+
+class Animal:
+    """
+    docstring
+    """
+    d = 'fase'
+    def __init__(self, a, b,c):
+        self.a = a
+        print(b)
+
+    def roar(self, bonk):
+        pass
+
+
+
+
+
+x = Animal()
+x.roar()
 
 
 
