@@ -124,7 +124,27 @@ class Vol:
     def plot_xy(self):
         plt.figure()
         im = self.get_xy()
-        plt.imshow(im)
+        plt.imshow(im, origin='lower', extent=[0, self.zmax, 0, self.xmax], aspect='auto')
+
+    def plot_sumax(self, axis=0):
+        plt.figure(),
+        im = self.vol.sum(axis=axis)
+
+        #TODO: clean up if/else and double check exents axes for when xmax !=ymax
+        if axis== 0:
+            ext1 =self.zmax
+            ext2 = self.ymax
+        elif axis ==1:
+            ext1 =self.zmax
+            ext2 = self.xmax
+        else:
+            ext1 =self.xmax
+            ext2 = self.ymax
+
+
+
+        plt.imshow(im, origin='lower', extent=[0, ext1, 0, ext2], aspect='auto')
+
 
 
 

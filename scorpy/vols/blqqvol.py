@@ -1,5 +1,9 @@
 
 
+from .vol import Vol
+import numpy as np
+from scipy import special
+
 
 
 class BlqqVol:
@@ -7,7 +11,16 @@ class BlqqVol:
     def __init__(self, nq=256, nl=36, qmax=1, fromfile=False, path=None):
         Vol.__init__(self, nq,nq,nl, qmax, qmax, nl-1, fromfile=fromfile, path=path)
 
+
         self.plot_q1q2 = self.plot_xy
+        self.ymax = self.xmax
+        self.qmax = self.xmax
+
+        self.ny = self.nx
+        self.nq = self.nx
+
+        self.nl = self.nz
+
 
 
 

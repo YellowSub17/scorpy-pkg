@@ -90,12 +90,14 @@ class PeakData:
 
 
     def plot_peaks(self, cmap='viridis'):
+        plt.plot(self.qlist[:,0], self.qlist[:,1], '.')
 
-        if type(cmap) != type('x'):
-            plt.plot(self.qlist[:,0], self.qlist[:,1], '.')
-        else:
-            plt.scatter(self.qlist[:,0], self.qlist[:,1], s=20, c=self.qlist[:, -1],  cmap=cmap)
-            plt.colorbar()
+
+       #  if type(cmap) != type('x'):
+            # plt.plot(self.qlist[:,0], self.qlist[:,1], '.')
+        # else:
+            # plt.scatter(self.qlist[:,0], self.qlist[:,1], s=20, c=self.qlist[:, -1],  cmap=cmap)
+            # plt.colorbar()
 
 
 

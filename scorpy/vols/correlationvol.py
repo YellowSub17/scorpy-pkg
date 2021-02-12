@@ -10,8 +10,12 @@ class CorrelationVol(Vol):
         Vol.__init__(self, nq,nq,ntheta, qmax, qmax, 180, fromfile=fromfile, path=path)
 
         self.plot_q1q2 = self.plot_xy
+        self.ymax = self.xmax
         self.qmax = self.xmax
+
+        self.ny = self.nx
         self.nq = self.nx
+
         self.ntheta = self.nz
 
 

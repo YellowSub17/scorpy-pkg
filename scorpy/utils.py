@@ -1,4 +1,5 @@
 import numpy as np
+from scipy import special
 
 
 
@@ -31,4 +32,33 @@ def norm01(arr):
     arr -=np.min(arr)
     arr /=np.max(arr)
     return arr
+
+
+
+
+
+def ylm_wrapper(l,m, phi,theta, comp=False):
+    if comp:
+        # COMPLEX BASIS
+        ylm = special.sph_harm(m,l, phi , theta)
+    else:
+        ## REAL BASIS
+        if m < 0:
+            ylm = (np.sqrt(2)*(-1)**m)*np.imag(special.sph_harm(np.abs(m),l, phi,theta))
+        elif m > 0:
+            ylm = (np.sqrt(2)*(-1)**m)*np.real(special.sph_harm(m,l, phi,theta))
+        else:
+            ylm = np.real(special.sph_harm(m,l, phi, theta))
+
+    #2*sqrt(pi) ensures orthogonality
+    ylm *= 2*np.sqrt(np.pi)
+    return ylm
+
+
+
+
+
+
+
+
 
