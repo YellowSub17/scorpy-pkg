@@ -24,21 +24,18 @@ class CifData:
         self.space_group = self.cif['_symmetry.space_group_name_h-m']
 
         self.dcell_angles = self.get_dcell_angles()
-
         self.dcell_vectors = self.get_dcell_vectors()
-
         self.qcell_vectors = self.get_qcell_vectors()
 
-        self.miller_refl, self.scattering, self.spherical = self.get_refl()
-
+        self.bragg, self.scattering, self.spherical = self.get_refl()
 
         if qmax < 0:
             self.qmax = np.max(self.spherical[:,0])
         else:
             self.qmax = qmax
-            self.spherical = self.spherical[np.where(self.spherical[:,0] <qmax)]
-            self.scattering = self.scattering[np.where(self.spherical[:,0] <qmax)]
-            self.miller_refl = self.miller_refl[np.where(self.spherical[:,0] <qmax)]
+            self.spherical = self.spherical[np.where(self.spherical[:,0] <self.qmax)]
+            self.scattering = self.scattering[np.where(self.spherical[:,0] <self.qmax)]
+            self.bragg = self.bragg[np.where(self.spherical[:,0] <self.qmax)]
 
 
 
@@ -46,12 +43,24 @@ class CifData:
 
 
     def get_refl(self):
+        '''
+        Parse cif data for scattering infomation
 
+        Arguments:
+            None.
+
+        Returns:
+            bragg: list of bragg indices and intensity.
+            scattering: list of scattering postions in reciprocal units [1/A].
+            spherical: list of scattering positions in spherical units.
+        '''
+
+        # Read h,k,l indices
         h = np.array(self.cif['_refln.index_h']).astype(np.int32)
         k = np.array(self.cif['_refln.index_k']).astype(np.int32)
         l = np.array(self.cif['_refln.index_l']).astype(np.int32)
 
-
+        # Read intensities
         if '_refln.intensity_meas' in self.cif.keys():
             I = np.array(self.cif['_refln.intensity_meas'])
             I = np.where(I == '?', '0', I)
@@ -59,25 +68,23 @@ class CifData:
         elif '_refln.f_meas_au' in self.cif.keys():
             I = np.array(self.cif['_refln.f_meas_au'])
             I = np.where(I == '?', '0', I)
-            I = I.astype(np.float64)**2
-
+            I = I.astype(np.float64)**2 
         elif '_refln.f_squared_meas' in self.cif.keys():
             I = np.array(self.cif['_refln.f_squared_meas'])
             I = np.where(I == '?', '0', I)
             I = I.astype(np.float64)
-
         else:
-            print('WARNING: No Intensity found when reading cif.')
+            print('WARNING: No intensity found when reading cif.')
             return None
 
         asym_refl = np.array([h, k, l, I]).T
-        miller_refl = apply_sym(asym_refl, self.space_group)
+        bragg = apply_sym(asym_refl, self.space_group)
 
-        scattering_pos = np.matmul(miller_refl[:,:-1], np.array(self.qcell_vectors))
+        scattering_pos = np.matmul(bragg[:,:-1], np.array(self.qcell_vectors))
 
-        scattering = np.zeros(miller_refl.shape)
+        scattering = np.zeros(bragg.shape)
         scattering[:, :-1] = scattering_pos
-        scattering[:, -1] = miller_refl[:, -1]
+        scattering[:, -1] = bragg[:, -1]
 
 
         q_mag = np.linalg.norm(scattering[:,:3], axis=1)
@@ -85,13 +92,24 @@ class CifData:
         phi[np.where(phi<0)] = phi[np.where(phi<0)] + 2*np.pi  #0 -> 2pi
         theta = np.arctan2(np.linalg.norm(scattering[:,:2], axis=1),scattering[:,2]) #0 -> pi
 
-        spherical  =np.array([q_mag, theta, phi, miller_refl[:,-1]]).T
+        spherical  =np.array([q_mag, theta, phi, bragg[:,-1]]).T
 
 
-        return miller_refl, scattering, spherical
+        return bragg, scattering, spherical
 
 
     def get_qcell_vectors(self):
+        '''
+        Calculate the reciprocal lattice vectors.
+
+        Arguments:
+            None.
+
+        Return:
+            ast: reciprocal lattice vector a*
+            bst: reciprocal lattice vector b*
+            cst: reciprocal lattice vector c*
+        '''
         ast = np.cross(self.dcell_vectors[1],self.dcell_vectors[2]) /np.dot(self.dcell_vectors[0],np.cross(self.dcell_vectors[1],self.dcell_vectors[2]))
         bst = np.cross(self.dcell_vectors[0],self.dcell_vectors[2]) /np.dot(self.dcell_vectors[0],np.cross(self.dcell_vectors[1],self.dcell_vectors[2]))
         cst = np.cross(self.dcell_vectors[0],self.dcell_vectors[1]) /np.dot(self.dcell_vectors[0],np.cross(self.dcell_vectors[1],self.dcell_vectors[2]))
@@ -99,6 +117,17 @@ class CifData:
         return [ast, bst, cst]
 
     def get_dcell_vectors(self):
+        '''
+        Calculate the direct lattice vectors.
+
+        Arguments:
+            None.
+
+        Returns:
+            a: direct lattice vector a
+            b: direct lattice vector b
+            c: direct lattice vector c
+        '''
         a_unit = np.array([1.0,0.0,0.0])
         b_unit = np.array([np.cos(self.dcell_angles[2]), np.sin(self.dcell_angles[2]), 0])
         c_unit = np.array([
@@ -113,8 +142,20 @@ class CifData:
 
         return [a, b, c]
 
-    def get_dcell_angles(self):
 
+
+    def get_dcell_angles(self):
+        '''
+        Retrieve direct lattice angles.
+
+        Arguments:
+            None.
+
+        Returns:
+            alpha: angle between direct cell vectors c and b.
+            beta: angle between direct cell vectors a and c.
+            gamma: angle between direct cell vectors a and b.
+        '''
         alpha = np.radians(float(self.cif['_cell.angle_alpha']))
         beta = np.radians(float(self.cif['_cell.angle_beta']))
         gamma = np.radians(float(self.cif['_cell.angle_gamma']))

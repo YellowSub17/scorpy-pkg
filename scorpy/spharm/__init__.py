@@ -1,8 +1,10 @@
-from .sphericalhandler import SphericalHandler, SphericalIntenVol
-# from .sphericalintenvol import SphericalIntenVol
+# from .sphericalclasses import SphericalHandler, SphericalIntenVol
+
+
+from SphericalInten import SphericalInten
 
 
 
 
 
-print('Submodule spharm loaded.')
+

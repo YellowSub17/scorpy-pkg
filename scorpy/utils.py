@@ -4,6 +4,11 @@ from scipy import special
 
 
 
+def index_xs(x_val, x_max, nx):
+    norm = x_val/float(x_max)*(nx -1)
+    return np.round(norm).astype(int)
+
+
 
 def index_x(x_val, x_max, nx):
     return int(round((x_val/float(x_max))*(nx-1)))

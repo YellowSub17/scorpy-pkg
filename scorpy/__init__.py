@@ -13,6 +13,7 @@ from .readers.peakdata import PeakData
 
 
 
-from .spharm.sphericalhandler import SphericalHandler, SphericalIntenVol
+# from .spharm.sphericalhandler import SphericalHandler, SphericalIntenVol
+from .spharm.sphericalinten import SphericalInten
 
 

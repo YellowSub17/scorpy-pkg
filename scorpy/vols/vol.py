@@ -9,12 +9,12 @@ import matplotlib.pyplot as plt
 
 class Vol:
 
-    def __init__(self,  nx=None, ny=None, nz=None, \
-                        xmax=None, ymax=None, zmax=None, \
-                        fromfile=False, path=None):
+    def __init__(self,  nx = None, ny = None, nz = None, \
+                        xmax = None, ymax = None, zmax = None, \
+                        path = None):
 
-        if fromfile:
-            assert type(path)==str, 'Please provide an fname to read from file'
+        if not path is None:
+            assert type(path)==str, 'path must be string to dbin and log file'
 
             bigPATH = Path(path)
 
@@ -82,11 +82,32 @@ class Vol:
 
 
 
+    def get_eigh(self):
+        assert self.nx==self.ny, 'vol.nx !=vol.ny, cannot calculate eigen values'
+        #TODO fix -lam
+        lams = np.zeros( (self.nx, self.nz))
+        us = np.zeros( (self.nx, self.ny, self.nz))
+
+        for z in range(0, self.nz,2):
+            lam, u = np.linalg.eigh(self.vol[...,z])
+
+            ## force positive eigenvalues, must change eigenvectors aswell
+            u[np.where(lam<0)] *= -1
+            lam[np.where(lam<0)] *=-1
+
+            lams[:,z] = lam
+            us[:,:,z] = u
+
+        return lams, us
+
+
+
+
     def convolve(self,  kern_L=2, kern_n =5, std_x = 1, std_y = 1,  std_z=1):
         """
         Convolve the current volume with a guassian kernel.
 
-        Args:
+        Arguments:
             kern_L: +/- upper and lower limit of the kernel
             kern_n: number of pixels in the kernal matrix
             std_[x,y,z]: standard devieation of the guassian in each x,y,z direction
@@ -115,36 +136,73 @@ class Vol:
 
     def get_xy(self):
         assert self.nx==self.ny, 'vol.nx !=vol.ny, cannot retreive x=y plane of vol'
-
         im = np.zeros( (self.nx, self.nz))
         for xi in range(self.nx):
             im[xi,:] = self.vol[xi,xi,:]
         return im
 
     def plot_xy(self):
+        '''
+        Plot the x=y plane of the volume.
+
+        Arguments:
+            None
+
+        Return:
+            None
+        '''
         plt.figure()
         im = self.get_xy()
         plt.imshow(im, origin='lower', extent=[0, self.zmax, 0, self.xmax], aspect='auto')
 
     def plot_sumax(self, axis=0):
-        plt.figure(),
+        plt.figure()
         im = self.vol.sum(axis=axis)
 
-        #TODO: clean up if/else and double check exents axes for when xmax !=ymax
-        if axis== 0:
-            ext1 =self.zmax
+        #TODO: clean up if/else 
+        if axis == 0:
+            ext1 = self.zmax
             ext2 = self.ymax
-        elif axis ==1:
-            ext1 =self.zmax
+        elif axis == 1:
+            ext1 = self.zmax
             ext2 = self.xmax
         else:
-            ext1 =self.xmax
+            ext1 = self.xmax
             ext2 = self.ymax
-
-
 
         plt.imshow(im, origin='lower', extent=[0, ext1, 0, ext2], aspect='auto')
 
 
+
+
+
+
+if __name__ == '__main__':
+
+
+    import scorpy
+    #VOL TESTS:
+
+    v1 = scorpy.Vol(10, 20,30, 12, 24, 36 )
+    v1.vol = np.random.random((v1.vol.shape))
+
+    ##plot sumax test
+    v1.plot_sumax(axis=0)
+    v1.plot_sumax(axis=1)
+    v1.plot_sumax(axis=2)
+
+    ##save test
+    v1.save_dbin('/tmp/test.dbin')
+    v2 = scorpy.Vol(path='/tmp/test.dbin')
+
+
+    v3 = scorpy.Vol(20,20,30, 1, 2,3)
+    l,u = v3.get_eigh()
+    v3.plot_xy()
+
+
+
+
+    plt.show()
 
 

@@ -6,11 +6,22 @@ from scipy import special
 
 
 
-class BlqqVol:
+class BlqqVol(Vol):
+    '''
+    Representation of the B_l(q1,q2) volume, an invertible correlation matrix.
 
-    def __init__(self, nq=256, nl=36, qmax=1, fromfile=False, path=None):
-        Vol.__init__(self, nq,nq,nl, qmax, qmax, nl-1, fromfile=fromfile, path=path)
+    Arguments:
+        nq (int): number of scattering magnitude bins.
+        nl (int): number of spherical harmonics (inc. 0th harmonic, so 1+lmax).
+        qmax (float): correlation magnitude limit [1/A].
+        path (str): path to dbin (and log) if being created from memory.
+    '''
 
+
+    def __init__(self, nq=256, nl=36, qmax=1, path=None, comp=False):
+        Vol.__init__(self, nq,nq,nl, qmax, qmax, nl, path=path)
+
+        self.comp = comp
 
         self.plot_q1q2 = self.plot_xy
         self.ymax = self.xmax
@@ -21,39 +32,47 @@ class BlqqVol:
 
         self.nl = self.nz
 
+        if self.comp:
+            self.blvol = self.vol.astype(np.complex64)
+        else:
+            self.blvol = self.vol
 
 
 
-    def fill_from_cvol(self, cvol):
-        print(f'Calculating Blqq from Cvol...')
+    def fill_from_corr(self,cor):
+        assert cor.qmax == self.qmax, 'CorrelationVol and BlqqVol have different qmax'
+        assert cor.nq == self.nq, 'CorrelationVol and BlqqVol have different nq'
 
-        ntheta = cvol.shape[-1]
-        q_range = np.linspace(0,self.qmax,self.nq)
+        print('Filling BlqqVol from CorrelationVol...')
+
+        q_range = np.linspace(0,self.qmax, self.nq)
         # create args of legendre eval
-        args = np.cos( np.linspace(0, np.pi, ntheta))
+        args = np.cos( np.linspace(0, np.pi, cor.ntheta))
 
         # initialze fmat matrix
-        fmat = np.zeros( (ntheta, self.nl) )
+        fmat = np.zeros( (cor.ntheta, self.nl) )
 
-        #for every spherical harmonic
+        #for every even spherical harmonic
         for l in range(0,self.nl, 2):
 
             leg_vals = (1/(4*np.pi))*special.eval_legendre(l, args)
             fmat[:,l] = leg_vals
 
         fmat_inv = np.linalg.pinv(fmat)
-        # fmat_inv[1:-1:2,:] = np.zeros(ntheta)
         for iq1 in range(self.nq):
             for iq2 in range(iq1, self.nq):
-                dot =  np.dot(fmat_inv,cvol[iq1,iq2,:])
+                dot =  np.dot(fmat_inv,cor.cvol[iq1,iq2,:])
                 self.blvol[iq1,iq2,:] = dot
                 self.blvol[iq2,iq1,:] = dot
 
         # times 4pi because we multi 2root(pi) in the ylm calc.
         self.blvol *= 4*np.pi
 
+
+
+
     def fill_from_sph(self, sph):
-        print(f'Calculating Blqq from Sph')
+        print(f'Calculating Blqq from SphericalHandler...')
 
         if self.comp:
             bl = np.zeros((self.nq, self.nq), dtype=np.complex128)
@@ -68,45 +87,6 @@ class BlqqVol:
 
             self.blvol[...,l] = bl
 
-
- #    def view_l(self, l):
-        # plt.figure()
-        # plt.title(f'fname: {self.fname.split("/")[-1]}, $l$={l}')
-        # plt.imshow(self.blvol[...,l], origin='lower', extent=[0,self.nq, 0, self.nq])
-        # plt.colorbar()
-        # plt.xlabel('$q_1$ / \u212b')
-        # plt.ylabel('$q_2$ / \u212b')
-
-
-    # def view_lq(self,l,q, newfig=False, label='', log=False):
-
-        # if newfig:
-            # plt.figure()
-
-        # if log:
-            # plt.plot(np.log10(1+np.abs(self.blvol[:,q,l])), label=label)
-        # else:
-            # plt.plot(self.blvol[:,q,l], label=label)
-
-
-
-
-    def get_eigh(self):
-        #TODO fix -lam
-        lams = np.zeros( (self.nq, self.nl))
-        us = np.zeros( (self.nq, self.nq, self.nl))
-
-        for l in range(0, self.nl,2):
-            lam, u = np.linalg.eigh(self.blvol[...,l])
-
-            ## force positive eigenvalues, must change eigenvectors aswell
-            u[np.where(lam<0)] *= -1
-            lam[np.where(lam<0)] *=-1
-
-            lams[:,l] = lam
-            us[:,:,l] = u
-
-        return lams, us
 
 
 

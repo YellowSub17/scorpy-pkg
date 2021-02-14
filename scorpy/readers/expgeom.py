@@ -13,11 +13,7 @@ class ExpGeom:
         '''
 
         self.filename = filename
-
-        #dictionary of arguments from the .geom file
-        #args is for general arguments, panel is for listed panels
         self.file_args, self.panel_args = self.parse_file()
-        # a few arguments we might need from parsed_args
         self.res = float(self.file_args['res'])   #pixel resolution (~5000 Pix/m, 200 e-6 m/Pix)
         self.clen = float(self.file_args['clen']) #camera length
         self.photon_energy = float(self.file_args['photon_energy']) #eV
@@ -29,6 +25,16 @@ class ExpGeom:
 
 
     def translate_pixels(self, pix_sss, pix_fss):
+        '''
+        Translate pixel indices of fast and slow scan directions into position.
+
+        Arguments:
+            pix_sss: list of pixels indices in slow scan direction.
+            pix_fss: list of pixels indices in fast scan direction.
+
+        Returns:
+            pos: list of pixels positions in real space coordinates, (x,y,z).
+        '''
 
         pix_posx = np.zeros((len(pix_sss)))
         pix_posy = np.zeros((len(pix_sss)))
@@ -70,6 +76,17 @@ class ExpGeom:
 
 
     def parse_file(self):
+        '''
+        Parse the geom file for experiment details.
+
+        Arguments:
+            None.
+
+        Returns:
+            parsed_args (dict): experimental arguments
+            parsed_panels (dict): description of panels
+        '''
+
         f = open(self.filename, 'r')
         cont = f.read()
         cont = '[params]' + cont
@@ -77,31 +94,37 @@ class ExpGeom:
         config.read_string(cont)
 
         parsed_args= {}
-        parsed_panel ={}
+        parsed_panels ={}
 
         for line in config['params']:
             if '/' in line:  #check if thise argument is a panel eg. p0a4/fs
                                 #if it is a panel, split by name/attribute, add to panel_dict
                 panel_split = line.split('/')
-                if panel_split[0] not in parsed_panel.keys(): #if the panel is no already in the dictionary
-                    parsed_panel[panel_split[0]] = {} #add panel
-                    parsed_panel[panel_split[0]]['name'] = panel_split[0] #set the name key
+                if panel_split[0] not in parsed_panels.keys(): #if the panel is no already in the dictionary
+                    parsed_panels[panel_split[0]] = {} #add panel
+                    parsed_panels[panel_split[0]]['name'] = panel_split[0] #set the name key
 
                 #after adding the panel, add the panel attribute
-                parsed_panel[panel_split[0]][panel_split[1]] = config['params'][line]
+                parsed_panels[panel_split[0]][panel_split[1]] = config['params'][line]
 
             else: #if the argument is not a panel argument, add to the arg dictionary instead
                 parsed_args[line] = config['params'][line]
 
 
-        return parsed_args, parsed_panel
+        return parsed_args, parsed_panels
 
 
 
 
-    def plot_panels(self, sf=1):
+    def plot_panels(self):
         '''
-        for every panel in the geom, plot the panel
+        Plot the panels in the experiment geometry.
+
+        Arguments:
+            None.
+
+        Returns:
+            None.
         '''
         for panel in self.panels:
             #size of the panel
@@ -134,17 +157,16 @@ class ExpGeom:
 
 
     def make_panels(self, file_panels):
-
         '''
-        return a list of panel objects, for every panel in this experiment ExpGeom
+        Parse panel arguments and make each panel.
+
+        Arguments:
+            file_panels (dict): dictionary of panel arguments from geom file.
+
+        Returns:
+            panels (list): List of panel dictionaries.
         '''
         panels = []    #init a list of panels
-        names = []
-        min_fss = []
-        min_sss = []
-        max_sss = []
-        max_fss = []
-        coffsets = []
 
         for key in file_panels.keys(): # for every panel in the parsed panels
             this_panel = {}

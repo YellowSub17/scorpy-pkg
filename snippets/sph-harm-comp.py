@@ -10,18 +10,18 @@ import matplotlib.pyplot as plt
 
 cif = scorpy.CifData('../data/xtal/1al1-sf.cif')
 
-inten = scorpy.SphericalIntenVol(nq=256, cifdata=cif)
-hp.orthview(inten.ivol[100])
+inten = scorpy.SphericalInten()
 
-sph = inten.calc_sph(65)
 
-inten = sph.calc_ivol(inten.nside)
-hp.orthview(inten.ivol[100])
+inten.fill_from_cif(cif)
 
 
 
 
-plt.show()
+
+
+
+
 
 
 
