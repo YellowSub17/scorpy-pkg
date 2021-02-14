@@ -47,6 +47,7 @@ class CorrelationVol(Vol):
         '''
         less_than_qmax = np.where(qti[:,0] < self.qmax)[0]      #only correlate less the qmax
         qti = qti[less_than_qmax]
+
         for i, q in enumerate(qti):
             q_ind = index_x(q[0],self.qmax, self.nq)
             for q_prime in qti[i+1:]:

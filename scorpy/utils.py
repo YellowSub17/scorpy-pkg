@@ -4,8 +4,8 @@ from scipy import special
 
 
 
-def index_xs(x_val, x_max, nx):
-    norm = x_val/float(x_max)*(nx -1)
+def index_xs(x_vals, x_max, nx):
+    norm = x_vals/float(x_max)*(nx -1)
     return np.round(norm).astype(int)
 
 
