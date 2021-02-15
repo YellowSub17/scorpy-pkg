@@ -108,6 +108,21 @@ np.random.seed(0)
         # corb.save_dbin(f'../data/dbins/cosine_sim/{run}/run{run}_seed{seed}b_qcor')
 
 
+### PadfVol
+
+
+p = scorpy.PadfVol(300,360,40)
+
+p.fill_from_corr('../data/dbins/3wct_qcor.dbin', nl=15)
+
+p.save_dbin('../data/dbins/3wct_padf.dbin')
+
+
+
+
+
+
+
 
 
 

@@ -82,6 +82,8 @@ class Vol:
 
 
 
+
+
     def get_eigh(self):
         assert self.nx==self.ny, 'vol.nx !=vol.ny, cannot calculate eigen values'
         #TODO fix -lam

@@ -1,7 +1,7 @@
 from .vols.vol import Vol
 from .vols.correlationvol import CorrelationVol
 from .vols.blqqvol import BlqqVol
-from .vols.padfvol import Padfvol
+from .vols.padfvol import PadfVol
 
 
 from .readers.cifdata import CifData
