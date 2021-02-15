@@ -1,9 +1,9 @@
 import numpy as np
 import healpy as hp
-from ..utils import ylm_wrapper
+from ..utils import ylm_wrapper, index_x
 
 
-class SphericalHarmonicHandler:
+class SphHarmHandler:
 
     def __init__(self, nq, nl, qmax, comp=False):
 
@@ -27,7 +27,7 @@ class SphericalHarmonicHandler:
 
     def fill_from_cif(self, cif):
         print('Calculating Ilmn from spherical bragg peaks...')
-        spherical = spherical[np.where(spherical[:,0] < self.qmax)]
+        spherical = cif.spherical[np.where(cif.spherical[:,0] < self.qmax)]
 
         for l in range(0, self.nl, 2):
             for im, m in zip(range(2*l+1), range(-l, l+1)):

@@ -15,7 +15,7 @@ class CorrelationVol(Vol):
         path (str): path to dbin (and log) if being created from memory.
     '''
 
-    def __init__(self, nq=256, ntheta=360, qmax=1,  path=None):
+    def __init__(self, nq=100, ntheta=180, qmax=1,  path=None):
         '''
         Class constructor.
         '''
@@ -72,15 +72,21 @@ class CorrelationVol(Vol):
         Returns:
             None. Updates self.cvol with correlations.
         '''
+        # print('Correlating 3D')
+        
 
         # calculate magnitude of vectors, only correlate less than qmax
         qmags = np.linalg.norm(qxyzi[:,:3], axis=1)
+        # print(qmags)
         correl_vec_indices = np.where(qmags < self.qmax)[0]
         qxyzi = qxyzi[correl_vec_indices]
         qmags = qmags[correl_vec_indices]
+        # print(qxyzi)
 
         # q1 scattering
         for i, q in enumerate(qxyzi):
+            # print(f'Correlating: {i}/{len(qmags)}')
+
             q_mag =  qmags[i]
             q_ind = index_x(q_mag,self.qmax, self.nq)
 

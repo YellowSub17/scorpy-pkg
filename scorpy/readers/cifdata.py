@@ -9,18 +9,18 @@ class CifData:
     def __init__(self,fname, qmax=-1):
 
         self.fname = fname
-        print(f'Reading CIF: {self.fname}')
+        # print(f'Reading CIF: {self.fname}')
         cif = pycif.ReadCif(self.fname)
-        print('Done')
+        # print('Done')
 
         vk = cif.visible_keys[0]
         self.cif = dict(cif[vk])
 
-        if '_diffrn_radiation_wavelength.wavelength' in cif.keys():
-            self.wavelength = float(self.cif['_diffrn_radiation_wavelength.wavelength'])
-        else:
-            print('WARNING: No wavelength found in cif')
-            self.wavelength = None
+        # if '_diffrn_radiation_wavelength.wavelength' in cif.keys():
+            # self.wavelength = float(self.cif['_diffrn_radiation_wavelength.wavelength'])
+        # else:
+            # print('WARNING: No wavelength found in cif')
+            # self.wavelength = None
         self.space_group = self.cif['_symmetry.space_group_name_h-m']
 
         self.dcell_angles = self.get_dcell_angles()
@@ -33,9 +33,10 @@ class CifData:
             self.qmax = np.max(self.spherical[:,0])
         else:
             self.qmax = qmax
-            self.spherical = self.spherical[np.where(self.spherical[:,0] <self.qmax)]
-            self.scattering = self.scattering[np.where(self.spherical[:,0] <self.qmax)]
-            self.bragg = self.bragg[np.where(self.spherical[:,0] <self.qmax)]
+            loc = np.where(self.spherical[:,0]<self.qmax)
+            self.scattering = self.scattering[loc]
+            self.bragg = self.bragg[loc]
+            self.spherical = self.spherical[loc]
 
 
 

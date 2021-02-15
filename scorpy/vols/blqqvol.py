@@ -18,7 +18,7 @@ class BlqqVol(Vol):
     '''
 
 
-    def __init__(self, nq=256, nl=36, qmax=1, path=None, comp=False):
+    def __init__(self, nq=100, nl=37, qmax=1, path=None, comp=False):
         Vol.__init__(self, nq,nq,nl, qmax, qmax, nl, path=path)
 
         self.comp = comp
