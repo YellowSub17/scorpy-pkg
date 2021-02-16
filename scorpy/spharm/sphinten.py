@@ -23,9 +23,6 @@ class SphInten:
         pixels = hp.ang2pix(self.nside, cif.spherical[:,1], cif.spherical[:,2])
         q_inds = index_xs(cif.spherical[:,0], self.qmax, self.nq)
 
-        # for i, (q_ind, pixel) in enumerate(zip(q_inds, pixels)):
-            # self.ivol[q_ind, pixel] += cif.spherical[i, -1]
-
         for q_ind, pixel, inten in zip(q_inds, pixels, cif.spherical[:,-1]):
             self.ivol[q_ind, pixel] += inten
 

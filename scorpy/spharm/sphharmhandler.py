@@ -41,7 +41,22 @@ class SphHarmHandler:
 
                 self.vals_lnm[l][:,im] = iq
 
-    
+
+
+    def fill_from_cif2(self,cif):
+        import ctypes
+        import os
+        path = '/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/scorpy/spharm/libc/sphharmhandler.so' 
+        lib = ctypes.CDLL(path)
+
+        spherical = cif.spherical
+        
+        x = lib.makeValsLnmFromSpherical( self.nl, self.nq)
+        
+
+        return x
+
+
 
 
 
