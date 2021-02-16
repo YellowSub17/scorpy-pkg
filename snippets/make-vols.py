@@ -10,6 +10,7 @@ import scorpy
 import numpy as np
 np.random.seed(0)
 
+print()
 
 
 ### CorrelationVols
@@ -111,13 +112,9 @@ np.random.seed(0)
 ### PadfVol
 
 
-p = scorpy.PadfVol(300,360,40)
+p = scorpy.PadfVol(600,360,60)
 
-p.fill_from_corr('../data/dbins/3wct_qcor.dbin', nl=15)
-
-p.save_dbin('../data/dbins/3wct_padf.dbin')
-
-
+p.fill_from_corr('../data/dbins/3wct_qcor.dbin', nl=33)
 
 
 

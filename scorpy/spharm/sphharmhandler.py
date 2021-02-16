@@ -1,6 +1,6 @@
 import numpy as np
 import healpy as hp
-from ..utils import ylm_wrapper, index_x
+from ..utils import ylm_wrapper, index_x, index_xs
 
 
 class SphHarmHandler:
@@ -30,17 +30,19 @@ class SphHarmHandler:
         spherical = cif.spherical[np.where(cif.spherical[:,0] < self.qmax)]
 
         for l in range(0, self.nl, 2):
+            print(l)
             for im, m in zip(range(2*l+1), range(-l, l+1)):
                 iq = np.zeros(self.nq, self.vals_lnm[0].dtype)
-                theta = spherical[:,1] # 0 -> pi
-                phi = spherical[:,2] # 0 -> 2pi
-                ylm = ylm_wrapper(l,m,phi,theta, comp=self.comp)
+                ylm = ylm_wrapper(l,m,spherical[:,2],spherical[:,1], comp=self.comp)
                 iylm = ylm*spherical[:,-1]
                 for i, q_mag in enumerate(spherical[:,0]):
                     q_index = index_x(q_mag, self.qmax, self.nq)
                     iq[q_index] +=  iylm[i]
 
                 self.vals_lnm[l][:,im] = iq
+
+    
+
 
 
 
@@ -103,21 +105,21 @@ class SphHarmHandler:
 
 
 
-    def calc_ivol(self, nside):
-        print('Calculating SphInten from Ilnm...')
-        iv = SphericalIntenVol(self.nq, nside, qmax=self.qmax)
-        theta, phi = hp.pix2ang(iv.nside, np.arange(0,iv.npix))
-        for l in range(0, self.nl, 2):
-            for im, m in zip(range(0, 2*l+1), range(-l,l+1)):
-                ylm = ylm_wrapper(l,m,phi, theta, comp=False)
-                x = np.outer(self.vals_lnm[l][:, im], ylm)
+    # def calc_ivol(self, nside):
+        # print('Calculating SphInten from Ilnm...')
+        # iv = SphericalIntenVol(self.nq, nside, qmax=self.qmax)
+        # theta, phi = hp.pix2ang(iv.nside, np.arange(0,iv.npix))
+        # for l in range(0, self.nl, 2):
+            # for im, m in zip(range(0, 2*l+1), range(-l,l+1)):
+                # ylm = ylm_wrapper(l,m,phi, theta, comp=False)
+                # x = np.outer(self.vals_lnm[l][:, im], ylm)
 
-                iv.ivol +=x
+                # iv.ivol +=x
 
-        #intensity normalization
-        # iv.ivol *= 1/iv.npix
+        # #intensity normalization
+        # # iv.ivol *= 1/iv.npix
 
-        return iv
+        # return iv
 
 
 

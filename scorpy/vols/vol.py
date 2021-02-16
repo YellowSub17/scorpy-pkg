@@ -158,7 +158,6 @@ class Vol:
         plt.imshow(im, origin='lower', extent=[0, self.zmax, 0, self.xmax], aspect='auto')
 
     def plot_sumax(self, axis=0):
-        plt.figure()
         im = self.vol.sum(axis=axis)
 
         #TODO: clean up if/else 
@@ -172,39 +171,26 @@ class Vol:
             ext1 = self.xmax
             ext2 = self.ymax
 
+        plt.figure()
+        plt.imshow(im, origin='lower', extent=[0, ext1, 0, ext2], aspect='auto')
+
+
+    def plot_slice(self,axis=0, index=0):
+        if axis == 0:
+            ext1 = self.zmax
+            ext2 = self.ymax
+        elif axis == 1:
+            ext1 = self.zmax
+            ext2 = self.xmax
+        else:
+            ext1 = self.xmax
+            ext2 = self.ymax
+
+        im = np.rollaxis(self.vol, axis)[index,...]
+        plt.figure()
         plt.imshow(im, origin='lower', extent=[0, ext1, 0, ext2], aspect='auto')
 
 
 
-
-
-
-if __name__ == '__main__':
-
-
-    import scorpy
-    #VOL TESTS:
-
-    v1 = scorpy.Vol(10, 20,30, 12, 24, 36 )
-    v1.vol = np.random.random((v1.vol.shape))
-
-    ##plot sumax test
-    v1.plot_sumax(axis=0)
-    v1.plot_sumax(axis=1)
-    v1.plot_sumax(axis=2)
-
-    ##save test
-    v1.save_dbin('/tmp/test.dbin')
-    v2 = scorpy.Vol(path='/tmp/test.dbin')
-
-
-    v3 = scorpy.Vol(20,20,30, 1, 2,3)
-    l,u = v3.get_eigh()
-    v3.plot_xy()
-
-
-
-
-    plt.show()
 
 

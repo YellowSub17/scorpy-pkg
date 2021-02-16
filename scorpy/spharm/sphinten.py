@@ -1,6 +1,7 @@
 
 import healpy as hp
 import numpy as np
+import matplotlib.pyplot as plt
 from ..utils import index_x, index_xs, ylm_wrapper
 
 
@@ -17,23 +18,32 @@ class SphInten:
 
 
     def fill_from_cif(self, cif, replace=True):
-        if repalce:
+        if replace:
             self.ivol *=0
         pixels = hp.ang2pix(self.nside, cif.spherical[:,1], cif.spherical[:,2])
         q_inds = index_xs(cif.spherical[:,0], self.qmax, self.nq)
 
-        for i, (q_ind, pixel) in enumerate(zip(q_inds, pixels)):
-            self.ivol[q_ind, pixel] += cif.spherical[i, -1]
+        # for i, (q_ind, pixel) in enumerate(zip(q_inds, pixels)):
+            # self.ivol[q_ind, pixel] += cif.spherical[i, -1]
 
-    def fill_from_sphharmhandler(self, sph):
-        if repalce:
+        for q_ind, pixel, inten in zip(q_inds, pixels, cif.spherical[:,-1]):
+            self.ivol[q_ind, pixel] += inten
+
+    def fill_from_sph(self, sph, replace=True):
+        if replace:
             self.ivol *=0
         theta, phi = hp.pix2ang(self.nside, np.arange(0,self.npix))
         for l in range(0, sph.nl, 2):
+            print(l)
             for im, m in zip(range(0, 2*l+1), range(-l, l+1)):
                 ylm = ylm_wrapper(l,m,phi, theta, comp=False)
                 x = np.outer(sph.vals_lnm[l][:, im], ylm)
                 self.ivol +=x
+
+
+    def plot_sphere(self, iq):
+        plt.figure()
+        hp.orthview(self.ivol[iq,:])
 
 
 
