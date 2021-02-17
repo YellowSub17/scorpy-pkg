@@ -70,7 +70,7 @@ plt.ylabel('Time to correlate [min]')
 plt.show()
 
 
-testnum = 21000
+testnum = 20200
 minutes = np.polyval(fit_poly[0], testnum)
 print(f'\nTo correlate {testnum} vectors,')
 print(f'it will take approximately {np.round(minutes)} minutes.')

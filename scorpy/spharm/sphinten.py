@@ -1,4 +1,4 @@
-
+import copy
 import healpy as hp
 import numpy as np
 import matplotlib.pyplot as plt
@@ -16,6 +16,8 @@ class SphInten:
         self.ivol = np.zeros( (self.nq, self.npix ) )
         self.qmax = qmax
 
+    def copy(self):
+        return copy.deepcopy()
 
     def fill_from_cif(self, cif, replace=True):
         if replace:
@@ -39,7 +41,6 @@ class SphInten:
 
 
     def plot_sphere(self, iq):
-        plt.figure()
         hp.orthview(self.ivol[iq,:])
 
 

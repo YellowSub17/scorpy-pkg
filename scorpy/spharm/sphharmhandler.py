@@ -1,6 +1,9 @@
 import numpy as np
 import healpy as hp
 from ..utils import ylm_wrapper, index_x, index_xs
+# from ..utils import  index_x, index_xs
+from scipy import special
+import copy
 
 
 class SphHarmHandler:
@@ -21,7 +24,13 @@ class SphHarmHandler:
 
         for l in range(self.nl):
             mn = np.zeros( (self.nq, 2*l+1), dtype)
-            self.vals_lnm.append(mn)
+            self.vals_lnm.app
+
+
+
+
+    def copy(self):
+        return copy.deepcopy(self)
 
 
 
@@ -42,51 +51,29 @@ class SphHarmHandler:
                 self.vals_lnm[l][:,im] = iq
 
 
-
-    def fill_from_cif2(self,cif):
-        import ctypes
-        import os
-        path = '/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/scorpy/spharm/libc/sphharmhandler.so' 
-        lib = ctypes.CDLL(path)
-
-        spherical = cif.spherical
-        
-        x = lib.makeValsLnmFromSpherical( self.nl, self.nq)
-        
-
-        return x
+    def fill_from_ivol(self, iv):
+        assert self.nq == iv.nq
+        assert self.qmax == iv.qmax
 
 
+        for l in range(0, self.nl, 2):
+            print(l)
+            for im, m in zip(range(2*l+1), range(-l, l+1)):
+                theta, phi = hp.pix2ang(iv.nside, np.arange(0, iv.npix))
+                ylm = ylm_wrapper(l,m,phi, theta, comp=self.comp)
+                ylm *= 1/iv.npix
+                self.vals_lnm[l][:, im] = np.dot(ylm, iv.ivol.T)
 
-
-
-
-
-    # def calc_comp2real(self):
-        # if self.comp:
-            # new_sph = SphericalHandler(self.nq, self.nl, self.qmax, comp=False)
-            # for l in range(0, self.nl, 2):
-                # for m in range(-l, 0):
-                    # new_sph.vals_lnm[l][:,l+m] = np.real((np.complex(0,1)/np.sqrt(2))*( (-1)**m * self.vals_lnm[l][:,l+m] - self.vals_lnm[l][:,l-m]))
-                # for m in range(1, l+1):
-                    # new_sph.vals_lnm[l][:,l+m] = np.real((1/np.sqrt(2))*( (-1)**m * self.vals_lnm[l][:,l+m] + self.vals_lnm[l][:,l-m]))
-                # new_sph.vals_lnm[l][:,l] =   np.real(self.vals_lnm[l][:,l])
-            # return new_sph
-        # else:
-            # print('Conversion of real -> complex not implemented')
-            # return None
 
 
 
 
     def calc_klmn(self, unql):
-        print(f'Caclulating klmn from Ilnm...')
-        ## Handler for k values
-        k_sph = SphericalHandler(self.nq, self.nl, self.qmax)
         ## values for q**2 scaling
         q_range = np.linspace(0, self.qmax, self.nq)
         ## for every lm value
         for l in range(0, self.nl, 2):
+            print(l)
             for im, m in zip(range(0, 2*l+1), range(-l,l+1)):
                 ## get the current estimate for Ilm and scale it
                 Ilm = self.vals_lnm[l][:,im]*q_range**2
@@ -94,15 +81,16 @@ class SphHarmHandler:
                 for iq in range(self.nq):
                     x = np.dot(Ilm, unql[:, iq, l])
                     ## save component to the handler
-                    k_sph.vals_lnm[l][iq,im] = x
-        return k_sph
+                    self.vals_lnm[l][iq,im] = x
+
+
 
 
 
     def calc_kprime(self,lam):
         print('Caclulating k\'lnm from klnm...')
         ## New handler for k` values
-        kp_sph = SphericalHandler(self.nq, self.nl, self.qmax)
+        kp_sph = SphHarmHandler(self.nq, self.nl, self.qmax)
         ## for every lmq value (save calulation by not looping m)
         for l in range(0, self.nl, 2):
             for iq in range(self.nq):
@@ -141,7 +129,7 @@ class SphHarmHandler:
 
     def calc_Ilm_p(self, u):
         print(f'Calculating I\'lnm from k\'lnm...')
-        ilm_p = SphericalHandler(self.nq, self.nl, self.qmax, self.comp)
+        ilm_p = SphHarmHandler(self.nq, self.nl, self.qmax, self.comp)
         for l in range(0, self.nl, 2):
             ul = u[...,l]
             for im, m in zip(range(0, 2*l+1), range(-l,l+1)):
@@ -150,5 +138,6 @@ class SphHarmHandler:
                 ku = np.dot(ul, k_sphm)
                 ilm_p.vals_lnm[l][:,im] = ku
         return ilm_p
+
 
 

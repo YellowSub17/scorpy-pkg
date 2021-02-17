@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 import scipy.signal as signal
 import configparser as cfp
 from pathlib import Path
@@ -44,6 +45,10 @@ class Vol:
             self.zmax = zmax
             self.vol = np.zeros((nx,ny,nz))
 
+
+
+    def copy(self):
+        return copy.deepcopy()
 
 
 
@@ -133,7 +138,7 @@ class Vol:
         #bring the volume in by half the kernal window width (removes edge effects)
         kern_n_half = int((kern_n-1)/2)
         blur = blur[kern_n_half:-kern_n_half, kern_n_half:-kern_n_half, kern_n_half:-kern_n_half ]
-        return blur
+        self.vol = blur
 
 
     def get_xy(self):
