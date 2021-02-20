@@ -1,10 +1,10 @@
 import numpy as np
 import copy
 import scipy.signal as signal
+import scipy
 import configparser as cfp
 from pathlib import Path
 import matplotlib.pyplot as plt
-
 
 
 
@@ -24,6 +24,8 @@ class Vol:
 
             config = cfp.ConfigParser()
             config.read(f'{bigPATH.parent}/{self.fname}_log.txt')
+
+
 
             self.nx = int(config['params']['nx'])
             self.ny = int(config['params']['ny'])
@@ -86,21 +88,12 @@ class Vol:
         f.close()
 
 
-
-
-
     def get_eigh(self):
-        assert self.nx==self.ny, 'vol.nx !=vol.ny, cannot calculate eigen values'
-        #TODO fix -lam
         lams = np.zeros( (self.nx, self.nz))
         us = np.zeros( (self.nx, self.ny, self.nz))
 
         for z in range(0, self.nz,2):
             lam, u = np.linalg.eigh(self.vol[...,z])
-
-            ## force positive eigenvalues, must change eigenvectors aswell
-            u[np.where(lam<0)] *= -1
-            lam[np.where(lam<0)] *=-1
 
             lams[:,z] = lam
             us[:,:,z] = u
@@ -141,8 +134,10 @@ class Vol:
         self.vol = blur
 
 
+
+
     def get_xy(self):
-        assert self.nx==self.ny, 'vol.nx !=vol.ny, cannot retreive x=y plane of vol'
+        # assert self.nx==self.ny, 'vol.nx !=vol.ny, cannot retreive x=y plane of vol'
         im = np.zeros( (self.nx, self.nz))
         for xi in range(self.nx):
             im[xi,:] = self.vol[xi,xi,:]
@@ -194,8 +189,6 @@ class Vol:
         im = np.rollaxis(self.vol, axis)[index,...]
         plt.figure()
         plt.imshow(im, origin='lower', extent=[0, ext1, 0, ext2], aspect='auto')
-
-
 
 
 

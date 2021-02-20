@@ -17,7 +17,7 @@ class SphInten:
         self.qmax = qmax
 
     def copy(self):
-        return copy.deepcopy()
+        return copy.deepcopy(self)
 
     def fill_from_cif(self, cif, replace=True):
         if replace:
@@ -27,8 +27,10 @@ class SphInten:
 
         for q_ind, pixel, inten in zip(q_inds, pixels, cif.spherical[:,-1]):
             self.ivol[q_ind, pixel] += inten
+        return self
 
     def fill_from_sph(self, sph, replace=True):
+        print('filling ivol from sph')
         if replace:
             self.ivol *=0
         theta, phi = hp.pix2ang(self.nside, np.arange(0,self.npix))
@@ -39,9 +41,28 @@ class SphInten:
                 x = np.outer(sph.vals_lnm[l][:, im], ylm)
                 self.ivol +=x
 
+        return self
+
 
     def plot_sphere(self, iq):
-        hp.orthview(self.ivol[iq,:])
+        hp.orthview(self.ivol[iq,:], half_sky=True, rot=[23,45,60])
+
+    def make_mask(self):
+        self.ivol[np.where(self.ivol !=0)] = 1
+        return self
+
+    def calc_blnorm(self, bl):
+
+        iave = self.ivol.mean(axis=1)
+        iave[np.where(iave==0)] = 1
+
+        b0 = bl.blvol[...,0]
+        b0q = np.diag(b0)
+
+        alpha = np.sqrt(b0q)/iave
+
+        self.ivol *= alpha[:,None]
+        return self
 
 
 

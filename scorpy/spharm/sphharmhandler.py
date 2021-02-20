@@ -1,7 +1,6 @@
 import numpy as np
 import healpy as hp
 from ..utils import ylm_wrapper, index_x, index_xs
-# from ..utils import  index_x, index_xs
 from scipy import special
 import copy
 
@@ -24,7 +23,7 @@ class SphHarmHandler:
 
         for l in range(self.nl):
             mn = np.zeros( (self.nq, 2*l+1), dtype)
-            self.vals_lnm.app
+            self.vals_lnm.append(mn)
 
 
 
@@ -35,7 +34,7 @@ class SphHarmHandler:
 
 
     def fill_from_cif(self, cif):
-        print('Calculating Ilmn from spherical bragg peaks...')
+        print('filling sph from cif') 
         spherical = cif.spherical[np.where(cif.spherical[:,0] < self.qmax)]
 
         for l in range(0, self.nl, 2):
@@ -49,9 +48,11 @@ class SphHarmHandler:
                     iq[q_index] +=  iylm[i]
 
                 self.vals_lnm[l][:,im] = iq
+        return self
 
 
     def fill_from_ivol(self, iv):
+        print('filling sph from ivol')
         assert self.nq == iv.nq
         assert self.qmax == iv.qmax
 
@@ -63,12 +64,14 @@ class SphHarmHandler:
                 ylm = ylm_wrapper(l,m,phi, theta, comp=self.comp)
                 ylm *= 1/iv.npix
                 self.vals_lnm[l][:, im] = np.dot(ylm, iv.ivol.T)
+        return self
 
 
 
 
 
     def calc_klmn(self, unql):
+        print('calc_klmn')
         ## values for q**2 scaling
         q_range = np.linspace(0, self.qmax, self.nq)
         ## for every lm value
@@ -82,62 +85,73 @@ class SphHarmHandler:
                     x = np.dot(Ilm, unql[:, iq, l])
                     ## save component to the handler
                     self.vals_lnm[l][iq,im] = x
+        return self
 
 
 
 
 
     def calc_kprime(self,lam):
-        print('Caclulating k\'lnm from klnm...')
-        ## New handler for k` values
-        kp_sph = SphHarmHandler(self.nq, self.nl, self.qmax)
+        print('calc_kprime')
         ## for every lmq value (save calulation by not looping m)
         for l in range(0, self.nl, 2):
+            print(l)
             for iq in range(self.nq):
                 ## Calulate the nuemerator of the normalization scale factor
-                ned = np.sqrt(lam[iq, l])
+                # ned = np.sqrt(lam[iq, l])
+                ned = np.sqrt(np.abs(lam[iq, l]))
                 ## Calulate the denominator of the normalization scale factor
                 km = np.abs(self.vals_lnm[l][iq,:])**2
                 donk = np.sqrt(np.sum(km))
-                if donk==0:
-                    donk=1
+                print(f'ned: {ned}, donk: {donk}')
                 ## Calcuate the k` values
-                kp_sph.vals_lnm[l][iq,:] = (ned/donk)*self.vals_lnm[l][iq,:]
-        return kp_sph
+                if donk < 1:
+                    donk=1
+                    ned =0
+                self.vals_lnm[l][iq,:] *= (ned/donk)
+
+        return self
 
 
 
 
-    # def calc_ivol(self, nside):
-        # print('Calculating SphInten from Ilnm...')
-        # iv = SphericalIntenVol(self.nq, nside, qmax=self.qmax)
-        # theta, phi = hp.pix2ang(iv.nside, np.arange(0,iv.npix))
-        # for l in range(0, self.nl, 2):
-            # for im, m in zip(range(0, 2*l+1), range(-l,l+1)):
-                # ylm = ylm_wrapper(l,m,phi, theta, comp=False)
-                # x = np.outer(self.vals_lnm[l][:, im], ylm)
 
-                # iv.ivol +=x
 
-        # #intensity normalization
-        # # iv.ivol *= 1/iv.npix
+    def calc_kprime2(self,lam):
+        print('calc_kprime')
+        ## for every lmq value (save calulation by not looping m)
+        for l in range(0, self.nl, 2):
+            print(l)
+            for iq in range(self.nq):
+                ## Calulate the nuemerator of the normalization scale factor
+                ned = np.sqrt(np.abs(lam[iq, l]))
+                ## Calulate the denominator of the normalization scale factor
+                km = np.abs(self.vals_lnm[l][iq,:])**2
+                donk = np.sqrt(np.sum(km))
+                print(f'ned: {ned}, donk: {donk}')
+                ## Calcuate the k` values
+                if donk < 1e-6:
+                    donk=1
+                    ned =0
+                print(f'n/d: {ned/donk}')
+                self.vals_lnm[l][iq,:] *= (ned/donk)
 
-        # return iv
+        return self
+
 
 
 
 
     def calc_Ilm_p(self, u):
-        print(f'Calculating I\'lnm from k\'lnm...')
-        ilm_p = SphHarmHandler(self.nq, self.nl, self.qmax, self.comp)
+        print('calc_Ilm_p')
         for l in range(0, self.nl, 2):
+            print(l)
             ul = u[...,l]
             for im, m in zip(range(0, 2*l+1), range(-l,l+1)):
                 k_sphm = self.vals_lnm[l][:,im]
                 #ku is the I'lm
                 ku = np.dot(ul, k_sphm)
-                ilm_p.vals_lnm[l][:,im] = ku
-        return ilm_p
+                self.vals_lnm[l][:,im] = ku
 
-
+        return self
 
