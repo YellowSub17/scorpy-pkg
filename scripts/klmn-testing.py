@@ -14,7 +14,7 @@ nsphere = 47
 cor = scorpy.CorrelationVol(path=f'../data/dbins/{name}_qcor')
 
 
-bl = scorpy.BlqqVol(cor.nq, 65, cor.qmax)
+bl = scorpy.BlqqVol(cor.nq, 15, cor.qmax)
 bl.fill_from_corr(cor)
 bl_l, bl_u = bl.get_eigh()
 
@@ -36,6 +36,14 @@ Iv_filt = Iv_goal.copy().fill_from_sph(sph_Ilm)
 Iv_filt.plot_sphere(nsphere)
 plt.title('I_filt: ivol -> sph -> ivol')
 
+
+print('sum(ivol**2)')
+print(np.sum(Iv_goal.ivol**2))
+print(np.sum(Iv_filt.ivol**2))
+
+print('sum(ivol)**2')
+print(np.sum(Iv_goal.ivol)**2)
+print(np.sum(Iv_filt.ivol)**2)
 
 # #iteration steps
 # sph_klmn = sph_Ilm.copy().calc_klmn(bl_u)

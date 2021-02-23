@@ -57,10 +57,10 @@ class SphHarmHandler:
         assert self.qmax == iv.qmax
 
 
+        theta, phi = hp.pix2ang(iv.nside, np.arange(0, iv.npix))
         for l in range(0, self.nl, 2):
             print(l)
             for im, m in zip(range(2*l+1), range(-l, l+1)):
-                theta, phi = hp.pix2ang(iv.nside, np.arange(0, iv.npix))
                 ylm = ylm_wrapper(l,m,phi, theta, comp=self.comp)
                 ylm *= 1/iv.npix
                 self.vals_lnm[l][:, im] = np.dot(ylm, iv.ivol.T)
@@ -109,8 +109,10 @@ class SphHarmHandler:
                     donk=1
                     ned =0
                 self.vals_lnm[l][iq,:] *= (ned/donk)
+                #todo: seperate ned and donka
 
         return self
+
 
 
 
