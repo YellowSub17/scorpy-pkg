@@ -70,8 +70,8 @@ class SphHarmHandler:
 
 
 
-    def calc_klmn(self, unql):
-        print('calc_klmn')
+    def calc_klnm(self, unql):
+        print('calc_klnm')
         ## values for q**2 scaling
         q_range = np.linspace(0, self.qmax, self.nq)
         ## for every lm value
@@ -88,6 +88,9 @@ class SphHarmHandler:
         return self
 
 
+    
+
+
 
 
 
@@ -95,20 +98,22 @@ class SphHarmHandler:
         print('calc_kprime')
         ## for every lmq value (save calulation by not looping m)
         for l in range(0, self.nl, 2):
-            print(l)
+            print(f'L = {l}')
             for iq in range(self.nq):
                 ## Calulate the nuemerator of the normalization scale factor
-                # ned = np.sqrt(lam[iq, l])
                 ned = np.sqrt(np.abs(lam[iq, l]))
                 ## Calulate the denominator of the normalization scale factor
                 km = np.abs(self.vals_lnm[l][iq,:])**2
                 donk = np.sqrt(np.sum(km))
-                print(f'ned: {ned}, donk: {donk}')
                 ## Calcuate the k` values
-                if donk < 1:
+                if donk == 0:
+                    # print(f'ned: {ned}, donk: {donk}')
+                    print(iq)
                     donk=1
-                    ned =0
-                self.vals_lnm[l][iq,:] *= (ned/donk)
+                    ned =1
+                # print(f'ned: {ned}, donk: {donk}')
+                # print(f'n/d {ned/donk}')
+                self.vals_lnm[l][iq,:] *= (donk/ned)
                 #todo: seperate ned and donka
 
         return self
@@ -116,29 +121,6 @@ class SphHarmHandler:
 
 
 
-
-
-
-    def calc_kprime2(self,lam):
-        print('calc_kprime')
-        ## for every lmq value (save calulation by not looping m)
-        for l in range(0, self.nl, 2):
-            print(l)
-            for iq in range(self.nq):
-                ## Calulate the nuemerator of the normalization scale factor
-                ned = np.sqrt(np.abs(lam[iq, l]))
-                ## Calulate the denominator of the normalization scale factor
-                km = np.abs(self.vals_lnm[l][iq,:])**2
-                donk = np.sqrt(np.sum(km))
-                print(f'ned: {ned}, donk: {donk}')
-                ## Calcuate the k` values
-                if donk < 1e-6:
-                    donk=1
-                    ned =0
-                print(f'n/d: {ned/donk}')
-                self.vals_lnm[l][iq,:] *= (ned/donk)
-
-        return self
 
 
 
