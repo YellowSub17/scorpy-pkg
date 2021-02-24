@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 from scorpy.utils import ylm_wrapper
 import scorpy
 import numpy as np
@@ -9,10 +9,8 @@ import healpy as hp
 
 plt.close('all')
 
+name = '3wct'
 name = '1al1'
-nsphere = 97
-
-
 cor = scorpy.CorrelationVol(path=f'../data/dbins/{name}_qcor')
 
 
@@ -22,44 +20,65 @@ bl_l, bl_u = bl.get_eigh()
 
 
 cif = scorpy.CifData(f'../data/xtal/{name}-sf.cif', qmax=cor.qmax)
-
-#make and plot the initial (target) and mask spherical intensities
+#make initial (target) and mask spherical intensities
 Iv_init = scorpy.SphInten(cor.nq, 2**5, cor.qmax).fill_from_cif(cif)
-Iv_init.plot_sphere(nsphere)
-plt.title('I_init: Initial Intensity')
-
-
 #get the spherical harmonics from inital intensity
 sph_init = scorpy.SphHarmHandler(cor.nq, bl.nl, cor.qmax).fill_from_ivol(Iv_init)
 
 # filtered inten
 Iv_filt = Iv_init.copy().fill_from_sph(sph_init)
-Iv_filt.plot_sphere(nsphere)
-plt.title('Iv_filt: ivol -> Ilm -> ivol')
-
-
-
-
 
 # Calculate klnm
 sph_Klnm = sph_init.copy().calc_klnm(bl_u)
 # Recompose Ilnm
 sph_Ilmp = sph_Klnm.copy().calc_Ilm_p(bl_u)
-
-
-
 # k data
 Iv_data = Iv_init.copy().fill_from_sph(sph_Ilmp)
-Iv_data.plot_sphere(nsphere)
-plt.title('Iv_data: ivol -> Ilm -> k -> Ilm -> ivol')
 
 
 Iv_rela = Iv_init.copy()
+
+
 Iv_rela.ivol = Iv_filt.ivol/Iv_data.ivol
+Iv_rela.ivol[np.where(np.logical_and(Iv_filt.ivol ==0,Iv_data.ivol==0))] = 0
 
-Iv_rela.plot_sphere(nsphere)
-plt.title('Iv_rela: Iv_filt/Iv_data')
 
+# nsphere=7
+
+# Iv_init.plot_sphere(nsphere)
+# plt.title('I_init: Initial Intensity')
+
+# Iv_filt.plot_sphere(nsphere)
+# plt.title('Iv_filt: ivol -> Ilm -> ivol')
+
+# Iv_data.plot_sphere(nsphere)
+# plt.title('Iv_data: ivol -> Ilm -> k -> Ilm -> ivol')
+
+
+# Iv_rela.plot_sphere(nsphere)
+# plt.title('Iv_rela: Iv_filt/Iv_data')
+
+
+plt.figure()
+aves = np.mean(Iv_rela.ivol, axis=-1)
+plt.plot(aves)
+plt.title('Iv_filt/Iv_data')
+plt.xlabel('nq')
+plt.ylabel('Average Relative Difference')
+
+plt.figure()
+std = np.std(Iv_rela.ivol, axis=-1)
+plt.plot(std)
+plt.title('Error of Iv_filt/Iv_data')
+plt.xlabel('nq')
+plt.ylabel('Std.')
+
+plt.figure()
+sumI = np.sum(Iv_rela.ivol, axis=-1)
+plt.plot(sumI)
+plt.title('Diffraction Intensity over shell')
+plt.xlabel('nq')
+plt.ylabel('Sum Intensity')
 
 
 plt.show()
