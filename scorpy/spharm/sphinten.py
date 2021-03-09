@@ -47,8 +47,14 @@ class SphInten:
     def plot_sphere(self, iq):
         hp.orthview(self.ivol[iq,:], half_sky=True, rot=[23,45,60])
 
-    def make_mask(self):
-        self.ivol[np.where(self.ivol !=0)] = 1
+    def make_mask(self, invert=False):
+        inten_loc = np.where(self.ivol !=0)
+        if invert:
+            self.ivol = np.ones(self.ivol.shape)
+            self.ivol[inten_loc] = 0
+        else:
+            self.ivol = np.zeros(self.ivol.shape)
+            self.ivol[inten_loc] = 1
         return self
 
     def calc_blnorm(self, bl):

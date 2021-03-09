@@ -123,9 +123,6 @@ class SphHarmHandler:
 
 
 
-
-
-
     def calc_Ilm_p(self, u):
         print('calc_Ilm_p')
         for l in range(0, self.nl, 2):
