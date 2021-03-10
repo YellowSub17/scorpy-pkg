@@ -41,11 +41,16 @@ class SphInten:
                 x = np.outer(sph.vals_lnm[l][:, im], ylm)
                 self.ivol +=x
 
+        # sf = np.outer(1/np.linspace(1e-12, self.qmax, self.nq)**2, np.ones(self.npix))
+        # self.ivol *=sf
+
         return self
 
 
     def plot_sphere(self, iq):
-        hp.orthview(self.ivol[iq,:], half_sky=True, rot=[23,45,60])
+        fig = plt.figure(figsize=(3,4))
+        figint = plt.gcf().number
+        hp.orthview(self.ivol[iq,:], half_sky=True, rot=[23,45,60], fig=figint)
 
     def make_mask(self, invert=False):
         inten_loc = np.where(self.ivol !=0)
@@ -69,39 +74,6 @@ class SphInten:
 
         self.ivol *= alpha[:,None]
         return self
-
-
-
-
-
-
-    # def calc_ivol(self, nside):
-        # print('Calculating SphInten from Ilnm...')
-        # iv = SphericalIntenVol(self.nq, nside, qmax=self.qmax)
-        # theta, phi = hp.pix2ang(iv.nside, np.arange(0,iv.npix))
-        # for l in range(0, self.nl, 2):
-            # for im, m in zip(range(0, 2*l+1), range(-l,l+1)):
-                # ylm = ylm_wrapper(l,m,phi, theta, comp=False)
-                # x = np.outer(self.vals_lnm[l][:, im], ylm)
-
-                # iv.ivol +=x
-
-        # #intensity normalization
-        # # iv.ivol *= 1/iv.npix
-
-        # return iv
-
-
-    # def calc_sph(self, sph):
-        # print(f'Calculating Ilmn values from sph values...')
-        # # sph = SphericalHandler(self.nq,nl, self.qmax,comp)
-        # for l in range(0, sph.nl, 2):
-            # for im, m in zip(range(2*l+1), range(-l, l+1)):
-                # theta, phi = hp.pix2ang(self.nside, np.arange(0,self.npix))
-                # ylm = ylm_wrapper(l,m,phi,theta, comp=sph.comp)
-                # ylm *=1/self.npix
-                # sph.vals_lnm[l][:,im] = np.dot(ylm, self.ivol.T)
-        # # return sph
 
 
 

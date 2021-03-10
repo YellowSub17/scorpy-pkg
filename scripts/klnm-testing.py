@@ -15,7 +15,7 @@ cor = scorpy.CorrelationVol(path=f'../data/dbins/{name}_qcor')
 
 
 #get eigenvectors
-bl = scorpy.BlqqVol(cor.nq, 17, cor.qmax)
+bl = scorpy.BlqqVol(cor.nq, 27, cor.qmax)
 bl.fill_from_corr(cor)
 bl_l, bl_u = bl.get_eigh()
 
@@ -39,7 +39,7 @@ sph_Ilmp = sph_Klnm.copy().calc_Ilm_p(bl_u)
 # k data (cif -> Iv -> sph -> klnm -> Ilm' -> Iv)
 Iv_data = Iv_init.copy().fill_from_sph(sph_Ilmp)
 
-sf = np.outer(1/np.linspace(1e-10, cor.qmax, cor.nq)**2, np.ones(12288))*Iv_mask.ivol
+sf = np.outer(1/np.linspace(1e-19, Iv_data.qmax, Iv_data.nq)**2, np.ones(Iv_data.npix))
 Iv_data.ivol *=sf
 
 
@@ -68,10 +68,12 @@ Iv_data.plot_sphere(nsphere)
 plt.title('Iv_data: ivol -> Ilm -> k -> Ilm -> ivol')
 
 Iv_data2.plot_sphere(nsphere)
-plt.title('Iv_data2: ivol -> Ilm -> k -> Ilm -> ivol')
+plt.title('Iv_data2: Iv_data -> Ilm -> k -> Ilm -> ivol')
 
+Iv_rela.plot_sphere(nsphere)
+plt.title('Iv_rela: Iv_filt/Iv_data')
 Iv_rela2.plot_sphere(nsphere)
-plt.title('Iv_rela2: Iv_filt/Iv_data')
+plt.title('Iv_rela2: Iv_data2/Iv_data')
 
 
 
@@ -80,41 +82,17 @@ q = np.linspace(0, cor.qmax, cor.nq)
 plt.figure()
 aves = np.mean(Iv_rela.ivol, axis=-1)
 plt.plot(q, aves)
-# plt.plot(q[14:],  1/(q[14:])**2)
 plt.title('Iv_filt/Iv_data')
 plt.xlabel('nq')
 plt.ylabel('Average Relative Difference')
 
-# plt.figure()
-# std = np.std(Iv_rela.ivol, axis=-1)
-# plt.plot(std)
-# plt.title('Error of Iv_filt/Iv_data')
-# plt.xlabel('nq')
-# plt.ylabel('Std.')
-
-# plt.figure()
-# sumI = np.sum(Iv_filt.ivol, axis=-1)
-# plt.plot(sumI)
-# plt.title('Diffraction Intensity over shell')
-# plt.xlabel('nq')
-# plt.ylabel('Sum Intensity')
-
-
-# plt.figure()
-# non0_loc = np.where(sumI !=0)
-# rel_factor = np.zeros(sumI.shape)
-# rel_factor[non0_loc] = sumI[non0_loc]/aves[non0_loc]
-# plt.plot(rel_factor)
-
+plt.figure()
+aves = np.mean(Iv_rela2.ivol, axis=-1)
+plt.plot(q, aves)
+plt.title('Iv_data2/Iv_data')
+plt.xlabel('nq')
+plt.ylabel('Average Relative Difference')
 
 
 
 plt.show()
-
-
-
-
-
-
-
-

@@ -34,7 +34,7 @@ class SphHarmHandler:
 
 
     def fill_from_cif(self, cif):
-        print('filling sph from cif') 
+        print('filling sph from cif')
         spherical = cif.spherical[np.where(cif.spherical[:,0] < self.qmax)]
 
         for l in range(0, self.nl, 2):
@@ -85,10 +85,10 @@ class SphHarmHandler:
                     x = np.dot(Ilm, unql[:, iq, l])
                     ## save component to the handler
                     self.vals_lnm[l][iq,im] = x
+
         return self
 
 
-    
 
 
 
@@ -133,6 +133,9 @@ class SphHarmHandler:
                 #ku is the I'lm
                 ku = np.dot(ul, k_sphm)
                 self.vals_lnm[l][:,im] = ku
+
+            # sf = np.outer(1/np.linspace(1e-12, self.qmax, self.nq)**2, np.ones(2*l+1))
+            # self.vals_lnm[l] *= sf
 
         return self
 
