@@ -19,7 +19,7 @@ class CorrelationVol(Vol):
         '''
         Class constructor.
         '''
-        Vol.__init__(self, nq,nq,ntheta, qmax, qmax, 180,  path=path)
+        Vol.__init__(self, nq,nq,ntheta, qmax, qmax, 180, comp=False, path=path)
 
         self.plot_q1q2 = self.plot_xy
         # self._ymax = self.xmax
@@ -47,6 +47,8 @@ class CorrelationVol(Vol):
     @property
     def cvol(self):
         return self._vol
+
+
 
     # @cvol.setter
     # def cvol(self, new_cvol):

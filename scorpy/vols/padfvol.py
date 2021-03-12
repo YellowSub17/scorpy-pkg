@@ -15,14 +15,17 @@ class PadfVol(Vol):
         Vol.__init__(self, nr,nr,ntheta, rmax, rmax, 180, path=path)
 
         self.plot_r1r2 = self.plot_xy
-        self.ymax = self.xmax
+        # self.ymax = self.xmax
         self.rmax = self.xmax
 
-        self.ny = self.nx
+        # self.ny = self.nx
         self.nr = self.nx
 
-        self.ntheta = self.nz
+        # self.ntheta = self.nz
 
+    
+
+    
 
     def fill_from_corr(self, cor_path, nl=37, wavelength=1e-10):
 
@@ -49,22 +52,6 @@ class PadfVol(Vol):
 
         os.system(f'{PADF_PADF}padf {PADF_PADF}config.txt')
 
-        # stream1 = os.popen(f'rm /tmp/*r_vs_l*')
-        # stream2 = os.popen(f'rm /tmp/*bl*')
         os.system(f'rm /tmp/padf/*r_vs_l*')
         os.system(f'rm /tmp/padf/*bl*')
-        # os.system(f'mv {outpath}/{cor.fname.split("/")[-1]}_padf_log.txt {outpath}/{cor.fname.split("/")[-1]}_AM_padf_log.txt') 
-        # os.system(f'mv {outpath}/{cor.fname.split("/")[-1]}_padf_padf.dbin {outpath}/{cor.fname.split("/")[-1]}_padf.dbin') 
-
-        # new_log = open(f'{outpath}/{cor.fname.split("/")[-1]}_padf_log.txt', 'w')
-        # new_log.write("## Correlation Log File\n\n")
-        # new_log.write("[params]\n")
-        # new_log.write(f"fname = {outpath}/{cor.fname.split('/')[-1]}_padf\n")
-        # new_log.write(f"qmax = {rmax}\n")
-        # new_log.write(f"nq = {nR}\n")
-        # new_log.write(f"ntheta = {cor.ntheta}\n")
-        # new_log.write("hflag = False\n")
-        # new_log.close()
-
-
-
+        

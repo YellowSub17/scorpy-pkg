@@ -12,7 +12,7 @@ class Vol:
 
     def __init__(self,  nx = None, ny = None, nz = None, \
                         xmax = None, ymax = None, zmax = None, \
-                        path = None):
+                        comp = False, path = None):
 
         if not path is None:
             self.load_dbin(path)
@@ -23,7 +23,12 @@ class Vol:
             self._xmax = xmax
             self._ymax = ymax
             self._zmax = zmax
-            self._vol = np.zeros((nx,ny,nz))
+            self._comp = comp
+
+            if self.comp:
+                self._vol = np.zeros((nx,ny,nz)).astype(np.complex64)
+            else:
+                self._vol = np.zeros((nx,ny,nz))
 
 
     def load_dbin(self, path):
@@ -42,7 +47,14 @@ class Vol:
             self._xmax = float(config['params']['xmax'])
             self._ymax = float(config['params']['ymax'])
             self._zmax = float(config['params']['zmax'])
-            file_vol = np.fromfile(f'{path.parent}/{self.tag}.dbin')
+
+            self._comp = config.getboolean('params', 'comp')
+
+            if self.comp:
+                file_vol = np.fromfile(f'{path.parent}/{self.tag}.dbin', dtype=np.complex64)
+            else:
+                file_vol = np.fromfile(f'{path.parent}/{self.tag}.dbin')
+
             self._vol = file_vol.reshape((self.nx, self.ny, self.nz))
 
     @property
@@ -68,6 +80,10 @@ class Vol:
     @property
     def zmax(self):
         return self._zmax
+
+    @property
+    def comp(self):
+        return self._comp
 
     @property
     def vol(self):
@@ -120,14 +136,16 @@ class Vol:
         f.write(f'xmax = {self.xmax}\n')
         f.write(f'ymax = {self.ymax}\n')
         f.write(f'zmax = {self.zmax}\n')
+
+        f.write(f'comp = {self.comp}\n')
         f.close()
 
 
-    def get_eigh(self):
+    def get_eig(self):
         lams = np.zeros( (self.nx, self.nz))
         us = np.zeros( (self.nx, self.ny, self.nz))
 
-        for z in range(0, self.nz, 2):
+        for z in range(0, self.nz):
             lam, u = np.linalg.eig(self.vol[...,z])
 
             lams[:,z] = lam

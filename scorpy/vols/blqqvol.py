@@ -19,13 +19,10 @@ class BlqqVol(Vol):
 
 
     def __init__(self, nq=100, nl=37, qmax=1, path=None, comp=False):
-        Vol.__init__(self, nq,nq,nl, qmax, qmax, nl, path=path)
+        Vol.__init__(self, nq,nq,nl, qmax, qmax, nl, comp, path=path)
 
-        self.comp = comp
         self.plot_q1q2 = self.plot_xy
 
-        if self.comp:
-            self.vol = self.vol.astype(np.complex64)
 
     @property
     def qmax(self):
@@ -78,7 +75,7 @@ class BlqqVol(Vol):
                 self.vol[iq2,iq1,:] = dot
 
         # times 4pi because we multi 2root(pi) in the ylm calc.
-        self.vol *= 4*np.pi
+        self.blvol *= 4*np.pi
 
 
 
