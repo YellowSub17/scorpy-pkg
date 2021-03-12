@@ -22,14 +22,45 @@ class CorrelationVol(Vol):
         Vol.__init__(self, nq,nq,ntheta, qmax, qmax, 180,  path=path)
 
         self.plot_q1q2 = self.plot_xy
-        self.ymax = self.xmax
-        self.qmax = self.xmax
+        # self._ymax = self.xmax
+        # self._qmax = self.xmax
 
-        self.ny = self.nx
-        self.nq = self.nx
+        # self._ny = self.nx
+        # self._nq = self.nx
 
-        self.ntheta = self.nz
-        self.cvol = self.vol
+        # self._ntheta = self.nz
+        # self._cvol = self.vol
+
+
+    @property
+    def qmax(self):
+        return self._xmax
+
+    @property
+    def nq(self):
+        return self._nx
+
+    @property
+    def ntheta(self):
+        return self._nz
+
+    @property
+    def cvol(self):
+        return self._vol
+
+    # @cvol.setter
+    # def cvol(self, new_cvol):
+        # print('setting new cvol')
+        # self._vol = new_cvol
+
+    # @vol.setter
+    # def vol(self, new_vol):
+        # assert new_vol.shape == self.vol.shape, 'Cannot replace vols with different shapes'
+        # self._vol = new_vol
+
+
+
+
 
 
 
@@ -54,8 +85,8 @@ class CorrelationVol(Vol):
                 q_prime_ind = index_x(q_prime[0],self.qmax, self.nq)
                 theta = polar_angle_between(q[1], q_prime[1])
                 theta_ind = index_x(theta, 180, self.ntheta)
-                self.cvol[q_ind,q_prime_ind,theta_ind] +=q[-1]*q_prime[-1]
-                self.cvol[q_prime_ind,q_ind,theta_ind] +=q[-1]*q_prime[-1]
+                self.vol[q_ind,q_prime_ind,theta_ind] +=q[-1]*q_prime[-1]
+                self.vol[q_prime_ind,q_ind,theta_ind] +=q[-1]*q_prime[-1]
 
 
 
@@ -98,8 +129,8 @@ class CorrelationVol(Vol):
                 theta = angle_between(q[:3]/q_mag, q_prime[:3]/q_prime_mag)
                 theta_ind = index_x(theta, np.pi, self.ntheta)
 
-                self.cvol[q_ind,q_prime_ind,theta_ind] +=q[-1]*q_prime[-1]
-                self.cvol[q_prime_ind,q_ind,theta_ind] +=q[-1]*q_prime[-1]
+                self.vol[q_ind,q_prime_ind,theta_ind] +=q[-1]*q_prime[-1]
+                self.vol[q_prime_ind,q_ind,theta_ind] +=q[-1]*q_prime[-1]
 
 
 

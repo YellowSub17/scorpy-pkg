@@ -22,20 +22,28 @@ class BlqqVol(Vol):
         Vol.__init__(self, nq,nq,nl, qmax, qmax, nl, path=path)
 
         self.comp = comp
-
         self.plot_q1q2 = self.plot_xy
-        self.ymax = self.xmax
-        self.qmax = self.xmax
-
-        self.ny = self.nx
-        self.nq = self.nx
-
-        self.nl = self.nz
 
         if self.comp:
-            self.blvol = self.vol.astype(np.complex64)
-        else:
-            self.blvol = self.vol
+            self.vol = self.vol.astype(np.complex64)
+
+    @property
+    def qmax(self):
+        return self._xmax
+
+    @property
+    def nq(self):
+        return self._nx
+
+    @property
+    def nl(self):
+        return self._nz
+
+    @property
+    def blvol(self):
+        return self._vol
+
+
 
 
 
@@ -65,12 +73,12 @@ class BlqqVol(Vol):
 
         for iq1 in range(self.nq):
             for iq2 in range(iq1, self.nq):
-                dot =  np.dot(fmat_inv,cor.cvol[iq1,iq2,:])
-                self.blvol[iq1,iq2,:] = dot
-                self.blvol[iq2,iq1,:] = dot
+                dot =  np.dot(fmat_inv,cor.vol[iq1,iq2,:])
+                self.vol[iq1,iq2,:] = dot
+                self.vol[iq2,iq1,:] = dot
 
         # times 4pi because we multi 2root(pi) in the ylm calc.
-        self.blvol *= 4*np.pi
+        self.vol *= 4*np.pi
 
 
 
@@ -89,7 +97,7 @@ class BlqqVol(Vol):
                     bl[iq1,iq2] = np.sum(np.conj(sph.vals_lnm[l][iq1])*sph.vals_lnm[l][iq2])
                     bl[iq2,iq1] = np.sum(np.conj(sph.vals_lnm[l][iq2])*sph.vals_lnm[l][iq1])
 
-            self.blvol[...,l] = bl
+            self.vol[...,l] = bl
 
 
 

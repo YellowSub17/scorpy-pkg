@@ -15,38 +15,73 @@ class Vol:
                         path = None):
 
         if not path is None:
-            # assert type(path)==str, 'path must be string to dbin and log file'
+            self.load_dbin(path)
+        else:
+            self._nx = nx
+            self._ny = ny
+            self._nz = nz
+            self._xmax = xmax
+            self._ymax = ymax
+            self._zmax = zmax
+            self._vol = np.zeros((nx,ny,nz))
+
+
+    def load_dbin(self, path):
 
             if type(path) == str:
                 path = Path(path)
 
             self.tag = path.stem
-
-
             config = cfp.ConfigParser()
             config.read(f'{path.parent}/{self.tag}_log.txt')
 
+            self._nx = int(config['params']['nx'])
+            self._ny = int(config['params']['ny'])
+            self._nz = int(config['params']['nz'])
 
-
-            self.nx = int(config['params']['nx'])
-            self.ny = int(config['params']['ny'])
-            self.nz = int(config['params']['nz'])
-
-            self.xmax = float(config['params']['xmax'])
-            self.ymax = float(config['params']['ymax'])
-            self.zmax = float(config['params']['zmax'])
+            self._xmax = float(config['params']['xmax'])
+            self._ymax = float(config['params']['ymax'])
+            self._zmax = float(config['params']['zmax'])
             file_vol = np.fromfile(f'{path.parent}/{self.tag}.dbin')
-            self.vol = file_vol.reshape((self.nx, self.ny, self.nz))
+            self._vol = file_vol.reshape((self.nx, self.ny, self.nz))
+
+    @property
+    def nx(self):
+        return self._nx
+
+    @property
+    def ny(self):
+        return self._ny
+
+    @property
+    def nz(self):
+        return self._nz
+
+    @property
+    def xmax(self):
+        return self._xmax
+
+    @property
+    def ymax(self):
+        return self._ymax
+
+    @property
+    def zmax(self):
+        return self._zmax
+
+    @property
+    def vol(self):
+        return self._vol
+
+    @vol.setter
+    def vol(self, new_vol):
+        assert new_vol.shape == self.vol.shape, 'Cannot replace vols with different shapes'
+        self._vol = new_vol
 
 
-        else:
-            self.nx = nx
-            self.ny = ny
-            self.nz = nz
-            self.xmax = xmax
-            self.ymax = ymax
-            self.zmax = zmax
-            self.vol = np.zeros((nx,ny,nz))
+
+
+
 
 
 
@@ -112,9 +147,6 @@ class Vol:
             kern_n: number of pixels in the kernal matrix
             std_[x,y,z]: standard devieation of the guassian in each x,y,z direction
 
-
-        Returns:
-            blur: numpy array of the self.vol convolved with a gaussian kernal. 
         """
 
 
@@ -137,7 +169,9 @@ class Vol:
 
 
     def get_xy(self):
-        # assert self.nx==self.ny, 'vol.nx !=vol.ny, cannot retreive x=y plane of vol'
+        assert self.nx==self.ny, 'vol.nx != vol.ny, cannot retrieve x=y plane of vol.'
+        assert self.xmax==self.ymax, 'vol.xmax != vol.ymax, cannot retrieve x=y plane of vol.'
+
         im = np.zeros( (self.nx, self.nz))
         for xi in range(self.nx):
             im[xi,:] = self.vol[xi,xi,:]
