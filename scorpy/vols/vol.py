@@ -15,15 +15,16 @@ class Vol:
                         path = None):
 
         if not path is None:
-            assert type(path)==str, 'path must be string to dbin and log file'
+            # assert type(path)==str, 'path must be string to dbin and log file'
 
-            bigPATH = Path(path)
+            if type(path) == str:
+                path = Path(path)
 
-            self.fname = bigPATH.stem
+            self.tag = path.stem
 
 
             config = cfp.ConfigParser()
-            config.read(f'{bigPATH.parent}/{self.fname}_log.txt')
+            config.read(f'{path.parent}/{self.tag}_log.txt')
 
 
 
@@ -34,7 +35,7 @@ class Vol:
             self.xmax = float(config['params']['xmax'])
             self.ymax = float(config['params']['ymax'])
             self.zmax = float(config['params']['zmax'])
-            file_vol = np.fromfile(f'{bigPATH.parent}/{self.fname}.dbin')
+            file_vol = np.fromfile(f'{path.parent}/{self.tag}.dbin')
             self.vol = file_vol.reshape((self.nx, self.ny, self.nz))
 
 
@@ -63,20 +64,19 @@ class Vol:
 
         """
 
-        assert type(path)==str, 'Please provide a string path to save dbin'
 
-        bigPATH = Path(path)
+        if type(path) == str:
+            path = Path(path)
 
-        self.fname = bigPATH.stem
-
+        self.tag = path.stem
 
         flat_vol= self.vol.flatten()
-        flat_vol.tofile(f'{bigPATH.parent}/{self.fname}.dbin')
+        flat_vol.tofile(f'{path.parent}/{self.tag}.dbin')
 
-        f = open(f'{bigPATH.parent}/{self.fname}_log.txt', 'w')
+        f = open(f'{path.parent}/{self.tag}_log.txt', 'w')
         f.write('## Vol Log File\n\n')
         f.write('[params]\n')
-        f.write(f'fname = {self.fname}\n')
+        f.write(f'tag = {self.tag}\n')
 
         f.write(f'nx = {self.nx}\n')
         f.write(f'ny = {self.ny}\n')
