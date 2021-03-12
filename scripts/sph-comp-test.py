@@ -24,18 +24,15 @@ cif = scorpy.CifData(f'../data/xtal/{name}-sf.cif', qmax=cor.qmax)
 
 
 Iv_init = scorpy.SphInten(cor.nq, 2**5, cor.qmax).fill_from_cif(cif)
-sf = np.outer(1/np.linspace(1e-19, Iv_init.qmax, Iv_init.nq)**2, np.ones(Iv_init.npix))
 
 #get the spherical harmonics from inital intensity
 sph_init = scorpy.SphHarmHandler(cor.nq, bl.nl, cor.qmax).fill_from_ivol(Iv_init)
 
 # filtered inten (cif -> Iv -> sph -> Iv)
 Iv_filt = Iv_init.copy().fill_from_sph(sph_init)
-Iv_filt.ivol *= sf
 
 Iv_filt_sph = sph_init.copy().fill_from_ivol(Iv_filt)
 Iv_filt2 = Iv_init.copy().fill_from_sph(Iv_filt_sph)
-Iv_filt2.ivol *= sf
 
 
 

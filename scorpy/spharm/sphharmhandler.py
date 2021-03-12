@@ -94,27 +94,33 @@ class SphHarmHandler:
 
 
 
-    def calc_kprime(self,lam):
+    def calc_kprime(self,lam, u):
         print('calc_kprime')
         ## for every lmq value (save calulation by not looping m)
         for l in range(0, self.nl, 2):
             print(f'L = {l}')
             for iq in range(self.nq):
+
                 ## Calulate the nuemerator of the normalization scale factor
                 ned = np.sqrt(np.abs(lam[iq, l]))
+
+                # ned = np.abs(lam[iq, l])
+
                 ## Calulate the denominator of the normalization scale factor
-                km = np.abs(self.vals_lnm[l][iq,:])**2
-                donk = np.sqrt(np.sum(km))
+                km = self.vals_lnm[l][iq,:]
+
+                donk = np.sqrt(np.sum(km**2))
+
                 ## Calcuate the k` values
-                if donk == 0:
-                    # print(f'ned: {ned}, donk: {donk}')
-                    print(iq)
+                if donk == 0 and ned == 0:
                     donk=1
                     ned =1
-                # print(f'ned: {ned}, donk: {donk}')
-                # print(f'n/d {ned/donk}')
-                self.vals_lnm[l][iq,:] *= (donk/ned)
-                #todo: seperate ned and donka
+                else:
+                    print(f'ned: {np.format_float_scientific(ned,4)}, donk: {np.format_float_scientific(donk,4)}')
+
+                # ned = 1e6
+                self.vals_lnm[l][iq,:] *= (ned/donk)
+
 
         return self
 
@@ -134,8 +140,9 @@ class SphHarmHandler:
                 ku = np.dot(ul, k_sphm)
                 self.vals_lnm[l][:,im] = ku
 
-            # sf = np.outer(1/np.linspace(1e-12, self.qmax, self.nq)**2, np.ones(2*l+1))
-            # self.vals_lnm[l] *= sf
+            sf = np.outer(1/np.linspace(0, self.qmax, self.nq)**2, np.ones(2*l+1))
+            sf[0,:] = 0
+            self.vals_lnm[l] *= sf
 
         return self
 

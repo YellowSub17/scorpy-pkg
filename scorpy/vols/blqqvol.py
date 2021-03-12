@@ -47,18 +47,22 @@ class BlqqVol(Vol):
 
         q_range = np.linspace(0,self.qmax, self.nq)
         # create args of legendre eval
+
+        #TODO add ewald sphere
         args = np.cos( np.linspace(0, np.pi, cor.ntheta))
 
         # initialze fmat matrix
         fmat = np.zeros( (cor.ntheta, self.nl) )
 
         #for every even spherical harmonic
-        for l in range(0,self.nl, 2):
-
+        for l in range(0, self.nl, 2):
             leg_vals = (1/(4*np.pi))*special.eval_legendre(l, args)
             fmat[:,l] = leg_vals
 
-        fmat_inv = np.linalg.pinv(fmat)
+
+        #TODO check svd
+        fmat_inv = np.linalg.pinv(fmat, rcond=0.6)
+
         for iq1 in range(self.nq):
             for iq2 in range(iq1, self.nq):
                 dot =  np.dot(fmat_inv,cor.cvol[iq1,iq2,:])

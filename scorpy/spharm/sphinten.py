@@ -48,7 +48,7 @@ class SphInten:
 
 
     def plot_sphere(self, iq):
-        fig = plt.figure(figsize=(3,4))
+        fig = plt.figure(figsize=(4,5))
         figint = plt.gcf().number
         hp.orthview(self.ivol[iq,:], half_sky=True, rot=[23,45,60], fig=figint)
 
