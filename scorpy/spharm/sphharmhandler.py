@@ -115,9 +115,8 @@ class SphHarmHandler:
                 if donk == 0 and ned == 0:
                     donk=1
                     ned =1
-                else:
-                    print(f'ned: {np.format_float_scientific(ned,4)}, donk: {np.format_float_scientific(donk,4)}')
 
+                print(f'ned: {np.format_float_scientific(ned,4)}, donk: {np.format_float_scientific(donk,4)}')
                 # ned = 1e6
                 self.vals_lnm[l][iq,:] *= (ned/donk)
 

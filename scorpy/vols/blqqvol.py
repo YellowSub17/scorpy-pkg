@@ -61,7 +61,7 @@ class BlqqVol(Vol):
 
 
         #TODO check svd
-        fmat_inv = np.linalg.pinv(fmat, rcond=0.6)
+        fmat_inv = np.linalg.pinv(fmat)
 
         for iq1 in range(self.nq):
             for iq2 in range(iq1, self.nq):
@@ -83,7 +83,7 @@ class BlqqVol(Vol):
         else:
             bl = np.zeros((self.nq, self.nq))
 
-        for l in range(0, self.nl,2):
+        for l in range(0, self.nl, 2):
             for iq1 in range(self.nq):
                 for iq2 in range(iq1, self.nq):
                     bl[iq1,iq2] = np.sum(np.conj(sph.vals_lnm[l][iq1])*sph.vals_lnm[l][iq2])

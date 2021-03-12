@@ -92,7 +92,7 @@ class Vol:
         lams = np.zeros( (self.nx, self.nz))
         us = np.zeros( (self.nx, self.ny, self.nz))
 
-        for z in range(0, self.nz,2):
+        for z in range(0, self.nz, 2):
             lam, u = np.linalg.eig(self.vol[...,z])
 
             lams[:,z] = lam
