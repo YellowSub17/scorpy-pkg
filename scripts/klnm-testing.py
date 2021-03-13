@@ -16,7 +16,7 @@ cor = scorpy.CorrelationVol(path=f'../data/dbins/{name}_qcor')
 #get eigenvectors
 bl = scorpy.BlqqVol(cor.nq, 17, cor.qmax)
 bl.fill_from_corr(cor)
-bl_l, bl_u = bl.get_eigh()
+bl_l, bl_u = bl.get_eig()
 
 
 #make initial (target) intensities
