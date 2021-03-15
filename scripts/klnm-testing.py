@@ -31,7 +31,6 @@ sph_init = scorpy.SphHarmHandler(cor.nq, bl.nl, cor.qmax).fill_from_ivol(Iv_init
 # filtered inten (cif -> Iv -> sph -> Iv)
 Iv_filt = Iv_init.copy().fill_from_sph(sph_init)
 
-
 # Calculate klnm
 sph_Klnm = sph_init.copy().calc_klnm(bl_u, bl_l)
 # Calculate klnm'
