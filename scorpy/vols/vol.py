@@ -141,12 +141,16 @@ class Vol:
         f.close()
 
 
-    def get_eig(self):
+    def get_eig(self, herm=True):
         lams = np.zeros( (self.nx, self.nz))
         us = np.zeros( (self.nx, self.ny, self.nz))
 
-        for z in range(0, self.nz):
-            lam, u = np.linalg.eig(self.vol[...,z])
+        for z in range(0, self.nz,2):
+            if herm:
+                lam, u = np.linalg.eigh(self.vol[...,z])
+            else:
+                lam, u = np.linalg.eig(self.vol[...,z])
+
 
             lams[:,z] = lam
             us[:,:,z] = u

@@ -16,7 +16,7 @@ cor = scorpy.CorrelationVol(path=f'../data/dbins/{name}_qcor')
 #get eigenvectors
 bl = scorpy.BlqqVol(cor.nq, 17, cor.qmax)
 bl.fill_from_corr(cor)
-bl_l, bl_u = bl.get_eig()
+bl_l, bl_u = bl.get_eig(herm=True)
 
 
 #make initial (target) intensities
@@ -31,21 +31,22 @@ sph_init = scorpy.SphHarmHandler(cor.nq, bl.nl, cor.qmax).fill_from_ivol(Iv_init
 # filtered inten (cif -> Iv -> sph -> Iv)
 Iv_filt = Iv_init.copy().fill_from_sph(sph_init)
 
-Iv_diff = Iv_init.copy()
-Iv_diff.ivol = Iv_init.ivol-Iv_filt.ivol
-
 
 # Calculate klnm
-sph_Klnm = sph_init.copy().calc_klnm(bl_u)
+sph_Klnm = sph_init.copy().calc_klnm(bl_u, bl_l)
 # Calculate klnm'
-sph_Klnmp = sph_Klnm.copy().calc_kprime(bl_l, bl_u)
+sph_Klnmp = sph_Klnm.copy().calc_kprime(bl_u, bl_l)
 # Recompose Ilnm
-sph_Ilmp = sph_Klnmp.copy().calc_Ilm_p(bl_u)
+sph_Ilmp = sph_Klnmp.copy().calc_Ilm_p(bl_u, bl_l)
 # k data (cif -> Iv -> sph -> klnm -> Ilm' -> Iv)
 Iv_data = Iv_init.copy().fill_from_sph(sph_Ilmp)
 
 
-Iv_data2_sph = sph_init.copy().fill_from_ivol(Iv_data).calc_klnm(bl_u).calc_kprime(bl_l, bl_u).calc_Ilm_p(bl_u)
+Iv_data_masked = Iv_data.copy()
+# Iv_data_masked.ivol *= Iv_mask.ivol
+
+
+Iv_data2_sph = sph_init.copy().fill_from_ivol(Iv_data_masked).calc_klnm(bl_u, bl_l).calc_kprime(bl_u, bl_l).calc_Ilm_p(bl_u, bl_l)
 Iv_data2 = Iv_init.copy().fill_from_sph(Iv_data2_sph)
 
 
@@ -65,9 +66,6 @@ plt.title('I_init: Initial Intensity')
 Iv_filt.plot_sphere(nsphere)
 plt.title('Iv_filt: ivol -> Ilm -> ivol')
 
-# Iv_diff.plot_sphere(nsphere)
-# plt.title('Iv_diff: Iv_init - Iv_filt')
-
 Iv_data.plot_sphere(nsphere)
 plt.title('Iv_data: ivol -> Ilm -> k -> k\' -> Ilm\' -> ivol')
 
@@ -78,7 +76,6 @@ plt.title('Iv_data2: Iv_data -> Ilm -> k -> k\' -> Ilm\' -> ivol')
 # plt.title('Iv_rela: Iv_filt/Iv_data')
 # Iv_rela2.plot_sphere(nsphere)
 # plt.title('Iv_rela2: Iv_data2/Iv_data')
-
 
 
 q = np.linspace(0, cor.qmax, cor.nq)

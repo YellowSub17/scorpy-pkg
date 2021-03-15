@@ -34,46 +34,50 @@ blqq1 = scorpy.BlqqVol(nq,nl,qmax)
 blqq1.fill_from_corr(correl)
 
 
-sph = scorpy.SphHarmHandler(nq,nl, qmax)
-sph.fill_from_cif(cif)
-blqq2 = scorpy.BlqqVol(nq,nl,qmax)
-blqq2.fill_from_sph(sph)
+# sph = scorpy.SphHarmHandler(nq,nl, qmax)
+# sph.fill_from_cif(cif)
+# blqq2 = scorpy.BlqqVol(nq,nl,qmax)
+# blqq2.fill_from_sph(sph)
 
 
-lam, u  = blqq1.get_eigh()
+lam, u  = blqq1.get_eig()
 
-
-blqq3 = scorpy.BlqqVol(nq,nl,qmax)
-
-for l in range(0, nl, 2):
-    lam1 = lam[:,l]
-    u1 = u[...,l]
-
-    x = np.matmul(u1, np.diag(lam1))
-    blqq3.vol[...,l] = np.matmul(x, np.linalg.inv(u1))
-
-
-
-
-blqq1.plot_slice(2,6)
-plt.title('Correlation Blqq')
-blqq2.plot_slice(2,6)
-plt.title('Spherical Harmonics Blqq')
-blqq3.plot_slice(2,6)
-plt.title('Corr. Eigen Recon Blqq')
-
-
-
-
-
-
-
-
-
-
-
-
+plt.figure()
+plt.plot(lam[:,0])
 plt.show()
+
+
+# blqq3 = scorpy.BlqqVol(nq,nl,qmax)
+
+# for l in range(0, nl, 2):
+    # lam1 = lam[:,l]
+    # u1 = u[...,l]
+
+    # x = np.matmul(u1, np.diag(lam1))
+    # blqq3.vol[...,l] = np.matmul(x, np.linalg.inv(u1))
+
+
+
+
+# blqq1.plot_slice(2,6)
+# plt.title('Correlation Blqq')
+# blqq2.plot_slice(2,6)
+# plt.title('Spherical Harmonics Blqq')
+# blqq3.plot_slice(2,6)
+# plt.title('Corr. Eigen Recon Blqq')
+
+
+
+
+
+
+
+
+
+
+
+
+# plt.show()
 
 
 

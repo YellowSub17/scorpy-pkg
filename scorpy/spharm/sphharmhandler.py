@@ -70,7 +70,7 @@ class SphHarmHandler:
 
 
 
-    def calc_klnm(self, unql):
+    def calc_klnm(self, unql, lam_ql):
         print('calc_klnm')
         ## values for q**2 scaling
         q_range = np.linspace(0, self.qmax, self.nq)
@@ -83,6 +83,11 @@ class SphHarmHandler:
                 ## for every eigen vector, find compent of Ilm(q) to that basis (dot)
                 for iq in range(self.nq):
                     x = np.dot(Ilm, unql[:, iq, l])
+
+                    # if lam_ql[iq,l] > 0
+                        # x = np.dot(Ilm, unql[:, iq, l])
+                    # else:
+                        # x = np.dot(Ilm, -unql[:, iq, l])
                     ## save component to the handler
                     self.vals_lnm[l][iq,im] = x
 
@@ -94,7 +99,7 @@ class SphHarmHandler:
 
 
 
-    def calc_kprime(self,lam, u):
+    def calc_kprime(self,unql, lam_ql):
         print('calc_kprime')
         ## for every lmq value (save calulation by not looping m)
         for l in range(0, self.nl, 2):
@@ -102,7 +107,7 @@ class SphHarmHandler:
             for iq in range(self.nq):
 
                 ## Calulate the nuemerator of the normalization scale factor
-                ned = np.sqrt(np.abs(lam[iq, l]))
+                ned = np.sqrt(np.abs(lam_ql[iq, l]))
 
                 # ned = np.abs(lam[iq, l])
 
@@ -116,7 +121,7 @@ class SphHarmHandler:
                     donk=1
                     ned =1
 
-                print(f'ned: {np.format_float_scientific(ned,4)}, donk: {np.format_float_scientific(donk,4)}')
+                print(f'n: {np.format_float_scientific(ned,2)}, d: {np.format_float_scientific(donk,2)}, n/d: {ned/donk}')
                 # ned = 1e6
                 self.vals_lnm[l][iq,:] *= (ned/donk)
 
@@ -128,11 +133,11 @@ class SphHarmHandler:
 
 
 
-    def calc_Ilm_p(self, u):
+    def calc_Ilm_p(self, unql, lam_ql):
         print('calc_Ilm_p')
         for l in range(0, self.nl, 2):
             print(l)
-            ul = u[...,l]
+            ul = unql[...,l]
             for im, m in zip(range(0, 2*l+1), range(-l,l+1)):
                 k_sphm = self.vals_lnm[l][:,im]
                 #ku is the I'lm

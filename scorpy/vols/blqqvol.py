@@ -40,6 +40,9 @@ class BlqqVol(Vol):
     def blvol(self):
         return self._vol
 
+    @blvol.setter
+    def blvol(self, new_vol):
+        self.vol = new_vol
 
 
 
