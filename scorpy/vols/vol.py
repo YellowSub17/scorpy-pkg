@@ -142,8 +142,8 @@ class Vol:
 
 
     def get_eig(self, herm=True):
-        lams = np.zeros( (self.nx, self.nz))
-        us = np.zeros( (self.nx, self.ny, self.nz))
+        lams = np.zeros( (self.nx, self.nz), dtype=np.complex64)
+        us = np.zeros( (self.nx, self.ny, self.nz), dtype=np.complex64)
 
         for z in range(0, self.nz,2):
             if herm:
@@ -243,8 +243,34 @@ class Vol:
             ext2 = self.ymax
 
         im = np.rollaxis(self.vol, axis)[index,...]
+        if self.comp:
+            im = np.abs(im)
         plt.figure()
         plt.imshow(im, origin='lower', extent=[0, ext1, 0, ext2], aspect='auto')
+        plt.colorbar()
+
+
+    def plot_line(self,axis=0, in1=0, in2=0, new_fig=True):
+
+        line = np.rollaxis(self.vol, axis)[in1,in2,...]
+        if self.comp:
+            line = np.abs(line)
+        if new_fig:
+            plt.figure()
+        plt.plot(line)
+
+
+
+    def check_herm(self):
+
+
+        herm=True
+        for z in range(self.nz):
+            mat = np.matrix(self.vol[...,z])
+            if not np.allclose(mat, np.conj(mat.T)):
+                herm = False
+                break
+        print(f'vol herm: {herm}')
 
 
 

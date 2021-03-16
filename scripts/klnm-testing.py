@@ -42,7 +42,7 @@ Iv_data = Iv_init.copy().fill_from_sph(sph_Ilmp)
 
 
 Iv_data_masked = Iv_data.copy()
-Iv_data_masked.ivol *= Iv_mask.ivol
+# Iv_data_masked.ivol *= Iv_mask.ivol
 
 
 Iv_data2_sph = sph_init.copy().fill_from_ivol(Iv_data_masked).calc_klnm(bl_u, bl_l).calc_kprime(bl_u, bl_l).calc_Ilm_p(bl_u, bl_l)

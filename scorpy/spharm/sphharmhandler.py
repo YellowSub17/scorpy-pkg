@@ -62,7 +62,7 @@ class SphHarmHandler:
             print(l)
             for im, m in zip(range(2*l+1), range(-l, l+1)):
                 ylm = ylm_wrapper(l,m,phi, theta, comp=self.comp)
-                ylm *= 1/iv.npix
+                # ylm *= 1/iv.npix
                 self.vals_lnm[l][:, im] = np.dot(ylm, iv.ivol.T)
         return self
 
@@ -82,12 +82,8 @@ class SphHarmHandler:
                 Ilm = self.vals_lnm[l][:,im]*q_range**2
                 ## for every eigen vector, find compent of Ilm(q) to that basis (dot)
                 for iq in range(self.nq):
-                    # x = np.dot(Ilm, unql[:, iq, l])
+                    x = np.dot(Ilm, unql[:, iq, l])
 
-                    if lam_ql[iq,l] > 0:
-                        x = np.dot(Ilm, unql[:, iq, l])
-                    else:
-                        x = np.dot(Ilm, -unql[:, iq, l])
                     ## save component to the handler
                     self.vals_lnm[l][iq,im] = x
 
@@ -124,6 +120,7 @@ class SphHarmHandler:
                 # print(f'n: {np.format_float_scientific(ned,2)}, d: {np.format_float_scientific(donk,2)}, n/d: {ned/donk}')
                 # ned = 1e6
                 self.vals_lnm[l][iq,:] *= (ned/donk)
+                # self.vals_lnm[l][iq,:] *= (1)
 
 
         return self
@@ -139,7 +136,7 @@ class SphHarmHandler:
             print(l)
             ul = unql[...,l]
             for im, m in zip(range(0, 2*l+1), range(-l,l+1)):
-                k_sphm = self.vals_lnm[l][:,im]*np.sign(lam_ql[:,l])
+                k_sphm = self.vals_lnm[l][:,im]
                 #ku is the I'lm
                 ku = np.dot(ul, k_sphm)
                 self.vals_lnm[l][:,im] = ku

@@ -41,9 +41,6 @@ class SphInten:
                 x = np.outer(sph.vals_lnm[l][:, im], ylm)
                 self.ivol +=x
 
-        # sf = np.outer(1/np.linspace(1e-12, self.qmax, self.nq)**2, np.ones(self.npix))
-        # self.ivol *=sf
-
         return self
 
 

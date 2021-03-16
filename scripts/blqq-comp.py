@@ -15,36 +15,48 @@ import numpy as np
 
 
 
-
-nq = 100
-ntheta = 180
-qmax = 0.15
-nl = 37
-
-
+cor = scorpy.CorrelationVol(path='../data/dbins/1al1_qcor')
+cif = scorpy.CifData('../data/xtal/1al1-sf.cif',qmax=cor.qmax)
+blqq1 = scorpy.BlqqVol(cor.nq, 17, cor.qmax, comp=True)
+blqq1.fill_from_corr(cor)
+lam1, u1 = blqq1.get_eig(herm=False)
 
 
+sph2 = scorpy.SphHarmHandler(cor.nq, 17, cor.qmax, comp=True)
+sph2.fill_from_cif(cif)
+blqq2 = scorpy.BlqqVol(cor.nq, 17, cor.qmax, comp=True)
+blqq2.fill_from_sph(sph2)
+lam2, u2 = blqq2.get_eig(herm=False)
 
-cif = scorpy.CifData('../data/xtal/1al1-sf.cif',qmax=qmax)
-
-correl = scorpy.CorrelationVol(nq,ntheta,qmax)
-correl.correlate(cif.scattering)
-
-blqq1 = scorpy.BlqqVol(nq,nl,qmax)
-blqq1.fill_from_corr(correl)
-
-
-# sph = scorpy.SphHarmHandler(nq,nl, qmax)
-# sph.fill_from_cif(cif)
-# blqq2 = scorpy.BlqqVol(nq,nl,qmax)
-# blqq2.fill_from_sph(sph)
+iv3 = scorpy.SphInten(cor.nq, 2**5, cor.qmax)
+iv3.fill_from_cif(cif)
+sph3 = scorpy.SphHarmHandler(cor.nq,17,cor.qmax, comp=True)
+sph3.fill_from_ivol(iv3)
+blqq3 = scorpy.BlqqVol(cor.nq, 17, cor.qmax, comp=True)
+blqq3.fill_from_sph(sph3)
+lam3, u3 = blqq3.get_eig(herm=False)
 
 
-lam, u  = blqq1.get_eig()
+l = 8
 
-plt.figure()
-plt.plot(lam[:,0])
+
+blqq1.plot_slice(2, 0)
+plt.title('cif -> cor -> blqq')
+
+blqq2.plot_slice(2, 0)
+plt.title('cif -> sph -> blqq')
+
+blqq3.plot_slice(2, 0)
+plt.title('cif -> ivol -> sph -> blqq')
+
+
+
 plt.show()
+
+
+
+
+
 
 
 # blqq3 = scorpy.BlqqVol(nq,nl,qmax)
