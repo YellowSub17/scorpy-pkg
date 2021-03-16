@@ -42,7 +42,7 @@ Iv_data = Iv_init.copy().fill_from_sph(sph_Ilmp)
 
 
 Iv_data_masked = Iv_data.copy()
-# Iv_data_masked.ivol *= Iv_mask.ivol
+Iv_data_masked.ivol *= Iv_mask.ivol
 
 
 Iv_data2_sph = sph_init.copy().fill_from_ivol(Iv_data_masked).calc_klnm(bl_u, bl_l).calc_kprime(bl_u, bl_l).calc_Ilm_p(bl_u, bl_l)
@@ -77,21 +77,21 @@ plt.title('Iv_data2: Iv_data -> Ilm -> k -> k\' -> Ilm\' -> ivol')
 # plt.title('Iv_rela2: Iv_data2/Iv_data')
 
 
-q = np.linspace(0, cor.qmax, cor.nq)
+# q = np.linspace(0, cor.qmax, cor.nq)
 
-plt.figure()
-aves = np.mean(Iv_rela.ivol, axis=-1)
-plt.plot(q, aves)
-plt.title('Iv_filt/Iv_data')
-plt.xlabel('nq')
-plt.ylabel('Average Relative Difference')
+# plt.figure()
+# aves = np.mean(Iv_rela.ivol, axis=-1)
+# plt.plot(q, aves)
+# plt.title('Iv_filt/Iv_data')
+# plt.xlabel('nq')
+# plt.ylabel('Average Relative Difference')
 
-plt.figure()
-aves = np.mean(Iv_rela2.ivol, axis=-1)
-plt.plot(aves)
-plt.title('Iv_data2/Iv_data')
-plt.xlabel('nq')
-plt.ylabel('Average Relative Difference')
+# plt.figure()
+# aves = np.mean(Iv_rela2.ivol, axis=-1)
+# plt.plot(aves)
+# plt.title('Iv_data2/Iv_data')
+# plt.xlabel('nq')
+# plt.ylabel('Average Relative Difference')
 
 
 
