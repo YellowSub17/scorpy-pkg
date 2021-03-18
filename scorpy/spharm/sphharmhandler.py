@@ -79,7 +79,7 @@ class SphHarmHandler:
                 Ilm = self.vals_lnm[l][:,im]*q_range**2
                 ## for every eigen vector, find compent of Ilm(q) to that basis (dot)
                 for iq in range(self.nq):
-                    x = np.dot(Ilm, unql[:, iq, l])
+                    x = np.dot(Ilm, unql[:,iq, l])
 
                     ## save component to the handler
                     self.vals_lnm[l][iq,im] = x
@@ -129,6 +129,8 @@ class SphHarmHandler:
 
     def calc_Ilm_p(self, unql, lam_ql):
         print('Calculating Ilm\'\n')
+        qs = np.linspace(0,self.qmax, self.nq)**2
+        qs[0]=1
         for l in range(0, self.nl, 2):
             ul = unql[...,l]
             for im, m in zip(range(0, 2*l+1), range(-l,l+1)):
@@ -137,7 +139,7 @@ class SphHarmHandler:
                 ku = np.dot(ul, k_sphm)
                 self.vals_lnm[l][:,im] = ku
 
-            sf = np.outer(1/np.linspace(0, self.qmax, self.nq)**2, np.ones(2*l+1))
+            sf = np.outer(1/qs, np.ones(2*l+1))
             sf[0,:] = 0
             self.vals_lnm[l] *= sf
 

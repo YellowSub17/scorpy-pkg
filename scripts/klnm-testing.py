@@ -10,7 +10,7 @@ import healpy as hp
 plt.close('all')
 
 name = '1al1'
-cor = scorpy.CorrelationVol(path=f'../data/dbins/{name}_qcor')
+cor = scorpy.CorrelationVol(path=f'../data/dbins/{name}_large_qcor')
 
 
 #get eigenvectors
@@ -58,7 +58,7 @@ Iv_rela2 = Iv_init.copy()
 Iv_rela2.ivol = (Iv_data2.ivol/Iv_data.ivol)
 Iv_rela2.ivol[np.where(np.logical_and(Iv_data2.ivol ==0,Iv_data.ivol==0))] = 0
 
-nsphere=29
+nsphere=30
 Iv_init.plot_sphere(nsphere)
 plt.title('I_init: Initial Intensity')
 
@@ -77,22 +77,22 @@ plt.title('Iv_data2: Iv_data -> Ilm -> k -> k\' -> Ilm\' -> ivol')
 # plt.title('Iv_rela2: Iv_data2/Iv_data')
 
 
-# q = np.linspace(0, cor.qmax, cor.nq)
+q = np.linspace(0, cor.qmax, cor.nq)
 
-# plt.figure()
-# aves = np.mean(Iv_rela.ivol, axis=-1)
-# plt.plot(q, aves)
-# plt.title('Iv_filt/Iv_data')
-# plt.xlabel('nq')
-# plt.ylabel('Average Relative Difference')
+plt.figure()
+aves = np.mean(Iv_rela.ivol, axis=-1)
+plt.plot(q, aves)
+plt.title('Iv_filt/Iv_data')
+plt.xlabel('nq')
+plt.ylabel('Average Relative Difference')
 
-# plt.figure()
-# aves = np.mean(Iv_rela2.ivol, axis=-1)
-# plt.plot(aves)
-# plt.title('Iv_data2/Iv_data')
-# plt.xlabel('nq')
-# plt.ylabel('Average Relative Difference')
+plt.figure()
+aves = np.mean(Iv_rela2.ivol, axis=-1)
+plt.plot(aves)
+plt.title('Iv_data2/Iv_data')
+plt.xlabel('nq')
+plt.ylabel('Average Relative Difference')
 
 
 
-plt.show()
+plt.show(block=False)

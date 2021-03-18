@@ -21,7 +21,7 @@ def cosinesim(v1,v2):
     sim = np.dot(np.conj(v1f/np.linalg.norm(v1f)), v2f/np.linalg.norm(v2f))
     return sim
 
-cor = scorpy.CorrelationVol(path='../data/dbins/1al1_qcor')
+cor = scorpy.CorrelationVol(path='../data/dbins/1al1_large_qcor')
 cif = scorpy.CifData('../data/xtal/1al1-sf.cif',qmax=cor.qmax)
 
 comp = False
@@ -108,40 +108,59 @@ lam3a, u3a = blqq3.get_eig(herm=False)
 
 
 
-l = 8
-inner=6
-nqs = np.arange(inner, cor.nq-inner)
-plt.figure()
-if inner==0:
-    plt.plot(nqs,lam1[:,l])
-else:
-    plt.plot(nqs,lam1[inner:-inner,l])
-plt.ylabel('Eigenvalue')
-plt.xlabel('nq')
-plt.title('blqq1 lamda: cif -> cor -> blqq')
+ls = [0, 8,10,16]
+for l in ls:
 
-plt.figure()
-if inner==0:
-    plt.plot(nqs,lam2[:,l])
-else:
-    plt.plot(nqs,lam2[inner:-inner,l])
-plt.ylabel('Eigenvalue')
-plt.xlabel('nq')
-plt.title('blqq2 lamda: cif -> sph -> blqq')
+    max_e = 5
+    nqs = np.arange(0,max_e)
+    plt.figure()
+    plt.title(f'eigh L={l}')
+    plt.plot(nqs,lam1[-max_e:,l], label='blqq1')
+    plt.ylabel('Eigenvalue')
+    plt.xlabel('nq')
 
-plt.figure()
-if inner==0:
-    plt.plot(nqs,lam3[:,l])
-else:
-    plt.plot(nqs,lam3[inner:-inner,l])
-plt.ylabel('Eigenvalue')
-plt.xlabel('nq')
-plt.title('blqq3 lamda: cif -> ivol -> sph -> blqq')
+# plt.figure()
+    plt.plot(nqs,lam2[-max_e:,l], label='blqq2')
+    plt.ylabel('Eigenvalue')
+    plt.xlabel('nq')
+
+# plt.figure()
+    plt.plot(nqs,lam3[-max_e:,l], label='blqq3')
+    plt.ylabel('Eigenvalue')
+    plt.xlabel('nq')
+    plt.legend()
+
+
+
+
+
+
+
+ls = [0, 8,10,16]
+for l in ls:
+
+    max_e = 5
+    nqs = np.arange(0,max_e)
+    plt.figure()
+    plt.title(f'eig L={l}')
+    plt.plot(nqs,np.abs(lam1a[-max_e:,l]), label='blqq1')
+    plt.ylabel('Eigenvalue')
+    plt.xlabel('nq')
+
+# plt.figure()
+    plt.plot(nqs,np.abs(lam2[-max_e:,l]), label='blqq2')
+    plt.ylabel('Eigenvalue')
+    plt.xlabel('nq')
+
+# plt.figure()
+    plt.plot(nqs,np.abs(lam3[-max_e:,l]), label='blqq3')
+    plt.ylabel('Eigenvalue')
+    plt.xlabel('nq')
+    plt.legend()
 
 
 
 plt.show()
-
 
 
 
