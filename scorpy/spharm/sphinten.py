@@ -30,12 +30,11 @@ class SphInten:
         return self
 
     def fill_from_sph(self, sph, replace=True):
-        print('filling ivol from sph')
+        print('Filling SphInten from SphHarmHandler\n')
         if replace:
             self.ivol *=0
         theta, phi = hp.pix2ang(self.nside, np.arange(0,self.npix))
         for l in range(0, sph.nl, 2):
-            print(l)
             for im, m in zip(range(0, 2*l+1), range(-l, l+1)):
                 ylm = ylm_wrapper(l,m,phi, theta, comp=False)
                 x = np.outer(sph.vals_lnm[l][:, im], ylm)

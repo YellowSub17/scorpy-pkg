@@ -102,7 +102,7 @@ class Vol:
 
 
     def copy(self):
-        return copy.deepcopy()
+        return copy.deepcopy(self)
 
 
 
@@ -142,8 +142,13 @@ class Vol:
 
 
     def get_eig(self, herm=True):
-        lams = np.zeros( (self.nx, self.nz), dtype=np.complex64)
-        us = np.zeros( (self.nx, self.ny, self.nz), dtype=np.complex64)
+
+        if herm:
+            lams = np.zeros( (self.nx, self.nz))
+            us = np.zeros( (self.nx, self.ny, self.nz))
+        else:
+            lams = np.zeros( (self.nx, self.nz), dtype=np.complex64)
+            us = np.zeros( (self.nx, self.ny, self.nz), dtype=np.complex64)
 
         for z in range(0, self.nz,2):
             if herm:
@@ -244,7 +249,7 @@ class Vol:
 
         im = np.rollaxis(self.vol, axis)[index,...]
         if self.comp:
-            im = np.abs(im)
+            im = np.real(im)
         plt.figure()
         plt.imshow(im, origin='lower', extent=[0, ext1, 0, ext2], aspect='auto')
         plt.colorbar()
@@ -261,8 +266,7 @@ class Vol:
 
 
 
-    def check_herm(self):
-
+    def is_herm(self):
 
         herm=True
         for z in range(self.nz):
@@ -270,7 +274,7 @@ class Vol:
             if not np.allclose(mat, np.conj(mat.T)):
                 herm = False
                 break
-        print(f'vol herm: {herm}')
+        return herm
 
 
 

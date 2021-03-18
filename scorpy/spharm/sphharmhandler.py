@@ -34,11 +34,10 @@ class SphHarmHandler:
 
 
     def fill_from_cif(self, cif):
-        print('filling sph from cif')
+        print('Filling SphHarmHandler from CifData\n')
         spherical = cif.spherical[np.where(cif.spherical[:,0] < self.qmax)]
 
         for l in range(0, self.nl, 2):
-            print(l)
             for im, m in zip(range(2*l+1), range(-l, l+1)):
                 iq = np.zeros(self.nq, self.vals_lnm[0].dtype)
                 ylm = ylm_wrapper(l,m,spherical[:,2],spherical[:,1], comp=self.comp)
@@ -52,14 +51,13 @@ class SphHarmHandler:
 
 
     def fill_from_ivol(self, iv):
-        print('filling sph from ivol')
+        print('Filling SphHarmHandler from SphInten\n')
         assert self.nq == iv.nq
         assert self.qmax == iv.qmax
 
 
         theta, phi = hp.pix2ang(iv.nside, np.arange(0, iv.npix))
         for l in range(0, self.nl, 2):
-            print(l)
             for im, m in zip(range(2*l+1), range(-l, l+1)):
                 ylm = ylm_wrapper(l,m,phi, theta, comp=self.comp)
                 # ylm *= 1/iv.npix
@@ -71,12 +69,11 @@ class SphHarmHandler:
 
 
     def calc_klnm(self, unql, lam_ql):
-        print('calc_klnm')
+        print('Calculating k\n')
         ## values for q**2 scaling
         q_range = np.linspace(0, self.qmax, self.nq)
         ## for every lm value
         for l in range(0, self.nl, 2):
-            print(l)
             for im, m in zip(range(0, 2*l+1), range(-l,l+1)):
                 ## get the current estimate for Ilm and scale it
                 Ilm = self.vals_lnm[l][:,im]*q_range**2
@@ -96,7 +93,7 @@ class SphHarmHandler:
 
 
     def calc_kprime(self,unql, lam_ql):
-        print('calc_kprime')
+        print('Calculating k\'\n')
         ## for every lmq value (save calulation by not looping m)
         for l in range(0, self.nl, 2):
             print(f'L = {l}')
@@ -131,9 +128,8 @@ class SphHarmHandler:
 
 
     def calc_Ilm_p(self, unql, lam_ql):
-        print('calc_Ilm_p')
+        print('Calculating Ilm\'\n')
         for l in range(0, self.nl, 2):
-            print(l)
             ul = unql[...,l]
             for im, m in zip(range(0, 2*l+1), range(-l,l+1)):
                 k_sphm = self.vals_lnm[l][:,im]

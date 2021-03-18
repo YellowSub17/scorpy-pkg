@@ -51,7 +51,7 @@ class BlqqVol(Vol):
         assert cor.qmax == self.qmax, 'CorrelationVol and BlqqVol have different qmax'
         assert cor.nq == self.nq, 'CorrelationVol and BlqqVol have different nq'
 
-        print('Filling BlqqVol from CorrelationVol...')
+        print('Filling BlqqVol from CorrelationVol\n')
 
         q_range = np.linspace(0,self.qmax, self.nq)
         # create args of legendre eval
@@ -84,7 +84,7 @@ class BlqqVol(Vol):
 
 
     def fill_from_sph(self, sph):
-        print(f'Calculating Blqq from SphericalHandler...')
+        print(f'Calculating BlqqVol from SphHarmHandler\n')
 
         if self.comp:
             bl = np.zeros((self.nq, self.nq), dtype=np.complex128)
