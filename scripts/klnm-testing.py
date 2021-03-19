@@ -12,7 +12,7 @@ plt.close('all')
 name = '1al1'
 cor = scorpy.CorrelationVol(path=f'../data/dbins/{name}_large_qcor')
 cif = scorpy.CifData(f'../data/xtal/{name}-sf.cif')
-# sph_cif = scorpy.SphHarmHandler(cor.nq, 17, cor.qmax).fill_from_cif(cif)
+# sph_cif = scorpy.SphHarmHandler(cor.nq, 17, cor.qmax).fill_from_cif2(cif)
 
 iv_cif = scorpy.SphInten(cor.nq, 2**5, cor.qmax).fill_from_cif(cif)
 sph_cif = scorpy.SphHarmHandler(cor.nq, 17, cor.qmax).fill_from_ivol(iv_cif)

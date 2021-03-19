@@ -49,6 +49,62 @@ class SphHarmHandler:
                 self.vals_lnm[l][:,im] = iq
         return self
 
+    def fill_from_cif2(self, cif):
+        print('Filling SphHarmHandler from CifData\n')
+        spherical = cif.spherical[np.where(cif.spherical[:,0] <self.qmax)]
+
+        q_ite = np.ones(len(spherical[:,0]))
+        q_inds = np.array(list(map(index_x, spherical[:,0], self.qmax*q_ite, self.nq*q_ite)))
+
+        for l in range(0, self.nl, 2):
+
+            ls = []
+            ms = []
+            phis = []
+            thetas = []
+            comps = []
+
+            for im, m in zip(range(2*l+1), range(-l,l+1)):
+                ls.append(l)
+                ms.append(m)
+                phis.append(spherical[:,2])
+                thetas.append(spherical[:,1])
+                comps.append(self.comp)
+
+
+            ylms = np.array(list(map(ylm_wrapper, ls, ms, phis, thetas, comps)))
+
+            iylm = ylms*np.outer(np.ones(2*l+1), spherical[:,-1])
+
+            val_ilm = np.zeros( (self.nq, 2*l+1))
+
+            for i, q_index in enumerate(q_inds):
+                val_ilm[q_index,:] += iylm[:,i]
+
+            self.vals_lnm[l] = val_ilm
+
+        return self
+
+
+
+
+
+
+
+
+            # for ylm in ylms:
+
+            # # for im, m in zip(range(2*l+1), range(-l,l+1)):
+                # # iq = np.zeros(self.nq, self.vals_lnm[0].dtype)
+                # # ylm = ylm_wrapper(l,m,spherical[:,2],spherical[:,1], comp=self.comp)
+                # iylm = ylm*spherical[:,-1]
+
+                # for i, q_index in enumerate(q_inds):
+                    # iq[q_index] += iylm[i]
+
+                # self.vals_lnm[l][:,im] = iq
+        # return ylms, iylm
+
 
     def fill_from_ivol(self, iv):
         print('Filling SphHarmHandler from SphInten\n')
@@ -85,6 +141,16 @@ class SphHarmHandler:
                     self.vals_lnm[l][iq,im] = x
 
         return self
+
+
+#     def calc_klnm2(self, unql):
+        # print('Calculating k (2)\n')
+        # q_range = np.linspace(0, self.qmax, self.nq)
+
+        # for l in range(0, self.nl, 2):
+            # Il = self.vals_lnm[l]*np.outer(q_range, np.ones(2*l+1))
+
+
 
 
 

@@ -48,6 +48,7 @@ def ylm_wrapper(l,m, phi,theta, comp=False):
         ylm = special.sph_harm(m,l, phi , theta)
     else:
         ## REAL BASIS
+        # print(l,m,phi,theta)
         if m < 0:
             ylm = (np.sqrt(2)*(-1)**m)*np.imag(special.sph_harm(np.abs(m),l, phi,theta))
         elif m > 0:
