@@ -106,11 +106,35 @@ class SphHarmHandler:
         # return ylms, iylm
 
 
-    def fill_from_ivol(self, iv):
+    def fill_from_ivol2(self, iv):
         print('Filling SphHarmHandler from SphInten\n')
         assert self.nq == iv.nq
         assert self.qmax == iv.qmax
 
+
+        theta, phi = hp.pix2ang(iv.nside, np.arange(0, iv.npix))
+
+        for l in range(0, self.nl, 2):
+
+
+            ls = np.ones(2*l+1)*l
+            ms = np.arange(-l, l+1).astype(float)
+            phis = np.outer(np.ones(2*l+1), phi)
+            thetas = np.outer(np.ones(2*l+1), theta)
+            comps = [self.comp]*(2*l+1)
+
+            ylms = np.array(list(map(ylm_wrapper, ls, ms, phis, thetas, comps)))
+
+            self.vals_lnm[l] = np.dot(ylms, iv.ivol.T).T
+
+        return self
+
+
+
+    def fill_from_ivol(self,iv):
+        print('Filling SphHarmHandler from SphInten\n')
+        assert self.nq == iv.nq
+        assert self.qmax == iv.qmax
 
         theta, phi = hp.pix2ang(iv.nside, np.arange(0, iv.npix))
         for l in range(0, self.nl, 2):
