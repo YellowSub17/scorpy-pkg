@@ -40,13 +40,22 @@ class SphInten:
                 x = np.outer(sph.vals_lnm[l][:, im], ylm)
                 self.ivol +=x
 
+        # self.ivol[np.where(self.ivol <0.1)] =0
+
         return self
 
 
-    def plot_sphere(self, iq):
+    def plot_sphere(self, iq, show_np=False, show_grat=False):
         fig = plt.figure(figsize=(4,5))
         figint = plt.gcf().number
-        hp.orthview(self.ivol[iq,:], half_sky=True, rot=[23,45,60], fig=figint)
+        # hp.orthview(self.ivol[iq,:], half_sky=True, rot=[23,45,60], fig=figint)
+        sphere = self.ivol[iq,:]
+        if show_np:
+            NP = hp.ang2pix(self.nside, 0, 90, lonlat=True)
+            sphere[NP] = np.nan
+        hp.orthview(sphere, half_sky=True, rot=[45,45,45], fig=figint)
+        if show_grat:
+            hp.graticule()
 
     def make_mask(self, invert=False):
         inten_loc = np.where(self.ivol !=0)

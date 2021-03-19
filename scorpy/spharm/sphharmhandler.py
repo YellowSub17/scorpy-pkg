@@ -68,7 +68,7 @@ class SphHarmHandler:
 
 
 
-    def calc_klnm(self, unql, lam_ql):
+    def calc_klnm(self, unql):
         print('Calculating k\n')
         ## values for q**2 scaling
         q_range = np.linspace(0, self.qmax, self.nq)
@@ -92,17 +92,19 @@ class SphHarmHandler:
 
 
 
-    def calc_kprime(self,unql, lam_ql):
+    def calc_kprime(self,lam_ql):
         print('Calculating k\'\n')
-        ## for every lmq value (save calulation by not looping m)
+
         for l in range(0, self.nl, 2):
-            print(f'L = {l}')
+
+            lam_q = lam_ql[:,l]
+            lam_min = np.min(np.abs(lam_q[np.where(lam_q != 0)]))
+            lam_max = np.max(np.abs(lam_q))
+
             for iq in range(self.nq):
 
                 ## Calulate the nuemerator of the normalization scale factor
                 ned = np.sqrt(np.abs(lam_ql[iq, l]))
-
-                # ned = np.abs(lam[iq, l])
 
                 ## Calulate the denominator of the normalization scale factor
                 km = self.vals_lnm[l][iq,:]
@@ -114,10 +116,15 @@ class SphHarmHandler:
                     donk=1
                     ned =1
 
-                # print(f'n: {np.format_float_scientific(ned,2)}, d: {np.format_float_scientific(donk,2)}, n/d: {ned/donk}')
-                # ned = 1e6
+                # if np.abs(lam_ql[iq,l]) < 0.001*lam_max:
+                    # ned = 1
+                    # donk = 1
+
+                # if np.abs(lam_ql[iq,l])< 1.5*lam_min:
+                    # donk=1
+                    # ned =1
+
                 self.vals_lnm[l][iq,:] *= (ned/donk)
-                # self.vals_lnm[l][iq,:] *= (1)
 
 
         return self
@@ -127,7 +134,7 @@ class SphHarmHandler:
 
 
 
-    def calc_Ilm_p(self, unql, lam_ql):
+    def calc_Ilm_p(self, unql):
         print('Calculating Ilm\'\n')
         qs = np.linspace(0,self.qmax, self.nq)**2
         qs[0]=1
