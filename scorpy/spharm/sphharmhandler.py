@@ -1,6 +1,6 @@
 import numpy as np
 import healpy as hp
-from ..utils import ylm_wrapper, index_x, index_xs
+from ..utils import ylm_wrapper, index_x
 from scipy import special
 import copy
 
@@ -34,22 +34,6 @@ class SphHarmHandler:
 
 
     def fill_from_cif(self, cif):
-        print('Filling SphHarmHandler from CifData\n')
-        spherical = cif.spherical[np.where(cif.spherical[:,0] < self.qmax)]
-
-        for l in range(0, self.nl, 2):
-            for im, m in zip(range(2*l+1), range(-l, l+1)):
-                iq = np.zeros(self.nq, self.vals_lnm[0].dtype)
-                ylm = ylm_wrapper(l,m,spherical[:,2],spherical[:,1], comp=self.comp)
-                iylm = ylm*spherical[:,-1]
-                for i, q_mag in enumerate(spherical[:,0]):
-                    q_index = index_x(q_mag, self.qmax, self.nq)
-                    iq[q_index] +=  iylm[i]
-
-                self.vals_lnm[l][:,im] = iq
-        return self
-
-    def fill_from_cif2(self, cif):
         print('Filling SphHarmHandler from CifData\n')
         spherical = cif.spherical[np.where(cif.spherical[:,0] <self.qmax)]
 
@@ -92,21 +76,7 @@ class SphHarmHandler:
 
 
 
-            # for ylm in ylms:
-
-            # # for im, m in zip(range(2*l+1), range(-l,l+1)):
-                # # iq = np.zeros(self.nq, self.vals_lnm[0].dtype)
-                # # ylm = ylm_wrapper(l,m,spherical[:,2],spherical[:,1], comp=self.comp)
-                # iylm = ylm*spherical[:,-1]
-
-                # for i, q_index in enumerate(q_inds):
-                    # iq[q_index] += iylm[i]
-
-                # self.vals_lnm[l][:,im] = iq
-        # return ylms, iylm
-
-
-    def fill_from_ivol2(self, iv):
+    def fill_from_ivol(self, iv):
         print('Filling SphHarmHandler from SphInten\n')
         assert self.nq == iv.nq
         assert self.qmax == iv.qmax
@@ -131,19 +101,6 @@ class SphHarmHandler:
 
 
 
-    def fill_from_ivol(self,iv):
-        print('Filling SphHarmHandler from SphInten\n')
-        assert self.nq == iv.nq
-        assert self.qmax == iv.qmax
-
-        theta, phi = hp.pix2ang(iv.nside, np.arange(0, iv.npix))
-        for l in range(0, self.nl, 2):
-            for im, m in zip(range(2*l+1), range(-l, l+1)):
-                ylm = ylm_wrapper(l,m,phi, theta, comp=self.comp)
-                # ylm *= 1/iv.npix
-                self.vals_lnm[l][:, im] = np.dot(ylm, iv.ivol.T)
-        return self
-
 
 
 
@@ -165,15 +122,6 @@ class SphHarmHandler:
                     self.vals_lnm[l][iq,im] = x
 
         return self
-
-
-#     def calc_klnm2(self, unql):
-        # print('Calculating k (2)\n')
-        # q_range = np.linspace(0, self.qmax, self.nq)
-
-        # for l in range(0, self.nl, 2):
-            # Il = self.vals_lnm[l]*np.outer(q_range, np.ones(2*l+1))
-
 
 
 

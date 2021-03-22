@@ -11,15 +11,10 @@ import scorpy
 import matplotlib.pyplot as plt
 import numpy as np
 
+from scorpy.utils import cosinesim
+
 
 plt.close('all')
-
-
-
-def cosinesim(v1,v2):
-    v1f, v2f = v1.flatten(), v2.flatten()
-    sim = np.dot(np.conj(v1f/np.linalg.norm(v1f)), v2f/np.linalg.norm(v2f))
-    return sim
 
 cor = scorpy.CorrelationVol(path='../data/dbins/1al1_large_qcor')
 cif = scorpy.CifData('../data/xtal/1al1-sf.cif',qmax=cor.qmax)
@@ -58,9 +53,9 @@ lam3a, u3a = blqq3.get_eig(herm=False)
 
 
 
-# blqq1.convolve()
-# blqq2.convolve()
-# blqq3.convolve()
+blqq1.convolve()
+blqq2.convolve()
+blqq3.convolve()
 
 
 
@@ -75,9 +70,9 @@ lam3a, u3a = blqq3.get_eig(herm=False)
     # blqq3.plot_slice(2, l)
     # plt.title(f'bl3: cif -> ivol -> sph -> blqq (l={l})')
 
-# print(f'Cosine Sim (1-2): {cosinesim(blqq1.vol, blqq2.vol)}\n')
-# print(f'Cosine Sim (1-3): {cosinesim(blqq1.vol, blqq3.vol)}\n')
-# print(f'Cosine Sim (2-3): {cosinesim(blqq2.vol, blqq3.vol)}\n')
+print(f'Cosine Sim (1-2): {cosinesim(blqq1.vol, blqq2.vol)}\n')
+print(f'Cosine Sim (1-3): {cosinesim(blqq1.vol, blqq3.vol)}\n')
+print(f'Cosine Sim (2-3): {cosinesim(blqq2.vol, blqq3.vol)}\n')
 
 
 

@@ -2,7 +2,7 @@ import copy
 import healpy as hp
 import numpy as np
 import matplotlib.pyplot as plt
-from ..utils import index_x, index_xs, ylm_wrapper
+from ..utils import index_x, ylm_wrapper
 
 
 
@@ -23,11 +23,15 @@ class SphInten:
         if replace:
             self.ivol *=0
         pixels = hp.ang2pix(self.nside, cif.spherical[:,1], cif.spherical[:,2])
-        q_inds = index_xs(cif.spherical[:,0], self.qmax, self.nq)
+
+        q_ite = np.ones(cif.spherical[:,0].shape)
+        q_inds = list(map(index_x, cif.spherical[:,0], self.qmax*q_ite, self.nq*q_ite))
+
 
         for q_ind, pixel, inten in zip(q_inds, pixels, cif.spherical[:,-1]):
             self.ivol[q_ind, pixel] += inten
         return self
+
 
     def fill_from_sph(self, sph, replace=True):
         print('Filling SphInten from SphHarmHandler\n')
