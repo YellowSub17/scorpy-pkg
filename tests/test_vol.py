@@ -38,24 +38,31 @@ class VolTests(unittest.TestCase):
 
 
 
-    @pytest.mark.run(order=99)
+
+
+
+    # @pytest.mark.run(order=99)
     def test_setvol(self):
         '''
         Various test for manipulating v.vol
         '''
         # direct assigning
         self.v.vol = np.ones(self.v.vol.shape)
-        self.assertEqual(self.v.vol.sum(), self.v_nx*self.v_ny*self.v_nz)
+        np.testing.assert_array_equal(self.v.vol, np.ones(self.v.vol.shape))
+        # self.assertEqual(self.v.vol.sum(), self.v_nx*self.v_ny*self.v_nz)
 
         # assignment operator
         self.v.vol += np.ones(self.v.vol.shape)
-        self.assertEqual(self.v.vol.sum(), 2*self.v_nx*self.v_ny*self.v_nz)
+        np.testing.assert_array_equal(self.v.vol, 2*np.ones(self.v.vol.shape))
+        # self.assertEqual(self.v.vol.sum(), 2*self.v_nx*self.v_ny*self.v_nz)
 
         self.v.vol += 1
-        self.assertEqual(self.v.vol.sum(), 3*self.v_nx*self.v_ny*self.v_nz)
+        np.testing.assert_array_equal(self.v.vol, 3*np.ones(self.v.vol.shape))
+        # self.assertEqual(self.v.vol.sum(), 3*self.v_nx*self.v_ny*self.v_nz)
 
         self.v.vol *= 2
-        self.assertEqual(self.v.vol.sum(), 6*self.v_nx*self.v_ny*self.v_nz)
+        np.testing.assert_array_equal(self.v.vol, 6*np.ones(self.v.vol.shape))
+        # self.assertEqual(self.v.vol.sum(), 6*self.v_nx*self.v_ny*self.v_nz)
 
         # can't set vol to new shaped array
         with self.assertRaises(AssertionError):
@@ -85,8 +92,34 @@ class VolTests(unittest.TestCase):
         np.testing.assert_array_equal(self.v.vol, v_loaded.vol)
 
 
+    def test_writeprotection(self):
+        '''
+        test for write protection of varibles
+        '''
 
+        with self.assertRaises(AttributeError):
+            self.vol.xmax = self.v_xmax + 1
+        with self.assertRaises(AttributeError):
+            self.vol.ymax = self.v_ymax + 1
+        with self.assertRaises(AttributeError):
+            self.vol.zmax = self.v_zmax + 1
 
+        with self.assertRaises(AttributeError):
+            self.vol.nx = 1+self.v_nx
+        with self.assertRaises(AttributeError):
+            self.vol.ny = 1+self.v_ny
+        with self.assertRaises(AttributeError):
+            self.vol.nz = 1+self.v_ny
+
+    def test_getproperties(self):
+
+        self.assertEqual(self.v.nx, self.v_nx)
+        self.assertEqual(self.v.ny, self.v_ny)
+        self.assertEqual(self.v.nz, self.v_nz)
+
+        self.assertEqual(self.v.xmax, self.v_xmax)
+        self.assertEqual(self.v.ymax, self.v_ymax)
+        self.assertEqual(self.v.zmax, self.v_zmax)
 
 
 
