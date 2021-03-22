@@ -10,17 +10,22 @@ import numpy as np
 np.random.seed(0)
 
 
-data_for_test_path = Path(__file__).parent / 'data_for_tests'
+data_for_test_path = Path(__file__).parent / 'data_for_tests' / 'algo'
 
 
 
-class XTests(unittest.TestCase):
+class AlgoTests(unittest.TestCase):
 
     def setUp(self):
         pass
 
     def tearDown(self):
         pass
+
+
+
+
+
 
 
 

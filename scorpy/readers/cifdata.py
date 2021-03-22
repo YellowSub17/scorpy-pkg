@@ -9,18 +9,10 @@ class CifData:
     def __init__(self,fname, qmax=-1):
 
         self.fname = fname
-        # print(f'Reading CIF: {self.fname}')
         cif = pycif.ReadCif(self.fname)
-        # print('Done')
 
         vk = cif.visible_keys[0]
         self.cif = dict(cif[vk])
-
-        # if '_diffrn_radiation_wavelength.wavelength' in cif.keys():
-            # self.wavelength = float(self.cif['_diffrn_radiation_wavelength.wavelength'])
-        # else:
-            # print('WARNING: No wavelength found in cif')
-            # self.wavelength = None
         self.space_group = self.cif['_symmetry.space_group_name_h-m']
 
         self.dcell_angles = self.get_dcell_angles()

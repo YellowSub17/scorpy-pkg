@@ -35,7 +35,7 @@ class SphHarmHandler:
 
     def fill_from_cif(self, cif):
         print('Filling SphHarmHandler from CifData\n')
-        spherical = cif.spherical[np.where(cif.spherical[:,0] <self.qmax)]
+        spherical = cif.spherical[np.where(cif.spherical[:,0] <=self.qmax)]
 
         q_ite = np.ones(len(spherical[:,0]))
         q_inds = np.array(list(map(index_x, spherical[:,0], self.qmax*q_ite, self.nq*q_ite)))

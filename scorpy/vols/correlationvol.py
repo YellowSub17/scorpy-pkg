@@ -78,7 +78,7 @@ class CorrelationVol(Vol):
         Returns:
             None. Updates self.cvol with correlations.
         '''
-        less_than_qmax = np.where(qti[:,0] < self.qmax)[0]      #only correlate less the qmax
+        less_than_qmax = np.where(qti[:,0] <= self.qmax)[0]      #only correlate less or equal the qmax
         qti = qti[less_than_qmax]
 
         for i, q in enumerate(qti):
@@ -106,12 +106,11 @@ class CorrelationVol(Vol):
             None. Updates self.cvol with correlations.
         '''
         # print('Correlating 3D')
-        
 
         # calculate magnitude of vectors, only correlate less than qmax
         qmags = np.linalg.norm(qxyzi[:,:3], axis=1)
         # print(qmags)
-        correl_vec_indices = np.where(qmags < self.qmax)[0]
+        correl_vec_indices = np.where(qmags <= self.qmax)[0]
         qxyzi = qxyzi[correl_vec_indices]
         qmags = qmags[correl_vec_indices]
         # print(qxyzi)
@@ -126,13 +125,28 @@ class CorrelationVol(Vol):
             # q2 scattering
             for j, q_prime in enumerate(qxyzi[i+1:]):
                 q_prime_mag =  qmags[i+j+1]
+            # for j, q_prime in enumerate(qxyzi[i:]):
+                # q_prime_mag =  qmags[i+j]
+
                 q_prime_ind = index_x(q_prime_mag,self.qmax, self.nq)
 
                 theta = angle_between(q[:3]/q_mag, q_prime[:3]/q_prime_mag)
+            
                 theta_ind = index_x(theta, np.pi, self.ntheta)
+
+                print(np.round(q, 1), np.round(q_prime,1))
+                print(theta)
+                print(q_ind, q_prime_ind, theta_ind)
 
                 self.vol[q_ind,q_prime_ind,theta_ind] +=q[-1]*q_prime[-1]
                 self.vol[q_prime_ind,q_ind,theta_ind] +=q[-1]*q_prime[-1]
+
+        for i in range(self.nq):
+            self.vol[i,i,0] = self.vol[i,i,-1]
+
+        # self.vol[...,0] = self.vol[...,-1]
+        # self.vol[...,0] /=2
+
 
 
 
@@ -145,7 +159,9 @@ class CorrelationVol(Vol):
             print('Incorrect format of scattering vectors. See documentation')
 
 
-
+    # def sub_qmean(self,iv):
+        # qmean = np.mean(iv.ivol, axis=1)
+        # return qmean
 
 
 

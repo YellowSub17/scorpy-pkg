@@ -65,6 +65,7 @@ class BlqqVol(Vol):
         #for every even spherical harmonic
         for l in range(0, self.nl, 2):
             leg_vals = (1/(4*np.pi))*special.eval_legendre(l, args)
+            # leg_vals = np.ones(cor.ntheta)
             fmat[:,l] = leg_vals
 
 
