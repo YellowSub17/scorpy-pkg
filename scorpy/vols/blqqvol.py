@@ -3,6 +3,7 @@
 from .vol import Vol
 import numpy as np
 from scipy import special
+import matplotlib.pyplot as plt
 
 
 
@@ -26,19 +27,19 @@ class BlqqVol(Vol):
 
     @property
     def qmax(self):
-        return self._xmax
+        return self.xmax
 
     @property
     def nq(self):
-        return self._nx
+        return self.nx
 
     @property
     def nl(self):
-        return self._nz
+        return self.nz
 
     @property
     def blvol(self):
-        return self._vol
+        return self.vol
 
     @blvol.setter
     def blvol(self, new_vol):
@@ -70,7 +71,22 @@ class BlqqVol(Vol):
 
 
         #TODO check svd
-        fmat_inv = np.linalg.pinv(fmat)
+        # fmat_inv = np.linalg.pinv(fmat)
+        fmat_inv = fmat.T
+   #      fmat_inv_inv = np.linalg.pinv(fmat_inv)
+
+        plt.figure()
+        plt.imshow(fmat_inv)
+        plt.title('fmat_inv')
+
+        fmat_pinv = np.linalg.pinv(fmat)
+        plt.figure()
+        plt.imshow(fmat_pinv)
+        plt.title('fmat_pinv')
+
+        # plt.figure()
+        # plt.imshow(fmat_inv_inv)
+        # plt.title('fmat_inv_inv')
 
         for iq1 in range(self.nq):
             for iq2 in range(iq1, self.nq):
@@ -78,8 +94,11 @@ class BlqqVol(Vol):
                 self.vol[iq1,iq2,:] = dot
                 self.vol[iq2,iq1,:] = dot
 
+        # for l in range(1, self.nl, 2):
+            # self.vol[...,l] *=0
+
         # times 4pi because we multi 2root(pi) in the ylm calc.
-        self.blvol *= 4*np.pi
+        self.vol *= 4*np.pi
 
 
 
