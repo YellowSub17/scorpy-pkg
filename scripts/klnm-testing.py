@@ -19,22 +19,22 @@ sph_cif = scorpy.SphHarmHandler(cor.nq, 17, cor.qmax).fill_from_ivol(iv_cif)
 
 
 
-bl = scorpy.BlqqVol(cor.nq, 17, cor.qmax)
-bl.fill_from_sph(sph_cif)
-bl_l, bl_u = bl.get_eig()
+# bl = scorpy.BlqqVol(cor.nq, 17, cor.qmax)
+# bl.fill_from_sph(sph_cif)
+# bl_l, bl_u = bl.get_eig()
 
 
 
 
 ###get eigenvectors
-# bl = scorpy.BlqqVol(cor.nq, 17, cor.qmax)
-# bl.fill_from_corr(cor)
-# bl_l, bl_u = bl.get_eig(herm=True)
+bl = scorpy.BlqqVol(cor.nq, 17, cor.qmax)
+bl.fill_from_corr(cor)
+bl_l, bl_u = bl.get_eig(herm=True)
 
-q_lin = cor.qmax*np.mgrid[0:cor.nq, 0:cor.nq, 0:bl.nl]/cor.nq
-q_lin = q_lin[0]
+# q_lin = cor.qmax*np.mgrid[0:cor.nq, 0:cor.nq, 0:bl.nl]/cor.nq
+# q_lin = q_lin[0]
 
-bl_u[1:,1:,:] *= q_lin[1:,1:,:]**2
+# bl_u[1:,1:,:] *= q_lin[1:,1:,:]**2
 
 
 

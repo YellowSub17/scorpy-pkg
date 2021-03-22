@@ -50,6 +50,7 @@ for l in range(bl_rel.nl):
         res[l] = 1
 
     sf[l]=np.mean(qq[loc])/(2*l+1)
+    sf[l]=np.mean(qq[loc])#/(2*l+1)
 
 
 if np.all(res):
@@ -57,6 +58,7 @@ if np.all(res):
     plt.figure()
     plt.title('bl_rel[...,l]sf')
     plt.plot(sf)
+    plt.xlabel('l')
 
 
 
@@ -65,6 +67,7 @@ else:
     plt.figure()
     plt.title('!!!!bl_rel[...,l]sf')
     plt.plot(sf)
+    plt.xlabel('l')
 
 
 
@@ -86,11 +89,17 @@ else:
 l = 46
 bl1.plot_slice(2,l)
 plt.title(f'blqq1 from cor (l={l})')
+plt.xlabel('q1')
+plt.ylabel('q1')
 bl2.plot_slice(2,l)
 plt.title(f'blqq2 from sph (l={l})')
+plt.xlabel('q1')
+plt.ylabel('q1')
 
 bl_rel.plot_slice(2,l)
-plt.title(f'blqq rel (l={l})')
+plt.title(f'blqq rel (blqq2/blqq1) (l={l})')
+plt.xlabel('q1')
+plt.ylabel('q1')
 
 
 
