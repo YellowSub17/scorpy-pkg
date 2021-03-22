@@ -49,7 +49,7 @@ for l in range(bl_rel.nl):
     if np.all(qq[loc] == qq[loc][0]):
         res[l] = 1
 
-    sf[l]=qq[loc][0]/(2*l+1)
+    sf[l]=np.mean(qq[loc])/(2*l+1)
 
 
 if np.all(res):
@@ -83,7 +83,7 @@ else:
 # cor1.plot_slice(2,-1)
 # plt.title('cor theta=180')
 
-l = 16
+l = 46
 bl1.plot_slice(2,l)
 plt.title(f'blqq1 from cor (l={l})')
 bl2.plot_slice(2,l)

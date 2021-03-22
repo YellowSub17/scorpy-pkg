@@ -71,9 +71,8 @@ class BlqqVol(Vol):
 
 
         #TODO check svd
-        # fmat_inv = np.linalg.pinv(fmat)
+        fmat_inv = np.linalg.pinv(fmat)
         fmat_inv = fmat.T
-   #      fmat_inv_inv = np.linalg.pinv(fmat_inv)
 
         plt.figure()
         plt.imshow(fmat_inv)
