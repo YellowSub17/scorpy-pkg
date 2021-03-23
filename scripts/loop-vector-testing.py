@@ -22,15 +22,16 @@ iv_sph = iv_base.copy().fill_from_sph(sph_cif)
 # y1, y2 = sph_base.copy().fill_from_ivol2(iv_sph)
 # x = sph_base.copy().fill_from_ivol(iv_sph)
 # y = sph_base.copy().fill_from_ivol2(iv_sph)
-tx = timeit.timeit("x = sph_base.copy().fill_from_ivol(iv_sph)", globals=globals(), number=1)
-ty = timeit.timeit("y = sph_base.copy().fill_from_ivol2(iv_sph)", globals=globals(), number=1)
+
+# tx1 = timeit.timeit("x = sph_base.copy().fill_from_ivol(iv_sph)", globals=globals(), number=1)
+# ty1 = timeit.timeit("y = sph_base.copy().fill_from_ivol2(iv_sph)", globals=globals(), number=1)
 
 
 
 
 
-# tx = timeit.timeit("x = sph_base.copy().fill_from_cif(cif)", globals=globals(), number=1)
-# ty = timeit.timeit("y = sph_base.copy().fill_from_cif2(cif)", globals=globals(), number=1)
+tx2 = timeit.timeit("x = sph_base.copy().fill_from_cif(cif)", globals=globals(), number=1)
+ty2 = timeit.timeit("y = sph_base.copy().fill_from_cif2(cif)", globals=globals(), number=1)
 
 
 

@@ -65,28 +65,25 @@ class BlqqVol(Vol):
 
         #for every even spherical harmonic
         for l in range(0, self.nl, 2):
-            # leg_vals = (1/(4*np.pi))*special.eval_legendre(l, args)
-            leg_vals = ((2*l+1)/(4*np.pi))*special.eval_legendre(l, args)
-            # leg_vals = np.ones(cor.ntheta)
+            leg_vals = (1/(4*np.pi))*special.eval_legendre(l, args)
+            # leg_vals = ((2*l+1)/(4*np.pi))*special.eval_legendre(l, args)
             fmat[:,l] = leg_vals
 
 
         #TODO check svd
-        fmat_inv = np.linalg.pinv(fmat)
-        fmat_inv = fmat.T
+        fmat_inv = np.linalg.pinv(fmat, rcond=1e-2)
 
-        plt.figure()
-        plt.imshow(fmat_inv)
-        plt.title('fmat_inv')
 
-        fmat_pinv = np.linalg.pinv(fmat)
-        plt.figure()
-        plt.imshow(fmat_pinv)
-        plt.title('fmat_pinv')
+        ident = np.matmul(fmat_inv, fmat)
+        # ident = np.matmul(fmat, fmat_inv)
+
 
         # plt.figure()
-        # plt.imshow(fmat_inv_inv)
-        # plt.title('fmat_inv_inv')
+        # plt.imshow(fmat_inv)
+        # plt.title('fmat_inv')
+        # plt.figure()
+        # plt.imshow(ident)
+        # plt.title('indent')
 
         for iq1 in range(self.nq):
             for iq2 in range(iq1, self.nq):

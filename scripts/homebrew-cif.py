@@ -6,14 +6,14 @@ import matplotlib.pyplot as plt
 
 
 
-
+plt.close('all')
 
 cif = scorpy.CifData('../data/xtal/homebrew-sf.cif')
 
 qmax = cif.qmax+0.1*cif.qmax
-nq=50
-ntheta=86
-nl = 86
+nq=100
+ntheta=180
+nl = 36
 
 cor1 = scorpy.CorrelationVol(nq=nq, ntheta=ntheta, qmax=qmax)
 cor1.correlate(cif.scattering)
@@ -23,7 +23,7 @@ cor1.correlate(cif.scattering)
 bl1 = scorpy.BlqqVol(nq, nl, qmax)
 bl1.fill_from_corr(cor1)
 
-bl1l, bl1u = bl1.get_eig()
+bl1l, bl1u = bl1.get_eig(herm=False)
 
 
 sph1 = scorpy.SphHarmHandler(nq, nl, qmax)
@@ -31,7 +31,7 @@ sph1.fill_from_cif(cif)
 
 bl2 = scorpy.BlqqVol(nq,nl,qmax)
 bl2.fill_from_sph(sph1)
-bl2l, bl2u = bl2.get_eig()
+bl2l, bl2u = bl2.get_eig(herm=False)
 
 bl_rel = bl2.copy()
 bl_rel.vol[np.where(bl1.vol !=0)] /= bl1.vol[np.where(bl1.vol !=0)]
@@ -52,22 +52,19 @@ for l in range(bl_rel.nl):
     sf[l]=np.mean(qq[loc])/(2*l+1)
     sf[l]=np.mean(qq[loc])#/(2*l+1)
 
+# plt.figure()
+# plt.plot(sf)
+# plt.xlabel('l')
+
 
 if np.all(res):
     print('all bl_rel[...,l] a sf')
-    plt.figure()
-    plt.title('bl_rel[...,l]sf')
-    plt.plot(sf)
-    plt.xlabel('l')
-
+    # plt.title('bl_rel[...,l]sf')
 
 
 else:
     print('WARNING bl_rel not sf')
-    plt.figure()
-    plt.title('!!!!bl_rel[...,l]sf')
-    plt.plot(sf)
-    plt.xlabel('l')
+    # plt.title('!!!!bl_rel[...,l]sf')
 
 
 
@@ -86,34 +83,89 @@ else:
 # cor1.plot_slice(2,-1)
 # plt.title('cor theta=180')
 
-l = 46
-bl1.plot_slice(2,l)
-plt.title(f'blqq1 from cor (l={l})')
-plt.xlabel('q1')
-plt.ylabel('q1')
-bl2.plot_slice(2,l)
-plt.title(f'blqq2 from sph (l={l})')
-plt.xlabel('q1')
-plt.ylabel('q1')
+l = 6
 
-bl_rel.plot_slice(2,l)
-plt.title(f'blqq rel (blqq2/blqq1) (l={l})')
-plt.xlabel('q1')
-plt.ylabel('q1')
+# bl1.plot_slice(2,l)
+# plt.title(f'blqq1 from cor (l={l})')
+# plt.xlabel('q1')
+# plt.ylabel('q1')
+
+# bl2.plot_slice(2,l)
+# plt.title(f'blqq2 from sph (l={l})')
+# plt.xlabel('q1')
+# plt.ylabel('q1')
+
+# bl_rel.plot_slice(2,l)
+# plt.title(f'blqq rel (blqq2/blqq1) (l={l})')
+# plt.xlabel('q1')
+# plt.ylabel('q1')
 
 
 
 # plt.figure()
 # plt.imshow(bl1l)
+# plt.title('bl from cor eig vals')
+# plt.xlabel('L')
+# plt.ylabel('n')
 # plt.figure()
 # plt.imshow(bl2l)
+# plt.title('bl from sph eig vals')
+# plt.xlabel('L')
+# plt.ylabel('n')
+
+
+plt.figure()
+plt.title(f'bl from cor eig vect (l={l})')
+plt.imshow(bl1u[:,:,l])
+plt.xlabel('n')
+plt.ylabel('q')
+
+
+plt.figure()
+plt.title(f'bl from sph eig vect (l={l})')
+plt.imshow(bl2u[:,:,l])
+plt.xlabel('n')
+plt.ylabel('q')
+
+
 
 # plt.figure()
+# plt.title(f'bl from cor eig vals (l={l})')
+# plt.plot(bl1l[:,l])
+# plt.xlabel('n')
+# plt.ylabel('eigenvalue')
+
+# plt.figure()
+# plt.title(f'bl from sph eig vals (l={l})')
 # plt.plot(bl2l[:,l])
+# plt.xlabel('n')
+# plt.ylabel('eigenvalue')
+
+
+nq=0
+plt.figure()
+plt.title(f'bl from cor eig val (l={l}, q={nq})')
+plt.plot(10*bl1l[nq,:], label='bl1l (x100)')
+plt.xlabel('l')
+plt.ylabel('eigenvalue')
 
 # plt.figure()
-# plt.imshow(bl2u[:,:,l])
+plt.title(f'bl from sph eig val (l={l}, q={nq})')
+plt.plot(bl2l[nq,:], label='bl2l')
 
+plt.xlabel('l')
+plt.ylabel('eigenvalue')
+plt.legend()
+
+
+
+
+ls = np.arange(0, bl2.nl)
+plt.figure()
+plt.title(f'bl from sph eig val (l={l}, q=0) /(2*l+1)')
+plt.plot(bl2l[0,:]/(2*ls+1))
+plt.xlabel('l')
+plt.ylabel('eigenvalue')
 
 
 

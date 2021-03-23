@@ -159,6 +159,18 @@ class Vol:
 
             lams[:,z] = lam
             us[:,:,z] = u
+           
+        if not herm:
+            if np.all(np.imag(lams)==0) and np.all(np.imag(us)==0):
+                print('vol.get_eig(): lams and us are all real')
+                lams = np.real(lams)
+                us = np.real(us)
+            else:
+                print('vol.get_eig(): lams and us are NOT all real')
+                print(f'max imag: lam: {np.max(np.imag(lams))}, us: {np.max(np.imag(lams))}')
+                lams = np.real(lams)
+                us = np.real(us)
+
 
         return lams, us
 
