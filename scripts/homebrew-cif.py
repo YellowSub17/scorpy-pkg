@@ -12,8 +12,8 @@ cif = scorpy.CifData('../data/xtal/homebrew-sf.cif')
 
 qmax = cif.qmax+0.1*cif.qmax
 nq=100
-ntheta=180
-nl = 36
+ntheta=360
+nl = 46
 
 cor1 = scorpy.CorrelationVol(nq=nq, ntheta=ntheta, qmax=qmax)
 cor1.correlate(cif.scattering)
@@ -114,18 +114,18 @@ l = 6
 # plt.ylabel('n')
 
 
-plt.figure()
-plt.title(f'bl from cor eig vect (l={l})')
-plt.imshow(bl1u[:,:,l])
-plt.xlabel('n')
-plt.ylabel('q')
+# plt.figure()
+# plt.title(f'bl from cor eig vect (l={l})')
+# plt.imshow(bl1u[:,:,l])
+# plt.xlabel('n')
+# plt.ylabel('q')
 
 
-plt.figure()
-plt.title(f'bl from sph eig vect (l={l})')
-plt.imshow(bl2u[:,:,l])
-plt.xlabel('n')
-plt.ylabel('q')
+# plt.figure()
+# plt.title(f'bl from sph eig vect (l={l})')
+# plt.imshow(bl2u[:,:,l])
+# plt.xlabel('n')
+# plt.ylabel('q')
 
 
 
@@ -145,25 +145,42 @@ plt.ylabel('q')
 nq=0
 plt.figure()
 plt.title(f'bl from cor eig val (l={l}, q={nq})')
-plt.plot(10*bl1l[nq,:], label='bl1l (x100)')
+plt.plot(bl1l[nq,:], label='bl1l')
 plt.xlabel('l')
 plt.ylabel('eigenvalue')
 
-# plt.figure()
+plt.figure()
 plt.title(f'bl from sph eig val (l={l}, q={nq})')
 plt.plot(bl2l[nq,:], label='bl2l')
-
 plt.xlabel('l')
 plt.ylabel('eigenvalue')
-plt.legend()
+
+
+# bl1lsf = np.zeros(bl1l.shape)
+# bl1lsf[np.where(bl1l!=0)] = 1/bl1l[np.where(bl1l!=0)]
+# ls = np.arange(0, bl2.nl)
+# for l in range(1, bl2.nl,2):
+    # ls[l]=0
+# plt.figure()
+# plt.title(f'TARGET SF for cor bl')
+# plt.plot(bl1lsf[nq,:], label='bl1l')
+# plt.xlabel('l')
+# plt.ylabel('eigenvalue')
+
+# plt.figure()
+# plt.title(f'SF*cor bl')
+# plt.plot(bl1l[nq,:]/(2*ls+1)**2, label='bl1l')
+# plt.xlabel('l')
+# plt.ylabel('eigenvalue')
+
 
 
 
 
 ls = np.arange(0, bl2.nl)
 plt.figure()
-plt.title(f'bl from sph eig val (l={l}, q=0) /(2*l+1)')
-plt.plot(bl2l[0,:]/(2*ls+1))
+plt.title(f'bl from sph eig val (l={l}, q=0) / ( sum((2I)^2) * (2*l+1) )')
+plt.plot(bl2l[0,:]*(1/(2*ls+1))*(1/(2*np.sum(cor1.get_xy()[:,0]))))
 plt.xlabel('l')
 plt.ylabel('eigenvalue')
 
