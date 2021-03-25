@@ -131,11 +131,11 @@ class CorrelationVol(Vol):
                 q_prime_ind = index_x(q_prime_mag,self.qmax, self.nq)
 
                 theta = angle_between(q[:3]/q_mag, q_prime[:3]/q_prime_mag)
-            
+
                 theta_ind = index_x(theta, np.pi, self.ntheta)
 
                 print(np.round(q, 1), np.round(q_prime,1))
-                print(theta)
+                print('theta:', theta)
                 print(q_ind, q_prime_ind, theta_ind)
 
                 self.vol[q_ind,q_prime_ind,theta_ind] +=q[-1]*q_prime[-1]

@@ -81,9 +81,9 @@ class BlqqVol(Vol):
         # plt.figure()
         # plt.imshow(fmat_inv)
         # plt.title('fmat_inv')
-        # plt.figure()
-        # plt.imshow(ident)
-        # plt.title('indent')
+        plt.figure()
+        plt.imshow(ident)
+        plt.title('indent')
 
         for iq1 in range(self.nq):
             for iq2 in range(iq1, self.nq):

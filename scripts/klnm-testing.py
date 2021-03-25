@@ -15,21 +15,35 @@ cif = scorpy.CifData(f'../data/xtal/{name}-sf.cif')
 # sph_cif = scorpy.SphHarmHandler(cor.nq, 17, cor.qmax).fill_from_cif2(cif)
 
 iv_cif = scorpy.SphInten(cor.nq, 2**5, cor.qmax).fill_from_cif(cif)
-sph_cif = scorpy.SphHarmHandler(cor.nq, 17, cor.qmax).fill_from_ivol(iv_cif)
+sph_cif = scorpy.SphHarmHandler(cor.nq, 57, cor.qmax).fill_from_ivol(iv_cif)
 
 
 
-bl = scorpy.BlqqVol(cor.nq, 17, cor.qmax)
+bl = scorpy.BlqqVol(cor.nq, 57, cor.qmax)
 bl.fill_from_sph(sph_cif)
 bl_l, bl_u = bl.get_eig()
+
+plt.figure()
+plt.title('Eigenvalues of Blqq filled from Spherical Harmonics, 1AL1')
+plt.plot(bl_l[-1,:])
+plt.xlabel('L')
+plt.ylabel('Eigenvalue')
+plt.show()
+
+assert False
 
 
 
 
 ###get eigenvectors
-# bl = scorpy.BlqqVol(cor.nq, 17, cor.qmax)
-# bl.fill_from_corr(cor)
-# bl_l, bl_u = bl.get_eig(herm=True)
+bl = scorpy.BlqqVol(cor.nq, 17, cor.qmax)
+bl.fill_from_corr(cor)
+bl_l, bl_u = bl.get_eig(herm=True)
+
+bl_l[np.where(bl_l >=0)]=1
+bl_l[np.where(bl_l !=0)] *= (2*np.arange(0, bl.nl,2)+1)*2*np.sum(cor.get_xy()[:,0])
+
+
 
 # q_lin = cor.qmax*np.mgrid[0:cor.nq, 0:cor.nq, 0:bl.nl]/cor.nq
 # q_lin = q_lin[0]

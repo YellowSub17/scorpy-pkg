@@ -230,6 +230,7 @@ class Vol:
         im = self.get_xy()
         plt.imshow(im, origin='lower', extent=[0, self.zmax, 0, self.xmax], aspect='auto')
 
+
     def plot_sumax(self, axis=0):
         im = self.vol.sum(axis=axis)
 
