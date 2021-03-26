@@ -31,7 +31,7 @@ for name in names:
     t = timeit.timeit( 'cor.correlate(cif.scattering)', number=1, globals=globals())
     print(f'Time taken: {t} seconds.')
 
-    cor.save_dbin(f'../data/dbins/{name}_large_qcor')
+    cor.save_dbin(f'../data/dbins/{name}_qcor')
 
 
 

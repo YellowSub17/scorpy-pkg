@@ -123,10 +123,9 @@ class CorrelationVol(Vol):
             q_ind = index_x(q_mag,self.qmax, self.nq)
 
             # q2 scattering
-            for j, q_prime in enumerate(qxyzi[i+1:]):
-                q_prime_mag =  qmags[i+j+1]
-            # for j, q_prime in enumerate(qxyzi[i:]):
-                # q_prime_mag =  qmags[i+j]
+
+            for j, q_prime in enumerate(qxyzi[i:]):
+                q_prime_mag =  qmags[i+j]
 
                 q_prime_ind = index_x(q_prime_mag,self.qmax, self.nq)
 
@@ -134,19 +133,10 @@ class CorrelationVol(Vol):
 
                 theta_ind = index_x(theta, np.pi, self.ntheta)
 
-                print(np.round(q, 1), np.round(q_prime,1))
-                print('theta:', theta)
-                print(q_ind, q_prime_ind, theta_ind)
-
                 self.vol[q_ind,q_prime_ind,theta_ind] +=q[-1]*q_prime[-1]
-                self.vol[q_prime_ind,q_ind,theta_ind] +=q[-1]*q_prime[-1]
 
-        for i in range(self.nq):
-            self.vol[i,i,0] = self.vol[i,i,-1]
-
-        # self.vol[...,0] = self.vol[...,-1]
-        # self.vol[...,0] /=2
-
+                if j>0:
+                    self.vol[q_prime_ind,q_ind,theta_ind] +=q[-1]*q_prime[-1]
 
 
 

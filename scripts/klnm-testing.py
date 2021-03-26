@@ -14,34 +14,30 @@ cor = scorpy.CorrelationVol(path=f'../data/dbins/{name}_large_qcor')
 cif = scorpy.CifData(f'../data/xtal/{name}-sf.cif')
 # sph_cif = scorpy.SphHarmHandler(cor.nq, 17, cor.qmax).fill_from_cif2(cif)
 
-iv_cif = scorpy.SphInten(cor.nq, 2**5, cor.qmax).fill_from_cif(cif)
-sph_cif = scorpy.SphHarmHandler(cor.nq, 57, cor.qmax).fill_from_ivol(iv_cif)
+# iv_cif = scorpy.SphInten(cor.nq, 2**5, cor.qmax).fill_from_cif(cif)
+# sph_cif = scorpy.SphHarmHandler(cor.nq, 7, cor.qmax).fill_from_ivol(iv_cif)
 
+# bl = scorpy.BlqqVol(cor.nq, 57, cor.qmax)
+# bl.fill_from_sph(sph_cif)
+# bl_l, bl_u = bl.get_eig()
 
+# plt.figure()
+# plt.title('Eigenvalues of Blqq filled from Spherical Harmonics, 1AL1')
+# plt.plot(bl_l[-1,:])
+# plt.xlabel('L')
+# plt.ylabel('Eigenvalue')
+# plt.show()
 
-bl = scorpy.BlqqVol(cor.nq, 57, cor.qmax)
-bl.fill_from_sph(sph_cif)
-bl_l, bl_u = bl.get_eig()
-
-plt.figure()
-plt.title('Eigenvalues of Blqq filled from Spherical Harmonics, 1AL1')
-plt.plot(bl_l[-1,:])
-plt.xlabel('L')
-plt.ylabel('Eigenvalue')
-plt.show()
-
-assert False
+# assert False
 
 
 
 
 ###get eigenvectors
-bl = scorpy.BlqqVol(cor.nq, 17, cor.qmax)
+bl = scorpy.BlqqVol(cor.nq, 27, cor.qmax)
 bl.fill_from_corr(cor)
 bl_l, bl_u = bl.get_eig(herm=True)
 
-bl_l[np.where(bl_l >=0)]=1
-bl_l[np.where(bl_l !=0)] *= (2*np.arange(0, bl.nl,2)+1)*2*np.sum(cor.get_xy()[:,0])
 
 
 
@@ -85,11 +81,11 @@ Iv_data2 = Iv_init.copy().fill_from_sph(Iv_data2_sph)
 # relative intensity ( Iv_fil/k_data )
 Iv_rela = Iv_init.copy()
 Iv_rela.ivol = (Iv_filt.ivol/Iv_data.ivol)
-Iv_rela.ivol[np.where(np.logical_and(Iv_filt.ivol ==0,Iv_data.ivol==0))] = 0
+Iv_rela.ivol[np.where(np.logical_and(Iv_filt.ivol ==0,Iv_data.ivol==0))] = 1
 
 Iv_rela2 = Iv_init.copy()
 Iv_rela2.ivol = (Iv_data2.ivol/Iv_data.ivol)
-Iv_rela2.ivol[np.where(np.logical_and(Iv_data2.ivol ==0,Iv_data.ivol==0))] = 0
+Iv_rela2.ivol[np.where(np.logical_and(Iv_data2.ivol ==0,Iv_data.ivol==0))] = 1
 
 nsphere=75
 # nsphere=84

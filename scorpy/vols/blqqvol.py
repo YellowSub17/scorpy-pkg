@@ -58,6 +58,7 @@ class BlqqVol(Vol):
         # create args of legendre eval
 
         #TODO add ewald sphere
+
         args = np.cos( np.linspace(0, np.pi, cor.ntheta))
 
         # initialze fmat matrix
@@ -78,12 +79,13 @@ class BlqqVol(Vol):
         # ident = np.matmul(fmat, fmat_inv)
 
 
-        # plt.figure()
-        # plt.imshow(fmat_inv)
-        # plt.title('fmat_inv')
         plt.figure()
-        plt.imshow(ident)
-        plt.title('indent')
+        plt.imshow(fmat_inv)
+        plt.title('fmat_inv')
+
+        # plt.figure()
+        # plt.imshow(ident)
+        # plt.title('indent')
 
         for iq1 in range(self.nq):
             for iq2 in range(iq1, self.nq):
