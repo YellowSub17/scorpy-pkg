@@ -186,6 +186,12 @@ class CorrelationVol(Vol):
             self.vol[...,z] -=mean
 
 
+    def force_sym(self):
+        assert self.ntheta == 360, 'Only do this for ntheta =360'
+        cor1_mid = np.mean(self.vol[...,179:181], axis=2)
+        self.vol[...,179] = cor1_mid
+        self.vol[...,180] = cor1_mid
+
 
 
 

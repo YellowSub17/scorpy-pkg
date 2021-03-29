@@ -12,7 +12,6 @@ tspace = np.linspace(0, 180, ntheta)
 x1 = np.cos(np.linspace(0,np.pi, ntheta))
 x2 = np.linspace(-1,1, ntheta)
 
-x1=x2
 
 plt.figure()
 plt.plot(tspace, x1)

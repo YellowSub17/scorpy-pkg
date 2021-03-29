@@ -17,8 +17,11 @@ from scorpy.utils import cosinesim
 plt.close('all')
 
 cor = scorpy.CorrelationVol(path='../data/dbins/1al1_qcor')
+cor.force_sym()
 # cor.sub_tmean()
 # cor.convolve(std_z = 2)
+
+
 
 
 cif = scorpy.CifData('../data/xtal/1al1-sf.cif',qmax=cor.qmax)

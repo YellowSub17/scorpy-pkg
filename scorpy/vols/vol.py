@@ -181,6 +181,7 @@ class Vol:
         """
         Convolve the current volume with a guassian kernel.
 
+
         Arguments:
             kern_L: +/- upper and lower limit of the kernel
             kern_n: number of pixels in the kernal matrix
@@ -216,7 +217,7 @@ class Vol:
             im[xi,:] = self.vol[xi,xi,:]
         return im
 
-    def plot_xy(self, new_fig=True, log=False, extent=None):
+    def plot_xy(self, new_fig=True, log=False, extent='default'):
         '''
         Plot the x=y plane of the volume.
 
@@ -239,7 +240,7 @@ class Vol:
             plt.colorbar()
 
 
-    def plot_sumax(self, axis=0, new_fig=True, extent=None):
+    def plot_sumax(self, axis=0, new_fig=True, extent='default'):
         im = self.vol.sum(axis=axis)
 
         #TODO: clean up if/else 
@@ -264,7 +265,7 @@ class Vol:
             plt.colorbar()
 
 
-    def plot_slice(self,axis=0, index=0, new_fig=True, extent=None):
+    def plot_slice(self,axis=0, index=0, new_fig=True, extent='default'):
         if axis == 0:
             ext1 = self.zmax
             ext2 = self.ymax
