@@ -54,38 +54,46 @@ class BlqqVol(Vol):
 
         print('Filling BlqqVol from CorrelationVol\n')
 
-        q_range = np.linspace(0,self.qmax, self.nq)
-        # create args of legendre eval
 
         #TODO add ewald sphere
+        q_range = np.linspace(0,self.qmax, self.nq)
 
+        # # # create args of legendre eval
         args = np.cos( np.linspace(0, np.pi, cor.ntheta))
+        # args = np.sin( np.linspace(0, np.pi, cor.ntheta))
+        # args =  np.linspace(-1, 1, cor.ntheta)
+
 
         # initialze fmat matrix
         fmat = np.zeros( (cor.ntheta, self.nl) )
 
         #for every even spherical harmonic
         for l in range(0, self.nl, 2):
+            # leg = special.legendre(l, monic=True) 
+            # fmat[:,l] = np.polynomial.polynomial.polyval(args, leg)
+
             leg_vals = (1/(4*np.pi))*special.eval_legendre(l, args)
-            # leg_vals = ((2*l+1)/(4*np.pi))*special.eval_legendre(l, args)
             fmat[:,l] = leg_vals
 
 
         #TODO check svd
-        fmat_inv = np.linalg.pinv(fmat, rcond=1e-2)
+        # fmat_inv = np.linalg.pinv(fmat, rcond=1e-2)
+        fmat_inv = np.linalg.pinv(fmat)
 
 
-        ident = np.matmul(fmat_inv, fmat)
-        # ident = np.matmul(fmat, fmat_inv)
 
+        plt.figure()
+        plt.imshow(fmat)
+        plt.title('fmat')
 
         plt.figure()
         plt.imshow(fmat_inv)
         plt.title('fmat_inv')
 
-        # plt.figure()
-        # plt.imshow(ident)
-        # plt.title('indent')
+        ident = np.matmul(fmat_inv, fmat)
+        plt.figure()
+        plt.imshow(ident)
+        plt.title('indent')
 
         for iq1 in range(self.nq):
             for iq2 in range(iq1, self.nq):
@@ -93,9 +101,7 @@ class BlqqVol(Vol):
                 self.vol[iq1,iq2,:] = dot
                 self.vol[iq2,iq1,:] = dot
 
-        # for l in range(1, self.nl, 2):
-            # self.vol[...,l] *=0
-
+       
         # times 4pi because we multi 2root(pi) in the ylm calc.
         self.vol *= 4*np.pi
 

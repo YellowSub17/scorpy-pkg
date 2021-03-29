@@ -216,7 +216,7 @@ class Vol:
             im[xi,:] = self.vol[xi,xi,:]
         return im
 
-    def plot_xy(self):
+    def plot_xy(self, new_fig=True, log=False, extent=None):
         '''
         Plot the x=y plane of the volume.
 
@@ -226,12 +226,20 @@ class Vol:
         Return:
             None
         '''
-        plt.figure()
+        if new_fig:
+            plt.figure()
         im = self.get_xy()
+        if log:
+            im = np.log(np.abs(im)+1)
         plt.imshow(im, origin='lower', extent=[0, self.zmax, 0, self.xmax], aspect='auto')
+        if extent is None:
+            plt.imshow(im, origin='lower',  aspect='auto')
+
+        if new_fig:
+            plt.colorbar()
 
 
-    def plot_sumax(self, axis=0):
+    def plot_sumax(self, axis=0, new_fig=True, extent=None):
         im = self.vol.sum(axis=axis)
 
         #TODO: clean up if/else 
@@ -245,11 +253,18 @@ class Vol:
             ext1 = self.xmax
             ext2 = self.ymax
 
-        plt.figure()
+        if new_fig:
+            plt.figure()
         plt.imshow(im, origin='lower', extent=[0, ext1, 0, ext2], aspect='auto')
+        if extent is None:
+            plt.imshow(im, origin='lower', aspect='auto')
 
 
-    def plot_slice(self,axis=0, index=0):
+        if new_fig:
+            plt.colorbar()
+
+
+    def plot_slice(self,axis=0, index=0, new_fig=True, extent=None):
         if axis == 0:
             ext1 = self.zmax
             ext2 = self.ymax
@@ -263,9 +278,13 @@ class Vol:
         im = np.rollaxis(self.vol, axis)[index,...]
         if self.comp:
             im = np.real(im)
-        plt.figure()
+        if new_fig:
+            plt.figure()
         plt.imshow(im, origin='lower', extent=[0, ext1, 0, ext2], aspect='auto')
-        plt.colorbar()
+        if extent is None:
+            plt.imshow(im, origin='lower', aspect='auto')
+        if new_fig:
+            plt.colorbar()
 
 
     def plot_line(self,axis=0, in1=0, in2=0, new_fig=True):
@@ -288,6 +307,7 @@ class Vol:
                 herm = False
                 break
         return herm
+
 
 
 

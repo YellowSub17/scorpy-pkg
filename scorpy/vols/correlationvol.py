@@ -1,6 +1,7 @@
 from ..utils import index_x, angle_between, polar_angle_between
 
 from .vol import Vol
+from scipy import special
 import numpy as np
 
 
@@ -149,9 +150,41 @@ class CorrelationVol(Vol):
             print('Incorrect format of scattering vectors. See documentation')
 
 
-    # def sub_qmean(self,iv):
-        # qmean = np.mean(iv.ivol, axis=1)
-        # return qmean
+
+
+    def fill_from_blqq(self, blqq):
+        print("Filling CorrelationVol from Blqq")
+
+        args = np.cos( np.linspace(0, np.pi, self.ntheta))
+
+        # initialze fmat matrix
+        fmat = np.zeros( (self.ntheta, blqq.nl) )
+
+        #for every even spherical harmonic
+        for l in range(0, blqq.nl, 2):
+            # leg = special.legendre(l)
+            # fmat[:,l] = np.polynomial.polynomial.polyval(args, leg)
+
+            leg_vals = (1/(4*np.pi))*special.eval_legendre(l, args)
+            fmat[:,l] = leg_vals
+
+
+        for q1 in range(self.nq):
+            for q2 in range(q1, self.nq):
+                blv = blqq.vol[q1,q2,:]
+                for t1 in range(self.ntheta):
+                    ft = fmat[t1,:]
+                    x = np.dot(blv,ft)
+                    self.vol[q1,q2,t1] = x
+                    if q1!=q2:
+                        self.vol[q2,q1,t1] = x
+    
+    
+    def sub_tmean(self):
+        for z in range(self.nz):
+            mean = np.average(self.vol[...,z])
+            self.vol[...,z] -=mean
+
 
 
 

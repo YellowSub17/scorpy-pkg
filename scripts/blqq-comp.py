@@ -16,15 +16,18 @@ from scorpy.utils import cosinesim
 
 plt.close('all')
 
-cor = scorpy.CorrelationVol(path='../data/dbins/1al1_large_qcor')
+cor = scorpy.CorrelationVol(path='../data/dbins/1al1_qcor')
+# cor.sub_tmean()
+# cor.convolve(std_z = 2)
+
+
 cif = scorpy.CifData('../data/xtal/1al1-sf.cif',qmax=cor.qmax)
 
 comp = False
+nl = 17
 
-blqq_base =scorpy.BlqqVol(cor.nq, 17, cor.qmax, comp=comp)
-sphharm_base = scorpy.SphHarmHandler(cor.nq, 17, cor.qmax, comp=comp)
-iv_base = scorpy.SphInten(cor.nq, 2**5, cor.qmax)
-
+blqq_base =scorpy.BlqqVol(cor.nq, nl, cor.qmax, comp=comp)
+sphharm_base = scorpy.SphHarmHandler(cor.nq, nl, cor.qmax, comp=comp)
 
 
 
@@ -42,157 +45,46 @@ blqq2.fill_from_sph(sph2)
 lam2, u2 = blqq2.get_eig(herm=True)
 lam2a, u2a = blqq2.get_eig(herm=False)
 
-iv3 = iv_base.copy()
-iv3.fill_from_cif(cif)
-sph3 = sphharm_base.copy()
-sph3.fill_from_ivol(iv3)
-blqq3 = blqq_base.copy()
-blqq3.fill_from_sph(sph3)
-lam3, u3 = blqq3.get_eig(herm=True)
-lam3a, u3a = blqq3.get_eig(herm=False)
-
-
 
 blqq1.convolve()
 blqq2.convolve()
-blqq3.convolve()
-
-
-
-# ls = [0, 8, 10,16]
-# for l in ls:
-    # blqq1.plot_slice(2, l)
-    # plt.title(f'bl1: cif -> cor -> blqq (l={l})')
-
-    # blqq2.plot_slice(2, l)
-    # plt.title(f'bl2: cif -> sph -> blqq (l={l})')
-
-    # blqq3.plot_slice(2, l)
-    # plt.title(f'bl3: cif -> ivol -> sph -> blqq (l={l})')
 
 print(f'Cosine Sim (1-2): {cosinesim(blqq1.vol, blqq2.vol)}\n')
-print(f'Cosine Sim (1-3): {cosinesim(blqq1.vol, blqq3.vol)}\n')
-print(f'Cosine Sim (2-3): {cosinesim(blqq2.vol, blqq3.vol)}\n')
 
 
 
-# l = 8
-
-# plt.figure()
-# plt.imshow(np.log10(np.abs(lam1)+1), aspect='auto')
-# plt.colorbar()
-# plt.title('blqq1 lamda: cif -> cor -> blqq')
-# plt.xlabel('L')
-# plt.ylabel('nq')
-
-# plt.figure()
-# plt.imshow(np.log10(np.abs(lam2)+1), aspect='auto')
-# plt.colorbar()
-# plt.title('blqq2 lamda: cif -> sph -> blqq')
-# plt.xlabel('L')
-# plt.ylabel('nq')
-
-# plt.figure()
-# plt.imshow(np.log10(np.abs(lam3)+1), aspect='auto')
-# plt.colorbar()
-# plt.title('blqq3 lamda: cif -> ivol -> sph -> blqq')
-# plt.xlabel('L')
-# plt.ylabel('nq')
-
-
-
-
-
-ls = [0, 8,10,16]
+cor.plot_q1q2()
+ls = [0, 8, 10,16]
 for l in ls:
 
-    max_e = 5
-    nqs = np.arange(0,max_e)
     plt.figure()
-    plt.title(f'eigh L={l}')
-    plt.plot(nqs,lam1[-max_e:,l], label='blqq1')
-    plt.ylabel('Eigenvalue')
-    plt.xlabel('nq')
 
-# plt.figure()
-    plt.plot(nqs,lam2[-max_e:,l], label='blqq2')
-    plt.ylabel('Eigenvalue')
-    plt.xlabel('nq')
+    plt.subplot(121)
+    blqq1.plot_slice(2, l, new_fig=False)
+    plt.title(f'bl1: cif -> cor -> blqq (l={l})')
 
-# plt.figure()
-    plt.plot(nqs,lam3[-max_e:,l], label='blqq3')
-    plt.ylabel('Eigenvalue')
-    plt.xlabel('nq')
-    plt.legend()
+    plt.subplot(122)
+    blqq2.plot_slice(2, l, new_fig=False)
+    plt.title(f'bl2: cif -> sph -> blqq (l={l})')
 
 
 
 
+lams = [lam1, lam2, lam1a, lam2a]
+titles = [  'blqq1 lamda: cif -> cor -> blqq', 
+            'blqq2 lamda: cif -> sph -> blqq',
+            'blqq1 lamda_a: cif -> cor -> blqq',
+            'blqq2 lamda_a: cif -> sph -> blqq',]
 
-
-
-ls = [0, 8,10,16]
-for l in ls:
-
-    max_e = 5
-    nqs = np.arange(0,max_e)
+for lam, title in zip(lams, titles):
     plt.figure()
-    plt.title(f'eig L={l}')
-    plt.plot(nqs,np.abs(lam1a[-max_e:,l]), label='blqq1')
-    plt.ylabel('Eigenvalue')
-    plt.xlabel('nq')
-
-# plt.figure()
-    plt.plot(nqs,np.abs(lam2[-max_e:,l]), label='blqq2')
-    plt.ylabel('Eigenvalue')
-    plt.xlabel('nq')
-
-# plt.figure()
-    plt.plot(nqs,np.abs(lam3[-max_e:,l]), label='blqq3')
-    plt.ylabel('Eigenvalue')
-    plt.xlabel('nq')
-    plt.legend()
-
-
+    plt.imshow(np.log10(np.abs(lam)+1), aspect='auto')
+    plt.colorbar()
+    plt.title(title)
+    plt.xlabel('L')
+    plt.ylabel('nq')
 
 plt.show()
-
-
-
-
-
-
-# blqq3 = scorpy.BlqqVol(nq,nl,qmax)
-
-# for l in range(0, nl, 2):
-    # lam1 = lam[:,l]
-    # u1 = u[...,l]
-
-    # x = np.matmul(u1, np.diag(lam1))
-    # blqq3.vol[...,l] = np.matmul(x, np.linalg.inv(u1))
-
-
-
-
-# blqq1.plot_slice(2,6)
-# plt.title('Correlation Blqq')
-# blqq2.plot_slice(2,6)
-# plt.title('Spherical Harmonics Blqq')
-# blqq3.plot_slice(2,6)
-# plt.title('Corr. Eigen Recon Blqq')
-
-
-
-
-
-
-
-
-
-
-
-
-# plt.show()
 
 
 
