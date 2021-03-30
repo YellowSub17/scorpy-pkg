@@ -4,38 +4,34 @@ import pyshtools as pysh
 import matplotlib.pyplot as plt
 
 
+plt.close('all')
+
+n_angle = 360
+grid_type = 'DH2'
+# grid_type = 'GLQ'
+extend=False
 
 
-n_angles = [300]
-extends  = [True, False]
-grid_types = ['DH1', 'DH2', 'GLQ']
+cif = scorpy.CifData('../data/xtal/1al1-sf.cif')
+sphvol = scorpy.SphericalVol(256, n_angle,qmax=cif.qmax, grid_type=grid_type, extend=extend)
 
-for n_angle in n_angles:
-    for grid_type in grid_types:
-        for extend in extends:
-            print(f'\n\n#### Testing N:{n_angle}, Ex:{extend}, G:{grid_type}')
+sphvol.fill_from_cif(cif)
+
+sphvol.plot_slice(index=91)
+plt.title('Initial')
+
+sphvol.pass_filter()
+
+sphvol.plot_slice(index=91)
+plt.title('Filtered')
+
+# sphvol.rotate(2*np.pi/3,np.pi/4,np.pi/7)
+sphvol.rotate(0,np.pi/6,0)
+
+sphvol.plot_slice(index=91)
+plt.title('Rotated')
 
 
-
-            sphvol = scorpy.SphericalVol(1, n_angle, grid_type=grid_type, extend=extend)
-
-            lmax=sphvol.lmax
-
-
-            coeffs = np.zeros( (2,lmax+1,lmax+1))
-
-            coeffs[0,140,140] = 5
-            # coeffs[0,4,1] = 10
-            # coeffs[0,6,2] = 8
-
-            coeffs_l6m3 = pysh.SHCoeffs.from_array(coeffs)
-            expanded = coeffs_l6m3.expand(grid=grid_type,extend=extend)
-
-            sphvol.vol[0,...] = expanded.data
-
-            sphvol.plot_sumax()
-            plt.title(f'{n_angle}, {extend}, {grid_type}')
-                
 
 plt.show()
 
