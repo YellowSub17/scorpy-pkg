@@ -2,6 +2,7 @@ from .vols.vol import Vol
 from .vols.correlationvol import CorrelationVol
 from .vols.blqqvol import BlqqVol
 from .vols.padfvol import PadfVol
+from .vols.sphericalvol import SphericalVol
 
 
 from .readers.cifdata import CifData
