@@ -6,20 +6,9 @@ import matplotlib.pyplot as plt
 
 
 
-n_angle = 30
-
-extend = False
-extend = True
-
-
-grid_type = 'DH1'
-grid_type = 'DH2'
-grid_type = 'GLQ'
-
-n_angles = [30]
+n_angles = [300]
 extends  = [True, False]
-# grid_types = ['DH1', 'DH2']
-grid_types = ['DH2']
+grid_types = ['DH1', 'DH2', 'GLQ']
 
 for n_angle in n_angles:
     for grid_type in grid_types:
@@ -35,25 +24,18 @@ for n_angle in n_angles:
 
             coeffs = np.zeros( (2,lmax+1,lmax+1))
 
-            coeffs[0,3,2] = 1
+            coeffs[0,140,140] = 5
+            # coeffs[0,4,1] = 10
+            # coeffs[0,6,2] = 8
 
             coeffs_l6m3 = pysh.SHCoeffs.from_array(coeffs)
             expanded = coeffs_l6m3.expand(grid=grid_type,extend=extend)
 
-            try:
-                sphvol.vol[0,...] = expanded.data
+            sphvol.vol[0,...] = expanded.data
 
-            #     sphvol.plot_sumax()
-                # plt.title(f'{n_angle}, {extend}, {grid_type}')
-
-            except:
-
-                print(f'\n\n####Error N:{n_angle}, Ex:{extend}, G:{grid_type}')
-                print(f'sphvol shape: {sphvol.vol.shape}')
-                print(f'expanded data shape: {expanded.data.shape}')
-                print(f'sphvol lmax: {sphvol.lmax}')
-                print(f'expanded: {expanded}')
+            sphvol.plot_sumax()
+            plt.title(f'{n_angle}, {extend}, {grid_type}')
                 
 
-# plt.show()
+plt.show()
 

@@ -57,6 +57,8 @@ class SphericalVol(Vol):
 
         Vol.__init__(self, nq,N_lat, N_long, qmax, 180, 360, comp, path=path)
 
+        self.vol = np.random.random(self.vol.shape)
+
 
 
 
