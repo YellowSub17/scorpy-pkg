@@ -17,6 +17,19 @@ from scorpy.utils import cosinesim
 plt.close('all')
 
 cor1 = scorpy.CorrelationVol(path='../data/dbins/1al1_qcor')
+
+cor1.plot_q1q2(extent=None)
+plt.title('Original Corr')
+plt.ylabel('q1=q2')
+plt.xlabel('theta')
+
+
+cor1.plot_q1q2(extent=None)
+plt.title('Original Corr')
+plt.ylabel('q1=q2')
+plt.xlabel('theta')
+
+
 cif1 = scorpy.CifData('../data/xtal/1al1-sf.cif',qmax=cor1.qmax)
 
 comp = False
@@ -31,16 +44,8 @@ blqq1.fill_from_corr(cor1)
 # cor2.fill_from_blqq(blqq1)
 
 
-# cor1.vol[...,179:181] = 0
-cor1_mid = np.mean(cor1.vol[...,179:181], axis=2)
-cor1.vol[...,179] = cor1_mid
-cor1.vol[...,180] = cor1_mid
 
 
-cor1.plot_q1q2(extent=None)
-plt.title('Original Corr')
-plt.ylabel('q1=q2')
-plt.xlabel('theta')
 
 
 i=180

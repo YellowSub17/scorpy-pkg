@@ -1,5 +1,5 @@
 import numpy as np
-import scipy as sp
+import scipy.special as sp
 import matplotlib.pyplot as plt
 plt.close('all')
 
@@ -23,14 +23,16 @@ fmat2 = np.zeros( (ntheta, nl) )
 plt.figure()
 for l in range(0, nl, 2):
 
-    leg_poly = sp.special.legendre(l)
-    fl1 = leg_poly(x1)
+    leg_poly = sp.legendre(l)
+    # fl1 = leg_poly(x1)
     # fl1 = np.polynomial.polynomial.polyval(x1, leg_poly)
-    # fl1 = np.polynomial.legendre.legval(x1, np.identity(nl)[:,l])
+
+
+    fl1 = np.polynomial.legendre.legval(x1, np.identity(nl)[:,l])
 
 
 
-    fl2 = sp.special.eval_legendre(l, x1)
+    fl2 = sp.eval_legendre(l, x1)
 
     fmat1[:,l] = fl1
     fmat2[:,l] = fl2

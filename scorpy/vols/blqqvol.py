@@ -72,7 +72,8 @@ class BlqqVol(Vol):
             # leg = special.legendre(l, monic=True) 
             # fmat[:,l] = np.polynomial.polynomial.polyval(args, leg)
 
-            leg_vals = (1/(4*np.pi))*special.eval_legendre(l, args)
+            leg_vals = special.eval_legendre(l, args)
+            # leg_vals = (1/(4*np.pi))*special.eval_legendre(l, args)
             fmat[:,l] = leg_vals
 
 
@@ -81,29 +82,29 @@ class BlqqVol(Vol):
         fmat_inv = np.linalg.pinv(fmat)
 
 
+        # plt.figure()
+        # plt.imshow(fmat)
+        # plt.title('fmat')
 
-        plt.figure()
-        plt.imshow(fmat)
-        plt.title('fmat')
+        # plt.figure()
+        # plt.imshow(fmat_inv)
+        # plt.title('fmat_inv')
 
-        plt.figure()
-        plt.imshow(fmat_inv)
-        plt.title('fmat_inv')
-
-        ident = np.matmul(fmat_inv, fmat)
-        plt.figure()
-        plt.imshow(ident)
-        plt.title('indent')
+        # ident = np.matmul(fmat_inv, fmat)
+        # plt.figure()
+        # plt.imshow(ident)
+        # plt.title('indent')
 
         for iq1 in range(self.nq):
             for iq2 in range(iq1, self.nq):
                 dot =  np.dot(fmat_inv,cor.vol[iq1,iq2,:])
                 self.vol[iq1,iq2,:] = dot
-                self.vol[iq2,iq1,:] = dot
+                if iq1 !=iq2:
+                    self.vol[iq2,iq1,:] = dot
 
        
         # times 4pi because we multi 2root(pi) in the ylm calc.
-        self.vol *= 4*np.pi
+        # self.vol *= 4*np.pi
 
 
 
@@ -120,7 +121,9 @@ class BlqqVol(Vol):
             for iq1 in range(self.nq):
                 for iq2 in range(iq1, self.nq):
                     bl[iq1,iq2] = np.sum(np.conj(sph.vals_lnm[l][iq1])*sph.vals_lnm[l][iq2])
-                    bl[iq2,iq1] = np.sum(np.conj(sph.vals_lnm[l][iq2])*sph.vals_lnm[l][iq1])
+                    
+                    if iq1 !=iq2:
+                        bl[iq2,iq1] = np.sum(np.conj(sph.vals_lnm[l][iq2])*sph.vals_lnm[l][iq1])
 
             self.vol[...,l] = bl
 
