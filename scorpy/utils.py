@@ -38,7 +38,7 @@ def cosinesim(v1,v2):
 
 
 
-def ylm_wrapper(l,m, phi,theta, comp=False):
+def ylm_wrapper_old(l,m, phi,theta, comp=False):
     if comp:
         # COMPLEX BASIS
         ylm = special.sph_harm(m,l, phi , theta)
@@ -53,6 +53,28 @@ def ylm_wrapper(l,m, phi,theta, comp=False):
             ylm = np.real(special.sph_harm(m,l, phi, theta))
 
     #2*sqrt(pi) ensures orthogonality
+    ylm *= 2*np.sqrt(np.pi)
+    return ylm
+
+
+
+def ylm_wrapper(l,m,phi,theta, comp=False):
+
+    term_a = ((-1)**m)*(np.sqrt(2))
+    term_b = np.sqrt( (2*l+1)/(4*np.pi) )
+
+    fact = np.math.factorial(l-np.abs(m))/np.math.factorial(l+np.abs(m))
+
+
+    leg =  special.lpmv(np.abs(m), l, np.cos(theta))
+
+    if m<0:
+        ylm = term_a*term_b*fact*leg*np.sin(np.abs(m)*phi)
+    elif m>0:
+        ylm = term_a*term_b*fact*leg*np.cos(m*phi)
+    else:
+        ylm = term_b*leg
+
     ylm *= 2*np.sqrt(np.pi)
     return ylm
 

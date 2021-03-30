@@ -17,7 +17,7 @@ from scorpy.utils import cosinesim
 plt.close('all')
 
 cor = scorpy.CorrelationVol(path='../data/dbins/1al1_qcor')
-cor.force_sym()
+# cor.force_sym()
 # cor.sub_tmean()
 # cor.convolve(std_z = 2)
 
@@ -63,11 +63,11 @@ for l in ls:
     plt.figure()
 
     plt.subplot(121)
-    blqq1.plot_slice(2, l, new_fig=False)
+    blqq1.plot_slice(2, l, new_fig=False, extent=None)
     plt.title(f'bl1: cif -> cor -> blqq (l={l})')
 
     plt.subplot(122)
-    blqq2.plot_slice(2, l, new_fig=False)
+    blqq2.plot_slice(2, l, new_fig=False, extent=None)
     plt.title(f'bl2: cif -> sph -> blqq (l={l})')
 
 

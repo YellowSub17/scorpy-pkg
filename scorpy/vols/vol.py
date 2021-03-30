@@ -167,7 +167,7 @@ class Vol:
                 us = np.real(us)
             else:
                 print('vol.get_eig(): lams and us are NOT all real')
-                print(f'max imag: lam: {np.max(np.imag(lams))}, us: {np.max(np.imag(lams))}')
+                print(f'max imag: lam: {np.max(np.imag(lams))}, us: {np.max(np.imag(us))}')
                 lams = np.real(lams)
                 us = np.real(us)
 
