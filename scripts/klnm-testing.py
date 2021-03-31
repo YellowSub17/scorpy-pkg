@@ -47,10 +47,9 @@ plt.figure()
 plt.imshow(np.log(np.abs(bl_l)+1))
 plt.figure()
 plt.imshow(bl_l)
-plt.show()
 
 
-assert False
+# assert False
 
 # q_lin = cor.qmax*np.mgrid[0:cor.nq, 0:cor.nq, 0:bl.nl]/cor.nq
 # q_lin = q_lin[0]

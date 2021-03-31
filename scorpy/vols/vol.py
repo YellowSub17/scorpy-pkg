@@ -217,7 +217,7 @@ class Vol:
             im[xi,:] = self.vol[xi,xi,:]
         return im
 
-    def plot_xy(self, new_fig=True, log=False, extent='default'):
+    def plot_xy(self, new_fig=True, log=False, extent='default', aspect='auto'):
         '''
         Plot the x=y plane of the volume.
 
@@ -232,15 +232,15 @@ class Vol:
         im = self.get_xy()
         if log:
             im = np.log(np.abs(im)+1)
-        plt.imshow(im, origin='lower', extent=[0, self.zmax, 0, self.xmax], aspect='auto')
+        plt.imshow(im, origin='lower', extent=[0, self.zmax, 0, self.xmax], aspect=aspect)
         if extent is None:
-            plt.imshow(im, origin='lower',  aspect='auto')
+            plt.imshow(im, origin='lower',  aspect=aspect)
 
         if new_fig:
             plt.colorbar()
 
 
-    def plot_sumax(self, axis=0, new_fig=True, extent='default'):
+    def plot_sumax(self, axis=0, new_fig=True, extent='default', aspect='auto'):
         im = self.vol.sum(axis=axis)
 
         #TODO: clean up if/else 
@@ -256,16 +256,16 @@ class Vol:
 
         if new_fig:
             plt.figure()
-        plt.imshow(im, origin='lower', extent=[0, ext1, 0, ext2], aspect='auto')
+        plt.imshow(im, origin='lower', extent=[0, ext1, 0, ext2], aspect=aspect)
         if extent is None:
-            plt.imshow(im, origin='lower', aspect='auto')
+            plt.imshow(im, origin='lower', aspect=aspect)
 
 
         if new_fig:
             plt.colorbar()
 
 
-    def plot_slice(self,axis=0, index=0, new_fig=True, extent='default'):
+    def plot_slice(self,axis=0, index=0, new_fig=True, extent='default', aspect='auto'):
         if axis == 0:
             ext1 = self.zmax
             ext2 = self.ymax
@@ -281,9 +281,9 @@ class Vol:
             im = np.real(im)
         if new_fig:
             plt.figure()
-        plt.imshow(im, origin='lower', extent=[0, ext1, 0, ext2], aspect='auto')
+        plt.imshow(im, origin='lower', extent=[0, ext1, 0, ext2], aspect=aspect)
         if extent is None:
-            plt.imshow(im, origin='lower', aspect='auto')
+            plt.imshow(im, origin='lower', aspect=aspect)
         if new_fig:
             plt.colorbar()
 

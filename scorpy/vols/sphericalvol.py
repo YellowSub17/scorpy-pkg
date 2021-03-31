@@ -150,4 +150,18 @@ class SphericalVol(Vol):
             self.vol[iq,...] = q_slice_rot
 
 
+    def get_angle_sampling(self):
+
+        q_slice = self.vol[-1,...]
+        if self.grid_type =='DH1' or self.grid_type =='DH2':
+            sh_grid = pysh.shclasses.shgrid.DHRealGrid(q_slice)
+        else:
+            sh_grid = pysh.shclasses.shgrid.GLQRealGrid(q_slice)
+
+        lats = np.radians(sh_grid.lats() + 90)
+        lons = np.radians(sh_grid.lons())
+        return lats, lons
+
+
+
 

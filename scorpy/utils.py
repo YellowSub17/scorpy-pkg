@@ -9,6 +9,9 @@ from scipy import special
 def index_x(x_val, x_max, nx):
     return int(round((x_val/float(x_max))*(nx-1)))
 
+def index_x_arr(x_vals, x_max, nx):
+    return np.round((x_vals/float(x_max))*(nx-1)).astype(int)
+
 def polar_angle_between(t1,t2):
     return np.abs((t1-t2+180)%360 -180)
 
@@ -38,7 +41,7 @@ def cosinesim(v1,v2):
 
 
 
-def ylm_wrapper_old(l,m, phi,theta, comp=False):
+def ylm_wrapper(l,m, phi,theta, comp=False):
     if comp:
         # COMPLEX BASIS
         ylm = special.sph_harm(m,l, phi , theta)
@@ -58,7 +61,7 @@ def ylm_wrapper_old(l,m, phi,theta, comp=False):
 
 
 
-def ylm_wrapper(l,m,phi,theta, comp=False):
+def ylm_wrapper2(l,m,phi,theta, comp=False):
 
     term_a = ((-1)**m)*(np.sqrt(2))
     term_b = np.sqrt( (2*l+1)/(4*np.pi) )
