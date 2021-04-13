@@ -305,9 +305,22 @@ class Vol:
         for z in range(self.nz):
             mat = np.matrix(self.vol[...,z])
             if not np.allclose(mat, np.conj(mat.T)):
+                print('Vol not herm for z =',z)
                 herm = False
-                break
         return herm
+
+    def is_sym(self):
+        sym=True
+        for z in range(self.nz):
+
+            mat1 = self.vol[...,z]
+            mat2 = self.vol[...,self.nz-z-1]
+
+            if not np.allclose(mat1,mat2):
+                print('Vol not sym for z =',z)
+                sym = False
+                # break
+        return sym
 
 
 

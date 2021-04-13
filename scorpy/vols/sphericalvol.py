@@ -158,10 +158,55 @@ class SphericalVol(Vol):
         else:
             sh_grid = pysh.shclasses.shgrid.GLQRealGrid(q_slice)
 
-        lats = np.radians(sh_grid.lats() + 90)
+
+        #fix
+        lats = np.radians(sh_grid.lats())
         lons = np.radians(sh_grid.lons())
+
         return lats, lons
 
 
+
+    def rm_odds(self):
+        print('Removing odd harmonics.')
+
+        for iq in range(self.nx):
+            print(iq)
+            q_slice = self.vol[iq,...]
+            if self.grid_type =='DH1' or self.grid_type =='DH2':
+                sh_grid = pysh.shclasses.shgrid.DHRealGrid(q_slice)
+            else:
+                sh_grid = pysh.shclasses.shgrid.GLQRealGrid(q_slice)
+
+            sh_coeffs = sh_grid.expand()
+
+            coeffs = sh_coeffs.coeffs
+
+            filt_coeffs = np.zeros(coeffs.shape)
+
+            filt_coeffs[:,::2,:] = coeffs[:,::2,:]
+
+            sh_coeffs = pysh.shclasses.shcoeffs.SHRealCoeffs(filt_coeffs)
+
+            sh_grid = sh_coeffs.expand(extend = self.extend, grid=self.grid_type)
+
+            q_slice_filt = sh_grid.data
+
+            self.vol[iq,...] = q_slice_filt
+
+
+    def get_coeffs(self, iq):
+        q_slice = self.vol[iq,...]
+
+        if self.grid_type =='DH1' or self.grid_type =='DH2':
+            sh_grid = pysh.shclasses.shgrid.DHRealGrid(q_slice)
+        else:
+            sh_grid = pysh.shclasses.shgrid.GLQRealGrid(q_slice)
+
+        sh_coeffs = sh_grid.expand()
+
+        coeffs = sh_coeffs.coeffs
+
+        return coeffs
 
 

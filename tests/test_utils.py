@@ -67,7 +67,7 @@ def test_index_x():
         # ind1 = index_x(i*xmax,xmax, nx)
         # ind2 = index_x(i*xmax+dx,xmax, nx)
         # #translation of 1 dx should place in the next bin
-        
+
         # print(i,i*xmax, ind1)
         # print(dx)
         # print(i,i*xmax+dx, ind2)

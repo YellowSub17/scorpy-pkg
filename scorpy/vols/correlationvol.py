@@ -84,12 +84,14 @@ class CorrelationVol(Vol):
 
         for i, q in enumerate(qti):
             q_ind = index_x(q[0],self.qmax, self.nq)
-            for q_prime in qti[i+1:]:
+            for j, q_prime in enumerate(qti[i:]):
                 q_prime_ind = index_x(q_prime[0],self.qmax, self.nq)
                 theta = polar_angle_between(q[1], q_prime[1])
                 theta_ind = index_x(theta, 180, self.ntheta)
                 self.vol[q_ind,q_prime_ind,theta_ind] +=q[-1]*q_prime[-1]
-                self.vol[q_prime_ind,q_ind,theta_ind] +=q[-1]*q_prime[-1]
+
+                if j>0:
+                    self.vol[q_prime_ind,q_ind,theta_ind] +=q[-1]*q_prime[-1]
 
 
 

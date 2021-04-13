@@ -21,11 +21,8 @@ class PadfVol(Vol):
         # self.ny = self.nx
         self.nr = self.nx
 
-        # self.ntheta = self.nz
+        self.ntheta = self.nz
 
-    
-
-    
 
     def fill_from_corr(self, cor_path, nl=37, wavelength=1e-10):
 
