@@ -3,11 +3,22 @@ from scipy import special
 
 
 
+# def find_nearest(array, value):
+    # array = np.asarray(array)
+    # idx = (np.abs(array - value)).idxmin()
+    # return array[idx]
 
 
+
+
+
+# def index_x(x_val, x_max, nx):
+    # return int(round((x_val/float(x_max))*(nx-1)))
 
 def index_x(x_val, x_max, nx):
-    return int(round((x_val/float(x_max))*(nx-1)))
+    a = np.asarray(np.linspace(0, x_max, nx))
+    return np.abs(a - x_val).argmin()
+
 
 def index_x_arr(x_vals, x_max, nx):
     return np.round((x_vals/float(x_max))*(nx-1)).astype(int)

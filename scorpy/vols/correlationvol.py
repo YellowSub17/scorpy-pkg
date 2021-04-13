@@ -23,15 +23,6 @@ class CorrelationVol(Vol):
         Vol.__init__(self, nq,nq,ntheta, qmax, qmax, 180, comp=False, path=path)
 
         self.plot_q1q2 = self.plot_xy
-        # self._ymax = self.xmax
-        # self._qmax = self.xmax
-
-        # self._ny = self.nx
-        # self._nq = self.nx
-
-        # self._ntheta = self.nz
-        # self._cvol = self.vol
-
 
     @property
     def qmax(self):
@@ -50,16 +41,6 @@ class CorrelationVol(Vol):
         return self._vol
 
 
-
-    # @cvol.setter
-    # def cvol(self, new_cvol):
-        # print('setting new cvol')
-        # self._vol = new_cvol
-
-    # @vol.setter
-    # def vol(self, new_vol):
-        # assert new_vol.shape == self.vol.shape, 'Cannot replace vols with different shapes'
-        # self._vol = new_vol
 
 
 
@@ -106,27 +87,22 @@ class CorrelationVol(Vol):
                                 qti[:,2] = qz coordinate of scattering vector
                                 qti[:,3] = intensity of peak
         Returns:
-            None. Updates self.cvol with correlations.
+            None. Updates self.cvol with correlations
         '''
-        # print('Correlating 3D')
 
         # calculate magnitude of vectors, only correlate less than qmax
         qmags = np.linalg.norm(qxyzi[:,:3], axis=1)
-        # print(qmags)
         correl_vec_indices = np.where(qmags <= self.qmax)[0]
         qxyzi = qxyzi[correl_vec_indices]
         qmags = qmags[correl_vec_indices]
-        # print(qxyzi)
 
         # q1 scattering
         for i, q in enumerate(qxyzi):
-            # print(f'Correlating: {i}/{len(qmags)}')
 
             q_mag =  qmags[i]
             q_ind = index_x(q_mag,self.qmax, self.nq)
 
             # q2 scattering
-
             for j, q_prime in enumerate(qxyzi[i:]):
                 q_prime_mag =  qmags[i+j]
 
@@ -155,8 +131,17 @@ class CorrelationVol(Vol):
 
 
     def fill_from_blqq(self, blqq):
-        print("Filling CorrelationVol from Blqq")
+        '''
+        Fill the CorrelationVol from a BlqqVol
 
+        Arguments:
+            blqq (BlqqVol): The BlqqVol object to to fill the CorrelationVol
+
+        Returns:
+            None. Updates self.cvol
+        '''
+
+        #arguments for the legendre polynomial
         args = np.cos( np.linspace(0, np.pi, self.ntheta))
 
         # initialze fmat matrix
@@ -164,15 +149,17 @@ class CorrelationVol(Vol):
 
         #for every even spherical harmonic
         for l in range(0, blqq.nl, 2):
-            # leg = special.legendre(l)
-            # fmat[:,l] = np.polynomial.polynomial.polyval(args, leg)
 
             leg_vals = (1/(4*np.pi))*special.eval_legendre(l, args)
             fmat[:,l] = leg_vals
 
 
+        #for every q1 position
         for q1 in range(self.nq):
+            #for every q2 position
             for q2 in range(q1, self.nq):
+
+                #vector as a function of L
                 blv = blqq.vol[q1,q2,:]
                 for t1 in range(self.ntheta):
                     ft = fmat[t1,:]
@@ -180,19 +167,7 @@ class CorrelationVol(Vol):
                     self.vol[q1,q2,t1] = x
                     if q1!=q2:
                         self.vol[q2,q1,t1] = x
-    
-    
-    def sub_tmean(self):
-        for z in range(self.nz):
-            mean = np.average(self.vol[...,z])
-            self.vol[...,z] -=mean
 
-
-    def force_sym(self):
-        assert self.ntheta == 360, 'Only do this for ntheta =360'
-        cor1_mid = np.mean(self.vol[...,179:181], axis=2)
-        self.vol[...,179] = cor1_mid
-        self.vol[...,180] = cor1_mid
 
 
 
