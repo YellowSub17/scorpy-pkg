@@ -118,6 +118,62 @@ class CorrelationVol(Vol):
                     self.vol[q_prime_ind,q_ind,theta_ind] +=q[-1]*q_prime[-1]
 
 
+    def correlateSPH(self, qtpi):
+    
+        qmags = qtpi[:,0]
+        correl_vec_indices = np.where(qmags <= self.qmax)[0]
+        qtpi = qtpi[correl_vec_indices]
+
+       # q1 scattering
+        for i, q1 in enumerate(qtpi):
+
+            q1_mag = q1[0]
+            q1_mag_ind = index_x(q1_mag,self.qmax, self.nq)
+
+            theta1 = q1[2]
+            phi1 = q1[1]
+
+
+            
+
+            # q2 scattering
+            for j, q2 in enumerate(qtpi[i:]):
+                q2_mag = q2[0]
+
+                theta2 = q2[2]
+                phi2 = q2[1]
+
+                q2_mag_ind = index_x(q2_mag, self.qmax, self.nq)
+
+                sinterm = np.sin(theta1)*np.sin(theta2)
+                costerm = np.cos(theta1)*np.cos(theta2)*np.cos(phi1-phi2)
+
+                addterm = sinterm+costerm
+                if addterm>1:
+                    print(addterm)
+                    addterm=1
+                elif addterm < -1:
+                    print(addterm)
+                    addterm =-1
+
+
+
+                delta_theta = np.arccos(addterm)
+
+
+                theta_ind = index_x(delta_theta, np.pi, self.ntheta)
+
+                self.vol[q1_mag_ind, q2_mag_ind, theta_ind] +=q1[-1]*q2[-1]
+
+                if j>0:
+                    self.vol[q2_mag_ind, q1_mag_ind, theta_ind] +=q1[-1]*q2[-1]
+
+
+
+
+
+
+
 
     def correlate(self,c):
         

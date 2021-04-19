@@ -6,22 +6,52 @@ from ..symmetry import apply_sym
 
 class CifData:
 
-    def __init__(self,fname, qmax=-1):
+    def __init__(self,fname, qmax=None):
 
         self.fname = fname
         cif = pycif.ReadCif(self.fname)
 
         vk = cif.visible_keys[0]
         self.cif = dict(cif[vk])
-        self.space_group = self.cif['_symmetry.space_group_name_h-m']
+        self.spg = self.cif['_symmetry.space_group_name_h-m']
 
-        self.dcell_angles = self.get_dcell_angles()
-        self.dcell_vectors = self.get_dcell_vectors()
-        self.qcell_vectors = self.get_qcell_vectors()
+        # self.dcell_angles = self.get_dcell_angles()
+        # self.dcell_vectors = self.get_dcell_vectors()
+        # self.qcell_vectors = self.get_qcell_vectors()
+        # self.bragg, self.scattering, self.spherical = self.get_refl()
+
+
+
+        self.alpha = np.radians(float(self.cif['_cell.angle_alpha']))
+        self.beta = np.radians(float(self.cif['_cell.angle_beta']))
+        self.gamma = np.radians(float(self.cif['_cell.angle_gamma']))
+
+
+
+        a_unit = np.array([1.0,0.0,0.0])
+        b_unit = np.array([np.cos(self.gamma), np.sin(self.gamma), 0])
+        c_unit = np.array([
+                            np.cos(self.beta),
+                           (np.cos(self.alpha) - np.cos(self.beta)*np.cos(self.gamma))/np.sin(self.gamma),
+                            np.sqrt( 1 - np.cos(self.beta)**2 - (( np.cos(self.alpha) -np.cos(self.beta)*np.cos(self.gamma))/np.sin(self.gamma))**2)
+                        ])
+
+        self.a = float(self.cif['_cell.length_a'])*a_unit
+        self.b = float(self.cif['_cell.length_b'])*b_unit
+        self.c = float(self.cif['_cell.length_c'])*c_unit
+
+
+        self.ast = np.cross(self.b,self.c) /np.dot(self.a,np.cross(self.b,self.c))
+        self.bst = np.cross(self.a,self.c) /np.dot(self.a,np.cross(self.b,self.c))
+        self.cst = np.cross(self.a,self.b) /np.dot(self.a,np.cross(self.b,self.c))
+
 
         self.bragg, self.scattering, self.spherical = self.get_refl()
 
-        if qmax < 0:
+        # self.bragg_scattering, self.scattering, self.spherical = self.get_refl()
+
+
+        if qmax is None:
             self.qmax = np.max(self.spherical[:,0])
         else:
             self.qmax = qmax
@@ -29,6 +59,9 @@ class CifData:
             self.scattering = self.scattering[loc]
             self.bragg = self.bragg[loc]
             self.spherical = self.spherical[loc]
+
+
+
 
 
 
@@ -71,9 +104,9 @@ class CifData:
             return None
 
         asym_refl = np.array([h, k, l, I]).T
-        bragg = apply_sym(asym_refl, self.space_group)
+        bragg = apply_sym(asym_refl, self.spg)
 
-        scattering_pos = np.matmul(bragg[:,:-1], np.array(self.qcell_vectors))
+        scattering_pos = np.matmul(bragg[:,:-1], np.array([self.ast, self.bst, self.cst]))
 
         scattering = np.zeros(bragg.shape)
         scattering[:, :-1] = scattering_pos
@@ -91,67 +124,10 @@ class CifData:
         return bragg, scattering, spherical
 
 
-    def get_qcell_vectors(self):
-        '''
-        Calculate the reciprocal lattice vectors.
-
-        Arguments:
-            None.
-
-        Return:
-            ast: reciprocal lattice vector a*
-            bst: reciprocal lattice vector b*
-            cst: reciprocal lattice vector c*
-        '''
-        ast = np.cross(self.dcell_vectors[1],self.dcell_vectors[2]) /np.dot(self.dcell_vectors[0],np.cross(self.dcell_vectors[1],self.dcell_vectors[2]))
-        bst = np.cross(self.dcell_vectors[0],self.dcell_vectors[2]) /np.dot(self.dcell_vectors[0],np.cross(self.dcell_vectors[1],self.dcell_vectors[2]))
-        cst = np.cross(self.dcell_vectors[0],self.dcell_vectors[1]) /np.dot(self.dcell_vectors[0],np.cross(self.dcell_vectors[1],self.dcell_vectors[2]))
-
-        return [ast, bst, cst]
-
-    def get_dcell_vectors(self):
-        '''
-        Calculate the direct lattice vectors.
-
-        Arguments:
-            None.
-
-        Returns:
-            a: direct lattice vector a
-            b: direct lattice vector b
-            c: direct lattice vector c
-        '''
-        a_unit = np.array([1.0,0.0,0.0])
-        b_unit = np.array([np.cos(self.dcell_angles[2]), np.sin(self.dcell_angles[2]), 0])
-        c_unit = np.array([
-                            np.cos(self.dcell_angles[1]),
-                           (np.cos(self.dcell_angles[0]) - np.cos(self.dcell_angles[1])*np.cos(self.dcell_angles[2]))/np.sin(self.dcell_angles[2]),
-                            np.sqrt( 1 - np.cos(self.dcell_angles[1])**2 - (( np.cos(self.dcell_angles[0]) -np.cos(self.dcell_angles[1])*np.cos(self.dcell_angles[2]))/np.sin(self.dcell_angles[2]))**2)
-                        ])
-
-        a = float(self.cif['_cell.length_a'])*a_unit
-        b = float(self.cif['_cell.length_b'])*b_unit
-        c = float(self.cif['_cell.length_c'])*c_unit
-
-        return [a, b, c]
 
 
+        
 
-    def get_dcell_angles(self):
-        '''
-        Retrieve direct lattice angles.
 
-        Arguments:
-            None.
-
-        Returns:
-            alpha: angle between direct cell vectors c and b.
-            beta: angle between direct cell vectors a and c.
-            gamma: angle between direct cell vectors a and b.
-        '''
-        alpha = np.radians(float(self.cif['_cell.angle_alpha']))
-        beta = np.radians(float(self.cif['_cell.angle_beta']))
-        gamma = np.radians(float(self.cif['_cell.angle_gamma']))
-        return [alpha,beta, gamma]
 
 
