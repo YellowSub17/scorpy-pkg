@@ -12,12 +12,12 @@ from scipy import special
 
 
 
-# def index_x(x_val, x_max, nx):
-    # return int(round((x_val/float(x_max))*(nx-1)))
-
 def index_x(x_val, x_max, nx):
-    a = np.asarray(np.linspace(0, x_max, nx))
-    return np.abs(a - x_val).argmin()
+    return int(round((x_val/float(x_max))*(nx-1)))
+
+# def index_x(x_val, x_max, nx):
+    # a = np.asarray(np.linspace(0, x_max, nx))
+    # return np.abs(a - x_val).argmin()
 
 
 def index_x_arr(x_vals, x_max, nx):

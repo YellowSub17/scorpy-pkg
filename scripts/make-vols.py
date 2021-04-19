@@ -119,24 +119,34 @@ def make_padf_from_correlation():
     runs144 = [118,108,119,109,120,110,121]
     runs = runs150+runs144
 
+    res = 0.25
+    rmax = 30
+   
+
+    nr = round(rmax/res)
+
 
     for run in runs:
-        padf = scorpy.PadfVol(600,360,60)
         cor = scorpy.CorrelationVol(path=f'../data/dbins/cosine_sim/{run}/run{run}_qcor')
+        padf = scorpy.PadfVol(nr,cor.ntheta, rmax)
 
-        padf.fill_from_corr(f'../data/dbins/cosine_sim/{run}/run{run}_qcor')
+        qcor_path = f'/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/data/dbins/cosine_sim/{run}/run{run}_qcor.dbin'
+        padf.fill_from_corr(qcor_path, nl=11)
 
+        padf.save_dbin(f'../data/dbins/cosine_sim/{run}/run{run}_padf')
 
+# run_padf(cor, 30,0.25, 10, f'{outpath}', tag=f'seed{seed}_a')
 
+# def run_padf(cor,rmax, res, nl, outpath, tag='tag'):
 
 if __name__ =="__main__":
 
 
     print('Make Vols')
 
-    make_correlation_from_cif(names=['1al1'], nq=200, ntheta=400, qmax=0.18, dryrun=False, tag='x')
+    # make_correlation_from_cif(names=['1al1'], nq=200, ntheta=400, qmax=0.18, dryrun=False, tag='x')
     # make_blqq_from_correlation()
-    # make_padf_from_correlation()
+    make_padf_from_correlation()
     # make_corr_from_peakdata_half()
     # make_corr_from_peakdata()
 

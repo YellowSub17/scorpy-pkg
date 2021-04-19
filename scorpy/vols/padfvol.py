@@ -30,7 +30,9 @@ class PadfVol(Vol):
         corr = CorrelationVol(path=cor_path)
 
         padf_config = open(f'{PADF_PADF}config.txt', 'w')
-        padf_config.write(f'correlationfile = {os.getcwd()}/{cor_path}\n\n')
+        padf_config.write(f'correlationfile = {cor_path}\n\n')
+
+        os.system('mkdir /tmp/padf')
         padf_config.write(f'outpath = /tmp/padf\n\n')
         padf_config.write(f'wavelength = {wavelength}\n\n')
         padf_config.write(f'tag = bingbong\n\n')
@@ -47,8 +49,7 @@ class PadfVol(Vol):
 
         cmd = f'{PADF_PADF}padf {PADF_PADF}config.txt'
 
-        os.system(f'{PADF_PADF}padf {PADF_PADF}config.txt')
+        os.system(cmd)
 
         os.system(f'rm /tmp/padf/*r_vs_l*')
         os.system(f'rm /tmp/padf/*bl*')
-        

@@ -4,8 +4,8 @@
 from scorpy import CorrelationVol
 import json
 
-infile = open('../data/cxi/run_statistics.json', 'r')
-stats = json.load(infile)
+# infile = open('../data/cxi/run_statistics.json', 'r')
+# stats = json.load(infile)
 
 import numpy as np
 
@@ -68,7 +68,7 @@ runs = runs150+runs144
 
 numseeds = 20
 
-con_bool = False
+con_bool = True
 
 
 for run in runs:
