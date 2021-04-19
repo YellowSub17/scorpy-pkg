@@ -22,53 +22,47 @@ class SphericalVol(Vol):
     '''
 
 
-    def __init__(self, nq=100, n_angle=180, qmax=1, grid_type='GLQ', extend=False,  path=None, comp=False):
-        assert n_angle%2==0, 'n_angle must be even'
+    def __init__(self, nq=100, nangle=180, qmax=1, gridtype='GLQ', extend=False,  path=None, comp=False):
+        assert nangle%2==0, 'nangle must be even'
 
-        if grid_type=='DH1':
+        if gridtype=='DH1':
             if extend:
-                N_lat = n_angle +1
-                N_long = n_angle +1
-                self.lmax = int(n_angle/2) -1
+                nlat = nangle +1
+                nlong = nangle +1
+                self.lmax = int(nangle/2) -1
             else:
-                N_lat = n_angle
-                N_long = n_angle
-                self.lmax = int(n_angle/2) -1
+                nlat = nangle
+                nlong = nangle
+                self.lmax = int(nangle/2) -1
 
 
-        elif grid_type=='DH2':
+        elif gridtype=='DH2':
             if extend:
-                N_lat = n_angle +1
-                N_long = 2*n_angle +1
-                self.lmax = int(n_angle/2) -1
+                nlat = nangle +1
+                nlong = 2*nangle +1
+                self.lmax = int(nangle/2) -1
             else:
-                N_lat = n_angle
-                N_long = 2*n_angle
-                self.lmax = int(n_angle/2) -1
+                nlat = nangle
+                nlong = 2*nangle
+                self.lmax = int(nangle/2) -1
 
         else:
             if extend:
-                N_lat = n_angle
-                N_long = 2*n_angle 
-                self.lmax = int(n_angle) -1
+                nlat = nangle
+                nlong = 2*nangle
+                self.lmax = int(nangle) -1
             else:
-                N_lat = n_angle
-                N_long = 2*n_angle -1
-                self.lmax = int(n_angle) -1
+                nlat = nangle
+                nlong = 2*nangle -1
+                self.lmax = int(nangle) -1
 
-        Vol.__init__(self, nq,N_lat, N_long, qmax, np.pi, 2*np.pi, comp, path=path)
+        Vol.__init__(self, nq,nlat, nlong, qmax, np.pi, 2*np.pi, comp, path=path)
 
 
-#         self.vol = np.random.random(self.vol.shape)
 
-        # apple=40
-        # bink = (int(self.ny/2-apple), int(self.ny/2 + apple))
-        # bonk = (int(self.nz/2-apple), int(self.nz/2 + apple))
-
-        # self.vol[:,bink[0]:bink[1], bonk[0]:bonk[1]] = 1
 
         self.extend = extend
-        self.grid_type = grid_type
+        self.gridtype = gridtype
 
 
 
@@ -81,7 +75,7 @@ class SphericalVol(Vol):
         for iq in range(self.nx):
             print(iq)
             q_slice = self.vol[iq,...]
-            if self.grid_type =='DH1' or self.grid_type =='DH2':
+            if self.gridtype =='DH1' or self.gridtype =='DH2':
                 sh_grid = pysh.shclasses.shgrid.DHRealGrid(q_slice)
             else:
                 sh_grid = pysh.shclasses.shgrid.GLQRealGrid(q_slice)
@@ -96,7 +90,7 @@ class SphericalVol(Vol):
 
             sh_coeffs = pysh.shclasses.shcoeffs.SHRealCoeffs(filt_coeffs)
 
-            sh_grid = sh_coeffs.expand(extend = self.extend, grid=self.grid_type)
+            sh_grid = sh_coeffs.expand(extend = self.extend, grid=self.gridtype)
 
             q_slice_filt = sh_grid.data
 
@@ -117,7 +111,6 @@ class SphericalVol(Vol):
         for q_ind, theta_ind, phi_ind, I in zip(q_inds, theta_inds, phi_inds, cif.spherical[:,-1]):
             self.vol[q_ind, theta_ind, phi_ind] +=I
 
-        # self.pass_filter()
 
 
     def rotate(self, a,b,c):
@@ -128,7 +121,7 @@ class SphericalVol(Vol):
         for iq in range(self.nx):
             print(iq)
             q_slice = self.vol[iq,...]
-            if self.grid_type =='DH1' or self.grid_type =='DH2':
+            if self.gridtype =='DH1' or self.gridtype =='DH2':
                 sh_grid = pysh.shclasses.shgrid.DHRealGrid(q_slice)
             else:
                 sh_grid = pysh.shclasses.shgrid.GLQRealGrid(q_slice)
@@ -143,7 +136,7 @@ class SphericalVol(Vol):
 
             sh_coeffs = pysh.shclasses.shcoeffs.SHRealCoeffs(coeffs_rot)
 
-            sh_grid = sh_coeffs.expand(extend = self.extend, grid=self.grid_type)
+            sh_grid = sh_coeffs.expand(extend = self.extend, grid=self.gridtype)
 
             q_slice_rot = sh_grid.data
 
@@ -153,7 +146,7 @@ class SphericalVol(Vol):
     def get_angle_sampling(self):
 
         q_slice = self.vol[-1,...]
-        if self.grid_type =='DH1' or self.grid_type =='DH2':
+        if self.gridtype =='DH1' or self.gridtype =='DH2':
             sh_grid = pysh.shclasses.shgrid.DHRealGrid(q_slice)
         else:
             sh_grid = pysh.shclasses.shgrid.GLQRealGrid(q_slice)
@@ -173,7 +166,7 @@ class SphericalVol(Vol):
         for iq in range(self.nx):
             print(iq)
             q_slice = self.vol[iq,...]
-            if self.grid_type =='DH1' or self.grid_type =='DH2':
+            if self.gridtype =='DH1' or self.gridtype =='DH2':
                 sh_grid = pysh.shclasses.shgrid.DHRealGrid(q_slice)
             else:
                 sh_grid = pysh.shclasses.shgrid.GLQRealGrid(q_slice)
@@ -188,7 +181,7 @@ class SphericalVol(Vol):
 
             sh_coeffs = pysh.shclasses.shcoeffs.SHRealCoeffs(filt_coeffs)
 
-            sh_grid = sh_coeffs.expand(extend = self.extend, grid=self.grid_type)
+            sh_grid = sh_coeffs.expand(extend = self.extend, grid=self.gridtype)
 
             q_slice_filt = sh_grid.data
 
@@ -198,7 +191,7 @@ class SphericalVol(Vol):
     def get_coeffs(self, iq):
         q_slice = self.vol[iq,...]
 
-        if self.grid_type =='DH1' or self.grid_type =='DH2':
+        if self.gridtype =='DH1' or self.gridtype =='DH2':
             sh_grid = pysh.shclasses.shgrid.DHRealGrid(q_slice)
         else:
             sh_grid = pysh.shclasses.shgrid.GLQRealGrid(q_slice)

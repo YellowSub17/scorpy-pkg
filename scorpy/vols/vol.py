@@ -36,9 +36,9 @@ class Vol:
             if type(path) == str:
                 path = Path(path)
 
-            self.tag = path.stem
+            tag = path.stem
             config = cfp.ConfigParser()
-            config.read(f'{path.parent}/{self.tag}_log.txt')
+            config.read(f'{path.parent}/{tag}_log.txt')
 
             self._nx = int(config['params']['nx'])
             self._ny = int(config['params']['ny'])
@@ -51,9 +51,9 @@ class Vol:
             self._comp = config.getboolean('params', 'comp')
 
             if self.comp:
-                file_vol = np.fromfile(f'{path.parent}/{self.tag}.dbin', dtype=np.complex64)
+                file_vol = np.fromfile(f'{path.parent}/{tag}.dbin', dtype=np.complex64)
             else:
-                file_vol = np.fromfile(f'{path.parent}/{self.tag}.dbin')
+                file_vol = np.fromfile(f'{path.parent}/{tag}.dbin')
 
             self._vol = file_vol.reshape((self.nx, self.ny, self.nz))
 
@@ -119,15 +119,14 @@ class Vol:
         if type(path) == str:
             path = Path(path)
 
-        self.tag = path.stem
+        tag = path.stem
 
         flat_vol= self.vol.flatten()
-        flat_vol.tofile(f'{path.parent}/{self.tag}.dbin')
+        flat_vol.tofile(f'{path.parent}/{tag}.dbin')
 
-        f = open(f'{path.parent}/{self.tag}_log.txt', 'w')
+        f = open(f'{path.parent}/{tag}_log.txt', 'w')
         f.write('## Vol Log File\n\n')
         f.write('[params]\n')
-        f.write(f'tag = {self.tag}\n')
 
         f.write(f'nx = {self.nx}\n')
         f.write(f'ny = {self.ny}\n')
@@ -296,6 +295,14 @@ class Vol:
         if new_fig:
             plt.figure()
         plt.plot(line)
+
+
+
+
+
+
+
+
 
 
 

@@ -120,6 +120,12 @@ class CorrelationVol(Vol):
 
 
     def correlate(self,c):
+        
+        if c.shape[0]>20000:
+            print(f'WARNING: number of scattering vectors is large.')
+            print(f'Scattering vectors: {c.shape[0]}')
+            print(f'Correlation may take +30mins')
+
         if c.shape[1]==3:
             self.correlate2D(c)
         elif c.shape[1]==4:
