@@ -17,7 +17,7 @@ np.random.seed(0)
 
 #### MAKE PADF FROM PEAKS DATA CORRELATION
 runs150 = [112,123,113,125,102,103,104,105]
-runs144 = [118,108,119,109,120,110,121]
+runs144 = [118,108,119,109,120,110,121] #start from 118
 runs = runs150+runs144
 
 res = 0.25

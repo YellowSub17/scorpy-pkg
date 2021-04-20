@@ -118,7 +118,7 @@ class CorrelationVol(Vol):
                     self.vol[q_prime_ind,q_ind,theta_ind] +=q[-1]*q_prime[-1]
 
 
-    def correlateSPH(self, qtpi, cif):
+    def correlateSPH(self, qtpi):
 
 
         qmags = qtpi[:,0]
@@ -167,12 +167,6 @@ class CorrelationVol(Vol):
 
 
                 pmod = np.array([1, 180/np.pi, 180/np.pi])
-         #        print('rect: ', cif.bragg[i,:-1], cif.bragg[i+j,:-1])
-                # print('sph: ', q1[:-1]*pmod,q2[:-1]*pmod)
-                # # print(np.degrees(q1[:-1]), np.degrees(q2[:-1]))
-                # # print(cif.bragg[i,:-1],cif.bragg[j,:-1])
-                # print('angle between: ', np.degrees(delta_theta))
-                # print()
 
 
                 theta_ind = index_x(delta_theta, np.pi, self.ntheta)

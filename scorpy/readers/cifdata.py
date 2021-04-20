@@ -146,6 +146,7 @@ class CifData:
 
 
 
+        print(qinds)
 
         qspace = np.linspace(0, self.qmax, nq)
         tspace = np.linspace(-np.pi/2, np.pi/2, ntheta)
