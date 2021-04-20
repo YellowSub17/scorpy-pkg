@@ -2,6 +2,7 @@
 import CifFile as pycif
 import numpy as np
 from ..symmetry import apply_sym
+from ..utils import index_x
 
 
 class CifData:
@@ -36,9 +37,9 @@ class CifData:
                             np.sqrt( 1 - np.cos(self.beta)**2 - (( np.cos(self.alpha) -np.cos(self.beta)*np.cos(self.gamma))/np.sin(self.gamma))**2)
                         ])
 
-        self.a = float(self.cif['_cell.length_a'])*a_unit
-        self.b = float(self.cif['_cell.length_b'])*b_unit
-        self.c = float(self.cif['_cell.length_c'])*c_unit
+        self.a = float(self.cif['_cell.length_a'])*np.round(a_unit,14)
+        self.b = float(self.cif['_cell.length_b'])*np.round(b_unit,14)
+        self.c = float(self.cif['_cell.length_c'])*np.round(c_unit,14)
 
 
         self.ast = np.cross(self.b,self.c) /np.dot(self.a,np.cross(self.b,self.c))
@@ -114,11 +115,15 @@ class CifData:
 
 
         q_mag = np.linalg.norm(scattering[:,:3], axis=1)
+        #up and down
+        theta = np.arctan2(np.linalg.norm(scattering[:,:2], axis=1),scattering[:,2]) #0 -> pi
+        theta -= np.pi/2 # -pi/2 -> pi/2
+
+        #around
         phi = np.arctan2(scattering[:,1], scattering[:,0]) # -pi -> pi
         phi[np.where(phi<0)] = phi[np.where(phi<0)] + 2*np.pi  #0 -> 2pi
-        theta = np.arctan2(np.linalg.norm(scattering[:,:2], axis=1),scattering[:,2]) #0 -> pi
 
-        spherical  =np.array([q_mag, theta, phi, bragg[:,-1]]).T
+        spherical  = np.array([q_mag, theta, phi, bragg[:,-1]]).T
 
 
         return bragg, scattering, spherical
@@ -126,7 +131,46 @@ class CifData:
 
 
 
-        
+    def bin_spherical(self, nq, ntheta, nphi):
+
+
+        qs = self.spherical[:,0]
+        ts = self.spherical[:,1]+np.pi/2 #0 -> pi
+        ps = self.spherical[:,2]
+
+        ite = np.ones(np.shape(qs))
+
+        qinds = list(map(index_x, qs, self.qmax*ite, nq*ite))
+        tinds = list(map(index_x, ts*ite, np.pi*ite, ntheta*ite))
+        pinds = list(map(index_x, ps*ite, 2*np.pi*ite, nphi*ite))
+
+
+
+
+        qspace = np.linspace(0, self.qmax, nq)
+        tspace = np.linspace(-np.pi/2, np.pi/2, ntheta)
+        pspace = np.linspace(0, 2*np.pi, nphi)
+
+
+
+
+
+        self.spherical[:,0] = qspace[qinds]
+        self.spherical[:,1] = tspace[tinds]
+        self.spherical[:,2] = pspace[pinds]
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

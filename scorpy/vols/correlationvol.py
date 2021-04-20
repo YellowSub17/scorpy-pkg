@@ -118,11 +118,13 @@ class CorrelationVol(Vol):
                     self.vol[q_prime_ind,q_ind,theta_ind] +=q[-1]*q_prime[-1]
 
 
-    def correlateSPH(self, qtpi):
-    
+    def correlateSPH(self, qtpi, cif):
+
+
         qmags = qtpi[:,0]
         correl_vec_indices = np.where(qmags <= self.qmax)[0]
         qtpi = qtpi[correl_vec_indices]
+
 
        # q1 scattering
         for i, q1 in enumerate(qtpi):
@@ -130,25 +132,28 @@ class CorrelationVol(Vol):
             q1_mag = q1[0]
             q1_mag_ind = index_x(q1_mag,self.qmax, self.nq)
 
-            theta1 = q1[2]
-            phi1 = q1[1]
+            theta1 = q1[1]
+            phi1 = q1[2]
 
 
-            
+
+
 
             # q2 scattering
             for j, q2 in enumerate(qtpi[i:]):
                 q2_mag = q2[0]
 
-                theta2 = q2[2]
-                phi2 = q2[1]
+                theta2 = q2[1]
+                phi2 = q2[2]
+
 
                 q2_mag_ind = index_x(q2_mag, self.qmax, self.nq)
 
                 sinterm = np.sin(theta1)*np.sin(theta2)
-                costerm = np.cos(theta1)*np.cos(theta2)*np.cos(phi1-phi2)
+                costerm = np.cos(theta1)*np.cos(theta2)*np.cos(phi2-phi1)
 
                 addterm = sinterm+costerm
+
                 if addterm>1:
                     print(addterm)
                     addterm=1
@@ -158,7 +163,16 @@ class CorrelationVol(Vol):
 
 
 
-                delta_theta = np.arccos(addterm)
+                delta_theta = np.round(np.arccos(addterm),14)
+
+
+                pmod = np.array([1, 180/np.pi, 180/np.pi])
+         #        print('rect: ', cif.bragg[i,:-1], cif.bragg[i+j,:-1])
+                # print('sph: ', q1[:-1]*pmod,q2[:-1]*pmod)
+                # # print(np.degrees(q1[:-1]), np.degrees(q2[:-1]))
+                # # print(cif.bragg[i,:-1],cif.bragg[j,:-1])
+                # print('angle between: ', np.degrees(delta_theta))
+                # print()
 
 
                 theta_ind = index_x(delta_theta, np.pi, self.ntheta)

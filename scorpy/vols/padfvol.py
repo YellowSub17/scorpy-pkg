@@ -4,6 +4,7 @@
 from .vol import Vol
 from .correlationvol import CorrelationVol
 import os
+import numpy as np
 
 
 PADF_PADF = '/home/pat/Documents/cloudstor/phd/python_projects/padf/'
@@ -24,25 +25,28 @@ class PadfVol(Vol):
         self.ntheta = self.nz
 
 
-    def fill_from_corr(self, cor_path, nl=37, wavelength=1e-10):
+    def fill_from_corr(self, corr_path, nl=37, wavelength=1e-10):
 
 
-        corr = CorrelationVol(path=cor_path)
+        corr = CorrelationVol(path=corr_path)
 
         padf_config = open(f'{PADF_PADF}config.txt', 'w')
-        padf_config.write(f'correlationfile = {cor_path}\n\n')
+        padf_config.write(f'correlationfile = {corr_path}\n\n')
 
         os.system('mkdir /tmp/padf')
         padf_config.write(f'outpath = /tmp/padf\n\n')
         padf_config.write(f'wavelength = {wavelength}\n\n')
-        padf_config.write(f'tag = bingbong\n\n')
-        padf_config.write(f'nthq = {corr.ntheta}\n\n')
-        padf_config.write(f'nq = {corr.nq}\n\n')
-        padf_config.write(f'nthr = {self.ntheta}\n\n')
-        padf_config.write(f'nr = {self.nr}\n\n')
         padf_config.write(f'nl = {nl}\n\n')
+        padf_config.write(f'tag = bingbong\n\n')
+
         padf_config.write(f'qmax = {float(corr.qmax)/1e-10}\n\n')
+        padf_config.write(f'nq = {corr.nq}\n\n')
+        padf_config.write(f'nthq = {corr.ntheta}\n\n')
+
         padf_config.write(f'rmax = {self.rmax*1e-10}\n\n')
+        padf_config.write(f'nr = {self.nr}\n\n')
+        # padf_config.write(f'nthr = {2*self.ntheta}\n\n')
+
 
 
         padf_config.close()
@@ -53,3 +57,13 @@ class PadfVol(Vol):
 
         os.system(f'rm /tmp/padf/*r_vs_l*')
         os.system(f'rm /tmp/padf/*bl*')
+
+
+        flatv = np.fromfile(f'/tmp/padf/bingbong_padf.dbin')
+
+        v =  flatv.reshape(self.nr, self.nr, corr.ntheta)
+
+        self.vol = v[...,:self.ntheta]
+
+
+
