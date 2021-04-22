@@ -10,7 +10,7 @@ import healpy as hp
 plt.close('all')
 
 name = '1al1'
-cor = scorpy.CorrelationVol(path=f'../data/dbins/{name}_qcor')
+cor = scorpy.CorrelationVol(path=f'../data/dbins/{name}_sph_qcor')
 cif = scorpy.CifData(f'../data/xtal/{name}-sf.cif')
 
 iv_cif = scorpy.SphInten(cor.nq, 2**5, cor.qmax).fill_from_cif(cif)
@@ -20,14 +20,7 @@ bl = scorpy.BlqqVol(cor.nq, 57, cor.qmax)
 bl.fill_from_sph(sph_cif)
 bl_l, bl_u = bl.get_eig()
 
-# plt.figure()
-# plt.title('Eigenvalues of Blqq filled from Spherical Harmonics, 1AL1')
-# plt.plot(bl_l[-1,:])
-# plt.xlabel('L')
-# plt.ylabel('Eigenvalue')
-# plt.show()
 
-# assert False
 
 plt.figure()
 plt.imshow(np.log(np.abs(bl_l)+1))
@@ -47,15 +40,6 @@ plt.figure()
 plt.imshow(np.log(np.abs(bl_l)+1))
 plt.figure()
 plt.imshow(bl_l)
-
-
-# assert False
-
-# q_lin = cor.qmax*np.mgrid[0:cor.nq, 0:cor.nq, 0:bl.nl]/cor.nq
-# q_lin = q_lin[0]
-
-# bl_u[1:,1:,:] *= q_lin[1:,1:,:]**2
-
 
 
 #make initial (target) intensities
@@ -107,28 +91,6 @@ plt.title('I_init: Initial Intensity')
 Iv_filt.plot_sphere(nsphere)
 plt.title('Iv_filt: ivol -> Ilm -> ivol')
 
-# Iv_rela.plot_sphere(nsphere)
-# plt.title('Iv_rela: Iv_filt/Iv_data')
-# Iv_rela2.plot_sphere(nsphere)
-# plt.title('Iv_rela2: Iv_data2/Iv_data')
-
-
-# q = np.linspace(0, cor.qmax, cor.nq)
-
-# plt.figure()
-# aves = np.mean(Iv_rela.ivol, axis=-1)
-# plt.plot(q, aves)
-# plt.title('Iv_filt/Iv_data')
-# plt.xlabel('nq')
-# plt.ylabel('Average Relative Difference')
-
-# plt.figure()
-# aves = np.mean(Iv_rela2.ivol, axis=-1)
-# plt.plot(aves)
-# plt.title('Iv_data2/Iv_data')
-# plt.xlabel('nq')
-# plt.ylabel('Average Relative Difference')
-
 
 
 Iv_data.plot_sphere(nsphere)
@@ -161,5 +123,4 @@ plt.ylabel('Average Relative Difference')
 
 
 
-# plt.show(block=False)
 plt.show()

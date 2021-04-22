@@ -15,41 +15,56 @@ import numpy as np
 
 extent = 'default'
 
-nq = 20
-ntheta = 36
+
+
+
+corr1 = scorpy.CorrelationVol(path="../data/dbins/1al1_sph_qcor")
+corr2 = scorpy.CorrelationVol(path="../data/dbins/1al1_binned_sph_qcor")
+corr3 = scorpy.CorrelationVol(path="../data/dbins/1al1_binned2_sph_qcor")
+
+
+corr1.plot_sumax()
+plt.title('corr before bin')
+
+corr2.plot_sumax()
+plt.title('corr after bin')
+
+corr3.plot_sumax()
+plt.title('corr half bin')
 
 
 
 
-qmax = None
-cif = scorpy.CifData('../data/xtal/homebrew-sf.cif', qmax=qmax)
-
-# qmax = 2*0.18496491731629183/3
-# cif = scorpy.CifData('../data/xtal/1al1-sf.cif', qmax=qmax)
-
-# print(cif.spherical)
-# cif.bin_spherical(nq,ntheta,ntheta)
-# print(cif.spherical)
 
 
-cor1 = scorpy.CorrelationVol(nq,ntheta, cif.qmax)
-cor1.correlateSPH(cif.spherical)
+blqq1 = scorpy.BlqqVol(corr1.nq, 57, corr1.qmax)
+blqq1.fill_from_corr(corr1)
+
+blqq2 = scorpy.BlqqVol(corr2.nq, 57, corr2.qmax)
+blqq2.fill_from_corr(corr2)
+
+blqq3 = scorpy.BlqqVol(corr3.nq, 57, corr3.qmax)
+blqq3.fill_from_corr(corr3)
+
+blqq1.plot_slice(axis=2, index=14)
+plt.title('blqq before bin')
+
+blqq2.plot_slice(axis=2, index=14)
+plt.title('blqq after bin')
+
+blqq3.plot_slice(axis=2, index=14)
+plt.title('blqq half bin')
 
 
-cif.bin_spherical(nq,ntheta,ntheta)
-
-
-cor2 = scorpy.CorrelationVol(nq,ntheta, cif.qmax)
-cor2.correlateSPH(cif.spherical)
 
 
 
-cor1.plot_sumax(extent=extent)
-plt.title('sum before bin')
 
-cor2.plot_sumax(extent=extent)
-plt.title('sum after bin')
+# blqq3 = blqq2.copy()
+# blqq3.vol -= blqq1.vol
 
+# blqq3.plot_slice(axis=2, index=14)
+# plt.title('diff')
 
 plt.show()
 
