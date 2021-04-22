@@ -25,14 +25,11 @@ Use the following commands to set up a conda environment.
     
 ## Installation 
 
-1. Download the source
-2. cd into the directory scorpy-pkg
-3. Run the command `pip install -e .`
-
-
+To install scorpy, run the following commands to download the package, move into the directory and install an editable verision of the package.
 This will create a link from your python site-package directory to an egg-info directory.
 
-## Testing
+    git clone https://github.com/YellowSub17/scorpy-pkg.git
+    cd scorpy-pkg
+    pip install -e .
 
-Test scripts can be found in `tests`. Use the command `py.test -v tests/` to run all tests.
 
