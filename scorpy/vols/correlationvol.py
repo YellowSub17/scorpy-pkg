@@ -1,4 +1,5 @@
-from ..utils import  angle_between, polar_angle_between, index_x
+from ..utils import  angle_between_pol, angle_between_sph, \
+                        angle_between_rect, index_x
 
 from .vol import Vol
 from scipy import special
@@ -34,9 +35,9 @@ class CorrelationVol(Vol, CorrelationVolProperties):
     def fill_from_cif(self,cif, cords='scat_sph'):
 
         if cords=='scat_sph':
-            self.correlate_scat_sph(cif.correlate_scat_sph)
+            self.correlate_scat_sph(cif.scat_sph)
         if cords=='scat_rect':
-            self.correlate_scat_rect(cif.correlate_scat_rect)
+            self.correlate_scat_rect(cif.scat_rect)
 
 
     def fill_from_peakdata(self,peakdata):
@@ -128,7 +129,7 @@ class CorrelationVol(Vol, CorrelationVolProperties):
             for j, q2 in enumerate(qti[i:]):
                 q2_ind = q_inds[i+j]
 
-                psi = polar_angle_between(q1[1], q2[1])
+                psi = angle_between_pol(q1[1], q2[1])
                 psi_ind = index_x(psi, 0, 180, self.npsi)
 
                 self.vol[q1_ind, q2_ind, psi_ind] +=q1[-1]*q2[-1]
@@ -151,7 +152,6 @@ class CorrelationVol(Vol, CorrelationVolProperties):
         Returns:
             None. Updates self.cvol with correlations
         '''
-
         qmags = np.linalg.norm(qxyzi[:,:3], axis=1)
         le_qmax = np.where(qmags <= self.qmax)[0]
         qxyzi = qxyzi[le_qmax]
@@ -166,7 +166,7 @@ class CorrelationVol(Vol, CorrelationVolProperties):
             for j, q2 in enumerate(qxyzi[i:]):
                 q2_ind = q_inds[i+j]
 
-                psi = angle_between(q1[:3], q2[:3])
+                psi = angle_between_rect(q1[:3], q2[:3])
                 psi_ind = index_x(psi, 0, np.pi, self.npsi)
 
                 self.vol[q1_ind,q2_ind,psi_ind] +=q1[-1]*q2[-1]
@@ -192,48 +192,26 @@ class CorrelationVol(Vol, CorrelationVolProperties):
         Returns:
             None. Updates self.cvol with correlations
         '''
-
-
-
         le_qmax = np.where(qtpi[:,0] <= self.qmax)[0]
         qtpi = qtpi[le_qmax]
 
         ite = np.ones(qtpi.shape[0])
         q_inds =list(map(index_x, qtpi[:,0], 0*ite, self.qmax*ite, self.nq*ite))
 
-
-       # q1 scattering
         for i, q1 in enumerate(qtpi):
-
             q1_ind = q_inds[i]
             theta1 = q1[1]
             phi1 = q1[2]
 
-
-
-            # q2 scattering
             for j, q2 in enumerate(qtpi[i:]):
                 q2_ind = q_inds[i+j]
                 theta2 = q2[1]
                 phi2 = q2[2]
 
-                sinterm = np.sin(theta1)*np.sin(theta2)
-                costerm = np.cos(theta1)*np.cos(theta2)*np.cos(phi2-phi1)
-
-                addterm = sinterm+costerm
-
-                if addterm>1:
-                    addterm=1
-                elif addterm < -1:
-                    addterm =-1
-
-
-                psi = np.round(np.arccos(addterm),14)
-
-                psi_ind = index_x(psi,0, np.pi, self.ntheta)
+                psi = angle_between_sph(theta1, theta2,phi1, phi2)
+                psi_ind = index_x(psi,0, np.pi, self.npsi)
 
                 self.vol[q1_ind, q2_ind, psi_ind] +=q1[-1]*q2[-1]
-
                 if j>0:
                     self.vol[q2_ind, q2_ind, psi_ind] +=q1[-1]*q2[-1]
 

@@ -59,28 +59,66 @@ class CorrelationVolProperties:
 
     @property
     def qmax(self):
-        return self._xmax
+        return self.xmax
 
     @property
     def nq(self):
-        return self._nx
+        return self.nx
 
     @property
     def npsi(self):
-        return self._nz
+        return self.nz
 
     @property
     def cvol(self):
-        return self._vol
+        assert False, 'Error: cvol is deprecated, use vol'
 
-    @cvol.setter
-    def cvol(self, new_vol):
-        self.vol = new_vol
 
     @property
     def ntheta(self):
-        # print('warning: ntheta is deprecated. all hail npsi')
-        return self._nz
+        assert False, 'Error: ntheta is deprecated, use npsi'
+
+
+class BlqqVolProperties:
+
+    @property
+    def qmax(self):
+        return self.xmax
+
+    @property
+    def nq(self):
+        return self.nx
+
+    @property
+    def nl(self):
+        return self.nz
+
+    @property
+    def blvol(self):
+        assert False, 'Error: blvol is deprecated, use vol'
+
+
+
+
+class SphericalVolProperties:
+    print('x')
+
+    @property
+    def qmax(self):
+        return self.xmax
+
+    @property
+    def nq(self):
+        return self.nx
+
+    @property
+    def ntheta(self):
+        return self.ny
+
+    @property
+    def nphi(self):
+        return self.nz
+
 
 
 

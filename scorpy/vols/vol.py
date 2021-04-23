@@ -215,31 +215,31 @@ class Vol(VolProperties):
             plt.colorbar()
 
 
-    def plot_sumax(self, axis=0, new_fig=True, extent='default', aspect='auto'):
+    def plot_sumax(self, axis=0, new_fig=True, aspect='auto', extent=True):
 
         im = self.vol.sum(axis=axis)
         if new_fig:
             plt.figure()
 
-        if extent is None:
-            plt.imshow(im, origin='lower', aspect=aspect)
-        else:
+        if extent:
             plt.imshow(im, origin='lower', extent=self.get_extent(axis), aspect=aspect)
+        else:
+            plt.imshow(im, origin='lower', aspect=aspect)
 
         if new_fig:
             plt.colorbar()
 
 
-    def plot_slice(self,axis=0, index=0, new_fig=True, aspect='auto'):
+    def plot_slice(self,axis=0, index=0, new_fig=True, aspect='auto', extent=True):
 
         im = np.rollaxis(self.vol, axis)[index,...]
         if new_fig:
             plt.figure()
 
-        if extent is None:
-            plt.imshow(im, origin='lower', aspect=aspect)
-        else:
+        if extent:
             plt.imshow(im, origin='lower', extent=self.get_extent(axis), aspect=aspect)
+        else:
+            plt.imshow(im, origin='lower', aspect=aspect)
 
         if new_fig:
             plt.colorbar()

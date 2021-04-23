@@ -8,22 +8,16 @@ from scipy import special
 
 
 
-# def index_x(x_val, x_max, nx):
-    # return int(round((x_val/float(x_max))*(nx-1)))
 
 def index_x(x_val,x_min, x_max, nx):
     return np.int(np.round(np.interp(x_val, (x_min, x_max), (0, nx-1))))
 
 
 
-
-# def index_x_arr(x_vals, x_max, nx):
-    # return np.round((x_vals/float(x_max))*(nx-1)).astype(int)
-
-def polar_angle_between(t1,t2):
+def angle_between_pol(t1,t2):
     return np.abs((t1-t2+180)%360 -180)
 
-def angle_between(q1,q2):
+def angle_between_rect(q1,q2):
     dot = np.dot(q1/np.linalg.norm(q1), q2/np.linalg.norm(q2))
     if dot > 1:
         dot=1.0
@@ -32,12 +26,21 @@ def angle_between(q1,q2):
 
     return np.arccos(dot)
 
+def angle_between_sph(theta1,theta2,phi1,phi2):
 
-def norm01(arr):
-    arr = np.array(arr)
-    arr -=np.min(arr)
-    arr /=np.max(arr)
-    return arr
+    sinterm = np.sin(theta1)*np.sin(theta2)
+    costerm = np.cos(theta1)*np.cos(theta2)*np.cos(phi2-phi1)
+
+    addterm = sinterm+costerm
+
+    if addterm>1:
+        addterm=1
+    elif addterm < -1:
+        addterm =-1
+
+
+    return np.round(np.arccos(addterm),14)
+
 
 
 def cosinesim(v1,v2):
@@ -66,30 +69,6 @@ def ylm_wrapper(l,m, phi,theta, comp=False):
     #2*sqrt(pi) ensures orthogonality
     ylm *= 2*np.sqrt(np.pi)
     return ylm
-
-
-
-def ylm_wrapper2(l,m,phi,theta, comp=False):
-
-    term_a = ((-1)**m)*(np.sqrt(2))
-    term_b = np.sqrt( (2*l+1)/(4*np.pi) )
-
-    fact = np.math.factorial(l-np.abs(m))/np.math.factorial(l+np.abs(m))
-
-
-    leg =  special.lpmv(np.abs(m), l, np.cos(theta))
-
-    if m<0:
-        ylm = term_a*term_b*fact*leg*np.sin(np.abs(m)*phi)
-    elif m>0:
-        ylm = term_a*term_b*fact*leg*np.cos(m*phi)
-    else:
-        ylm = term_b*leg
-
-    ylm *= 2*np.sqrt(np.pi)
-    return ylm
-
-
 
 
 
