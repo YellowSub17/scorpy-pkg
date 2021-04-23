@@ -79,7 +79,7 @@ class CorrelationVolProperties:
 
     @property
     def ntheta(self):
-        print('warning: ntheta is deprecated. all hail npsi')
+        # print('warning: ntheta is deprecated. all hail npsi')
         return self._nz
 
 
