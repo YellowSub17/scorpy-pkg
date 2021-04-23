@@ -6,12 +6,15 @@ import configparser as cfp
 from pathlib import Path
 import matplotlib.pyplot as plt
 
+from .propertymixins import VolProperties
 
 
-class Vol:
+
+class Vol(VolProperties):
 
     def __init__(self,  nx = None, ny = None, nz = None, \
                         xmax = None, ymax = None, zmax = None, \
+                        xmin = None, ymin = None, zmin = None, \
                         comp = False, path = None):
 
         if not path is None:
@@ -23,6 +26,11 @@ class Vol:
             self._xmax = xmax
             self._ymax = ymax
             self._zmax = zmax
+
+            self._xmin = xmin
+            self._ymin = ymin
+            self._zmin = zmin
+
             self._comp = comp
 
             if self.comp:
@@ -44,6 +52,10 @@ class Vol:
             self._ny = int(config['params']['ny'])
             self._nz = int(config['params']['nz'])
 
+            self._xmin = float(config['params']['xmin'])
+            self._ymin = float(config['params']['ymin'])
+            self._zmin = float(config['params']['zmin'])
+
             self._xmax = float(config['params']['xmax'])
             self._ymax = float(config['params']['ymax'])
             self._zmax = float(config['params']['zmax'])
@@ -56,46 +68,6 @@ class Vol:
                 file_vol = np.fromfile(f'{path.parent}/{tag}.dbin')
 
             self._vol = file_vol.reshape((self.nx, self.ny, self.nz))
-
-    @property
-    def nx(self):
-        return self._nx
-
-    @property
-    def ny(self):
-        return self._ny
-
-    @property
-    def nz(self):
-        return self._nz
-
-    @property
-    def xmax(self):
-        return self._xmax
-
-    @property
-    def ymax(self):
-        return self._ymax
-
-    @property
-    def zmax(self):
-        return self._zmax
-
-    @property
-    def comp(self):
-        return self._comp
-
-    @property
-    def vol(self):
-        return self._vol
-
-    @vol.setter
-    def vol(self, new_vol):
-        assert new_vol.shape == self.vol.shape, 'Cannot replace vols with different shapes'
-        self._vol = new_vol
-
-
-
 
 
 
@@ -132,6 +104,10 @@ class Vol:
         f.write(f'ny = {self.ny}\n')
         f.write(f'nz = {self.nz}\n')
 
+        f.write(f'xmin = {self.xmin}\n')
+        f.write(f'ymin = {self.ymin}\n')
+        f.write(f'zmin = {self.zmin}\n')
+
         f.write(f'xmax = {self.xmax}\n')
         f.write(f'ymax = {self.ymax}\n')
         f.write(f'zmax = {self.zmax}\n')
@@ -158,7 +134,7 @@ class Vol:
 
             lams[:,z] = lam
             us[:,:,z] = u
-           
+
         if not herm:
             if np.all(np.imag(lams)==0) and np.all(np.imag(us)==0):
                 print('vol.get_eig(): lams and us are all real')
@@ -240,49 +216,31 @@ class Vol:
 
 
     def plot_sumax(self, axis=0, new_fig=True, extent='default', aspect='auto'):
+
         im = self.vol.sum(axis=axis)
-
-        #TODO: clean up if/else 
-        if axis == 0:
-            ext1 = self.zmax
-            ext2 = self.ymax
-        elif axis == 1:
-            ext1 = self.zmax
-            ext2 = self.xmax
-        else:
-            ext1 = self.xmax
-            ext2 = self.ymax
-
         if new_fig:
             plt.figure()
-        plt.imshow(im, origin='lower', extent=[0, ext1, 0, ext2], aspect=aspect)
+
         if extent is None:
             plt.imshow(im, origin='lower', aspect=aspect)
-
+        else:
+            plt.imshow(im, origin='lower', extent=self.get_extent(axis), aspect=aspect)
 
         if new_fig:
             plt.colorbar()
 
 
-    def plot_slice(self,axis=0, index=0, new_fig=True, extent='default', aspect='auto'):
-        if axis == 0:
-            ext1 = self.zmax
-            ext2 = self.ymax
-        elif axis == 1:
-            ext1 = self.zmax
-            ext2 = self.xmax
-        else:
-            ext1 = self.xmax
-            ext2 = self.ymax
+    def plot_slice(self,axis=0, index=0, new_fig=True, aspect='auto'):
 
         im = np.rollaxis(self.vol, axis)[index,...]
-        if self.comp:
-            im = np.real(im)
         if new_fig:
             plt.figure()
-        plt.imshow(im, origin='lower', extent=[0, ext1, 0, ext2], aspect=aspect)
+
         if extent is None:
             plt.imshow(im, origin='lower', aspect=aspect)
+        else:
+            plt.imshow(im, origin='lower', extent=self.get_extent(axis), aspect=aspect)
+
         if new_fig:
             plt.colorbar()
 
@@ -298,6 +256,13 @@ class Vol:
 
 
 
+    def get_extent(self,axis):
+        if axis == 0:
+            return [self.zmin, self.zmax, self.ymin, self.ymax]
+        elif axis == 1:
+            return [self.zmin, self.zmax, self.xmin, self.xmax]
+        else:
+            return [self.xmin, self.xmax, self.ymin, self.ymax]
 
 
 
@@ -305,29 +270,28 @@ class Vol:
 
 
 
+    # def is_herm(self):
 
-    def is_herm(self):
+        # herm=True
+        # for z in range(self.nz):
+            # mat = np.matrix(self.vol[...,z])
+            # if not np.allclose(mat, np.conj(mat.T)):
+                # print('Vol not herm for z =',z)
+                # herm = False
+        # return herm
 
-        herm=True
-        for z in range(self.nz):
-            mat = np.matrix(self.vol[...,z])
-            if not np.allclose(mat, np.conj(mat.T)):
-                print('Vol not herm for z =',z)
-                herm = False
-        return herm
+    # def is_sym(self):
+        # sym=True
+        # for z in range(self.nz):
 
-    def is_sym(self):
-        sym=True
-        for z in range(self.nz):
+            # mat1 = self.vol[...,z]
+            # mat2 = self.vol[...,self.nz-z-1]
 
-            mat1 = self.vol[...,z]
-            mat2 = self.vol[...,self.nz-z-1]
-
-            if not np.allclose(mat1,mat2):
-                print('Vol not sym for z =',z)
-                sym = False
-                # break
-        return sym
+            # if not np.allclose(mat1,mat2):
+                # print('Vol not sym for z =',z)
+                # sym = False
+                # # break
+        # return sym
 
 
 

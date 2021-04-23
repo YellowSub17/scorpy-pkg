@@ -3,25 +3,22 @@ from scipy import special
 
 
 
-# def find_nearest(array, value):
-    # array = np.asarray(array)
-    # idx = (np.abs(array - value)).idxmin()
-    # return array[idx]
 
 
 
 
-
-def index_x(x_val, x_max, nx):
-    return int(round((x_val/float(x_max))*(nx-1)))
 
 # def index_x(x_val, x_max, nx):
-    # a = np.asarray(np.linspace(0, x_max, nx))
-    # return np.abs(a - x_val).argmin()
+    # return int(round((x_val/float(x_max))*(nx-1)))
+
+def index_x(x_val,x_min, x_max, nx):
+    return np.int(np.round(np.interp(x_val, (x_min, x_max), (0, nx-1))))
 
 
-def index_x_arr(x_vals, x_max, nx):
-    return np.round((x_vals/float(x_max))*(nx-1)).astype(int)
+
+
+# def index_x_arr(x_vals, x_max, nx):
+    # return np.round((x_vals/float(x_max))*(nx-1)).astype(int)
 
 def polar_angle_between(t1,t2):
     return np.abs((t1-t2+180)%360 -180)

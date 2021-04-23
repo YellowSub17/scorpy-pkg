@@ -1,11 +1,13 @@
-from ..utils import index_x, angle_between, polar_angle_between
+from ..utils import  angle_between, polar_angle_between, index_x
 
 from .vol import Vol
 from scipy import special
 import numpy as np
 
+from .propertymixins import CorrelationVolProperties
 
-class CorrelationVol(Vol):
+
+class CorrelationVol(Vol, CorrelationVolProperties):
     '''
     Representation of a scattering correlation volume.
 
@@ -20,37 +22,88 @@ class CorrelationVol(Vol):
         '''
         Class constructor.
         '''
-        Vol.__init__(self, nq,nq,ntheta, qmax, qmax, 180, comp=False, path=path)
+        Vol.__init__(self, nx=nq, ny=nq, nz=ntheta,
+                     xmax=qmax, ymax=qmax, zmax=180,
+                     xmin=0, ymin=0, zmin=0,
+                     comp=False, path=path)
 
         self.plot_q1q2 = self.plot_xy
 
-    @property
-    def qmax(self):
-        return self._xmax
 
-    @property
-    def nq(self):
-        return self._nx
+    def fill_from_cif(self,cif, cords='scat_sph'):
 
-    @property
-    def ntheta(self):
-        return self._nz
-
-    @property
-    def cvol(self):
-        return self._vol
+        if cords=='scat_sph':
+            self.correlate_scat_sph(cif.correlate_scat_sph)
+        if cords=='scat_rect':
+            self.correlate_scat_rect(cif.correlate_scat_rect)
 
 
-
-
-
-
-
-
-
-    def correlate2D(self,qti):
+    def fill_from_peakdata(self,peakdata):
         '''
-        Correlate 2D diffraction pattern peaks.
+        Fill the CorrelationVol from a BlqqVol
+
+        Arguments:
+            blqq (BlqqVol): The BlqqVol object to to fill the CorrelationVol
+
+        Returns:
+            None. Updates self.cvol
+        '''
+        if peakdata.frame_numbers.size >1:
+            frames = peakdata.split_frames()
+        else:
+            frames = [peakdata]
+
+        for frame in frames:
+            self.correlate_scat_pol(frame.scat_pol)
+
+
+
+    def fill_from_blqq(self, blqq):
+        '''
+        Fill the CorrelationVol from a BlqqVol
+
+        Arguments:
+            blqq (BlqqVol): The BlqqVol object to to fill the CorrelationVol
+
+        Returns:
+            None. Updates self.cvol
+        '''
+
+        #arguments for the legendre polynomial
+        args = np.cos( np.linspace(0, np.pi, self.ntheta))
+
+        # initialze fmat matrix
+        fmat = np.zeros( (self.ntheta, blqq.nl) )
+
+        #for every even spherical harmonic
+        for l in range(0, blqq.nl, 2):
+
+            leg_vals = (1/(4*np.pi))*special.eval_legendre(l, args)
+            fmat[:,l] = leg_vals
+
+
+        #for every q1 position
+        for q1 in range(self.nq):
+            #for every q2 position
+            for q2 in range(q1, self.nq):
+
+                #vector as a function of L
+                blv = blqq.vol[q1,q2,:]
+                for t1 in range(self.ntheta):
+                    ft = fmat[t1,:]
+                    x = np.dot(blv,ft)
+                    self.vol[q1,q2,t1] = x
+                    if q1!=q2:
+                        self.vol[q2,q1,t1] = x
+
+
+
+
+
+
+    def correlate_scat_pol(self,qti):
+        '''
+        Correlate diffraction peaks in 2D polar coordinates.
 
         Arguments:
             qti (n x 3 array): list of peaks to correlate. Columns should be
@@ -64,11 +117,14 @@ class CorrelationVol(Vol):
         qti = qti[less_than_qmax]
 
         for i, q in enumerate(qti):
-            q_ind = index_x(q[0],self.qmax, self.nq)
+            q_ind = index_x(q[0],0, self.qmax, self.nq)
+            # q_ind = index_x(q[0], self.qmax, self.nq)
             for j, q_prime in enumerate(qti[i:]):
-                q_prime_ind = index_x(q_prime[0],self.qmax, self.nq)
+                q_prime_ind = index_x(q_prime[0],0,self.qmax, self.nq)
+                # q_prime_ind = index_x(q_prime[0],self.qmax, self.nq)
                 theta = polar_angle_between(q[1], q_prime[1])
-                theta_ind = index_x(theta, 180, self.ntheta)
+                theta_ind = index_x(theta,0, 180, self.ntheta)
+                # theta_ind = index_x(theta, 180, self.ntheta)
                 self.vol[q_ind,q_prime_ind,theta_ind] +=q[-1]*q_prime[-1]
 
                 if j>0:
@@ -76,9 +132,42 @@ class CorrelationVol(Vol):
 
 
 
-    def correlate3D(self,qxyzi):
+    def correlate_scat_pol2(self,qti):
         '''
-        Correlate 3D diffraction pattern peaks.
+        Correlate diffraction peaks in 2D polar coordinates.
+
+        Arguments:
+            qti (n x 3 array): list of peaks to correlate. Columns should be
+                                qti[:,0] = polar radius of peak
+                                qti[:,1] = polar angle of peak
+                                qti[:,2] = intensity of peak
+        Returns:
+            None. Updates self.cvol with correlations.
+        '''
+        le_qmax = np.where(qti[:,0] <= self.qmax)[0]      #only correlate less or equal the qmax
+        qti = qti[le_qmax]
+
+        ite = np.ones(qti.shape[0])
+
+        q_inds =list(map(index_x, qti[:,0]*ite, 0*ite, self.qmax*ite, self.nq*ite))
+        # print(q_inds)
+
+        for i, q1 in enumerate(qti):
+            q1_ind = q_inds[i]
+            for j, q2 in enumerate(qti[i:]):
+                q2_ind = q_inds[i+j]
+                theta = polar_angle_between(q1[1], q2[1])
+                theta_ind = index_x(theta, 0, 180, self.ntheta)
+                self.vol[q1_ind, q2_ind, theta_ind] +=q1[-1]*q2[-1]
+                if j>0:
+                    self.vol[q2_ind, q1_ind, theta_ind] +=q1[-1]*q2[-1]
+
+
+
+
+    def correlate_scat_rect(self,qxyzi):
+        '''
+        Correlate diffraction peaks in 3D rectilinear coordinates.
 
         Arguments:
             qxyzi (n x 4 array): list of peaks to correlate. Columns should be
@@ -118,7 +207,19 @@ class CorrelationVol(Vol):
                     self.vol[q_prime_ind,q_ind,theta_ind] +=q[-1]*q_prime[-1]
 
 
-    def correlateSPH(self, qtpi):
+    def correlate_scat_sph(self, qtpi):
+        '''
+        Correlate diffraction peaks in 3D spherical coordinates.
+
+        Arguments:
+            qxyzi (n x 4 array): list of peaks to correlate. Columns should be
+                                qti[:,0] = qx coordinate of scattering vector
+                                qti[:,1] = qy coordinate of scattering vector
+                                qti[:,2] = qz coordinate of scattering vector
+                                qti[:,3] = intensity of peak
+        Returns:
+            None. Updates self.cvol with correlations
+        '''
 
 
         qmags = qtpi[:,0]
@@ -179,64 +280,6 @@ class CorrelationVol(Vol):
 
 
 
-
-
-
-
-    def correlate(self,c):
-        
-        if c.shape[0]>20000:
-            print(f'WARNING: number of scattering vectors is large.')
-            print(f'Scattering vectors: {c.shape[0]}')
-            print(f'Correlation may take +30mins')
-
-        if c.shape[1]==3:
-            self.correlate2D(c)
-        elif c.shape[1]==4:
-            self.correlate3D(c)
-        else:
-            print('Incorrect format of scattering vectors. See documentation')
-
-
-
-
-    def fill_from_blqq(self, blqq):
-        '''
-        Fill the CorrelationVol from a BlqqVol
-
-        Arguments:
-            blqq (BlqqVol): The BlqqVol object to to fill the CorrelationVol
-
-        Returns:
-            None. Updates self.cvol
-        '''
-
-        #arguments for the legendre polynomial
-        args = np.cos( np.linspace(0, np.pi, self.ntheta))
-
-        # initialze fmat matrix
-        fmat = np.zeros( (self.ntheta, blqq.nl) )
-
-        #for every even spherical harmonic
-        for l in range(0, blqq.nl, 2):
-
-            leg_vals = (1/(4*np.pi))*special.eval_legendre(l, args)
-            fmat[:,l] = leg_vals
-
-
-        #for every q1 position
-        for q1 in range(self.nq):
-            #for every q2 position
-            for q2 in range(q1, self.nq):
-
-                #vector as a function of L
-                blv = blqq.vol[q1,q2,:]
-                for t1 in range(self.ntheta):
-                    ft = fmat[t1,:]
-                    x = np.dot(blv,ft)
-                    self.vol[q1,q2,t1] = x
-                    if q1!=q2:
-                        self.vol[q2,q1,t1] = x
 
 
 

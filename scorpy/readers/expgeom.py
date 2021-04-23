@@ -131,8 +131,8 @@ class ExpGeom:
             #check if we implemented the fs_xy and ss_xy correctly
             #I think all they are doing atm is multiplying +-1 for
             #to flip the rectangle
-            rect_width = sf*panel['fs_xy'][1]*(panel['max_fs']-panel['min_fs'])/self.res
-            rect_height = sf*panel['ss_xy'][0]*(panel['max_ss']-panel['min_ss'])/self.res
+            rect_width = panel['fs_xy'][1]*(panel['max_fs']-panel['min_fs'])/self.res
+            rect_height = panel['ss_xy'][0]*(panel['max_ss']-panel['min_ss'])/self.res
 
             #rotation of the panel, trig from fs directions
             #should be close to 90 or 270 degrees
@@ -140,8 +140,8 @@ class ExpGeom:
             rect_rot = np.degrees(np.arccos(np.clip(1/rect_rot, -1, 1)))
 
             #corner of the panel
-            rect_x = sf*panel['corner_xy'][0]/self.res
-            rect_y = sf*panel['corner_xy'][1]/self.res
+            rect_x = panel['corner_xy'][0]/self.res
+            rect_y = panel['corner_xy'][1]/self.res
 
             #rectangle object
             rect = patches.Rectangle((rect_x, rect_y), rect_width, -rect_height,rect_rot,
@@ -151,8 +151,8 @@ class ExpGeom:
             plt.gca().add_patch(rect)
 
             #plot an X in the (0,0) corner, add a label here as well
-            plt.plot( sf*panel['corner_xy'][0]/self.res, sf*panel['corner_xy'][1]/self.res, 'rx')
-            plt.text( sf*panel['corner_xy'][0]/self.res, sf*panel['corner_xy'][1]/self.res, panel['name'], fontsize=6)
+            plt.plot( panel['corner_xy'][0]/self.res, panel['corner_xy'][1]/self.res, 'rx')
+            plt.text( panel['corner_xy'][0]/self.res, panel['corner_xy'][1]/self.res, panel['name'], fontsize=6)
 
 
 
