@@ -18,11 +18,11 @@ class CorrelationVol(Vol, CorrelationVolProperties):
         path (str): path to dbin (and log) if being created from memory.
     '''
 
-    def __init__(self, nq=100, ntheta=180, qmax=1,  path=None):
+    def __init__(self, nq=100, npsi=180, qmax=1,  path=None):
         '''
         Class constructor.
         '''
-        Vol.__init__(self, nx=nq, ny=nq, nz=ntheta,
+        Vol.__init__(self, nx=nq, ny=nq, nz=npsi,
                      xmax=qmax, ymax=qmax, zmax=180,
                      xmin=0, ymin=0, zmin=0,
                      comp=False, path=path)
@@ -70,10 +70,10 @@ class CorrelationVol(Vol, CorrelationVolProperties):
         '''
 
         #arguments for the legendre polynomial
-        args = np.cos( np.linspace(0, np.pi, self.ntheta))
+        args = np.cos( np.linspace(0, np.pi, self.npsi))
 
         # initialze fmat matrix
-        fmat = np.zeros( (self.ntheta, blqq.nl) )
+        fmat = np.zeros( (self.npsi, blqq.nl) )
 
         #for every even spherical harmonic
         for l in range(0, blqq.nl, 2):
@@ -89,7 +89,7 @@ class CorrelationVol(Vol, CorrelationVolProperties):
 
                 #vector as a function of L
                 blv = blqq.vol[q1,q2,:]
-                for t1 in range(self.ntheta):
+                for t1 in range(self.npsi):
                     ft = fmat[t1,:]
                     x = np.dot(blv,ft)
                     self.vol[q1,q2,t1] = x
@@ -115,7 +115,7 @@ class CorrelationVol(Vol, CorrelationVolProperties):
         Returns:
             None. Updates self.cvol with correlations.
         '''
-        le_qmax = np.where(qti[:,0] <= self.qmax)[0]      #only correlate less or equal the qmax
+        le_qmax = np.where(qti[:,0] <= self.qmax)[0]
         qti = qti[le_qmax]
 
         ite = np.ones(qti.shape[0])
@@ -123,53 +123,17 @@ class CorrelationVol(Vol, CorrelationVolProperties):
 
         for i, q1 in enumerate(qti):
             q1_ind = q_inds[i]
+
             for j, q2 in enumerate(qti[i:]):
                 q2_ind = q_inds[i+j]
-                theta = polar_angle_between(q1[1], q2[1])
-                theta_ind = index_x(theta, 0, 180, self.ntheta)
-                self.vol[q1_ind, q2_ind, theta_ind] +=q1[-1]*q2[-1]
+
+                psi = polar_angle_between(q1[1], q2[1])
+                psi_ind = index_x(psi, 0, 180, self.npsi)
+
+                self.vol[q1_ind, q2_ind, psi_ind] +=q1[-1]*q2[-1]
                 if j>0:
-                    self.vol[q2_ind, q1_ind, theta_ind] +=q1[-1]*q2[-1]
+                    self.vol[q2_ind, q1_ind, psi_ind] +=q1[-1]*q2[-1]
 
-
-
-
-    def correlate_scat_rect2(self,qxyzi):
-        '''
-        Correlate diffraction peaks in 3D rectilinear coordinates.
-
-        Arguments:
-            qxyzi (n x 4 array): list of peaks to correlate. Columns should be
-                                qti[:,0] = qx coordinate of scattering vector
-                                qti[:,1] = qy coordinate of scattering vector
-                                qti[:,2] = qz coordinate of scattering vector
-                                qti[:,3] = intensity of peak
-        Returns:
-            None. Updates self.cvol with correlations
-        '''
-
-        # calculate magnitude of vectors, only correlate less than qmax
-        qmags = np.linalg.norm(qxyzi[:,:3], axis=1)
-        le_qmax = np.where(qmags <= self.qmax)[0]
-        qxyzi = qxyzi[le_qmax]
-        qmags = qmags[le_qmax]
-
-        ite = np.ones(qxyzi.shape[0])
-        q_inds =list(map(index_x, qmags, 0*ite, self.qmax*ite, self.nq*ite))
-
-        for i, q1 in enumerate(qxyzi):
-            q1_ind = q_inds[i]
-
-            for j, q2 in enumerate(qxyzi[i:]):
-
-                q2_ind = q_inds[i+j]
-
-                theta = angle_between(q1[:3], q2[:3])
-                theta_ind = index_x(theta, 0, np.pi, self.ntheta)
-
-                self.vol[q1_ind,q2_ind,theta_ind] +=q1[-1]*q2[-1]
-                if j>0:
-                    self.vol[q2_ind, q1_ind, theta_ind] += q1[-1]*q2[-1]
 
 
 
@@ -187,32 +151,29 @@ class CorrelationVol(Vol, CorrelationVolProperties):
             None. Updates self.cvol with correlations
         '''
 
-        # calculate magnitude of vectors, only correlate less than qmax
         qmags = np.linalg.norm(qxyzi[:,:3], axis=1)
-        correl_vec_indices = np.where(qmags <= self.qmax)[0]
-        qxyzi = qxyzi[correl_vec_indices]
-        qmags = qmags[correl_vec_indices]
+        le_qmax = np.where(qmags <= self.qmax)[0]
+        qxyzi = qxyzi[le_qmax]
+        qmags = qmags[le_qmax]
 
-        # q1 scattering
-        for i, q in enumerate(qxyzi):
+        ite = np.ones(qxyzi.shape[0])
+        q_inds =list(map(index_x, qmags, 0*ite, self.qmax*ite, self.nq*ite))
 
-            q_mag =  qmags[i]
-            q_ind = index_x(q_mag,0, self.qmax, self.nq)
+        for i, q1 in enumerate(qxyzi):
+            q1_ind = q_inds[i]
 
-            # q2 scattering
-            for j, q_prime in enumerate(qxyzi[i:]):
-                q_prime_mag =  qmags[i+j]
+            for j, q2 in enumerate(qxyzi[i:]):
+                q2_ind = q_inds[i+j]
 
-                q_prime_ind = index_x(q_prime_mag,0, self.qmax, self.nq)
+                psi = angle_between(q1[:3], q2[:3])
+                psi_ind = index_x(psi, 0, np.pi, self.npsi)
 
-                theta = angle_between(q[:3], q_prime[:3])
-
-                theta_ind = index_x(theta, 0, np.pi, self.ntheta)
-
-                self.vol[q_ind,q_prime_ind,theta_ind] +=q[-1]*q_prime[-1]
-
+                self.vol[q1_ind,q2_ind,psi_ind] +=q1[-1]*q2[-1]
                 if j>0:
-                    self.vol[q_prime_ind,q_ind,theta_ind] +=q[-1]*q_prime[-1]
+                    self.vol[q2_ind, q1_ind, psi_ind] += q1[-1]*q2[-1]
+
+
+
 
 
 
@@ -245,8 +206,6 @@ class CorrelationVol(Vol, CorrelationVolProperties):
 
             theta1 = q1[1]
             phi1 = q1[2]
-
-
 
 
 
