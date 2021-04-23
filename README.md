@@ -21,6 +21,11 @@ Use the following commands to set up a conda environment.
     conda install -c conda-forge pycifrw --yes
     conda install -c conda-forge scipy --yes
 
+To setup auto reload in ipython.
+
+    ipython profile create
+    echo 'c.InteractiveShellApp.extensions = ["autoreload"]' >> ~/.ipython/profile_default/ipython_config.py
+    echo 'c.InteractiveShellApp.exec_lines = ["%autoreload 2"]' >> ~/.ipython/profile_default/ipython_config.py
 
     
 ## Installation 
