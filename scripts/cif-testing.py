@@ -11,26 +11,29 @@ import timeit
 geo = scorpy.ExpGeom('../data/geoms/agipd_2304_vj_opt_v3.geom')
 peakdata = scorpy.PeakData('../data/cxi/125/peaks.txt', geo)
 
+cif = scorpy.CifData('../data/xtal/1al1-sf.cif')
+
+qmax = cif.qmax/2
+
 
 frames = peakdata.split_frames()
 
 
 
-corr1 = scorpy.CorrelationVol(qmax=1.4)
-corr2 = scorpy.CorrelationVol(qmax=1.4)
+corr1 = scorpy.CorrelationVol(qmax=qmax)
+corr2 = scorpy.CorrelationVol(qmax=qmax)
 
 t1 = timeit.timeit(
 """
-for frame in frames:
-    corr1.correlate_scat_pol(frame.scat_pol)
+corr1.correlate_scat_rect(cif.scat_rect)
 """
                    , number=1, globals=globals())
 
 
 t2 = timeit.timeit(
 """
-for frame in frames:
-    corr2.correlate_scat_pol2(frame.scat_pol)
+
+corr2.correlate_scat_rect2(cif.scat_rect)
 """
                    , number=1, globals=globals())
 

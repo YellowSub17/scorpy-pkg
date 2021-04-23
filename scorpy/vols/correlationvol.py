@@ -101,38 +101,9 @@ class CorrelationVol(Vol, CorrelationVolProperties):
 
 
 
+
+
     def correlate_scat_pol(self,qti):
-        '''
-        Correlate diffraction peaks in 2D polar coordinates.
-
-        Arguments:
-            qti (n x 3 array): list of peaks to correlate. Columns should be
-                                qti[:,0] = polar radius of peak
-                                qti[:,1] = polar angle of peak
-                                qti[:,2] = intensity of peak
-        Returns:
-            None. Updates self.cvol with correlations.
-        '''
-        less_than_qmax = np.where(qti[:,0] <= self.qmax)[0]      #only correlate less or equal the qmax
-        qti = qti[less_than_qmax]
-
-        for i, q in enumerate(qti):
-            q_ind = index_x(q[0],0, self.qmax, self.nq)
-            # q_ind = index_x(q[0], self.qmax, self.nq)
-            for j, q_prime in enumerate(qti[i:]):
-                q_prime_ind = index_x(q_prime[0],0,self.qmax, self.nq)
-                # q_prime_ind = index_x(q_prime[0],self.qmax, self.nq)
-                theta = polar_angle_between(q[1], q_prime[1])
-                theta_ind = index_x(theta,0, 180, self.ntheta)
-                # theta_ind = index_x(theta, 180, self.ntheta)
-                self.vol[q_ind,q_prime_ind,theta_ind] +=q[-1]*q_prime[-1]
-
-                if j>0:
-                    self.vol[q_prime_ind,q_ind,theta_ind] +=q[-1]*q_prime[-1]
-
-
-
-    def correlate_scat_pol2(self,qti):
         '''
         Correlate diffraction peaks in 2D polar coordinates.
 
@@ -148,9 +119,7 @@ class CorrelationVol(Vol, CorrelationVolProperties):
         qti = qti[le_qmax]
 
         ite = np.ones(qti.shape[0])
-
-        q_inds =list(map(index_x, qti[:,0]*ite, 0*ite, self.qmax*ite, self.nq*ite))
-        # print(q_inds)
+        q_inds =list(map(index_x, qti[:,0], 0*ite, self.qmax*ite, self.nq*ite))
 
         for i, q1 in enumerate(qti):
             q1_ind = q_inds[i]
@@ -162,6 +131,45 @@ class CorrelationVol(Vol, CorrelationVolProperties):
                 if j>0:
                     self.vol[q2_ind, q1_ind, theta_ind] +=q1[-1]*q2[-1]
 
+
+
+
+    def correlate_scat_rect2(self,qxyzi):
+        '''
+        Correlate diffraction peaks in 3D rectilinear coordinates.
+
+        Arguments:
+            qxyzi (n x 4 array): list of peaks to correlate. Columns should be
+                                qti[:,0] = qx coordinate of scattering vector
+                                qti[:,1] = qy coordinate of scattering vector
+                                qti[:,2] = qz coordinate of scattering vector
+                                qti[:,3] = intensity of peak
+        Returns:
+            None. Updates self.cvol with correlations
+        '''
+
+        # calculate magnitude of vectors, only correlate less than qmax
+        qmags = np.linalg.norm(qxyzi[:,:3], axis=1)
+        le_qmax = np.where(qmags <= self.qmax)[0]
+        qxyzi = qxyzi[le_qmax]
+        qmags = qmags[le_qmax]
+
+        ite = np.ones(qxyzi.shape[0])
+        q_inds =list(map(index_x, qmags, 0*ite, self.qmax*ite, self.nq*ite))
+
+        for i, q1 in enumerate(qxyzi):
+            q1_ind = q_inds[i]
+
+            for j, q2 in enumerate(qxyzi[i:]):
+
+                q2_ind = q_inds[i+j]
+
+                theta = angle_between(q1[:3], q2[:3])
+                theta_ind = index_x(theta, 0, np.pi, self.ntheta)
+
+                self.vol[q1_ind,q2_ind,theta_ind] +=q1[-1]*q2[-1]
+                if j>0:
+                    self.vol[q2_ind, q1_ind, theta_ind] += q1[-1]*q2[-1]
 
 
 
@@ -189,22 +197,24 @@ class CorrelationVol(Vol, CorrelationVolProperties):
         for i, q in enumerate(qxyzi):
 
             q_mag =  qmags[i]
-            q_ind = index_x(q_mag,self.qmax, self.nq)
+            q_ind = index_x(q_mag,0, self.qmax, self.nq)
 
             # q2 scattering
             for j, q_prime in enumerate(qxyzi[i:]):
                 q_prime_mag =  qmags[i+j]
 
-                q_prime_ind = index_x(q_prime_mag,self.qmax, self.nq)
+                q_prime_ind = index_x(q_prime_mag,0, self.qmax, self.nq)
 
-                theta = angle_between(q[:3]/q_mag, q_prime[:3]/q_prime_mag)
+                theta = angle_between(q[:3], q_prime[:3])
 
-                theta_ind = index_x(theta, np.pi, self.ntheta)
+                theta_ind = index_x(theta, 0, np.pi, self.ntheta)
 
                 self.vol[q_ind,q_prime_ind,theta_ind] +=q[-1]*q_prime[-1]
 
                 if j>0:
                     self.vol[q_prime_ind,q_ind,theta_ind] +=q[-1]*q_prime[-1]
+
+
 
 
     def correlate_scat_sph(self, qtpi):

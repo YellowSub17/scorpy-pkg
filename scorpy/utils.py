@@ -24,7 +24,7 @@ def polar_angle_between(t1,t2):
     return np.abs((t1-t2+180)%360 -180)
 
 def angle_between(q1,q2):
-    dot = np.dot(q1, q2)
+    dot = np.dot(q1/np.linalg.norm(q1), q2/np.linalg.norm(q2))
     if dot > 1:
         dot=1.0
     elif dot < -1:
