@@ -39,7 +39,15 @@ for name in names:
     cif.bin_spherical(int(nq/2), int(ntheta/2), int(ntheta/2))
     cor = scorpy.CorrelationVol(nq, ntheta, qmax=cif.qmax)
     cor.correlateSPH(cif.spherical)
-    cor.save_dbin(f'../data/dbins/{name}_binned2_sph_qcor')
+    cor.save_dbin(f'../data/dbins/{name}_binned_half_sph_qcor')
+
+    cif = scorpy.CifData(f'../data/xtal/{name}-sf.cif', qmax=qmax)
+    cif.bin_spherical(2*nq, 2*ntheta, 2*ntheta )
+    cor = scorpy.CorrelationVol(nq, ntheta, qmax=cif.qmax)
+    cor.correlateSPH(cif.spherical)
+    cor.save_dbin(f'../data/dbins/{name}_binned_double_sph_qcor')
+
+
 
 
 
