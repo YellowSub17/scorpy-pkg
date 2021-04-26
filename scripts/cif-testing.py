@@ -40,9 +40,10 @@ plt.title(f"Blqq, l={l}, from corr")
 
 corr1 = scorpy.CorrelationVol(nq, nangle, cif.qmax)
 corr1.fill_from_blqq(blqq1)
+corr1._vol = corr1.vol[:,:,10:-10]
+corr1._nz -=20
 corr1.plot_q1q2()
-plt.title('Corr, from blqq from corr')
-
+plt.title('Corr q1=q2, from blqq from corr')
 
 
 
@@ -57,8 +58,10 @@ plt.title(f"Blqq, l={l}, from sphv")
 
 corr2 = scorpy.CorrelationVol(nq, nangle, cif.qmax)
 corr2.fill_from_blqq(blqq2)
+corr2._vol = corr2.vol[:,:,10:-10]
+corr2._nz -=20
 corr2.plot_q1q2()
-plt.title('Corr, from blqq from sphv')
+plt.title('Corr q1=q2, from blqq from sphv')
 
 
 
@@ -75,8 +78,10 @@ plt.title(f"Blqq, l={l}, from sph")
 
 corr3 = scorpy.CorrelationVol(nq, nangle, cif.qmax)
 corr3.fill_from_blqq(blqq3)
+corr3._vol = corr3.vol[:,:,10:-10]
+corr3._nz -=20
 corr3.plot_q1q2()
-plt.title('Corr, from blqq from sphv')
+plt.title('Corr q1=q2, from blqq from sph')
 
 
 
