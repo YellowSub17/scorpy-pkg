@@ -13,7 +13,10 @@ PADF_PADF = '/home/pat/Documents/cloudstor/phd/python_projects/padf/'
 class PadfVol(Vol):
 
     def __init__(self, nr=100, ntheta=180, rmax=10,  path=None):
-        Vol.__init__(self, nr,nr,ntheta, rmax, rmax, 180, path=path)
+        Vol.__init__(self, nx=nr,ny=nr,nz=ntheta,
+                     xmax=rmax, ymax=rmax, zmax=180, 
+                     xmin=0, ymin=0, zmin=0,
+                     path=path)
 
         self.plot_r1r2 = self.plot_xy
         # self.ymax = self.xmax
@@ -22,7 +25,7 @@ class PadfVol(Vol):
         # self.ny = self.nx
         self.nr = self.nx
 
-        self.ntheta = self.nz
+        self.npsi = self.nz
 
 
     def fill_from_corr(self, corr_path, nl=37, wavelength=1e-10):
@@ -41,7 +44,7 @@ class PadfVol(Vol):
 
         padf_config.write(f'qmax = {float(corr.qmax)/1e-10}\n\n')
         padf_config.write(f'nq = {corr.nq}\n\n')
-        padf_config.write(f'nthq = {corr.ntheta}\n\n')
+        padf_config.write(f'nthq = {corr.npsi}\n\n')
 
         padf_config.write(f'rmax = {self.rmax*1e-10}\n\n')
         padf_config.write(f'nr = {self.nr}\n\n')
@@ -61,9 +64,9 @@ class PadfVol(Vol):
 
         flatv = np.fromfile(f'/tmp/padf/bingbong_padf.dbin')
 
-        v =  flatv.reshape(self.nr, self.nr, corr.ntheta)
+        v =  flatv.reshape(self.nr, self.nr, corr.npsi)
 
-        self.vol = v[...,:self.ntheta]
+        self.vol = v[...,:self.npsi]
 
 
 
