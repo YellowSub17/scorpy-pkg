@@ -34,11 +34,11 @@ class SphHarmHandler:
 
 
     def fill_from_cif(self, cif):
-        print('Filling SphHarmHandler from CifData\n')
-        spherical = cif.spherical[np.where(cif.spherical[:,0] <=self.qmax)]
+        scat_sph = cif.scat_sph[np.where(cif.scat_sph[:,0] <=self.qmax)]
 
-        q_ite = np.ones(len(spherical[:,0]))
-        q_inds = np.array(list(map(index_x, spherical[:,0], self.qmax*q_ite, self.nq*q_ite)))
+        ite = np.ones(len(scat_sph[:,0]))
+        q_inds = np.array(list(map(index_x, scat_sph[:,0], 0*ite, self.qmax*ite, self.nq*ite)))
+        
 
         for l in range(0, self.nl, 2):
 
@@ -51,14 +51,14 @@ class SphHarmHandler:
             for im, m in zip(range(2*l+1), range(-l,l+1)):
                 ls.append(l)
                 ms.append(m)
-                phis.append(spherical[:,2])
-                thetas.append(spherical[:,1])
+                phis.append(scat_sph[:,2])
+                thetas.append(scat_sph[:,1])
                 comps.append(self.comp)
 
 
             ylms = np.array(list(map(ylm_wrapper, ls, ms, phis, thetas, comps)))
 
-            iylm = ylms*np.outer(np.ones(2*l+1), spherical[:,-1])
+            iylm = ylms*np.outer(np.ones(2*l+1), scat_sph[:,-1])
 
             val_ilm = np.zeros( (self.nq, 2*l+1))
 
