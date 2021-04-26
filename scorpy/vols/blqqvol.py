@@ -66,32 +66,14 @@ class BlqqVol(Vol, BlqqVolProperties):
 
 
 
+
+
     def fill_from_sphv(self, sphv):
-
-
-        for i in range(self.nq):
-            q1_coeffs = sphv.get_coeffs(i)[:, :self.nl, :self.nl]
-            for j in range(i, self.nq):
-                q2_coeffs = sphv.get_coeffs(j)[:, :self.nl, :self.nl]
-
-                multi = np.conj(q1_coeffs)*q2_coeffs
-
-                self.vol[i,j,:] = multi.sum(axis=0).sum(axis=1)
-                if j !=i:
-                    self.vol[j, i,:] = multi.sum(axis=0).sum(axis=1)
-
-                # if np.all(self.vol[i,j+i,:] !=0):
-                    # print(i, j+i, self.vol[i,j+i])
-
-
-
-
-
-    def fill_from_sphv2(self, sphv):
 
         all_q_coeffs = list(map(sphv.get_coeffs,range(self.nq)))
 
         for i, q1_coeffs in enumerate(all_q_coeffs):
+
             for j, q2_coeffs in enumerate(all_q_coeffs[i:]):
 
                 multi = np.conj(q1_coeffs)*q2_coeffs
@@ -100,32 +82,7 @@ class BlqqVol(Vol, BlqqVolProperties):
                 if j>0:
                     self.vol[j+i,i,:] = multi.sum(axis=0).sum(axis=1)[:self.nl]
 
-#                 if np.all(self.vol[i,j+i,:] !=0):
-                    # print(i, j+i, self.vol[i,j+i])
 
-
-    # def fill_from_sphv2(self, sphv):
-
-        # bl = np.zeros( (self.nq, self.nq))
-
-        # for l in range(0, self.nl, 2):
-            # print(l,'/',self.nl)
-
-            # for q1_ind in range(self.nq):
-
-                # q1ms = sphv.get_coeffs(q1_ind)[:,l, :l]
-
-
-                # for q2_ind in range(q1_ind, self.nq):
-
-                    # q2ms = sphv.get_coeffs(q2_ind)[:,l, :l]
-
-                    # bl[q1_ind, q2_ind] = np.sum(np.conj(q1ms)*q2ms)
-
-                    # if q1_ind != q2_ind:
-                        # bl[q2_ind, q1_ind] = np.sum(np.conj(q1ms)*q2ms)
-
-            # self.vol[...,l]= bl
 
 
 

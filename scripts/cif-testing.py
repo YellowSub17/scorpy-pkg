@@ -16,7 +16,7 @@ qmax = 0.36992983463258367/3
 # qmax = None
 nq = 100
 nangle = 180
-nl = 17
+nl = 85
 l=10
 
 
@@ -44,23 +44,9 @@ sphv.fill_from_cif(cif)
 
 
 blqq2 = scorpy.BlqqVol(nq,nl, cif.qmax)
-t1 = timeit.timeit('blqq2.fill_from_sphv(sphv)', number=1,globals=globals())
+blqq2.fill_from_sphv(sphv)
 blqq2.plot_slice(axis=2, index=l, extent=None)
 plt.title(f"Blqq, l={l}, from sphv")
-
-print('')
-print('')
-print('xxxxx')
-print('')
-print('')
-
-
-blqq3 = scorpy.BlqqVol(nq,nl, cif.qmax)
-t2= timeit.timeit('blqq3.fill_from_sphv2(sphv)', number=1,globals=globals())
-blqq3.plot_slice(axis=2, index=l, extent=None)
-plt.title(f"Blqq, l={l}, from sphv2")
-
-
 
 
 
