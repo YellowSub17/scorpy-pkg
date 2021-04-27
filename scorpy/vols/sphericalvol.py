@@ -22,7 +22,7 @@ class SphericalVol(Vol, SphericalVolProps):
     '''
 
 
-    def __init__(self, nq=100, nangle=180, qmax=1, gridtype='DH1', extend=False,  path=None, comp=False):
+    def __init__(self, nq=100, nangle=180, qmax=1, comp=False, gridtype='DH1', extend=False,  path=None):
         assert nangle%2==0, 'nangle must be even'
         assert not extend, "Only working with non-extended grids"
 
@@ -64,8 +64,8 @@ class SphericalVol(Vol, SphericalVolProps):
         f.write('[sphv]\n')
         f.write(f'qmax = {self.qmax}\n')
         f.write(f'thetamax = {np.pi/2}\n')
-        f.write(f'phimax = {2*np.pi}\n')
         f.write(f'thetamin = {-np.pi/2}\n')
+        f.write(f'phimax = {2*np.pi}\n')
         f.write(f'phimin = {0}\n')
         f.write(f'nq = {self.nq}\n')
         f.write(f'ntheta = {self.ntheta}\n')
@@ -73,13 +73,13 @@ class SphericalVol(Vol, SphericalVolProps):
         f.write(f'dq = {self.dq}\n')
         f.write(f'dtheta = {self.dtheta}\n')
         f.write(f'dphi = {self.dphi}\n')
-        f.write(f'gridtype = {self.gridtype}')
-        f.write(f'extend = {self.extend}')
-        f.write(f'nl = {self.nl}')
+        f.write(f'gridtype = {self.gridtype}\n')
+        f.write(f'extend = {self.extend}\n')
+        f.write(f'nl = {self.nl}\n')
 
     def _load_extra(self, config):
-        self._gridtype = float(config['sphv']['gridtype'])
-        self._extend = float(config['sphv']['extend'])
+        self._gridtype = config['sphv']['gridtype']
+        self._extend = config.getboolean('sphv', 'extend')
         self._nl = float(config['sphv']['nl'])
 
 

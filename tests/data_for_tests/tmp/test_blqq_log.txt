@@ -1,0 +1,24 @@
+##Scorpy Config File
+## Created: 2021/04/27 20:11
+
+[vol]
+nx = 10
+ny = 10
+nz = 15
+xmin = 0
+ymin = 0
+zmin = 0
+xmax = 1.4
+ymax = 1.4
+zmax = 14
+dx = 0.13999999999999999
+dy = 0.13999999999999999
+dz = 0.9333333333333333
+comp = False
+
+[blqq]
+qmax = 1.4
+nq = 10
+nl = 15
+lmax = 14
+dq = 0.13999999999999999

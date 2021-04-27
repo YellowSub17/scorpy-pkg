@@ -22,7 +22,7 @@ class BlqqVol(Vol, BlqqVolProps):
 
     def __init__(self, nq=100, nl=37, qmax=1, path=None, comp=False):
         Vol.__init__(self, nx = nq, ny = nq, nz = nl, \
-                        xmax = qmax, ymax = qmax, zmax = nl, \
+                        xmax = qmax, ymax = qmax, zmax = nl-1, \
                         xmin = 0, ymin = 0, zmin = 0, \
                         comp = False, path = None)
 
@@ -35,6 +35,7 @@ class BlqqVol(Vol, BlqqVolProps):
         f.write(f'qmax = {self.qmax}\n')
         f.write(f'nq = {self.nq}\n')
         f.write(f'nl = {self.nl}\n')
+        f.write(f'lmax = {self.lmax}\n')
         f.write(f'dq = {self.dq}\n')
 
 

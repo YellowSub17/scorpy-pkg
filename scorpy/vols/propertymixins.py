@@ -2,8 +2,6 @@
 
 class VolProps:
 
-
-
     @property
     def nx(self):
         return self._nx
@@ -97,7 +95,6 @@ class CorrelationVolProps:
     def cvol(self):
         assert False, 'Error: cvol is deprecated, use vol'
 
-
     @property
     def ntheta(self):
         assert False, 'Error: ntheta is deprecated, use npsi'
@@ -109,6 +106,11 @@ class BlqqVolProps:
     @property
     def qmax(self):
         return self.xmax
+
+
+    @property
+    def lmax(self):
+        return self.nl - 1
 
     @property
     def dq(self):
