@@ -4,11 +4,11 @@ from .vol import Vol
 import numpy as np
 from scipy import special
 import matplotlib.pyplot as plt
-from .propertymixins import BlqqVolProperties
+from .propertymixins import BlqqVolProps
 
 
 
-class BlqqVol(Vol, BlqqVolProperties):
+class BlqqVol(Vol, BlqqVolProps):
     '''
     Representation of the B_l(q1,q2) volume, an invertible correlation matrix.
 

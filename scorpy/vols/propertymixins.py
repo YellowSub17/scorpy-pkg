@@ -1,6 +1,6 @@
 
 
-class VolProperties:
+class VolProps:
 
 
 
@@ -55,7 +55,7 @@ class VolProperties:
 
    
 
-class CorrelationVolProperties:
+class CorrelationVolProps:
 
     @property
     def qmax(self):
@@ -79,7 +79,7 @@ class CorrelationVolProperties:
         assert False, 'Error: ntheta is deprecated, use npsi'
 
 
-class BlqqVolProperties:
+class BlqqVolProps:
 
     @property
     def qmax(self):
@@ -100,8 +100,7 @@ class BlqqVolProperties:
 
 
 
-class SphericalVolProperties:
-    print('x')
+class SphericalVolProps:
 
     @property
     def qmax(self):
@@ -120,5 +119,18 @@ class SphericalVolProperties:
         return self.nz
 
 
+class PadfVolProps:
+
+    @property
+    def rmax(self):
+        return self.xmax
+
+    @property
+    def nr(self):
+        return self.nx
+
+    @property
+    def npsi(self):
+        return self.nz
 
 

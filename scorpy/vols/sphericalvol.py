@@ -6,11 +6,10 @@ import numpy as np
 from scipy import special
 import matplotlib.pyplot as plt
 import pyshtools as pysh
-from .propertymixins import SphericalVolProperties
+from .propertymixins import SphericalVolProps
 
 
-
-class SphericalVol(Vol, SphericalVolProperties):
+class SphericalVol(Vol, SphericalVolProps):
     '''
     Representation of a spherical coordinate volume.
 

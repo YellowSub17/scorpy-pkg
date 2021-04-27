@@ -32,6 +32,7 @@ corr = scorpy.CorrelationVol(nq, nangle, cif.qmax)
 corr.fill_from_cif(cif,'scat_rect')
 corr.plot_q1q2()
 plt.title('Original corr q1=q2')
+print(1)
 
 blqq1 = scorpy.BlqqVol(nq, nl, cif.qmax)
 blqq1.fill_from_corr(corr)
@@ -46,6 +47,7 @@ corr1.plot_q1q2()
 plt.title('Corr q1=q2, from blqq from corr')
 
 
+print(2)
 
 
 sphv = scorpy.SphericalVol(nq, nangle, cif.qmax)
@@ -66,6 +68,7 @@ plt.title('Corr q1=q2, from blqq from sphv')
 
 
 
+print(3)
 
 
 sph = scorpy.SphHarmHandler(nq,nl,cif.qmax)

@@ -61,8 +61,8 @@ runs = runs150+runs144
 
 
 nseeds = 20
-nq = 100
-ntheta = 180
+nq = 200
+ntheta = 360
 qmax = 1.4
 npeaksmax = 150
 
@@ -83,23 +83,23 @@ for run in runs:
     corr.save_dbin(f'../data/dbins/cosine_sim/{run}/run{run}_qcor')
 
 
-    for seed in range(nseeds):
-        print(f'Correlating seed: {seed}')
+#     for seed in range(nseeds):
+        # print(f'Correlating seed: {seed}')
 
-        seed_frames = list(frames)
-        np.random.shuffle(seed_frames)
+        # seed_frames = list(frames)
+        # np.random.shuffle(seed_frames)
 
-        corra_frames = seed_frames[:half_ind]
-        corrb_frames = seed_frames[half_ind:]
+        # corra_frames = seed_frames[:half_ind]
+        # corrb_frames = seed_frames[half_ind:]
 
-        corra = scorpy.CorrelationVol(nq,ntheta,qmax)
-        for frame in corra_frames:
-            corra.fill_from_peakdata(frame)
-        corra.save_dbin(f'../data/dbins/cosine_sim/{run}/run{run}_seed{seed}a_qcor')
+        # corra = scorpy.CorrelationVol(nq,ntheta,qmax)
+        # for frame in corra_frames:
+            # corra.fill_from_peakdata(frame)
+        # corra.save_dbin(f'../data/dbins/cosine_sim/{run}/run{run}_seed{seed}a_qcor')
 
-        corrb = scorpy.CorrelationVol(nq,ntheta,qmax)
-        for frame in corrb_frames:
-            corrb.fill_from_peakdata(frame)
-        corrb.save_dbin(f'../data/dbins/cosine_sim/{run}/run{run}_seed{seed}b_qcor')
+        # corrb = scorpy.CorrelationVol(nq,ntheta,qmax)
+        # for frame in corrb_frames:
+            # corrb.fill_from_peakdata(frame)
+        # corrb.save_dbin(f'../data/dbins/cosine_sim/{run}/run{run}_seed{seed}b_qcor')
 
 

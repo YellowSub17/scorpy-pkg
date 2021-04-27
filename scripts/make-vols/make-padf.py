@@ -11,29 +11,25 @@ np.random.seed(0)
 
 
 
-   
 
 
 
 #### MAKE PADF FROM PEAKS DATA CORRELATION
-runs150 = [112,123,113,125,102,103,104,105]
-runs144 = [118,108,119,109,120,110,121]
-runs = runs150+runs144
+# runs150 = [112,123,113,125,102,103,104,105]
+# runs144 = [118,108,119,109,120,110,121]
+# runs = runs150+runs144
 
-res = 0.25
-rmax = 32
+# res = 0.05
+# rmax = 12
 
+# nr = round(rmax/res)
 
-
-nr = round(rmax/res)
-
-
-for run in runs:
-    cor = scorpy.CorrelationVol(path=f'../data/dbins/cosine_sim/{run}/run{run}_qcor')
-    padf = scorpy.PadfVol(nr,int(cor.npsi/2), rmax)
-    qcor_path = f'/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/data/dbins/cosine_sim/{run}/run{run}_qcor.dbin'
-    padf.fill_from_corr(qcor_path, nl=11, wavelength=1.33e-10)
-    padf.save_dbin(f'../data/dbins/cosine_sim/{run}/run{run}_padf')
+# for run in runs:
+    # cor = scorpy.CorrelationVol(path=f'../data/dbins/cosine_sim/{run}/run{run}_qcor')
+    # padf = scorpy.PadfVol(nr,int(cor.npsi/2), rmax)
+    # qcor_path = f'/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/data/dbins/cosine_sim/{run}/run{run}_qcor.dbin'
+    # padf.fill_from_corr(qcor_path, nl=31, wavelength=1.33e-10)
+    # padf.save_dbin(f'../data/dbins/cosine_sim/{run}/run{run}_highres_padf')
 
 
 
@@ -50,4 +46,39 @@ for run in runs:
         # qcor_path = f'/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/data/dbins/cosine_sim/{run}/run{run}_seed{seed}b_qcor.dbin'
         # padf.fill_from_corr(qcor_path, nl=11, wavelength=1.33e-10)
         # padf.save_dbin(f'../data/dbins/cosine_sim/{run}/run{run}_seed{seed}b_padf')
+
+
+
+
+
+#### MAKE PADF FROM PEAKS DATA CORRELATION (multi)
+
+# runs150 = [112,123,113,125,102,103,104,105]
+# runs144 = [118,108,119,109,120,110,121]
+# runs = runs150+runs144
+
+
+# ress = [0.05, 0.1, 0.15, 0.2] #A/bin
+# rmaxs = [5, 10, 15, 20] #A
+# nls = [11, 21, 31, 41]
+
+
+
+# for run in runs:
+    # for res in ress:
+        # for nl in nls:
+
+            # nr = round(rmax/res) #A/(A/bin) = BINS
+
+            # cor = scorpy.CorrelationVol(path=f'../data/dbins/cosine_sim/{run}/run{run}_qcor')
+            # padf = scorpy.PadfVol(nr,int(cor.npsi/2), rmax)
+            # qcor_path = f'/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/data/dbins/cosine_sim/{run}/run{run}_qcor.dbin'
+            # padf.fill_from_corr(qcor_path, nl=31, wavelength=1.33e-10)
+
+            # padf_path = f'/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/data/dbins/cosine_sim/{run}/run{run}_rm{rmax}padf.dbin' 
+            
+            # padf.save_dbin(f'../data/dbins/cosine_sim/{run}/run{run}_seed{seed}b_padf')
+
+
+
 

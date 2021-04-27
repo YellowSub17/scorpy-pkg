@@ -6,11 +6,13 @@ from .correlationvol import CorrelationVol
 import os
 import numpy as np
 
+from .propertymixins import PadfVolProps
+
 
 PADF_PADF = '/home/pat/Documents/cloudstor/phd/python_projects/padf/'
 
 
-class PadfVol(Vol):
+class PadfVol(Vol, PadfVolProps):
 
     def __init__(self, nr=100, ntheta=180, rmax=10,  path=None):
         Vol.__init__(self, nx=nr,ny=nr,nz=ntheta,

@@ -6,10 +6,10 @@ from scipy import special
 import numpy as np
 import math
 
-from .propertymixins import CorrelationVolProperties
+from .propertymixins import CorrelationVolProps
 
 
-class CorrelationVol(Vol, CorrelationVolProperties):
+class CorrelationVol(Vol, CorrelationVolProps):
     '''
     Representation of a scattering correlation volume.
 
