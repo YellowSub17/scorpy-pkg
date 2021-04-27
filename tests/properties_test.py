@@ -81,32 +81,6 @@ class TestProperties(unittest.TestCase):
 
 
 
-    def test_properties_sphv(self):
-        sphv1 = scorpy.BlqqVol(self.nq,self.nl,self.qmax)
-
-        self.assertEqual(sphv1.nx, self.nq)
-        self.assertEqual(sphv1.ny, self.ntheta)
-        self.assertEqual(sphv1.nz, self.nphi)
-
-        self.assertEqual(sphv1.xmax, self.qmax)
-        self.assertEqual(sphv1.ymax, self.qmax)
-        self.assertEqual(sphv1.zmax, self.nl-1)
-
-        self.assertEqual(sphv1.xmin, 0)
-        self.assertEqual(sphv1.ymin, 0)
-        self.assertEqual(sphv1.zmin, 0)
-
-        # self.assertEqual(sphv1.nl, self.nl)
-        # self.assertEqual(sphv1.nq, self.nq)
-        # self.assertEqual(sphv1.lmax, self.nl-1)
-        # self.assertEqual(sphv1.qmax, self.qmax)
-
-        qspace = np.linspace(0, self.qmax, self.nq, endpoint=False)
-        self.assertEqual(blqq1.dq, qspace[1]-qspace[0])
-
-
-
-
 
 
 

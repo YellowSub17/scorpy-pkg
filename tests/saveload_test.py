@@ -33,6 +33,15 @@ class TestSaveLoad(unittest.TestCase):
         corr1.save(data_for_test_path+'/tmp/test_corr')
         corr2 = scorpy.CorrelationVol(path=data_for_test_path+'/tmp/test_corr')
 
+        attrbs = [i for i in corr1.__dir__() if i[:2] != '__']
+        for attrb in attrbs:
+            if type(corr1.__getattribute__(attrb)) == type(corr1.plot_xy):
+                continue
+            np.testing.assert_equal(corr1.__getattribute__(attrb), corr2.__getattribute__(attrb) )
+
+        
+
+
 
     def test_saveload_blqq(self):
         blqq1 = scorpy.BlqqVol(self.nq,self.nl,self.qmax)
