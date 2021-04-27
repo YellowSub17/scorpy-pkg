@@ -60,6 +60,7 @@ runs144 = [118,108,119,109,120,110,121]
 runs = runs150+runs144
 
 
+
 nseeds = 20
 nq = 200
 ntheta = 360
@@ -80,7 +81,7 @@ for run in runs:
     corr = scorpy.CorrelationVol(nq,ntheta, qmax)
     for frame in frames:
         corr.fill_from_peakdata(frame)
-    corr.save_dbin(f'../data/dbins/cosine_sim/{run}/run{run}_qcor')
+    corr.save(f'../data/dbins/cosine_sim/{run}/run{run}_qcor')
 
 
 #     for seed in range(nseeds):

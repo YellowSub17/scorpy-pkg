@@ -80,5 +80,23 @@ np.random.seed(0)
             # padf.save_dbin(f'../data/dbins/cosine_sim/{run}/run{run}_seed{seed}b_padf')
 
 
+rmax = 5
+res = 0.01
+nl = 20
+
+nr = round(rmax/res)
+run = 112
+
+corr = scorpy.CorrelationVol(path=f'../data/dbins/cosine_sim/{run}/run{run}_qcor')
+padf = scorpy.PadfVol(nr, int(corr.npsi/2), rmax, nl, 1.33)
+qcor_path = f'/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/data/dbins/cosine_sim/{run}/run{run}_qcor.dbin'
+padf.fill_from_corr(qcor_path)
+
+padf_path = f'/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/data/dbins/cosine_sim/{run}/run{run}_rm{rmax}padf.dbin' 
+
+padf.save(f'../data/dbins/cosine_sim/{run}/run{run}_padf')
+
+
+
 
 

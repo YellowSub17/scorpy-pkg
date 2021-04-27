@@ -14,23 +14,42 @@ PADF_PADF = '/home/pat/Documents/cloudstor/phd/python_projects/padf/'
 
 class PadfVol(Vol, PadfVolProps):
 
-    def __init__(self, nr=100, ntheta=180, rmax=10,  path=None):
-        Vol.__init__(self, nx=nr,ny=nr,nz=ntheta,
-                     xmax=rmax, ymax=rmax, zmax=180, 
-                     xmin=0, ymin=0, zmin=0,
-                     path=path)
+    def __init__(self,  nr = 100, npsi = 180, rmax = 5, \
+                        nl = 10, wavelength = 1.33,
+                        path = None):
+
+
+        Vol.__init__(self,  nr, nr, npsi, \
+                            rmax, rmax, 180, \
+                            0, 0, 0, \
+                            comp = False, path = path)
+
+        self._nl = nl
+        self._wavelength = wavelength
 
         self.plot_r1r2 = self.plot_xy
-        # self.ymax = self.xmax
-        self.rmax = self.xmax
 
-        # self.ny = self.nx
-        self.nr = self.nx
+    def _save_extra(self, f):
+        f.write('[padf]\n')
+        f.write(f'rmax = {self.rmax}\n')
+        f.write(f'psimax = {180}\n')
+        f.write(f'nr = {self.nr}\n')
+        f.write(f'npsi = {self.npsi}\n')
+        f.write(f'dr = {self.dr}\n')
+        f.write(f'dpsi = {self.dpsi}\n')
+        f.write(f'nl = {self.nl}\n')
+        f.write(f'wavelength = {self.wavelength}\n')
 
-        self.npsi = self.nz
+    def _load_extra(self, config):
+
+        self._nl = float(config['padf']['nl'])
+        self._wavelength = float(config['padf']['wavelength'])
 
 
-    def fill_from_corr(self, corr_path, nl=37, wavelength=1e-10):
+
+
+
+    def fill_from_corr(self, corr_path):
 
 
         corr = CorrelationVol(path=corr_path)
@@ -40,8 +59,8 @@ class PadfVol(Vol, PadfVolProps):
 
         os.system('mkdir /tmp/padf')
         padf_config.write(f'outpath = /tmp/padf\n\n')
-        padf_config.write(f'wavelength = {wavelength}\n\n')
-        padf_config.write(f'nl = {nl}\n\n')
+        padf_config.write(f'wavelength = {self.wavelength*1e-10}\n\n')
+        padf_config.write(f'nl = {self.nl}\n\n')
         padf_config.write(f'tag = bingbong\n\n')
 
         padf_config.write(f'qmax = {float(corr.qmax)/1e-10}\n\n')

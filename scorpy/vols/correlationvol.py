@@ -20,16 +20,28 @@ class CorrelationVol(Vol, CorrelationVolProps):
         path (str): path to dbin (and log) if being created from memory.
     '''
 
-    def __init__(self, nq=100, npsi=180, qmax=1,  path=None):
+    def __init__(self, nq = 100, npsi = 180, qmax = 1, \
+                 path = None):
         '''
         Class constructor.
         '''
-        Vol.__init__(self, nx=nq, ny=nq, nz=npsi,
-                     xmax=qmax, ymax=qmax, zmax=180,
-                     xmin=0, ymin=0, zmin=0,
-                     comp=False, path=path)
+        Vol.__init__(self,  nq, nq, npsi, \
+                            qmax, qmax, 180, \
+                            0, 0, 0, \
+                            comp = False, path = path)
 
         self.plot_q1q2 = self.plot_xy
+
+
+    def _save_extra(self, f):
+        f.write('[corr]\n')
+        f.write(f'qmax = {self.qmax}\n')
+        f.write(f'psimax = {180}\n')
+        f.write(f'nq = {self.nq}\n')
+        f.write(f'npsi = {self.npsi}\n')
+        f.write(f'dq = {self.dq}\n')
+        f.write(f'dpsi = {self.dpsi}\n')
+
 
 
     def fill_from_cif(self,cif, cords='scat_sph'):

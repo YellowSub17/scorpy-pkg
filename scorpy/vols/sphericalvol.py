@@ -27,41 +27,64 @@ class SphericalVol(Vol, SphericalVolProps):
         assert not extend, "Only working with non-extended grids"
 
         if gridtype=='DH1':
-            nlat = nangle
-            nlong = nangle
-            self.lmax = int(nangle/2) -1
+            ntheta = nangle
+            nphi = nangle
+            nl = int(nangle/2)
             if extend:
-                nlat +=1
-                nlong +=1
+                ntheta +=1
+                nphi +=1
 
 
         elif gridtype=='DH2':
-            nlat = nangle
-            nlong = 2*nangle
-            self.lmax = int(nangle/2) -1
+            ntheta = nangle
+            nphi = 2*nangle
+            nl = int(nangle/2)
             if extend:
-                nlat +=1
-                nlong +=1
+                ntheta +=1
+                nphi +=1
 
         else:
-            nlat = nangle
-            nlong = 2*nangle -1
-            self.lmax = int(nangle) -1
+            ntheta = nangle
+            nphi = 2*nangle -1
+            nl = int(nangle)
             if extend:
-                nlong +=1
+                nphi +=1
 
-        Vol.__init__(   self, nx = nq, ny = nlat, nz = nlong, \
+        Vol.__init__(   self, nx = nq, ny = ntheta, nz = nphi, \
                         xmax = qmax, ymax = np.pi/2, zmax = 2*np.pi, \
                         xmin = 0, ymin = -np.pi/2, zmin = 0, \
                         comp = comp, path = path)
 
+        self._gridtype = gridtype
+        self._extend = extend
+        self._nl = nl
+
+
+    def _save_extra(self, f):
+        f.write('[sphv]\n')
+        f.write(f'qmax = {self.qmax}\n')
+        f.write(f'thetamax = {np.pi/2}\n')
+        f.write(f'phimax = {2*np.pi}\n')
+        f.write(f'thetamin = {-np.pi/2}\n')
+        f.write(f'phimin = {0}\n')
+        f.write(f'nq = {self.nq}\n')
+        f.write(f'ntheta = {self.ntheta}\n')
+        f.write(f'nphi = {self.dphi}\n')
+        f.write(f'dq = {self.dq}\n')
+        f.write(f'dtheta = {self.dtheta}\n')
+        f.write(f'dphi = {self.dphi}\n')
+        f.write(f'gridtype = {self.gridtype}')
+        f.write(f'extend = {self.extend}')
+        f.write(f'nl = {self.nl}')
+
+    def _load_extra(self, config):
+        self._gridtype = float(config['sphv']['gridtype'])
+        self._extend = float(config['sphv']['extend'])
+        self._nl = float(config['sphv']['nl'])
 
 
 
 
-
-        self.extend = extend
-        self.gridtype = gridtype
 
 
 

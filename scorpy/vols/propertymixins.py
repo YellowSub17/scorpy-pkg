@@ -41,8 +41,22 @@ class VolProps:
         return self._zmax
 
     @property
+    def dx(self):
+        return self.xmax/self.nx
+
+    @property
+    def dy(self):
+        return self.ymax/self.ny
+
+    @property
+    def dz(self):
+        return self.zmax/self.nz
+
+
+    @property
     def comp(self):
         return self._comp
+
 
     @property
     def vol(self):
@@ -52,6 +66,8 @@ class VolProps:
     def vol(self, new_vol):
         assert new_vol.shape == self.vol.shape, 'Cannot replace vols with different shapes'
         self._vol = new_vol
+
+
 
    
 
@@ -66,8 +82,16 @@ class CorrelationVolProps:
         return self.nx
 
     @property
+    def dq(self):
+        return self.dx
+
+    @property
     def npsi(self):
         return self.nz
+
+    @property
+    def dpsi(self):
+        return self.dz
 
     @property
     def cvol(self):
@@ -79,11 +103,16 @@ class CorrelationVolProps:
         assert False, 'Error: ntheta is deprecated, use npsi'
 
 
+
 class BlqqVolProps:
 
     @property
     def qmax(self):
         return self.xmax
+
+    @property
+    def dq(self):
+        return self.dx
 
     @property
     def nq(self):
@@ -111,12 +140,40 @@ class SphericalVolProps:
         return self.nx
 
     @property
+    def dq(self):
+        return self.dx
+
+    @property
     def ntheta(self):
         return self.ny
 
     @property
     def nphi(self):
         return self.nz
+
+    @property
+    def dq(self):
+        return self.dx
+
+    @property
+    def dtheta(self):
+        return self.dy
+
+    @property
+    def dphi(self):
+        return self.dz
+
+    @property
+    def gridtype(self):
+        return self._gridtype
+
+    @property
+    def extend(self):
+        return self._extend
+
+    @property
+    def nl(self):
+        return self._nl
 
 
 class PadfVolProps:
@@ -130,7 +187,23 @@ class PadfVolProps:
         return self.nx
 
     @property
+    def dr(self):
+        return self.dx
+
+    @property
     def npsi(self):
         return self.nz
+
+    @property
+    def dpsi(self):
+        return self.dz
+
+    @property
+    def nl(self):
+        return self._nl
+
+    @property
+    def wavelength(self):
+        return self._wavelength
 
 

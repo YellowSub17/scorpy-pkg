@@ -6,19 +6,21 @@ import configparser as cfp
 from pathlib import Path
 import matplotlib.pyplot as plt
 
-from .propertymixins import VolProperties
+from .propertymixins import VolProps
+
+from datetime import datetime
 
 
 
-class Vol(VolProperties):
+class Vol(VolProps):
 
-    def __init__(self,  nx = None, ny = None, nz = None, \
-                        xmax = None, ymax = None, zmax = None, \
-                        xmin = None, ymin = None, zmin = None, \
+    def __init__(self,  nx = 10, ny = 20, nz = 30, \
+                        xmax = 1, ymax = 2, zmax = 3, \
+                        xmin = -3, ymin = 2, zmin = .6, \
                         comp = False, path = None):
 
         if not path is None:
-            self.load_dbin(path)
+            self._load(path)
         else:
             self._nx = nx
             self._ny = ny
@@ -39,7 +41,7 @@ class Vol(VolProperties):
                 self._vol = np.zeros((nx,ny,nz))
 
 
-    def load_dbin(self, path):
+    def _load(self, path):
 
             if type(path) == str:
                 path = Path(path)
@@ -48,19 +50,19 @@ class Vol(VolProperties):
             config = cfp.ConfigParser()
             config.read(f'{path.parent}/{tag}_log.txt')
 
-            self._nx = int(config['params']['nx'])
-            self._ny = int(config['params']['ny'])
-            self._nz = int(config['params']['nz'])
+            self._nx = int(config['vol']['nx'])
+            self._ny = int(config['vol']['ny'])
+            self._nz = int(config['vol']['nz'])
 
-            self._xmin = float(config['params']['xmin'])
-            self._ymin = float(config['params']['ymin'])
-            self._zmin = float(config['params']['zmin'])
+            self._xmin = float(config['vol']['xmin'])
+            self._ymin = float(config['vol']['ymin'])
+            self._zmin = float(config['vol']['zmin'])
 
-            self._xmax = float(config['params']['xmax'])
-            self._ymax = float(config['params']['ymax'])
-            self._zmax = float(config['params']['zmax'])
+            self._xmax = float(config['vol']['xmax'])
+            self._ymax = float(config['vol']['ymax'])
+            self._zmax = float(config['vol']['zmax'])
 
-            self._comp = config.getboolean('params', 'comp')
+            self._comp = config.getboolean('vol', 'comp')
 
             if self.comp:
                 file_vol = np.fromfile(f'{path.parent}/{tag}.dbin', dtype=np.complex64)
@@ -69,16 +71,11 @@ class Vol(VolProperties):
 
             self._vol = file_vol.reshape((self.nx, self.ny, self.nz))
 
+            self._load_extra(config)
 
 
 
-
-    def copy(self):
-        return copy.deepcopy(self)
-
-
-
-    def save_dbin(self, path):
+    def save(self, path):
         """
         Save the current Vol to a file.
 
@@ -97,23 +94,36 @@ class Vol(VolProperties):
         flat_vol.tofile(f'{path.parent}/{tag}.dbin')
 
         f = open(f'{path.parent}/{tag}_log.txt', 'w')
-        f.write('## Vol Log File\n\n')
-        f.write('[params]\n')
-
+        f.write('##Scorpy Config File\n')
+        f.write(f'## Created: {datetime.now().strftime("%Y/%m/%d %H:%M")}\n\n')
+        f.write('[vol]\n')
         f.write(f'nx = {self.nx}\n')
         f.write(f'ny = {self.ny}\n')
         f.write(f'nz = {self.nz}\n')
-
         f.write(f'xmin = {self.xmin}\n')
         f.write(f'ymin = {self.ymin}\n')
         f.write(f'zmin = {self.zmin}\n')
-
         f.write(f'xmax = {self.xmax}\n')
         f.write(f'ymax = {self.ymax}\n')
         f.write(f'zmax = {self.zmax}\n')
-
+        f.write(f'dx = {self.dx}\n')
+        f.write(f'dy = {self.dy}\n')
+        f.write(f'dz = {self.dz}\n')
         f.write(f'comp = {self.comp}\n')
+        f.write('\n')
+        self._save_extra(f)
         f.close()
+
+
+    def _save_extra(self,f):
+        pass
+
+    def _load_extra(self, config):
+        pass
+
+
+    def copy(self):
+        return copy.deepcopy(self)
 
 
     def get_eig(self, herm=True):
