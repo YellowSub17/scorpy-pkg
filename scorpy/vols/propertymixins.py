@@ -40,15 +40,15 @@ class VolProps:
 
     @property
     def dx(self):
-        return self.xmax/self.nx
+        return (self.xmax-self.xmin)/self.nx
 
     @property
     def dy(self):
-        return self.ymax/self.ny
+        return (self.ymax-self.ymin)/self.ny
 
     @property
     def dz(self):
-        return self.zmax/self.nz
+        return (self.zmax-self.zmin)/self.nz
 
 
     @property
@@ -67,54 +67,32 @@ class VolProps:
 
 
 
-   
 
 class CorrelationVolProps:
-
-    @property
-    def qmax(self):
-        return self.xmax
 
     @property
     def nq(self):
         return self.nx
 
     @property
-    def dq(self):
-        return self.dx
-
-    @property
     def npsi(self):
         return self.nz
-
-    @property
-    def dpsi(self):
-        return self.dz
-
-    @property
-    def cvol(self):
-        assert False, 'Error: cvol is deprecated, use vol'
-
-    @property
-    def ntheta(self):
-        assert False, 'Error: ntheta is deprecated, use npsi'
-
-
-
-class BlqqVolProps:
 
     @property
     def qmax(self):
         return self.xmax
 
-
-    @property
-    def lmax(self):
-        return self.nl - 1
-
     @property
     def dq(self):
         return self.dx
+
+    @property
+    def dpsi(self):
+        return self.dz
+
+
+
+class BlqqVolProps:
 
     @property
     def nq(self):
@@ -125,8 +103,47 @@ class BlqqVolProps:
         return self.nz
 
     @property
-    def blvol(self):
-        assert False, 'Error: blvol is deprecated, use vol'
+    def qmax(self):
+        return self.xmax
+
+    @property
+    def lmax(self):
+        return self.nl - 1
+
+    @property
+    def dq(self):
+        return self.dx
+
+
+class PadfVolProps:
+
+    @property
+    def nr(self):
+        return self.nx
+
+    @property
+    def npsi(self):
+        return self.nz
+
+    @property
+    def rmax(self):
+        return self.xmax
+
+    @property
+    def dr(self):
+        return self.dx
+
+    @property
+    def dpsi(self):
+        return self.dz
+
+    @property
+    def nl(self):
+        return self._nl
+
+    @property
+    def wavelength(self):
+        return self._wavelength
 
 
 
@@ -134,16 +151,8 @@ class BlqqVolProps:
 class SphericalVolProps:
 
     @property
-    def qmax(self):
-        return self.xmax
-
-    @property
     def nq(self):
         return self.nx
-
-    @property
-    def dq(self):
-        return self.dx
 
     @property
     def ntheta(self):
@@ -152,6 +161,10 @@ class SphericalVolProps:
     @property
     def nphi(self):
         return self.nz
+
+    @property
+    def qmax(self):
+        return self.xmax
 
     @property
     def dq(self):
@@ -177,35 +190,7 @@ class SphericalVolProps:
     def nl(self):
         return self._nl
 
-
-class PadfVolProps:
-
     @property
-    def rmax(self):
-        return self.xmax
-
-    @property
-    def nr(self):
-        return self.nx
-
-    @property
-    def dr(self):
-        return self.dx
-
-    @property
-    def npsi(self):
-        return self.nz
-
-    @property
-    def dpsi(self):
-        return self.dz
-
-    @property
-    def nl(self):
-        return self._nl
-
-    @property
-    def wavelength(self):
-        return self._wavelength
-
+    def lmax(self):
+        return self.nl - 1
 

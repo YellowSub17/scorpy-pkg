@@ -38,3 +38,9 @@ This will create a link from your python site-package directory to an egg-info d
     pip install -e .
 
 
+## Testing
+
+To run test scripts:
+
+    python -m unittest tests/*test.py
+

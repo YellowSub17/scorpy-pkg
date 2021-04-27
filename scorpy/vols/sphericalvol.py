@@ -44,6 +44,7 @@ class SphericalVol(Vol, SphericalVolProps):
                 nphi +=1
 
         else:
+            print('WARNING: not using DH grid.')
             ntheta = nangle
             nphi = 2*nangle -1
             nl = int(nangle)

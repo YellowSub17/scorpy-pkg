@@ -24,7 +24,7 @@ class BlqqVol(Vol, BlqqVolProps):
         Vol.__init__(self, nx = nq, ny = nq, nz = nl, \
                         xmax = qmax, ymax = qmax, zmax = nl-1, \
                         xmin = 0, ymin = 0, zmin = 0, \
-                        comp = False, path = None)
+                        comp = False, path = path)
 
         self.plot_q1q2 = self.plot_xy
 

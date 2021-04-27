@@ -19,13 +19,14 @@ class PadfVol(Vol, PadfVolProps):
                         path = None):
 
 
+        self._nl = nl
+        self._wavelength = wavelength
+
         Vol.__init__(self,  nr, nr, npsi, \
                             rmax, rmax, 180, \
                             0, 0, 0, \
                             comp = False, path = path)
 
-        self._nl = nl
-        self._wavelength = wavelength
 
         self.plot_r1r2 = self.plot_xy
 
