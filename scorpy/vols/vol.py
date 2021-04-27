@@ -219,7 +219,7 @@ class Vol(VolProps):
             im = np.log(np.abs(im)+1)
         plt.imshow(im, origin='lower', extent=[0, self.zmax, 0, self.xmax], aspect=aspect)
         if extent is None:
-            plt.imshow(im, origin='lower',  aspect=aspect)
+            plt.imshow(im, origin='lower', aspect=aspect)
 
         if new_fig:
             plt.colorbar()
@@ -274,34 +274,6 @@ class Vol(VolProps):
         else:
             return [self.xmin, self.xmax, self.ymin, self.ymax]
 
-
-
-
-
-
-
-    # def is_herm(self):
-
-        # herm=True
-        # for z in range(self.nz):
-            # mat = np.matrix(self.vol[...,z])
-            # if not np.allclose(mat, np.conj(mat.T)):
-                # print('Vol not herm for z =',z)
-                # herm = False
-        # return herm
-
-    # def is_sym(self):
-        # sym=True
-        # for z in range(self.nz):
-
-            # mat1 = self.vol[...,z]
-            # mat2 = self.vol[...,self.nz-z-1]
-
-            # if not np.allclose(mat1,mat2):
-                # print('Vol not sym for z =',z)
-                # sym = False
-                # # break
-        # return sym
 
 
 

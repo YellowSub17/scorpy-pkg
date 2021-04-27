@@ -53,48 +53,47 @@ np.random.seed(0)
 
 #### MAKE PADF FROM PEAKS DATA CORRELATION (multi)
 
-# runs150 = [112,123,113,125,102,103,104,105]
-# runs144 = [118,108,119,109,120,110,121]
-# runs = runs150+runs144
+runs150 = [112,123,113,125,102,103,104,105]
+runs144 = [118,108,119,109,120,110,121]
+runs = runs150+runs144
 
 
-# ress = [0.05, 0.1, 0.15, 0.2] #A/bin
-# rmaxs = [5, 10, 15, 20] #A
-# nls = [11, 21, 31, 41]
+ress = [0.05, 0.1, 0.15, 0.2] #A/bin
+rmaxs = [5, 10, 15, 20] #A
+nls = [11, 21, 31, 41]
 
 
 
-# for run in runs:
-    # for res in ress:
-        # for nl in nls:
+for i, run in enumerate(runs):
+    for j, res in enumerate(ress):
+        for k, nl in enumerate(nls):
+            for l, rmax in enumerate(rmaxs):
 
-            # nr = round(rmax/res) #A/(A/bin) = BINS
+                nr = round(rmax/res) #A/(A/bin) = BINS
 
-            # cor = scorpy.CorrelationVol(path=f'../data/dbins/cosine_sim/{run}/run{run}_qcor')
-            # padf = scorpy.PadfVol(nr,int(cor.npsi/2), rmax)
-            # qcor_path = f'/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/data/dbins/cosine_sim/{run}/run{run}_qcor.dbin'
-            # padf.fill_from_corr(qcor_path, nl=31, wavelength=1.33e-10)
-
-            # padf_path = f'/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/data/dbins/cosine_sim/{run}/run{run}_rm{rmax}padf.dbin' 
-            
-            # padf.save_dbin(f'../data/dbins/cosine_sim/{run}/run{run}_seed{seed}b_padf')
+                cor = scorpy.CorrelationVol(path=f'../data/dbins/cosine_sim/{run}/run{run}_qcor')
+                padf = scorpy.PadfVol(nr,int(cor.npsi/2), rmax, nl, 1.33)
+                qcor_path = f'/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/data/dbins/cosine_sim/{run}/run{run}_qcor.dbin'
+                padf.fill_from_corr(qcor_path)
+                padf.save(f'../data/dbins/cosine_sim/{run}/run{run}_res{j+1}_rmax{rmax}_nl{nl}_padf')
 
 
-rmax = 5
-res = 0.01
-nl = 20
 
-nr = round(rmax/res)
-run = 112
+# rmax = 5
+# res = 0.01
+# nl = 20
 
-corr = scorpy.CorrelationVol(path=f'../data/dbins/cosine_sim/{run}/run{run}_qcor')
-padf = scorpy.PadfVol(nr, int(corr.npsi/2), rmax, nl, 1.33)
-qcor_path = f'/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/data/dbins/cosine_sim/{run}/run{run}_qcor.dbin'
-padf.fill_from_corr(qcor_path)
+# nr = round(rmax/res)
+# run = 112
 
-padf_path = f'/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/data/dbins/cosine_sim/{run}/run{run}_rm{rmax}padf.dbin' 
+# corr = scorpy.CorrelationVol(path=f'../data/dbins/cosine_sim/{run}/run{run}_qcor')
+# padf = scorpy.PadfVol(nr, int(corr.npsi/2), rmax, nl, 1.33)
+# qcor_path = f'/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/data/dbins/cosine_sim/{run}/run{run}_qcor.dbin'
+# padf.fill_from_corr(qcor_path)
 
-padf.save(f'../data/dbins/cosine_sim/{run}/run{run}_padf')
+# padf_path = f'/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/data/dbins/cosine_sim/{run}/run{run}_rm{rmax}padf.dbin' 
+
+# padf.save(f'../data/dbins/cosine_sim/{run}/run{run}_padf')
 
 
 
