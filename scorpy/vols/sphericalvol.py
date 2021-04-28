@@ -22,7 +22,7 @@ class SphericalVol(Vol, SphericalVolProps):
     '''
 
 
-    def __init__(self, nq=100, nangle=180, qmax=1, comp=False, gridtype='DH1', extend=False,  path=None):
+    def __init__(self, nq=100, nangle=180, qmax=1, comp=False, gridtype='DH2', extend=False,  path=None):
         assert nangle%2==0, 'nangle must be even'
         assert not extend, "Only working with non-extended grids"
 
@@ -51,14 +51,16 @@ class SphericalVol(Vol, SphericalVolProps):
             if extend:
                 nphi +=1
 
+        self._gridtype = gridtype
+        self._extend = extend
+        self._nl = nl
+
         Vol.__init__(   self, nx = nq, ny = ntheta, nz = nphi, \
                         xmax = qmax, ymax = np.pi/2, zmax = 2*np.pi, \
                         xmin = 0, ymin = -np.pi/2, zmin = 0, \
                         comp = comp, path = path)
 
-        self._gridtype = gridtype
-        self._extend = extend
-        self._nl = nl
+
 
 
     def _save_extra(self, f):
@@ -123,6 +125,8 @@ class SphericalVol(Vol, SphericalVolProps):
 
 
     def fill_from_cif(self, cif):
+
+        assert cif.qmax == self.qmax, 'CifData and SphericalVol have different qmax'
 
         ite = np.ones(cif.scat_sph[:,0].shape)
 

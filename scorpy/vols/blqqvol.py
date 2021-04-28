@@ -40,8 +40,8 @@ class BlqqVol(Vol, BlqqVolProps):
 
 
     def fill_from_corr(self,corr):
-        assert corr.qmax == self.qmax, 'CorrelationVol and BlqqVol have different qmax'
         assert corr.nq == self.nq, 'CorrelationVol and BlqqVol have different nq'
+        assert corr.qmax == self.qmax, 'CorrelationVol and BlqqVol have different qmax'
 
 
         #TODO compensate for ewald sphere
@@ -49,7 +49,6 @@ class BlqqVol(Vol, BlqqVolProps):
 
         # # # create args of legendre eval
         args = np.cos( np.linspace(0, np.pi, corr.npsi))
-
 
         # initialze fmat matrix
         fmat = np.zeros( (corr.npsi, self.nl) )
@@ -63,9 +62,9 @@ class BlqqVol(Vol, BlqqVolProps):
         #TODO check svd
         fmat_inv = np.linalg.pinv(fmat)
 
-        plt.figure()
-        plt.imshow(np.matmul(fmat_inv, fmat))
-        plt.title('fmat inv * fmat')
+        # plt.figure()
+        # plt.imshow(np.matmul(fmat_inv, fmat))
+        # plt.title('fmat inv * fmat')
 
         for iq1 in range(self.nq):
             for iq2 in range(iq1, self.nq):
@@ -78,12 +77,16 @@ class BlqqVol(Vol, BlqqVolProps):
         # self.vol *= 4*np.pi
 
 
-        self.rm_odd_harm()
+        # self.rm_odd_harm()
 
 
 
 
     def fill_from_sphv(self, sphv):
+
+        assert sphv.nq == self.nq, 'SphericalVol and BlqqVol have different nq'
+        assert sphv.qmax == self.qmax, 'SphericalVol and BlqqVol have different nq'
+
 
         all_q_coeffs = list(map(sphv.get_coeffs,range(self.nq)))
 
@@ -97,7 +100,7 @@ class BlqqVol(Vol, BlqqVolProps):
                 if j>0:
                     self.vol[j+i,i,:] = multi.sum(axis=0).sum(axis=1)[:self.nl]
 
-        self.rm_odd_harm()
+        # self.rm_odd_harm()
 
 
 
@@ -110,22 +113,22 @@ class BlqqVol(Vol, BlqqVolProps):
 
 
 
-    def fill_from_sph(self, sph):
+    # def fill_from_sph(self, sph):
 
-        if self.comp:
-            bl = np.zeros((self.nq, self.nq), dtype=np.complex128)
-        else:
-            bl = np.zeros((self.nq, self.nq))
+        # if self.comp:
+            # bl = np.zeros((self.nq, self.nq), dtype=np.complex128)
+        # else:
+            # bl = np.zeros((self.nq, self.nq))
 
-        for l in range(0, self.nl, 2):
-            for iq1 in range(self.nq):
-                for iq2 in range(iq1, self.nq):
-                    bl[iq1,iq2] = np.sum(np.conj(sph.vals_lnm[l][iq1])*sph.vals_lnm[l][iq2])
+        # for l in range(0, self.nl, 2):
+            # for iq1 in range(self.nq):
+                # for iq2 in range(iq1, self.nq):
+                    # bl[iq1,iq2] = np.sum(np.conj(sph.vals_lnm[l][iq1])*sph.vals_lnm[l][iq2])
                     
-                    if iq1 !=iq2:
-                        bl[iq2,iq1] = np.sum(np.conj(sph.vals_lnm[l][iq2])*sph.vals_lnm[l][iq1])
+                    # if iq1 !=iq2:
+                        # bl[iq2,iq1] = np.sum(np.conj(sph.vals_lnm[l][iq2])*sph.vals_lnm[l][iq1])
 
-            self.vol[...,l] = bl
+            # self.vol[...,l] = bl
 
 
 
