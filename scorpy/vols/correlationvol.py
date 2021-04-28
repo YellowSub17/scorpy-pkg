@@ -90,7 +90,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
         fmat = np.zeros( (self.npsi, blqq.nl) )
 
         #for every even spherical harmonic
-        for l in range(0, blqq.nl, 2):
+        for l in range(0, blqq.nl):
 
             leg_vals = (1/(4*np.pi))*special.eval_legendre(l, args)
             fmat[:,l] = leg_vals

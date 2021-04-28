@@ -147,7 +147,7 @@ class SphericalVol(Vol, SphericalVolProps):
         else:
             sh_grid = pysh.shclasses.GLQRealGrid(q_slice)
 
-        return sh_grid.expand(normalization='ortho', csphase=1).coeffs
+        return sh_grid.expand(normalization='4pi', csphase=-1).coeffs
 
 
 

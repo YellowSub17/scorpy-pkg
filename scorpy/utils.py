@@ -5,7 +5,11 @@ from scipy import special
 
 
 
-
+def mydiv(x,y):
+    loc = np.where(y!=0)
+    z = np.zeros(x.shape)
+    z[loc] = x[loc]/y[loc]
+    return z
 
 
 

@@ -44,8 +44,8 @@ class BlqqVol(Vol, BlqqVolProps):
         assert corr.qmax == self.qmax, 'CorrelationVol and BlqqVol have different qmax'
 
 
-        #TODO compensate for ewald sphere
-        q_range = np.linspace(0,self.qmax, self.nq)
+        # #TODO compensate for ewald sphere
+        # q_range = np.linspace(0,self.qmax, self.nq)
 
         # # # create args of legendre eval
         args = np.cos( np.linspace(0, np.pi, corr.npsi))
@@ -54,7 +54,7 @@ class BlqqVol(Vol, BlqqVolProps):
         fmat = np.zeros( (corr.npsi, self.nl) )
 
         #for every even spherical harmonic
-        for l in range(0, self.nl, 2):
+        for l in range(0, self.nl):
             leg_vals = special.eval_legendre(l, args)
             fmat[:,l] = leg_vals
 
@@ -62,22 +62,18 @@ class BlqqVol(Vol, BlqqVolProps):
         #TODO check svd
         fmat_inv = np.linalg.pinv(fmat)
 
-        # plt.figure()
-        # plt.imshow(np.matmul(fmat_inv, fmat))
-        # plt.title('fmat inv * fmat')
+        plt.figure()
+        plt.imshow(np.matmul(fmat_inv, fmat))
+        plt.title('fmat inv * fmat')
 
         for iq1 in range(self.nq):
             for iq2 in range(iq1, self.nq):
-                dot =  np.dot(fmat_inv,corr.vol[iq1,iq2,:])
+                dot =  np.dot(fmat_inv, corr.vol[iq1,iq2,:])
                 self.vol[iq1,iq2,:] = dot
-                if iq1 !=iq2:
+                if iq2 > iq1:
                     self.vol[iq2,iq1,:] = dot
 
-        # times 4pi because we multi 2root(pi) in the ylm calc.
-        # self.vol *= 4*np.pi
 
-
-        # self.rm_odd_harm()
 
 
 
@@ -99,17 +95,6 @@ class BlqqVol(Vol, BlqqVolProps):
                 self.vol[i,j+i,:] = multi.sum(axis=0).sum(axis=1)[:self.nl]
                 if j>0:
                     self.vol[j+i,i,:] = multi.sum(axis=0).sum(axis=1)[:self.nl]
-
-        # self.rm_odd_harm()
-
-
-
-
-    def rm_odd_harm(self):
-        for l in range(1, self.nl, 2):
-            self.vol[...,l] *=0
-
-
 
 
 
