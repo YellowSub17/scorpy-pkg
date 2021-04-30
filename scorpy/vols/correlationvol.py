@@ -173,6 +173,8 @@ class CorrelationVol(Vol, CorrelationVolProps):
         q_inds =list(map(index_x, qmags, 0*ite, self.qmax*ite, self.nq*ite))
 
         for i, q1 in enumerate(qxyzi):
+
+            print(i, '/', len(q_inds))
             q1_ind = q_inds[i]
 
             for j, q2 in enumerate(qxyzi[i:]):
@@ -211,6 +213,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
         q_inds =list(map(index_x, qtpi[:,0], 0*ite, self.qmax*ite, self.nq*ite))
 
         for i, q1 in enumerate(qtpi):
+            print(i, '/', len(q_inds))
             q1_ind = q_inds[i]
             theta1 = q1[1]
             phi1 = q1[2]

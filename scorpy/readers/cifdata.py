@@ -9,7 +9,7 @@ from .propertymixins import CifDataProperties
 
 class CifData(CifDataProperties):
 
-    def __init__(self,fname, qmax=None):
+    def __init__(self,fname, qmax=None, ):
 
         cif = pycif.ReadCif(fname)
         vk = cif.visible_keys[0]
@@ -99,8 +99,18 @@ class CifData(CifDataProperties):
             print('WARNING: No intensity found when reading cif.')
             return None
 
+
+
         #apply symmetry to generate all bragg points
         asym_refl = np.array([h, k, l, I]).T
+
+        #cropp any negative intensity
+        loc = np.where(asym_refl[:,-1] >= 0)
+        asym_refl = asym_refl[loc]
+
+    
+
+
         bragg = apply_sym(asym_refl, self.spg)
 
         # convert bragg indices to rect reciprocal units 
@@ -132,33 +142,39 @@ class CifData(CifDataProperties):
 
 
 
-    def bin_sph(self, nq, ntheta, nphi):
-
-        qs = self.spherical[:,0]
-        ts = self.spherical[:,1]+np.pi/2 #0 -> pi
-        ps = self.spherical[:,2]
-
-        ite = np.ones(np.shape(qs))
-
-        qinds = list(map(index_x, qs, self.qmax*ite, nq*ite))
-        tinds = list(map(index_x, ts*ite, np.pi*ite, ntheta*ite))
-        pinds = list(map(index_x, ps*ite, 2*np.pi*ite, nphi*ite))
-
-
-
-        print(qinds)
-
-        qspace = np.linspace(0, self.qmax, nq)
-        tspace = np.linspace(-np.pi/2, np.pi/2, ntheta)
-        pspace = np.linspace(0, 2*np.pi, nphi)
 
 
 
 
 
-        self.spherical[:,0] = qspace[qinds]
-        self.spherical[:,1] = tspace[tinds]
-        self.spherical[:,2] = pspace[pinds]
+
+    # def bin_sph(self, nq, ntheta, nphi):
+
+        # qs = self.spherical[:,0]
+        # ts = self.spherical[:,1]+np.pi/2 #0 -> pi
+        # ps = self.spherical[:,2]
+
+        # ite = np.ones(np.shape(qs))
+
+        # qinds = list(map(index_x, qs, self.qmax*ite, nq*ite))
+        # tinds = list(map(index_x, ts*ite, np.pi*ite, ntheta*ite))
+        # pinds = list(map(index_x, ps*ite, 2*np.pi*ite, nphi*ite))
+
+
+
+        # print(qinds)
+
+        # qspace = np.linspace(0, self.qmax, nq)
+        # tspace = np.linspace(-np.pi/2, np.pi/2, ntheta)
+        # pspace = np.linspace(0, 2*np.pi, nphi)
+
+
+
+
+
+        # self.spherical[:,0] = qspace[qinds]
+        # self.spherical[:,1] = tspace[tinds]
+        # self.spherical[:,2] = pspace[pinds]
 
 
 

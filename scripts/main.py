@@ -5,9 +5,9 @@ plt.close('all')
 import scorpy
 
 
-nq=100
-npsi=180
-nl=89
+nq=200
+npsi=360
+nl=50
 
 qmax = 0.36992983463258367/3
 
@@ -21,25 +21,35 @@ corr1.fill_from_cif(cif)
 blqq1 = scorpy.BlqqVol(nq, nl, qmax)
 blqq1.fill_from_corr(corr1)
 
-# corr2 = scorpy.CorrelationVol(nq, npsi, qmax)
-# corr2.fill_from_blqq(blqq1)
+corr2 = scorpy.CorrelationVol(nq, npsi, qmax)
+corr2.fill_from_blqq(blqq1)
 
 sphv = scorpy.SphericalVol(nq,npsi, qmax)
 sphv.fill_from_cif(cif)
 
-q = np.unique(np.where(sphv.vol>0)[0])[-3]
+q = np.unique(np.where(sphv.vol>0)[0])[0]
 sphv.plot_slice(0, q)
 
 blqq2 = scorpy.BlqqVol(nq, nl, qmax)
 blqq2.fill_from_sphv(sphv)
 
-# corr3 = scorpy.CorrelationVol(nq, npsi, qmax)
-# corr3.fill_from_blqq(blqq2)
+corr3 = scorpy.CorrelationVol(nq, npsi, qmax)
+corr3.fill_from_blqq(blqq2)
 
 
 
 
 l = 4
+
+
+# coeffs = sphv.get_coeffs(q)
+
+# plt.figure();plt.imshow(coeffs[0])
+# plt.figure();plt.imshow(coeffs[1])
+
+# ls  = np.sum(coeffs, axis=0).sum(axis=1)
+# plt.figure()
+# plt.plot(ls)
 
 
 
@@ -57,14 +67,28 @@ l = 4
     # corr._vol = corr.vol[...,10:-10]
 
 
-# corr1.plot_q1q2()
+# corr1.plot_slice(axis=0, index=q)
 # plt.title('Corr - Original')
 
-# corr2.plot_q1q2()
+# corr2.plot_slice(axis=0, index=q)
 # plt.title('Corr - corr->blqq->corr')
 
-# corr3.plot_q1q2()
+# corr3.plot_slice(axis=0, index=q)
 # plt.title('Corr - sphv->blqq->corr')
+
+
+
+
+corr1.plot_q1q2()
+plt.title('Corr - Original')
+
+corr2.plot_q1q2()
+plt.title('Corr - corr->blqq->corr')
+
+corr3.plot_q1q2()
+plt.title('Corr - sphv->blqq->corr')
+
+
 
 
 # corr1.plot_line(axis=0, in1=q, in2=q)
@@ -77,9 +101,6 @@ l = 4
 # plt.title('Corr - sphv->blqq->corr')
 
 
-
-
-# blqq1.vol /= 1e7
 
 
 blqq1.plot_slice(2,l)
@@ -99,11 +120,29 @@ plt.title(f'Blqq - sphv->blqq - {q},{l}')
 
 
 
-rel = scorpy.utils.mydiv(blqq1.vol, blqq2.vol)
-plt.figure()
-plt.plot(rel[:,q,l])
+# rel = scorpy.utils.mydiv(blqq1.vol, blqq2.vol)
+# plt.figure()
+# plt.plot(rel[:,q,l])
 
-plt.title(f'Blqq - Rel - {q},{l}')
+# plt.title(f'Blqq - Rel - {q},{l}')
+
+
+
+
+# blqq1xy = blqq1.get_xy()
+# blqq2xy = blqq2.get_xy()
+
+
+# rel2 = scorpy.utils.mydiv(blqq1xy, blqq2xy)
+
+
+# plt.figure()
+# plt.plot(rel2[:,l])
+
+# plt.title(f'Blqq - Rel2 - {q},{l}')
+
+
+
 
 
 
