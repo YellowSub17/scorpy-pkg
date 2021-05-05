@@ -6,7 +6,7 @@ from .correlationvol import CorrelationVol
 import os
 import numpy as np
 
-from .propertymixins import PadfVolProps
+from .volspropertymixins import PadfVolProps
 
 
 PADF_PADF = '/home/pat/Documents/cloudstor/phd/python_projects/padf/'
@@ -89,6 +89,3 @@ class PadfVol(Vol, PadfVolProps):
         v =  flatv.reshape(self.nr, self.nr, corr.npsi)
 
         self.vol = v[...,:self.npsi]
-
-
-

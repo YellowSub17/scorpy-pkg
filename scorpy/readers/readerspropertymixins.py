@@ -113,5 +113,3 @@ class CifDataProperties:
         Determines resolution of reconstructions.
         '''
         return self._qmax
-
-

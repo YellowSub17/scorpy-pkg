@@ -1,10 +1,9 @@
 
 import CifFile as pycif
 import numpy as np
-from ..symmetry import apply_sym
-from ..utils import index_x
+from ..utils import index_x, apply_sym
 
-from .propertymixins import CifDataProperties
+from .readerspropertymixins import CifDataProperties
 
 
 class CifData(CifDataProperties):
@@ -90,7 +89,7 @@ class CifData(CifDataProperties):
         elif '_refln.f_meas_au' in self.cif.keys():
             I = np.array(self.cif['_refln.f_meas_au'])
             I = np.where(I == '?', '0', I)
-            I = I.astype(np.float64)**2 
+            I = I.astype(np.float64)**2
         elif '_refln.f_squared_meas' in self.cif.keys():
             I = np.array(self.cif['_refln.f_squared_meas'])
             I = np.where(I == '?', '0', I)
@@ -108,12 +107,12 @@ class CifData(CifDataProperties):
         loc = np.where(asym_refl[:,-1] >= 0)
         asym_refl = asym_refl[loc]
 
-    
+
 
 
         bragg = apply_sym(asym_refl, self.spg)
 
-        # convert bragg indices to rect reciprocal units 
+        # convert bragg indices to rect reciprocal units
         scattering_pos = np.matmul(bragg[:,:-1], np.array([self.ast, self.bst, self.cst]))
         scattering = np.zeros(bragg.shape)
         scattering[:, :-1] = scattering_pos
@@ -175,20 +174,3 @@ class CifData(CifDataProperties):
         # self.spherical[:,0] = qspace[qinds]
         # self.spherical[:,1] = tspace[tinds]
         # self.spherical[:,2] = pspace[pinds]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

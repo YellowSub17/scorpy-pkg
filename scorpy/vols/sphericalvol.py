@@ -6,7 +6,7 @@ import numpy as np
 from scipy import special
 import matplotlib.pyplot as plt
 import pyshtools as pysh
-from .propertymixins import SphericalVolProps
+from .volspropertymixins import SphericalVolProps
 
 
 class SphericalVol(Vol, SphericalVolProps):
@@ -149,7 +149,7 @@ class SphericalVol(Vol, SphericalVolProps):
 
         c = sh_grid.expand(normalization='4pi').coeffs
 
-        c[:,1::2,:] *=0
+        # c[:,1::2,:] *=0
 
 
 
@@ -157,7 +157,7 @@ class SphericalVol(Vol, SphericalVolProps):
 
 
 
-        
+
 
 
     # def rotate(self, a,b,c):
@@ -248,5 +248,3 @@ class SphericalVol(Vol, SphericalVolProps):
         # coeffs = sh_coeffs.coeffs
 
         # return coeffs
-
-

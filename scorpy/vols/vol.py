@@ -6,7 +6,7 @@ import configparser as cfp
 from pathlib import Path
 import matplotlib.pyplot as plt
 
-from .propertymixins import VolProps
+from .volspropertymixins import VolProps
 
 from datetime import datetime
 
@@ -175,7 +175,7 @@ class Vol(VolProps):
         """
 
 
-        #make linear spaces and meshes for each kernel direction 
+        #make linear spaces and meshes for each kernel direction
         x_space = np.linspace(-kern_L,kern_L, kern_n )
         y_space = np.linspace(-kern_L,kern_L, kern_n )
         z_space = np.linspace(-kern_L,kern_L, kern_n )
@@ -273,8 +273,3 @@ class Vol(VolProps):
             return [self.zmin, self.zmax, self.xmin, self.xmax]
         else:
             return [self.xmin, self.xmax, self.ymin, self.ymax]
-
-
-
-
-

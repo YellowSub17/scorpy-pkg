@@ -6,7 +6,7 @@ from scipy import special
 import numpy as np
 import math
 
-from .propertymixins import CorrelationVolProps
+from .volspropertymixins import CorrelationVolProps
 
 
 class CorrelationVol(Vol, CorrelationVolProps):
@@ -44,12 +44,24 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
 
-    def fill_from_cif(self,cif, cords='scat_sph'):
+    def fill_from_cif(self,cif, cords='scat_rect'):
+        '''
+        Fill the CorrelationVol from a CifData
 
+        Arguments:
+            cif (CifData): The CifData object to to fill the CorrelationVol
+            cords (str: "scat_sph"|"scat_rect"): Method of correlation, selecting
+                    the spherical coordinates or rectilinear coordinates (default)
+
+        Returns:
+            None. Updates self.cvol
+        '''
         if cords=='scat_sph':
             self.correlate_scat_sph(cif.scat_sph)
-        if cords=='scat_rect':
+        elif cords=='scat_rect':
             self.correlate_scat_rect(cif.scat_rect)
+        else:
+            print('WARNING: CorrelationVol.fill_from_cif: cords undefined')
 
 
     def fill_from_peakdata(self,peakdata):
@@ -90,24 +102,23 @@ class CorrelationVol(Vol, CorrelationVolProps):
         fmat = np.zeros( (self.npsi, blqq.nl) )
 
         #for every even spherical harmonic
-        for l in range(0, blqq.nl):
-
+        for l in range(0, blqq.nl,2):
             leg_vals = (1/(4*np.pi))*special.eval_legendre(l, args)
             fmat[:,l] = leg_vals
 
-
-        #for every q1 position
-        for q1 in range(self.nq):
-            #for every q2 position
-            for q2 in range(q1, self.nq):
-
+        #for every q1 and q2 position
+        for q1_ind in range(self.nq):
+            for q2_ind in range(q1_ind, self.nq):
                 #vector as a function of L
-                blv = blqq.vol[q1,q2,:]
-                for t1 in range(self.npsi):
-                    ft = fmat[t1,:]
-                    x = np.dot(blv,ft)
+                blv = blqq.vol[q1_ind, q2_ind, :]
+
+                for psi_ind in range(self.npsi):
+                    ft = fmat[psi_ind, :]
+                    x = np.dot(blv, ft)
+
+                    #fill the volume
                     self.vol[q1,q2,t1] = x
-                    if q1!=q2:
+                    if q1!=q2: #if not on diagonal
                         self.vol[q2,q1,t1] = x
 
 
@@ -129,23 +140,29 @@ class CorrelationVol(Vol, CorrelationVolProps):
         Returns:
             None. Updates self.cvol with correlations.
         '''
+        #only correlate less than qmax
         le_qmax = np.where(qti[:,0] <= self.qmax)[0]
         qti = qti[le_qmax]
 
+        #calculate q indices of every scattering vector outside of loop
         ite = np.ones(qti.shape[0])
         q_inds =list(map(index_x, qti[:,0], 0*ite, self.qmax*ite, self.nq*ite))
 
         for i, q1 in enumerate(qti):
+            #get q index
             q1_ind = q_inds[i]
 
             for j, q2 in enumerate(qti[i:]):
+                #get q index
                 q2_ind = q_inds[i+j]
 
+                #get the angle between vectors, and index it
                 psi = angle_between_pol(q1[1], q2[1])
                 psi_ind = index_x(psi, 0, 180, self.npsi)
 
+                #fill the volume
                 self.vol[q1_ind, q2_ind, psi_ind] +=q1[-1]*q2[-1]
-                if j>0:
+                if j>0: #if not on diagonal
                     self.vol[q2_ind, q1_ind, psi_ind] +=q1[-1]*q2[-1]
 
 
@@ -164,27 +181,32 @@ class CorrelationVol(Vol, CorrelationVolProps):
         Returns:
             None. Updates self.cvol with correlations
         '''
+
+        #only correlate less than qmax
         qmags = np.linalg.norm(qxyzi[:,:3], axis=1)
         le_qmax = np.where(qmags <= self.qmax)[0]
         qxyzi = qxyzi[le_qmax]
         qmags = qmags[le_qmax]
 
+        #calculate q indices of every scattering vector outside of loop
         ite = np.ones(qxyzi.shape[0])
         q_inds =list(map(index_x, qmags, 0*ite, self.qmax*ite, self.nq*ite))
 
         for i, q1 in enumerate(qxyzi):
-
-            print(i, '/', len(q_inds))
+            #get q index
             q1_ind = q_inds[i]
 
             for j, q2 in enumerate(qxyzi[i:]):
+                #get q index
                 q2_ind = q_inds[i+j]
 
+                #get the angle between vectors, and index it
                 psi = angle_between_rect(q1[:3], q2[:3])
                 psi_ind = index_x(psi, 0, np.pi, self.npsi)
 
+                #fill the volume
                 self.vol[q1_ind,q2_ind,psi_ind] +=q1[-1]*q2[-1]
-                if j>0:
+                if j>0: #if not on diagonal
                     self.vol[q2_ind, q1_ind, psi_ind] += q1[-1]*q2[-1]
 
 
@@ -206,28 +228,32 @@ class CorrelationVol(Vol, CorrelationVolProps):
         Returns:
             None. Updates self.cvol with correlations
         '''
+        #only correlate less than qmax
         le_qmax = np.where(qtpi[:,0] <= self.qmax)[0]
         qtpi = qtpi[le_qmax]
 
+
+        #calculate q indices of every scattering vector outside of loop
         ite = np.ones(qtpi.shape[0])
         q_inds =list(map(index_x, qtpi[:,0], 0*ite, self.qmax*ite, self.nq*ite))
 
         for i, q1 in enumerate(qtpi):
-            print(i, '/', len(q_inds))
+            #get q index, theta and phi
             q1_ind = q_inds[i]
             theta1 = q1[1]
             phi1 = q1[2]
 
             for j, q2 in enumerate(qtpi[i:]):
+                #get q index, theta and phi
                 q2_ind = q_inds[i+j]
                 theta2 = q2[1]
                 phi2 = q2[2]
 
+                #get the angle between angluar coordinates, and index it
                 psi = angle_between_sph(theta1, theta2,phi1, phi2)
                 psi_ind = index_x(psi,0, np.pi, self.npsi)
 
+                #fill the volume
                 self.vol[q1_ind, q2_ind, psi_ind] +=q1[-1]*q2[-1]
-                if j>0:
+                if j>0: #if not on diagonal
                     self.vol[q2_ind, q2_ind, psi_ind] +=q1[-1]*q2[-1]
-
-

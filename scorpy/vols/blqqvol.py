@@ -4,7 +4,7 @@ from .vol import Vol
 import numpy as np
 from scipy import special
 import matplotlib.pyplot as plt
-from .propertymixins import BlqqVolProps
+from .volspropertymixins import BlqqVolProps
 
 
 
@@ -54,7 +54,7 @@ class BlqqVol(Vol, BlqqVolProps):
         fmat = np.zeros( (corr.npsi, self.nl) )
 
         #for every even spherical harmonic
-        for l in range(0, self.nl):
+        for l in range(0, self.nl,2):
             leg_vals = special.eval_legendre(l, args)
             fmat[:,l] = leg_vals
 
@@ -79,7 +79,6 @@ class BlqqVol(Vol, BlqqVolProps):
 
 
     def fill_from_sphv(self, sphv):
-
         assert sphv.nq == self.nq, 'SphericalVol and BlqqVol have different nq'
         assert sphv.qmax == self.qmax, 'SphericalVol and BlqqVol have different nq'
 
@@ -92,9 +91,9 @@ class BlqqVol(Vol, BlqqVolProps):
 
                 multi = np.conj(q1_coeffs)*q2_coeffs
 
-                self.vol[i,j+i,:] = multi.sum(axis=0).sum(axis=1)[:self.nl]
+                self.vol[i,j+i,:] = multi.sum(axis=0).sum(axis=1)[:self.nl:2]
                 if j>0:
-                    self.vol[j+i,i,:] = multi.sum(axis=0).sum(axis=1)[:self.nl]
+                    self.vol[j+i,i,:] = multi.sum(axis=0).sum(axis=1)[:self.nl:2]
 
 
 
@@ -109,14 +108,8 @@ class BlqqVol(Vol, BlqqVolProps):
             # for iq1 in range(self.nq):
                 # for iq2 in range(iq1, self.nq):
                     # bl[iq1,iq2] = np.sum(np.conj(sph.vals_lnm[l][iq1])*sph.vals_lnm[l][iq2])
-                    
+
                     # if iq1 !=iq2:
                         # bl[iq2,iq1] = np.sum(np.conj(sph.vals_lnm[l][iq2])*sph.vals_lnm[l][iq1])
 
             # self.vol[...,l] = bl
-
-
-
-
-
-

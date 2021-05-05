@@ -43,7 +43,6 @@ class PeakData:
         return a list of PeakData objects, where each PeakData object on has a
         single frame of data
         '''
-        assert len(self.frame_numbers)>1, "Cannot split frames for for unique frame."
 
         frames = []                                 #init list of frames
         for fn in self.frame_numbers:                    #for each frame number
@@ -58,10 +57,6 @@ class PeakData:
         generate a list of important values to calculate from
         it's easier to work with arrays the panda dataframes
         '''
-
-        # fss_df = self.df[:,5]    #0-127, fs direction
-        # sss_df = self.df[:,6]    #ss direction
-        # inten_df = self.df[:,11] #intensity
 
         fss_df = self.df[:,1]    #0-127, fs direction
         sss_df = self.df[:,2]    #ss direction
@@ -110,7 +105,7 @@ class PeakData:
             plt.figure()
         plt.plot(self.scat_sqr[:,0], self.scat_sqr[:,1], '.')
 
-    def hist_I(self, bins):
+    def plot_hist_I(self, bins):
         plt.figure()
         plt.hist(self.scat_pol[:,-1], bins=bins)
         plt.xlabel('Intensity')
