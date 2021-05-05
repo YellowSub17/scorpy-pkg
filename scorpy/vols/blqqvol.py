@@ -47,7 +47,7 @@ class BlqqVol(Vol, BlqqVolProps):
         # #TODO compensate for ewald sphere
         # q_range = np.linspace(0,self.qmax, self.nq)
 
-        # # # create args of legendre eval
+        # create args of legendre eval
         args = np.cos( np.linspace(0, np.pi, corr.npsi))
 
         # initialze fmat matrix
