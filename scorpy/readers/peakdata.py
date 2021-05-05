@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 class PeakData:
 
-    def __init__(self, df, geo ):
+    def __init__(self, df, geo, cxi_flag=True):
         '''
         handler for a peaks.txt file
         df: dataframe of the peak data, or str file path to txt
@@ -15,12 +15,16 @@ class PeakData:
         '''
 
         self.geo = geo  #ExpGeom object
+        self.cxi_flag=cxi_flag
 
         #if df is str, read dataframe from file, else, assume df is array
         if type(df)==str:
-            #use cols: 
-            #0: frameNumber, 6: peak_x_raw, 7: peak_y_raw, 12: total intens
-            self.df = np.genfromtxt(df, delimiter=', ', skip_header=1, usecols=(0,6,7,12))
+            if cxi_flag:
+                #0: frameNumber, 6: peak_x_raw, 7: peak_y_raw, 12: total intens
+                self.df = np.genfromtxt(df, delimiter=', ', skip_header=1, usecols=(0,6,7,12))
+            else:
+                self.df = np.genfromtxt(df, delimiter=' ', skip_header=1, usecols=(0,2,1,3))
+
         else:
             self.df = df
 
@@ -28,8 +32,9 @@ class PeakData:
         self.frame_numbers = np.unique(self.df[:,0])
 
 
-        if len(self.frame_numbers)==1:
-            self.scat_sqr, self.scat_pol = self.get_scat()
+        # if len(self.frame_numbers)==1:
+            # self.scat_sqr, self.scat_pol = self.get_scat()
+        self.scat_sqr, self.scat_pol = self.get_scat()
 
 
 
@@ -66,6 +71,7 @@ class PeakData:
 
         r_mag = np.hypot(pix_pos[:,0], pix_pos[:,1])
 
+
         polar_t = np.degrees(np.arctan2(pix_pos[:,1], pix_pos[:,0]))
         polar_t[np.where(polar_t <0)] = polar_t[np.where(polar_t <0)] +360
 
@@ -83,8 +89,30 @@ class PeakData:
 
 
 
-    def plot_peaks(self, cmap='viridis'):
+
+    def crop_scat(self,qmax=None, Imax =None):
+
+        if not qmax is None:
+            le_qmax = np.where(self.scat_pol[:,0] <= qmax)[0]
+            self.scat_pol = self.scat_pol[le_qmax]
+            self.scat_sqr = self.scat_sqr[le_qmax]
+
+        if not Imax is None:
+            le_Imax = np.where(self.scat_pol[:,-1] <= Imax)[0]
+            self.scat_pol = self.scat_pol[le_Imax]
+            self.scat_sqr = self.scat_sqr[le_Imax]
+
+
+
+
+    def plot_peaks(self, cmap='viridis', new_fig=False):
+        if new_fig:
+            plt.figure()
         plt.plot(self.scat_sqr[:,0], self.scat_sqr[:,1], '.')
 
-
+    def hist_I(self, bins):
+        plt.figure()
+        plt.hist(self.scat_pol[:,-1], bins=bins)
+        plt.xlabel('Intensity')
+        plt.ylabel('Frequency')
 

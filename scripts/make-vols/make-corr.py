@@ -5,6 +5,7 @@ make-corr.py
 Make correlation vol objects.
 '''
 
+import matplotlib.pyplot as plt
 import scorpy
 import numpy as np
 np.random.seed(0)
@@ -13,21 +14,49 @@ np.random.seed(0)
 
 
 #### MAKE CORRELATION FROM CIF DATA
-names  =['1vds'] # 1al1 qmax 0.36992983463258367
+
+# names  =['1vds'] # 1al1 qmax 0.36992983463258367
+# nq = 200
+# ntheta = 360
+
+
+# qmax=0.2
+
+
+
+# for name in names:
+    # print(f'Correlating: {name}')
+    # cif = scorpy.CifData(f'../data/xtal/{name}-sf.cif', qmax=qmax)
+    # corr = scorpy.CorrelationVol(nq, ntheta, qmax=qmax)
+    # corr.fill_from_cif(cif)
+    # corr.save(f'../data/dbins/{name}_qcor')
+
+
+
+
+
+#### MAKE CORRELATION FROM ENSEMBLE PEAKS
+
+
+ns = [1,2,4,8]
+
 nq = 200
-ntheta = 360
-
-
-qmax=0.2
+npsi = 360
 
 
 
-for name in names:
-    print(f'Correlating: {name}')
-    cif = scorpy.CifData(f'../data/xtal/{name}-sf.cif', qmax=qmax)
-    corr = scorpy.CorrelationVol(nq, ntheta, qmax=qmax)
-    corr.fill_from_cif(cif)
-    corr.save(f'../data/dbins/{name}_qcor')
+geo = scorpy.ExpGeom('../data/geoms/agipd_2304_vj_opt_v3.geom')
+
+for n in ns:
+    print(n)
+
+
+    pk = scorpy.PeakData(f'../data/ensemble_peaks/n{n}/peaks_{n}_0.txt', geo, cxi_flag=False)
+
+    corr = scorpy.CorrelationVol(nq, npsi, qmax=1.4)
+    corr.fill_from_peakdata(pk)
+
+    corr.save(f'../data/dbins/ensemble_peaks/ensemble_n{n}')
 
 
 

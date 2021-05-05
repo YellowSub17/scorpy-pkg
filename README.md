@@ -40,7 +40,8 @@ This will create a link from your python site-package directory to an egg-info d
 
 ## Testing
 
-To run test scripts:
+The included Makefile will run test files in the test directory.
 
-    python -m unittest tests/*test.py
+    make
+    make clean
 
