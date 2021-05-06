@@ -14,17 +14,15 @@ PADF_PADF = '/home/pat/Documents/cloudstor/phd/python_projects/padf/'
 
 class PadfVol(Vol, PadfVolProps):
 
-    def __init__(self,  nr = 100, npsi = 180, rmax = 5, \
-                        nl = 10, wavelength = 1.33,
-                        path = None):
+    def __init__(self,  nr = 100, npsi = 180, rmax = 5, nl = 10, wavelength = 1.33, path = None):
 
 
         self._nl = nl
         self._wavelength = wavelength
 
-        Vol.__init__(self,  nr, nr, npsi, \
-                            rmax, rmax, 180, \
-                            0, 0, 0, \
+        Vol.__init__(self,  nr, nr, npsi,
+                            rmax, rmax, 180,
+                            0, 0, 0,
                             comp = False, path = path)
 
 
@@ -59,10 +57,10 @@ class PadfVol(Vol, PadfVolProps):
         padf_config.write(f'correlationfile = {corr_path}\n\n')
 
         os.system('mkdir /tmp/padf')
-        padf_config.write(f'outpath = /tmp/padf\n\n')
+        padf_config.write('outpath = /tmp/padf\n\n')
         padf_config.write(f'wavelength = {self.wavelength*1e-10}\n\n')
         padf_config.write(f'nl = {self.nl}\n\n')
-        padf_config.write(f'tag = bingbong\n\n')
+        padf_config.write('tag = bingbong\n\n')
 
         padf_config.write(f'qmax = {float(corr.qmax)/1e-10}\n\n')
         padf_config.write(f'nq = {corr.nq}\n\n')
@@ -80,11 +78,11 @@ class PadfVol(Vol, PadfVolProps):
 
         os.system(cmd)
 
-        os.system(f'rm /tmp/padf/*r_vs_l*')
-        os.system(f'rm /tmp/padf/*bl*')
+        os.system('rm /tmp/padf/*r_vs_l*')
+        os.system('rm /tmp/padf/*bl*')
 
 
-        flatv = np.fromfile(f'/tmp/padf/bingbong_padf.dbin')
+        flatv = np.fromfile('/tmp/padf/bingbong_padf.dbin')
 
         v =  flatv.reshape(self.nr, self.nr, corr.npsi)
 

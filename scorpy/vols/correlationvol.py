@@ -1,10 +1,8 @@
-from ..utils import  angle_between_pol, angle_between_sph, \
-                        angle_between_rect, index_x
+from ..utils import angle_between_pol, angle_between_sph, angle_between_rect, index_x
 
 from .vol import Vol
 from scipy import special
 import numpy as np
-import math
 
 from .volspropertymixins import CorrelationVolProps
 
@@ -20,15 +18,11 @@ class CorrelationVol(Vol, CorrelationVolProps):
         path (str): path to dbin (and log) if being created from memory.
     '''
 
-    def __init__(self, nq = 100, npsi = 180, qmax = 1, \
-                 path = None):
+    def __init__(self, nq = 100, npsi = 180, qmax = 1, path = None):
         '''
         Class constructor.
         '''
-        Vol.__init__(self,  nq, nq, npsi, \
-                            qmax, qmax, 180, \
-                            0, 0, 0, \
-                            comp = False, path = path)
+        Vol.__init__(self, nq, nq, npsi, qmax, qmax, 180, 0, 0, 0, comp=False, path=path)
 
         self.plot_q1q2 = self.plot_xy
 
@@ -117,9 +111,9 @@ class CorrelationVol(Vol, CorrelationVolProps):
                     x = np.dot(blv, ft)
 
                     #fill the volume
-                    self.vol[q1,q2,t1] = x
-                    if q1!=q2: #if not on diagonal
-                        self.vol[q2,q1,t1] = x
+                    self.vol[q1_ind,q2_ind,psi_ind] = x
+                    if q1_ind!=q2_ind: #if not on diagonal
+                        self.vol[q2_ind,q1_ind,psi_ind] = x
 
 
 

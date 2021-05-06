@@ -1,8 +1,8 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-plt.close('all')
 import scorpy
+plt.close('all')
 
 
 nq=200
@@ -148,7 +148,6 @@ plt.title(f'Blqq - sphv->blqq - {q},{l}')
 
 
 plt.show()
-
 
 
 

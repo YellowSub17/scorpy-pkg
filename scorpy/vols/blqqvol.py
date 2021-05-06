@@ -21,9 +21,9 @@ class BlqqVol(Vol, BlqqVolProps):
 
 
     def __init__(self, nq=100, nl=37, qmax=1, path=None, comp=False):
-        Vol.__init__(self, nx = nq, ny = nq, nz = nl, \
-                        xmax = qmax, ymax = qmax, zmax = nl-1, \
-                        xmin = 0, ymin = 0, zmin = 0, \
+        Vol.__init__(self, nx = nq, ny = nq, nz = nl,
+                        xmax = qmax, ymax = qmax, zmax = nl-1, 
+                        xmin = 0, ymin = 0, zmin = 0, 
                         comp = False, path = path)
 
         self.plot_q1q2 = self.plot_xy
@@ -91,9 +91,9 @@ class BlqqVol(Vol, BlqqVolProps):
 
                 multi = np.conj(q1_coeffs)*q2_coeffs
 
-                self.vol[i,j+i,:] = multi.sum(axis=0).sum(axis=1)[:self.nl:2]
+                self.vol[i,j+i,:] = multi.sum(axis=0).sum(axis=1)[:self.nl]
                 if j>0:
-                    self.vol[j+i,i,:] = multi.sum(axis=0).sum(axis=1)[:self.nl:2]
+                    self.vol[j+i,i,:] = multi.sum(axis=0).sum(axis=1)[:self.nl]
 
 
 
