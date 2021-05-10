@@ -11,13 +11,12 @@ from .volspropertymixins import VolProps
 from datetime import datetime
 
 
-
 class Vol(VolProps):
 
-    def __init__(self,  nx = 10, ny = 20, nz = 30, \
-                        xmax = 1, ymax = 2, zmax = 3, \
-                        xmin = -3, ymin = 2, zmin = .6, \
-                        comp = False, path = None):
+    def __init__(self, nx=10, ny=20, nz=30, \
+                 xmax=1, ymax=2, zmax=3, \
+                 xmin=-3, ymin=2, zmin=.6, \
+                 comp=False, path=None):
 
         if not path is None:
             self._load(path)
@@ -36,10 +35,9 @@ class Vol(VolProps):
             self._comp = comp
 
             if self.comp:
-                self._vol = np.zeros((nx,ny,nz)).astype(np.complex64)
+                self._vol = np.zeros((nx, ny, nz)).astype(np.complex64)
             else:
-                self._vol = np.zeros((nx,ny,nz))
-
+                self._vol = np.zeros((nx, ny, nz))
 
     def _load(self, path):
 
@@ -65,15 +63,14 @@ class Vol(VolProps):
         self._comp = config.getboolean('vol', 'comp')
 
         if self.comp:
-            file_vol = np.fromfile(f'{path.parent}/{tag}.dbin', dtype=np.complex64)
+            file_vol = np.fromfile(
+                f'{path.parent}/{tag}.dbin', dtype=np.complex64)
         else:
             file_vol = np.fromfile(f'{path.parent}/{tag}.dbin')
 
         self._vol = file_vol.reshape((self.nx, self.ny, self.nz))
 
         self._load_extra(config)
-
-
 
     def save(self, path):
         """
@@ -84,13 +81,12 @@ class Vol(VolProps):
 
         """
 
-
         if type(path) == str:
             path = Path(path)
 
         tag = path.stem
 
-        flat_vol= self.vol.flatten()
+        flat_vol = self.vol.flatten()
         flat_vol.tofile(f'{path.parent}/{tag}.dbin')
 
         f = open(f'{path.parent}/{tag}_log.txt', 'w')
@@ -114,55 +110,48 @@ class Vol(VolProps):
         self._save_extra(f)
         f.close()
 
-
-    def _save_extra(self,f):
+    def _save_extra(self, f):
         pass
 
     def _load_extra(self, config):
         pass
 
-
     def copy(self):
         return copy.deepcopy(self)
-
 
     def get_eig(self, herm=True):
 
         if herm:
-            lams = np.zeros( (self.nx, self.nz))
-            us = np.zeros( (self.nx, self.ny, self.nz))
+            lams = np.zeros((self.nx, self.nz))
+            us = np.zeros((self.nx, self.ny, self.nz))
         else:
-            lams = np.zeros( (self.nx, self.nz), dtype=np.complex64)
-            us = np.zeros( (self.nx, self.ny, self.nz), dtype=np.complex64)
+            lams = np.zeros((self.nx, self.nz), dtype=np.complex64)
+            us = np.zeros((self.nx, self.ny, self.nz), dtype=np.complex64)
 
-        for z in range(0, self.nz,2):
+        for z in range(0, self.nz, 2):
             if herm:
-                lam, u = np.linalg.eigh(self.vol[...,z])
+                lam, u = np.linalg.eigh(self.vol[..., z])
             else:
-                lam, u = np.linalg.eig(self.vol[...,z])
+                lam, u = np.linalg.eig(self.vol[..., z])
 
-
-            lams[:,z] = lam
-            us[:,:,z] = u
+            lams[:, z] = lam
+            us[:, :, z] = u
 
         if not herm:
-            if np.all(np.imag(lams)==0) and np.all(np.imag(us)==0):
+            if np.all(np.imag(lams) == 0) and np.all(np.imag(us) == 0):
                 print('vol.get_eig(): lams and us are all real')
                 lams = np.real(lams)
                 us = np.real(us)
             else:
                 print('vol.get_eig(): lams and us are NOT all real')
-                print(f'max imag: lam: {np.max(np.imag(lams))}, us: {np.max(np.imag(us))}')
+                print(
+                    f'max imag: lam: {np.max(np.imag(lams))}, us: {np.max(np.imag(us))}')
                 lams = np.real(lams)
                 us = np.real(us)
 
-
         return lams, us
 
-
-
-
-    def convolve(self,  kern_L=2, kern_n =5, std_x = 1, std_y = 1,  std_z=1):
+    def convolve(self, kern_L=2, kern_n=5, std_x=1, std_y=1, std_z=1):
         """
         Convolve the current volume with a guassian kernel.
 
@@ -174,32 +163,30 @@ class Vol(VolProps):
 
         """
 
+        # make linear spaces and meshes for each kernel direction
+        x_space = np.linspace(-kern_L, kern_L, kern_n)
+        y_space = np.linspace(-kern_L, kern_L, kern_n)
+        z_space = np.linspace(-kern_L, kern_L, kern_n)
+        x_mesh, y_mesh, z_mesh = np.meshgrid(x_space, y_space, z_space)
 
-        #make linear spaces and meshes for each kernel direction
-        x_space = np.linspace(-kern_L,kern_L, kern_n )
-        y_space = np.linspace(-kern_L,kern_L, kern_n )
-        z_space = np.linspace(-kern_L,kern_L, kern_n )
-        x_mesh, y_mesh, z_mesh = np.meshgrid(x_space,y_space, z_space)
-
-        #calculates the guassian kernel and convolve
-        kern = np.exp(- ( x_mesh**2/(2*std_x**2) + y_mesh**2/(2*std_y**2) + z_mesh**2/(2*std_z**2)))
+        # calculates the guassian kernel and convolve
+        kern = np.exp(- (x_mesh**2 / (2 * std_x**2) + y_mesh **
+                      2 / (2 * std_y**2) + z_mesh**2 / (2 * std_z**2)))
         blur = signal.fftconvolve(self.vol, kern)
 
-        #bring the volume in by half the kernal window width (removes edge effects)
-        kern_n_half = int((kern_n-1)/2)
-        blur = blur[kern_n_half:-kern_n_half, kern_n_half:-kern_n_half, kern_n_half:-kern_n_half ]
+        # bring the volume in by half the kernal window width (removes edge effects)
+        kern_n_half = int((kern_n - 1) / 2)
+        blur = blur[kern_n_half:-kern_n_half, kern_n_half:- \
+            kern_n_half, kern_n_half:-kern_n_half]
         self.vol = blur
 
-
-
-
     def get_xy(self):
-        assert self.nx==self.ny, 'vol.nx != vol.ny, cannot retrieve x=y plane of vol.'
-        assert self.xmax==self.ymax, 'vol.xmax != vol.ymax, cannot retrieve x=y plane of vol.'
+        assert self.nx == self.ny, 'vol.nx != vol.ny, cannot retrieve x=y plane of vol.'
+        assert self.xmax == self.ymax, 'vol.xmax != vol.ymax, cannot retrieve x=y plane of vol.'
 
-        im = np.zeros( (self.nx, self.nz))
+        im = np.zeros((self.nx, self.nz))
         for xi in range(self.nx):
-            im[xi,:] = self.vol[xi,xi,:]
+            im[xi, :] = self.vol[xi, xi, :]
         return im
 
     def plot_xy(self, new_fig=True, log=False, extent='default', aspect='auto'):
@@ -216,14 +203,14 @@ class Vol(VolProps):
             plt.figure()
         im = self.get_xy()
         if log:
-            im = np.log(np.abs(im)+1)
-        plt.imshow(im, origin='lower', extent=[0, self.zmax, 0, self.xmax], aspect=aspect)
+            im = np.log(np.abs(im) + 1)
+        plt.imshow(im, origin='lower', extent=[
+                   0, self.zmax, 0, self.xmax], aspect=aspect)
         if extent is None:
             plt.imshow(im, origin='lower', aspect=aspect)
 
         if new_fig:
             plt.colorbar()
-
 
     def plot_sumax(self, axis=0, new_fig=True, aspect='auto', extent=True, cmap='virids'):
 
@@ -232,41 +219,39 @@ class Vol(VolProps):
             plt.figure()
 
         if extent:
-            plt.imshow(im, origin='lower', extent=self.get_extent(axis), aspect=aspect, cmap=cmap)
+            plt.imshow(im, origin='lower', extent=self.get_extent(
+                axis), aspect=aspect, cmap=cmap)
         else:
-            plt.imshow(im, origin='lower', aspect=aspect,cmap=cmap)
+            plt.imshow(im, origin='lower', aspect=aspect, cmap=cmap)
 
         if new_fig:
             plt.colorbar()
 
+    def plot_slice(self, axis=0, index=0, new_fig=True, aspect='auto', extent=True):
 
-    def plot_slice(self,axis=0, index=0, new_fig=True, aspect='auto', extent=True):
-
-        im = np.rollaxis(self.vol, axis)[index,...]
+        im = np.rollaxis(self.vol, axis)[index, ...]
         if new_fig:
             plt.figure()
 
         if extent:
-            plt.imshow(im, origin='lower', extent=self.get_extent(axis), aspect=aspect)
+            plt.imshow(im, origin='lower',
+                       extent=self.get_extent(axis), aspect=aspect)
         else:
             plt.imshow(im, origin='lower', aspect=aspect)
 
         if new_fig:
             plt.colorbar()
 
+    def plot_line(self, axis=0, in1=0, in2=0, new_fig=True):
 
-    def plot_line(self,axis=0, in1=0, in2=0, new_fig=True):
-
-        line = np.rollaxis(self.vol, axis)[in1,in2,...]
+        line = np.rollaxis(self.vol, axis)[in1, in2, ...]
         if self.comp:
             line = np.abs(line)
         if new_fig:
             plt.figure()
         plt.plot(line)
 
-
-
-    def get_extent(self,axis):
+    def get_extent(self, axis):
         if axis == 0:
             return [self.zmin, self.zmax, self.ymin, self.ymax]
         elif axis == 1:

@@ -21,19 +21,16 @@ bl.fill_from_sph(sph_cif)
 # bl_l, bl_u = bl.get_eig()
 
 
-
 # plt.figure()
 # plt.imshow(np.log(np.abs(bl_l)+1))
 # plt.figure()
 # plt.imshow(bl_l)
 
 
-
 # ###get eigenvectors
 # bl = scorpy.BlqqVol(cor.nq, 27, cor.qmax)
 # bl.fill_from_corr(cor)
 # bl_l, bl_u = bl.get_eig()
-
 
 
 # plt.figure()
@@ -92,7 +89,6 @@ bl.fill_from_sph(sph_cif)
 # plt.title('Iv_filt: ivol -> Ilm -> ivol')
 
 
-
 # Iv_data.plot_sphere(nsphere)
 # plt.title('Iv_data: ivol -> Ilm -> k -> k\' -> Ilm\' -> ivol')
 
@@ -120,7 +116,6 @@ bl.fill_from_sph(sph_cif)
 # plt.title('Iv_data2/Iv_data')
 # plt.xlabel('nq')
 # plt.ylabel('Average Relative Difference')
-
 
 
 plt.show()

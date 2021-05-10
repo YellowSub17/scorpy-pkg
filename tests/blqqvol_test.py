@@ -8,12 +8,7 @@ np.random.seed(0)
 import sys, os
 
 
-
 test_data_dir = '/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/tests/data'
-
-
-
-
 
 
 class TestBlqqVol(unittest.TestCase):
@@ -24,7 +19,7 @@ class TestBlqqVol(unittest.TestCase):
         self.nl = 36
         self.qmax = 1.4
 
-        self.blqq =  scorpy.BlqqVol(self.nq,self.nl,self.qmax)
+        self.blqq = scorpy.BlqqVol(self.nq, self.nl, self.qmax)
 
     def tearDown(self):
         pass
@@ -37,7 +32,7 @@ class TestBlqqVol(unittest.TestCase):
 
         self.assertEqual(self.blqq.xmax, self.qmax)
         self.assertEqual(self.blqq.ymax, self.qmax)
-        self.assertEqual(self.blqq.zmax, self.nl-1)
+        self.assertEqual(self.blqq.zmax, self.nl - 1)
 
         self.assertEqual(self.blqq.xmin, 0)
         self.assertEqual(self.blqq.ymin, 0)
@@ -46,16 +41,14 @@ class TestBlqqVol(unittest.TestCase):
         self.assertEqual(self.blqq.nq, self.nq)
         self.assertEqual(self.blqq.nl, self.nl)
         self.assertEqual(self.blqq.qmax, self.qmax)
-        self.assertEqual(self.blqq.lmax, self.nl-1)
+        self.assertEqual(self.blqq.lmax, self.nl - 1)
 
         qspace = np.linspace(0, self.qmax, self.nq, endpoint=False)
-        self.assertEqual(self.blqq.dq, qspace[1]-qspace[0])
-
-
+        self.assertEqual(self.blqq.dq, qspace[1] - qspace[0])
 
     def test_saveload(self):
         self.blqq.save(f'{test_data_dir}/tmp/blqq')
-        blqq_loaded = scorpy.BlqqVol(self.nq+1, self.nl+1, self.qmax+1,\
+        blqq_loaded = scorpy.BlqqVol(self.nq + 1, self.nl + 1, self.qmax + 1,\
                                      path=f'{test_data_dir}/tmp/blqq')
 
         self.assertEqual(self.blqq.nx, blqq_loaded.nx)
@@ -77,10 +70,5 @@ class TestBlqqVol(unittest.TestCase):
         self.assertEqual(self.blqq.dq, blqq_loaded.dq)
 
 
-
-
-
-
 if __name__ == '__main__':
     unittest.main()
-

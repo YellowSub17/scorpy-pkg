@@ -5,11 +5,11 @@ import scorpy
 plt.close('all')
 
 
-nq=100
-npsi=360
-nl=95
+nq = 100
+npsi = 360
+nl = 95
 
-qmax = 0.36992983463258367/3
+qmax = 0.36992983463258367 / 3
 
 corrs = []
 corrs_titles = []
@@ -18,17 +18,15 @@ blqqs = []
 blqqs_titles = []
 
 
-
 cif = scorpy.CifData('../data/xtal/1al1-sf.cif', qmax)
-cif.bin_sph(nq,npsi, 2*npsi)
+cif.bin_sph(nq, npsi, 2 * npsi)
 
-sphv = scorpy.SphericalVol(nq,npsi, qmax)
+sphv = scorpy.SphericalVol(nq, npsi, qmax)
 sphv.fill_from_cif(cif)
 
-qs = np.unique(np.where(sphv.vol>0)[0])
+qs = np.unique(np.where(sphv.vol > 0)[0])
 
 l = 0
-
 
 
 corr1 = scorpy.CorrelationVol(nq, npsi, qmax)
@@ -60,20 +58,13 @@ corrs.append(corr3)
 corrs_titles.append('Corr3: sphv->blqq->corr')
 
 
-
-
-
-
-
 for corr, title in zip(corrs, corrs_titles):
     corr.plot_q1q2()
-    plt.title(title+ f' q1q2')
+    plt.title(title + f' q1q2')
 
 for corr, title in zip(corrs, corrs_titles):
     corr.plot_slice(axis=2, index=40)
-    plt.title(title+ f' theta slice: {40}')
-
-
+    plt.title(title + f' theta slice: {40}')
 
 
 # q1 = qs[2]
@@ -86,8 +77,6 @@ for corr, title in zip(corrs, corrs_titles):
 # plt.legend()
 
 
-
-
 # q1 = qs[1]
 # q2 = qs[1]
 # plt.figure()
@@ -98,22 +87,10 @@ for corr, title in zip(corrs, corrs_titles):
 # plt.legend()
 
 
-
-
-
-
-
-
-
-
-
-
 # for corr in corrs:
     # corr._nz -=20
     # corr._vol = corr.vol[...,10:-10]
     # corr.plot_slice(axis=0, index=q)
-
-
 
 
 # # corr1.plot_line(axis=0, in1=q, in2=q)
@@ -135,9 +112,6 @@ for corr, title in zip(corrs, corrs_titles):
 
 # corr3.plot_line(axis=0, in1=q, in2=q)
 # plt.title('Corr - sphv->blqq->corr')
-
-
-
 
 
 # blqq1.plot_slice(2,l)
@@ -163,8 +137,6 @@ for corr, title in zip(corrs, corrs_titles):
 # plt.title(f'Blqq - Rel - {q},{l}')
 
 
-
-
 # q= qs[2]
 # plt.figure()
 # plt.plot(blqq1.vol[:,q,l])
@@ -182,8 +154,6 @@ for corr, title in zip(corrs, corrs_titles):
 # plt.title(f'Blqq - Rel - {q},{l}')
 
 
-
-
 # lam1, us1 =  blqq1.get_eig(herm=True)
 
 # plt.figure()
@@ -195,20 +165,4 @@ for corr, title in zip(corrs, corrs_titles):
 # plt.plot(lam2[:,l]/np.max(lam2[:,l]))
 
 
-
-
-
-
 plt.show()
-
-
-
-
-
-
-
-
-
-
-
-

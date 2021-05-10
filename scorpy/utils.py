@@ -2,15 +2,11 @@ import numpy as np
 from scipy import special
 
 
-
-
-
-def mydiv(x,y):
-    loc = np.where(y!=0)
+def mydiv(x, y):
+    loc = np.where(y != 0)
     z = np.zeros(x.shape)
-    z[loc] = x[loc]/y[loc]
+    z[loc] = x[loc] / y[loc]
     return z
-
 
 
 # def index_x(x_val,x_min, x_max, nx):
@@ -22,77 +18,74 @@ def mydiv(x,y):
 # def index_x(x_val,x_min, x_max, nx):
     # return int(round((float(x_val-x_min)/float(x_max-x_min))*(nx-1)))
 
-def index_x(x_val,x_min, x_max, nx):
-    dx = (x_max-x_min)/nx
-    x_out = int(round((x_val - x_min)/dx))
-    if x_out==nx:
-        x_out=0
+def index_x(x_val, x_min, x_max, nx):
+    dx = (x_max - x_min) / nx
+    x_out = int(round((x_val - x_min) / dx))
+    if x_out == nx:
+        x_out = 0
     return x_out
 
 
+def angle_between_pol(t1, t2):
+    return np.abs((t1 - t2 + 180) % 360 - 180)
 
-def angle_between_pol(t1,t2):
-    return np.abs((t1-t2+180)%360 -180)
 
-def angle_between_rect(q1,q2):
-    dot = np.dot(q1/np.linalg.norm(q1), q2/np.linalg.norm(q2))
+def angle_between_rect(q1, q2):
+    dot = np.dot(q1 / np.linalg.norm(q1), q2 / np.linalg.norm(q2))
     if dot > 1:
-        dot=1.0
+        dot = 1.0
     elif dot < -1:
         dot = -1.0
 
     return np.arccos(dot)
 
-def angle_between_sph(theta1,theta2,phi1,phi2):
 
-    sinterm = np.sin(theta1)*np.sin(theta2)
-    costerm = np.cos(theta1)*np.cos(theta2)*np.cos(phi2-phi1)
+def angle_between_sph(theta1, theta2, phi1, phi2):
 
-    addterm = sinterm+costerm
+    sinterm = np.sin(theta1) * np.sin(theta2)
+    costerm = np.cos(theta1) * np.cos(theta2) * np.cos(phi2 - phi1)
 
-    if addterm>1:
-        addterm=1
+    addterm = sinterm + costerm
+
+    if addterm > 1:
+        addterm = 1
     elif addterm < -1:
-        addterm =-1
+        addterm = -1
+
+    return np.round(np.arccos(addterm), 14)
 
 
-    return np.round(np.arccos(addterm),14)
-
-
-
-def cosinesim(v1,v2):
+def cosinesim(v1, v2):
     v1f, v2f = v1.flatten(), v2.flatten()
-    sim = np.dot(np.conj(v1f/np.linalg.norm(v1f)), v2f/np.linalg.norm(v2f))
+    sim = np.dot(np.conj(v1f / np.linalg.norm(v1f)), v2f / np.linalg.norm(v2f))
     return sim
 
 
-
-
-
-def ylm_wrapper(l,m, phi,theta, comp=False):
+def ylm_wrapper(l, m, phi, theta, comp=False):
     if comp:
         # COMPLEX BASIS
-        ylm = special.sph_harm(m,l, phi , theta)
+        ylm = special.sph_harm(m, l, phi, theta)
     else:
-        ## REAL BASIS
+        # REAL BASIS
         # print(l,m,phi,theta)
         if m < 0:
-            ylm = (np.sqrt(2)*(-1)**m)*np.imag(special.sph_harm(np.abs(m),l, phi,theta))
+            ylm = (np.sqrt(2) * (-1)**m) * \
+                   np.imag(special.sph_harm(np.abs(m), l, phi, theta))
         elif m > 0:
-            ylm = (np.sqrt(2)*(-1)**m)*np.real(special.sph_harm(m,l, phi,theta))
+            ylm = (np.sqrt(2) * (-1)**m) * \
+                   np.real(special.sph_harm(m, l, phi, theta))
         else:
-            ylm = np.real(special.sph_harm(m,l, phi, theta))
+            ylm = np.real(special.sph_harm(m, l, phi, theta))
 
-    #2*sqrt(pi) ensures orthogonality
-    ylm *= 2*np.sqrt(np.pi)
+    # 2*sqrt(pi) ensures orthogonality
+    ylm *= 2 * np.sqrt(np.pi)
     return ylm
 
 
-
-##multiplicty matrices
+# multiplicty matrices
 # https://www.cryst.ehu.es/cryst/get_point_genpos.html
 
-## space group/pointgroup list
+# space group/pointgroup list
 # http://pmsl.planet.sci.kobe-u.ac.jp/~seto/?page_id=37&lang=en
 HM_NUMBER_DICT = {
     'I 2 2 2': 123,
@@ -109,27 +102,26 @@ HM_NUMBER_DICT = {
     "P 41 21 2": 369,
     "P 43 21 2": 373,
     "P 41 2 2": 368,
-    "P 1 21 1":6,
+    "P 1 21 1": 6,
     "I 41 2 2": 375,
     "P 42 21 2": 371,
     "P 41": 350,
     "P 61 2 2": 472,
     "C 1 2 1": 9,
-    "I 4":353,
+    "I 4": 353,
     "P 65 2 2": 473,
     "P 43": 352,
     "F D 3 M": 499,
-    "P 63":467,
+    "P 63": 467,
     }
 
 
 def identity():
     multiplicity = 2
     total_sym_mat = np.zeros((multiplicity, 3, 3))
-    total_sym_mat[0,...] = np.eye(3,3)
-    total_sym_mat[1,...] = -1*np.eye(3,3)
+    total_sym_mat[0, ...] = np.eye(3, 3)
+    total_sym_mat[1, ...] = -1 * np.eye(3, 3)
     return total_sym_mat
-
 
 
 def two_over_m():
@@ -138,13 +130,15 @@ def two_over_m():
     # init array of sym ops (each op is a 3x3 array, and there are multiplicity of them
     total_sym_mat = np.zeros((multiplicity, 3, 3))
     # input the basic generators into total array
-    total_sym_mat[0, ...] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # identity
-    total_sym_mat[1, ...] = np.array([[-1, 0, 0], [0, 1, 0], [0, 0, -1]]) #2 fold rot on y
-    total_sym_mat[2, ...] = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, -1]])  # inversion
+    total_sym_mat[0, ...] = np.array(
+        [[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # identity
+    total_sym_mat[1, ...] = np.array(
+        [[-1, 0, 0], [0, 1, 0], [0, 0, -1]])  # 2 fold rot on y
+    total_sym_mat[2, ...] = np.array(
+        [[-1, 0, 0], [0, -1, 0], [0, 0, -1]])  # inversion
     ops_ind = 3
     loop_generators(total_sym_mat, multiplicity, ops_ind)
     return total_sym_mat
-
 
 
 def mmm():
@@ -153,14 +147,17 @@ def mmm():
     # init array of sym ops (each op is a 3x3 array, and there are multiplicity of them
     total_sym_mat = np.zeros((multiplicity, 3, 3))
     # input the basic generators into total array
-    total_sym_mat[0, ...] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # identity
-    total_sym_mat[1, ...] = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, 1]])  # 2 fold rot on z
-    total_sym_mat[2, ...] = np.array([[-1, 0, 0], [0, 1, 0], [0, 0, -1]]) #2 fold rot on y
-    total_sym_mat[3, ...] = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, -1]])  # inversion
+    total_sym_mat[0, ...] = np.array(
+        [[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # identity
+    total_sym_mat[1, ...] = np.array(
+        [[-1, 0, 0], [0, -1, 0], [0, 0, 1]])  # 2 fold rot on z
+    total_sym_mat[2, ...] = np.array(
+        [[-1, 0, 0], [0, 1, 0], [0, 0, -1]])  # 2 fold rot on y
+    total_sym_mat[3, ...] = np.array(
+        [[-1, 0, 0], [0, -1, 0], [0, 0, -1]])  # inversion
     ops_ind = 4
     loop_generators(total_sym_mat, multiplicity, ops_ind)
     return total_sym_mat
-
 
 
 def four_over_m():
@@ -169,15 +166,18 @@ def four_over_m():
     # init array of sym ops (each op is a 3x3 array, and there are multiplicity of them
     total_sym_mat = np.zeros((multiplicity, 3, 3))
     # input the basic generators into total array
-    total_sym_mat[0, ...] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # identity
-    total_sym_mat[1, ...] = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, 1]])  # 2 fold rot on z
-    total_sym_mat[2, ...] = np.array([[0, -1, 0], [1, 0, 0], [0, 0, 1]])  # 4 fold rot on z
-    total_sym_mat[3, ...] = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, -1]])  # inversion
-    #number of operations that have been filld
+    total_sym_mat[0, ...] = np.array(
+        [[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # identity
+    total_sym_mat[1, ...] = np.array(
+        [[-1, 0, 0], [0, -1, 0], [0, 0, 1]])  # 2 fold rot on z
+    total_sym_mat[2, ...] = np.array(
+        [[0, -1, 0], [1, 0, 0], [0, 0, 1]])  # 4 fold rot on z
+    total_sym_mat[3, ...] = np.array(
+        [[-1, 0, 0], [0, -1, 0], [0, 0, -1]])  # inversion
+    # number of operations that have been filld
     ops_ind = 4
     loop_generators(total_sym_mat, multiplicity, ops_ind)
     return total_sym_mat
-
 
 
 def four_over_mmm():
@@ -186,15 +186,19 @@ def four_over_mmm():
     # init array of sym ops (each op is a 3x3 array, and there are multiplicity of them
     total_sym_mat = np.zeros((multiplicity, 3, 3))
     # input the basic generators into total array
-    total_sym_mat[0, ...] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # identity
-    total_sym_mat[1, ...] = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, 1]])  # 2 fold rot on z
-    total_sym_mat[2, ...] = np.array([[-1, 0, 0], [0, 1, 0], [0, 0, -1]]) #2 fold rot on y
-    total_sym_mat[3, ...] = np.array([[0, -1, 0], [1, 0, 0], [0, 0, 1]])  # 4 fold rot on z
-    total_sym_mat[4, ...] = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, -1]])  # inversion
+    total_sym_mat[0, ...] = np.array(
+        [[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # identity
+    total_sym_mat[1, ...] = np.array(
+        [[-1, 0, 0], [0, -1, 0], [0, 0, 1]])  # 2 fold rot on z
+    total_sym_mat[2, ...] = np.array(
+        [[-1, 0, 0], [0, 1, 0], [0, 0, -1]])  # 2 fold rot on y
+    total_sym_mat[3, ...] = np.array(
+        [[0, -1, 0], [1, 0, 0], [0, 0, 1]])  # 4 fold rot on z
+    total_sym_mat[4, ...] = np.array(
+        [[-1, 0, 0], [0, -1, 0], [0, 0, -1]])  # inversion
     ops_ind = 5
     loop_generators(total_sym_mat, multiplicity, ops_ind)
     return total_sym_mat
-
 
 
 def three_bar():
@@ -203,13 +207,15 @@ def three_bar():
     # init array of sym ops (each op is a 3x3 array, and there are multiplicity of them
     total_sym_mat = np.zeros((multiplicity, 3, 3))
     # input the basic generators into total array
-    total_sym_mat[0, ...] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # identity
-    total_sym_mat[1, ...] = np.array([[0, -1, 0], [1, -1, 0], [0, 0, 1]])  #  3 fold rot on z
-    total_sym_mat[2, ...] = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, -1]])  # inversion
+    total_sym_mat[0, ...] = np.array(
+        [[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # identity
+    total_sym_mat[1, ...] = np.array(
+        [[0, -1, 0], [1, -1, 0], [0, 0, 1]])  # 3 fold rot on z
+    total_sym_mat[2, ...] = np.array(
+        [[-1, 0, 0], [0, -1, 0], [0, 0, -1]])  # inversion
     ops_ind = 3
     loop_generators(total_sym_mat, multiplicity, ops_ind)
     return total_sym_mat
-
 
 
 def three_bar_m():
@@ -218,14 +224,17 @@ def three_bar_m():
     # init array of sym ops (each op is a 3x3 array, and there are multiplicity of them
     total_sym_mat = np.zeros((multiplicity, 3, 3))
     # input the basic generators into total array
-    total_sym_mat[0, ...] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # identity
-    total_sym_mat[1, ...] = np.array([[0, -1, 0], [1, -1, 0], [0, 0, 1]])  #  3 fold rot on z
-    total_sym_mat[2, ...] = np.array([[0, -1, 0], [-1, 0, 0], [0, 0, -1]])  #2 fold rot on (1-10)
-    total_sym_mat[3, ...] = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, -1]])  # inversion
+    total_sym_mat[0, ...] = np.array(
+        [[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # identity
+    total_sym_mat[1, ...] = np.array(
+        [[0, -1, 0], [1, -1, 0], [0, 0, 1]])  # 3 fold rot on z
+    total_sym_mat[2, ...] = np.array(
+        [[0, -1, 0], [-1, 0, 0], [0, 0, -1]])  # 2 fold rot on (1-10)
+    total_sym_mat[3, ...] = np.array(
+        [[-1, 0, 0], [0, -1, 0], [0, 0, -1]])  # inversion
     ops_ind = 4
     loop_generators(total_sym_mat, multiplicity, ops_ind)
     return total_sym_mat
-
 
 
 def six_over_m():
@@ -234,14 +243,17 @@ def six_over_m():
     # init array of sym ops (each op is a 3x3 array, and there are multiplicity of them
     total_sym_mat = np.zeros((multiplicity, 3, 3))
     # input the basic generators into total array
-    total_sym_mat[0, ...] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # identity
-    total_sym_mat[1, ...] = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, 1]])  # 2 fold rot on z
-    total_sym_mat[2, ...] = np.array([[0, -1, 0], [1, -1, 0], [0, 0, 1]])  #  3 fold rot on z
-    total_sym_mat[3, ...] = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, -1]])  # inversion
+    total_sym_mat[0, ...] = np.array(
+        [[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # identity
+    total_sym_mat[1, ...] = np.array(
+        [[-1, 0, 0], [0, -1, 0], [0, 0, 1]])  # 2 fold rot on z
+    total_sym_mat[2, ...] = np.array(
+        [[0, -1, 0], [1, -1, 0], [0, 0, 1]])  # 3 fold rot on z
+    total_sym_mat[3, ...] = np.array(
+        [[-1, 0, 0], [0, -1, 0], [0, 0, -1]])  # inversion
     ops_ind = 4
     loop_generators(total_sym_mat, multiplicity, ops_ind)
     return total_sym_mat
-
 
 
 def six_over_mmm():
@@ -250,15 +262,19 @@ def six_over_mmm():
     # init array of sym ops (each op is a 3x3 array, and there are multiplicity of them
     total_sym_mat = np.zeros((multiplicity, 3, 3))
     # input the basic generators into total array
-    total_sym_mat[0, ...] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # identity
-    total_sym_mat[1, ...] = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, 1]])  # 2 fold rot on z
-    total_sym_mat[2, ...] = np.array([[0, -1, 0], [1, -1, 0], [0, 0, 1]])  #  3 fold rot on z
-    total_sym_mat[3, ...] = np.array([[0, 1, 0], [1, 0, 0], [0, 0, -1]])    #2 fold rot on (1,1,0)
-    total_sym_mat[4, ...] = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, -1]])  # inversion
+    total_sym_mat[0, ...] = np.array(
+        [[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # identity
+    total_sym_mat[1, ...] = np.array(
+        [[-1, 0, 0], [0, -1, 0], [0, 0, 1]])  # 2 fold rot on z
+    total_sym_mat[2, ...] = np.array(
+        [[0, -1, 0], [1, -1, 0], [0, 0, 1]])  # 3 fold rot on z
+    total_sym_mat[3, ...] = np.array(
+        [[0, 1, 0], [1, 0, 0], [0, 0, -1]])  # 2 fold rot on (1,1,0)
+    total_sym_mat[4, ...] = np.array(
+        [[-1, 0, 0], [0, -1, 0], [0, 0, -1]])  # inversion
     ops_ind = 5
     loop_generators(total_sym_mat, multiplicity, ops_ind)
     return total_sym_mat
-
 
 
 def m_three():
@@ -267,15 +283,19 @@ def m_three():
     # init array of sym ops (each op is a 3x3 array, and there are multiplicity of them
     total_sym_mat = np.zeros((multiplicity, 3, 3))
     # input the basic generators into total array
-    total_sym_mat[0, ...] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # identity
-    total_sym_mat[1, ...] = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, 1]])  # 2 fold rot on z
-    total_sym_mat[2, ...] = np.array([[-1, 0, 0], [0, 1, 0], [0, 0, -1]]) #2 fold rot on y
-    total_sym_mat[3, ...] = np.array([[0, 0, 1], [1, 0, 0], [0, 1, 0]])     # 3 fold rot on (1,1,1)
-    total_sym_mat[4, ...] = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, -1]])  # inversion
+    total_sym_mat[0, ...] = np.array(
+        [[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # identity
+    total_sym_mat[1, ...] = np.array(
+        [[-1, 0, 0], [0, -1, 0], [0, 0, 1]])  # 2 fold rot on z
+    total_sym_mat[2, ...] = np.array(
+        [[-1, 0, 0], [0, 1, 0], [0, 0, -1]])  # 2 fold rot on y
+    total_sym_mat[3, ...] = np.array(
+        [[0, 0, 1], [1, 0, 0], [0, 1, 0]])     # 3 fold rot on (1,1,1)
+    total_sym_mat[4, ...] = np.array(
+        [[-1, 0, 0], [0, -1, 0], [0, 0, -1]])  # inversion
     ops_ind = 5
     loop_generators(total_sym_mat, multiplicity, ops_ind)
     return total_sym_mat
-
 
 
 def m_three_m():
@@ -284,40 +304,46 @@ def m_three_m():
     # init array of sym ops (each op is a 3x3 array, and there are multiplicity of them
     total_sym_mat = np.zeros((multiplicity, 3, 3))
     # input the basic generators into total array
-    total_sym_mat[0, ...] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # identity
-    total_sym_mat[1, ...] = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, 1]])  # 2 fold rot on z
-    total_sym_mat[2, ...] = np.array([[-1, 0, 0], [0, 1, 0], [0, 0, -1]]) #2 fold rot on y
-    total_sym_mat[3, ...] = np.array([[0, 0, 1], [1, 0, 0], [0, 1, 0]])     # 3 fold rot on (1,1,1)
-    total_sym_mat[4, ...] = np.array([[0, 1, 0], [1, 0, 0], [0, 0, -1]])    #2 fold rot on (1,1,0)
-    total_sym_mat[5, ...] = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, -1]])  # inversion
+    total_sym_mat[0, ...] = np.array(
+        [[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # identity
+    total_sym_mat[1, ...] = np.array(
+        [[-1, 0, 0], [0, -1, 0], [0, 0, 1]])  # 2 fold rot on z
+    total_sym_mat[2, ...] = np.array(
+        [[-1, 0, 0], [0, 1, 0], [0, 0, -1]])  # 2 fold rot on y
+    total_sym_mat[3, ...] = np.array(
+        [[0, 0, 1], [1, 0, 0], [0, 1, 0]])     # 3 fold rot on (1,1,1)
+    total_sym_mat[4, ...] = np.array(
+        [[0, 1, 0], [1, 0, 0], [0, 0, -1]])  # 2 fold rot on (1,1,0)
+    total_sym_mat[5, ...] = np.array(
+        [[-1, 0, 0], [0, -1, 0], [0, 0, -1]])  # inversion
     ops_ind = 6
     loop_generators(total_sym_mat, multiplicity, ops_ind)
     return total_sym_mat
 
 
-
-def loop_generators(total_sym_mat,multiplicity, ops_ind):
-    #while the last sym op in total_sym_op is empty (meaning there are still more sym ops to find...)
+def loop_generators(total_sym_mat, multiplicity, ops_ind):
+    # while the last sym op in total_sym_op is empty (meaning there are still more sym ops to find...)
     while ops_ind < multiplicity:
-        #loop through and get two operations
+        # loop through and get two operations
         for i in range(ops_ind):
             for j in range(ops_ind):
-                #multiply the operations
-                new_sym_mat = np.matmul(total_sym_mat[i, ...], total_sym_mat[j, ...])
+                # multiply the operations
+                new_sym_mat = np.matmul(
+                    total_sym_mat[i, ...], total_sym_mat[j, ...])
                 # Assume this is a new operation
                 is_new_sym = True
                 # loop through the syms ops that we have found
                 for sym_mat in total_sym_mat[:ops_ind, ...]:
-                    #check if we have already found this sym op
+                    # check if we have already found this sym op
                     if np.array_equal(sym_mat, new_sym_mat):
-                        #if we have, stop seaching for through the others and comparing them
+                        # if we have, stop seaching for through the others and comparing them
                         is_new_sym = False
                         break
-                #if the newly calculated operation is unlike the others we previously found
+                # if the newly calculated operation is unlike the others we previously found
                 if is_new_sym:
-                    #insert it into the total sym operations matrix
+                    # insert it into the total sym operations matrix
                     total_sym_mat[ops_ind, ...] = new_sym_mat
-                    #increment the number of found operations for the while loop
+                    # increment the number of found operations for the while loop
                     ops_ind += 1
     return total_sym_mat
 
@@ -352,18 +378,18 @@ def apply_sym(reflections, spg_code):
         print(f'spg: {spg_code}, pg: {HM_number}')
         total_sym_mat = identity()
 
-    new_reflections = np.zeros( (len(total_sym_mat) * len(reflections), 4) )
+    new_reflections = np.zeros((len(total_sym_mat) * len(reflections), 4))
 
     for i, orig_reflection in enumerate(reflections):
-        for j,sym_op in enumerate(total_sym_mat):
+        for j, sym_op in enumerate(total_sym_mat):
             new_reflection = np.matmul(sym_op, orig_reflection[:3].T)
-            new_reflections[len(reflections)*j + i,:3] = new_reflection
-            new_reflections[len(reflections)*j + i, 3] = orig_reflection[3]
+            new_reflections[len(reflections) * j + i, :3] = new_reflection
+            new_reflections[len(reflections) * j + i, 3] = orig_reflection[3]
 
-    #remove 000 reflections
-    loc_000 = np.all(new_reflections[:,:3]==0,axis=1)
+    # remove 000 reflections
+    loc_000 = np.all(new_reflections[:, :3] == 0, axis=1)
     new_reflections = new_reflections[~loc_000]
-    #get unique reflections
+    # get unique reflections
     new_reflections = np.unique(new_reflections, axis=0)
 
     return new_reflections

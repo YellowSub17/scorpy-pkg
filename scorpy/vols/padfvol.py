@@ -1,6 +1,5 @@
 
 
-
 from .vol import Vol
 from .correlationvol import CorrelationVol
 import os
@@ -14,17 +13,15 @@ PADF_PADF = '/home/pat/Documents/cloudstor/phd/python_projects/padf/'
 
 class PadfVol(Vol, PadfVolProps):
 
-    def __init__(self,  nr = 100, npsi = 180, rmax = 5, nl = 10, wavelength = 1.33, path = None):
-
+    def __init__(self, nr=100, npsi=180, rmax=5, nl=10, wavelength=1.33, path=None):
 
         self._nl = nl
         self._wavelength = wavelength
 
-        Vol.__init__(self,  nr, nr, npsi,
-                            rmax, rmax, 180,
-                            0, 0, 0,
-                            comp = False, path = path)
-
+        Vol.__init__(self, nr, nr, npsi,
+                     rmax, rmax, 180,
+                     0, 0, 0,
+                     comp=False, path=path)
 
         self.plot_r1r2 = self.plot_xy
 
@@ -44,12 +41,7 @@ class PadfVol(Vol, PadfVolProps):
         self._nl = float(config['padf']['nl'])
         self._wavelength = float(config['padf']['wavelength'])
 
-
-
-
-
     def fill_from_corr(self, corr_path):
-
 
         corr = CorrelationVol(path=corr_path)
 
@@ -70,8 +62,6 @@ class PadfVol(Vol, PadfVolProps):
         padf_config.write(f'nr = {self.nr}\n\n')
         # padf_config.write(f'nthr = {2*self.ntheta}\n\n')
 
-
-
         padf_config.close()
 
         cmd = f'{PADF_PADF}padf {PADF_PADF}config.txt'
@@ -81,9 +71,8 @@ class PadfVol(Vol, PadfVolProps):
         os.system('rm /tmp/padf/*r_vs_l*')
         os.system('rm /tmp/padf/*bl*')
 
-
         flatv = np.fromfile('/tmp/padf/bingbong_padf.dbin')
 
-        v =  flatv.reshape(self.nr, self.nr, corr.npsi)
+        v = flatv.reshape(self.nr, self.nr, corr.npsi)
 
-        self.vol = v[...,:self.npsi]
+        self.vol = v[..., :self.npsi]

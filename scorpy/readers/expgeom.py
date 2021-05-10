@@ -14,15 +14,13 @@ class ExpGeom:
 
         self.filename = filename
         self.file_args, self.panel_args = self.parse_file()
-        self.res = float(self.file_args['res'])   #pixel resolution (~5000 Pix/m, 200 e-6 m/Pix)
-        self.clen = float(self.file_args['clen']) #camera length
-        self.photon_energy = float(self.file_args['photon_energy']) #eV
-        self.wavelength = (4.135667e-15*2.99792e8)/self.photon_energy  #m
+        # pixel resolution (~5000 Pix/m, 200 e-6 m/Pix)
+        self.res = float(self.file_args['res'])
+        self.clen = float(self.file_args['clen'])  # camera length
+        self.photon_energy = float(self.file_args['photon_energy'])  # eV
+        self.wavelength = (4.135667e-15 * 2.99792e8) / self.photon_energy  # m
 
-        self.panels = self.make_panels(self.panel_args)  #make the panels
-
-
-
+        self.panels = self.make_panels(self.panel_args)  # make the panels
 
     def translate_pixels(self, pix_sss, pix_fss):
         '''
@@ -40,40 +38,29 @@ class ExpGeom:
         pix_posy = np.zeros((len(pix_sss)))
         pix_posz = np.zeros((len(pix_sss)))
 
-        pix_pos = np.zeros( (len(pix_sss), 3))
+        pix_pos = np.zeros((len(pix_sss), 3))
 
-        panel_mods = np.floor(pix_sss/64)
+        panel_mods = np.floor(pix_sss / 64)
 
         for i_p, panel in enumerate(self.panels):
-            if np.floor(panel['min_ss']/64) not in panel_mods:
+            if np.floor(panel['min_ss'] / 64) not in panel_mods:
                 continue
             else:
-                loc = np.where(int(panel['min_ss']/64) == panel_mods)
+                loc = np.where(int(panel['min_ss'] / 64) == panel_mods)
 
+                pix_posx[loc] = panel['fs_xy'][0] * (pix_fss[loc] % 128) \
+                + panel['ss_xy'][0] * (pix_sss[loc] % 64)
 
-                pix_posx[loc] = panel['fs_xy'][0]*(pix_fss[loc]%128) \
-                                 + panel['ss_xy'][0]*(pix_sss[loc]%64)
-
-                pix_posy[loc] = panel['fs_xy'][1]*(pix_fss[loc]%128) \
-                                + panel['ss_xy'][1]*(pix_sss[loc]%64)
+                pix_posy[loc] = panel['fs_xy'][1] * (pix_fss[loc] % 128) \
+                + panel['ss_xy'][1] * (pix_sss[loc] % 64)
 
                 pix_posz[loc] = panel['coffset']
 
-                #translate according to corner of panel
+                # translate according to corner of panel
                 pix_posx[loc] += panel['corner_xy'][0]
                 pix_posy[loc] += panel['corner_xy'][1]
 
-
-
-        return np.array([pix_posx/self.res, pix_posy/self.res, pix_posz+self.clen]).T
-
-
-
-
-
-
-
-
+        return np.array([pix_posx / self.res, pix_posy / self.res, pix_posz + self.clen]).T
 
     def parse_file(self):
         '''
@@ -90,31 +77,31 @@ class ExpGeom:
         f = open(self.filename, 'r')
         cont = f.read()
         cont = '[params]' + cont
-        config = cfp.ConfigParser(interpolation=None, inline_comment_prefixes = (';'))
+        config = cfp.ConfigParser(
+            interpolation=None, inline_comment_prefixes=(';'))
         config.read_string(cont)
 
-        parsed_args= {}
-        parsed_panels ={}
+        parsed_args = {}
+        parsed_panels = {}
 
         for line in config['params']:
-            if '/' in line:  #check if thise argument is a panel eg. p0a4/fs
-                                #if it is a panel, split by name/attribute, add to panel_dict
+            if '/' in line:  # check if thise argument is a panel eg. p0a4/fs
+                                # if it is a panel, split by name/attribute, add to panel_dict
                 panel_split = line.split('/')
-                if panel_split[0] not in parsed_panels.keys(): #if the panel is no already in the dictionary
-                    parsed_panels[panel_split[0]] = {} #add panel
-                    parsed_panels[panel_split[0]]['name'] = panel_split[0] #set the name key
+                # if the panel is no already in the dictionary
+                if panel_split[0] not in parsed_panels.keys():
+                    parsed_panels[panel_split[0]] = {}  # add panel
+                    # set the name key
+                    parsed_panels[panel_split[0]]['name'] = panel_split[0]
 
-                #after adding the panel, add the panel attribute
-                parsed_panels[panel_split[0]][panel_split[1]] = config['params'][line]
+                # after adding the panel, add the panel attribute
+                parsed_panels[panel_split[0]][panel_split[1]
+                    ] = config['params'][line]
 
-            else: #if the argument is not a panel argument, add to the arg dictionary instead
+            else:  # if the argument is not a panel argument, add to the arg dictionary instead
                 parsed_args[line] = config['params'][line]
 
-
         return parsed_args, parsed_panels
-
-
-
 
     def plot_panels(self):
         '''
@@ -127,34 +114,37 @@ class ExpGeom:
             None.
         '''
         for panel in self.panels:
-            #size of the panel
-            #check if we implemented the fs_xy and ss_xy correctly
-            #I think all they are doing atm is multiplying +-1 for
-            #to flip the rectangle
-            rect_width = panel['fs_xy'][1]*(panel['max_fs']-panel['min_fs'])/self.res
-            rect_height = panel['ss_xy'][0]*(panel['max_ss']-panel['min_ss'])/self.res
+            # size of the panel
+            # check if we implemented the fs_xy and ss_xy correctly
+            # I think all they are doing atm is multiplying +-1 for
+            # to flip the rectangle
+            rect_width = panel['fs_xy'][1] * \
+                (panel['max_fs'] - panel['min_fs']) / self.res
+            rect_height = panel['ss_xy'][0] * \
+                (panel['max_ss'] - panel['min_ss']) / self.res
 
-            #rotation of the panel, trig from fs directions
-            #should be close to 90 or 270 degrees
-            rect_rot =(panel['fs_xy'][0]**2 +panel['fs_xy'][1]**2)**(1/2)/(panel['fs_xy'][0])
-            rect_rot = np.degrees(np.arccos(np.clip(1/rect_rot, -1, 1)))
+            # rotation of the panel, trig from fs directions
+            # should be close to 90 or 270 degrees
+            rect_rot = (panel['fs_xy'][0]**2 + panel['fs_xy']
+                        [1]**2)**(1 / 2) / (panel['fs_xy'][0])
+            rect_rot = np.degrees(np.arccos(np.clip(1 / rect_rot, -1, 1)))
 
-            #corner of the panel
-            rect_x = panel['corner_xy'][0]/self.res
-            rect_y = panel['corner_xy'][1]/self.res
+            # corner of the panel
+            rect_x = panel['corner_xy'][0] / self.res
+            rect_y = panel['corner_xy'][1] / self.res
 
-            #rectangle object
-            rect = patches.Rectangle((rect_x, rect_y), rect_width, -rect_height,rect_rot,
-                                        fill=False,ec='red', alpha=1,lw=1 )
+            # rectangle object
+            rect = patches.Rectangle((rect_x, rect_y), rect_width, -rect_height, rect_rot,
+                                     fill=False, ec='red', alpha=1, lw=1)
 
-            #add the rectangle object to the plot
+            # add the rectangle object to the plot
             plt.gca().add_patch(rect)
 
-            #plot an X in the (0,0) corner, add a label here as well
-            plt.plot( panel['corner_xy'][0]/self.res, panel['corner_xy'][1]/self.res, 'rx')
-            plt.text( panel['corner_xy'][0]/self.res, panel['corner_xy'][1]/self.res, panel['name'], fontsize=6)
-
-
+            # plot an X in the (0,0) corner, add a label here as well
+            plt.plot(panel['corner_xy'][0] / self.res,
+                     panel['corner_xy'][1] / self.res, 'rx')
+            plt.text(panel['corner_xy'][0] / self.res, panel['corner_xy']
+                     [1] / self.res, panel['name'], fontsize=6)
 
     def make_panels(self, file_panels):
         '''
@@ -166,9 +156,9 @@ class ExpGeom:
         Returns:
             panels (list): List of panel dictionaries.
         '''
-        panels = []    #init a list of panels
+        panels = []  # init a list of panels
 
-        for key in file_panels.keys(): # for every panel in the parsed panels
+        for key in file_panels.keys():  # for every panel in the parsed panels
             this_panel = {}
             this_panel['name'] = key
             this_panel['min_fs'] = int(file_panels[key]['min_fs'])
@@ -189,4 +179,3 @@ class ExpGeom:
                                        float(file_panels[key]['corner_y'])]
             panels.append(this_panel)
         return panels
-

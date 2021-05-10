@@ -105,7 +105,6 @@ class CifDataProperties:
         '''
         return self._scat_sph
 
-
     @property
     def qmax(self):
         '''

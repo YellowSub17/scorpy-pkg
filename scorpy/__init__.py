@@ -11,11 +11,6 @@ from .readers.maskdata import MaskData
 from .readers.peakdata import PeakData
 
 
-
-
-
 # from .spharm.sphericalhandler import SphericalHandler, SphericalIntenVol
 from .spharm.sphinten import SphInten
 from .spharm.sphharmhandler import SphHarmHandler
-
-

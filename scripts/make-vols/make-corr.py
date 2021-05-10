@@ -11,9 +11,7 @@ import numpy as np
 np.random.seed(0)
 
 
-
-
-#### MAKE CORRELATION FROM CIF DATA
+# MAKE CORRELATION FROM CIF DATA
 
 # names  =['1vds'] # 1al1 qmax 0.36992983463258367
 # nq = 200
@@ -23,26 +21,21 @@ np.random.seed(0)
 # qmax=0.2
 
 
-
 # for name in names:
-    # print(f'Correlating: {name}')
-    # cif = scorpy.CifData(f'../data/xtal/{name}-sf.cif', qmax=qmax)
-    # corr = scorpy.CorrelationVol(nq, ntheta, qmax=qmax)
-    # corr.fill_from_cif(cif)
-    # corr.save(f'../data/dbins/{name}_qcor')
+# print(f'Correlating: {name}')
+# cif = scorpy.CifData(f'../data/xtal/{name}-sf.cif', qmax=qmax)
+# corr = scorpy.CorrelationVol(nq, ntheta, qmax=qmax)
+# corr.fill_from_cif(cif)
+# corr.save(f'../data/dbins/{name}_qcor')
 
 
+# MAKE CORRELATION FROM ENSEMBLE PEAKS
 
 
-
-#### MAKE CORRELATION FROM ENSEMBLE PEAKS
-
-
-ns = [1,2,4,8]
+ns = [1, 2, 4, 8]
 
 nq = 200
 npsi = 360
-
 
 
 geo = scorpy.ExpGeom('../data/geoms/agipd_2304_vj_opt_v3.geom')
@@ -50,8 +43,8 @@ geo = scorpy.ExpGeom('../data/geoms/agipd_2304_vj_opt_v3.geom')
 for n in ns:
     print(n)
 
-
-    pk = scorpy.PeakData(f'../data/ensemble_peaks/n{n}/peaks_{n}_0.txt', geo, cxi_flag=False)
+    pk = scorpy.PeakData(
+        f'../data/ensemble_peaks/n{n}/peaks_{n}_0.txt', geo, cxi_flag=False)
 
     corr = scorpy.CorrelationVol(nq, npsi, qmax=1.4)
     corr.fill_from_peakdata(pk)
@@ -59,20 +52,11 @@ for n in ns:
     corr.save(f'../data/dbins/ensemble_peaks/ensemble_n{n}')
 
 
-
-
-
-
-
-
-
-
-#### MAKE CORRELATION FROM PEAK DATA
+# MAKE CORRELATION FROM PEAK DATA
 
 # runs150 = [112,123,113,125,102,103,104,105]
 # runs144 = [118,108,119,109,120,110,121]
 # runs = runs150+runs144
-
 
 
 # nseeds = 20
@@ -90,31 +74,27 @@ for n in ns:
     # frames = [i for i in peaks.split_frames() if i.scat_pol.shape[0]<npeaksmax]
     # half_ind = int(len(frames)/2)
 
-
-
     # corr = scorpy.CorrelationVol(nq,ntheta, qmax)
     # for frame in frames:
-        # corr.fill_from_peakdata(frame)
+    # corr.fill_from_peakdata(frame)
     # corr.save(f'../data/dbins/cosine_sim/{run}/run{run}_qcor')
 
 
 # # #     for seed in range(nseeds):
-        # # # print(f'Correlating seed: {seed}')
+    # # # print(f'Correlating seed: {seed}')
 
-        # # # seed_frames = list(frames)
-        # # # np.random.shuffle(seed_frames)
+    # # # seed_frames = list(frames)
+    # # # np.random.shuffle(seed_frames)
 
-        # # # corra_frames = seed_frames[:half_ind]
-        # # # corrb_frames = seed_frames[half_ind:]
+    # # # corra_frames = seed_frames[:half_ind]
+    # # # corrb_frames = seed_frames[half_ind:]
 
-        # # # corra = scorpy.CorrelationVol(nq,ntheta,qmax)
-        # # # for frame in corra_frames:
-            # # # corra.fill_from_peakdata(frame)
-        # # # corra.save_dbin(f'../data/dbins/cosine_sim/{run}/run{run}_seed{seed}a_qcor')
+    # # # corra = scorpy.CorrelationVol(nq,ntheta,qmax)
+    # # # for frame in corra_frames:
+    # # # corra.fill_from_peakdata(frame)
+    # # # corra.save_dbin(f'../data/dbins/cosine_sim/{run}/run{run}_seed{seed}a_qcor')
 
-        # # # corrb = scorpy.CorrelationVol(nq,ntheta,qmax)
-        # # # for frame in corrb_frames:
-            # # # corrb.fill_from_peakdata(frame)
-        # # # corrb.save_dbin(f'../data/dbins/cosine_sim/{run}/run{run}_seed{seed}b_qcor')
-
-
+    # # # corrb = scorpy.CorrelationVol(nq,ntheta,qmax)
+    # # # for frame in corrb_frames:
+    # # # corrb.fill_from_peakdata(frame)
+    # # # corrb.save_dbin(f'../data/dbins/cosine_sim/{run}/run{run}_seed{seed}b_qcor')

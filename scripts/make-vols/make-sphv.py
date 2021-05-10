@@ -18,20 +18,8 @@ extend = False
 
 
 cif = scorpy.CifData('../data/xtal/1al1-sf.cif')
-sphvol = scorpy.SphericalVol(256, nangle,qmax=cif.qmax, gridtype=gridtype, extend=extend)
+sphvol = scorpy.SphericalVol(
+    256, nangle, qmax=cif.qmax, gridtype=gridtype, extend=extend)
 
 sphvol.fill_from_cif(cif)
 sphvol.save_dbin('../data/dbins/1al1_sphv')
-
-
-
-
-
-
-
-
-
-
-
-
-

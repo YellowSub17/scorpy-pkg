@@ -40,21 +40,19 @@ class VolProps:
 
     @property
     def dx(self):
-        return (self.xmax-self.xmin)/self.nx
+        return (self.xmax - self.xmin) / self.nx
 
     @property
     def dy(self):
-        return (self.ymax-self.ymin)/self.ny
+        return (self.ymax - self.ymin) / self.ny
 
     @property
     def dz(self):
-        return (self.zmax-self.zmin)/self.nz
-
+        return (self.zmax - self.zmin) / self.nz
 
     @property
     def comp(self):
         return self._comp
-
 
     @property
     def vol(self):
@@ -64,7 +62,6 @@ class VolProps:
     def vol(self, new_vol):
         assert new_vol.shape == self.vol.shape, 'Cannot replace vols with different shapes'
         self._vol = new_vol
-
 
     # @property
     # def xpts(self):
@@ -77,8 +74,6 @@ class VolProps:
     # @property
     # def zpts(self):
         # return np.linspace(self.zmin, self.zmax, self.nz)
-
-
 
 
 class CorrelationVolProps:
@@ -102,7 +97,6 @@ class CorrelationVolProps:
     @property
     def dpsi(self):
         return self.dz
-
 
 
 class BlqqVolProps:
@@ -159,8 +153,6 @@ class PadfVolProps:
         return self._wavelength
 
 
-
-
 class SphericalVolProps:
 
     @property
@@ -206,4 +198,3 @@ class SphericalVolProps:
     @property
     def lmax(self):
         return self.nl - 1
-
