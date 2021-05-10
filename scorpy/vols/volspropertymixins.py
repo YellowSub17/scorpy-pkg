@@ -41,15 +41,15 @@ class VolProps:
 
     @property
     def dx(self):
-        return (self.xmax - self.xmin) / self.nx
+        return (self.xmax - self.xmin) / (self.nx - 1)
 
     @property
     def dy(self):
-        return (self.ymax - self.ymin) / self.ny
+        return (self.ymax - self.ymin) / (self.ny - 1)
 
     @property
     def dz(self):
-        return (self.zmax - self.zmin) / self.nz
+        return (self.zmax - self.zmin) / (self.nz - 1)
 
     @property
     def comp(self):
@@ -66,15 +66,15 @@ class VolProps:
 
     @property
     def xpts(self):
-        return np.linspace(self.xmin, self.xmax, self.nx)
+        return np.linspace(self.xmin, self.xmax, self.nx, endpoint=False)
 
     @property
     def ypts(self):
-        return np.linspace(self.ymin, self.ymax, self.ny)
+        return np.linspace(self.ymin, self.ymax, self.ny, endpoint=False)
 
     @property
     def zpts(self):
-        return np.linspace(self.zmin, self.zmax, self.nz)
+        return np.linspace(self.zmin, self.zmax, self.nz, endpoint=False)
 
 
 class CorrelationVolProps:

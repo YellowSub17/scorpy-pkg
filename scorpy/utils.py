@@ -18,6 +18,25 @@ def mydiv(x, y):
 # def index_x(x_val,x_min, x_max, nx):
     # return int(round((float(x_val-x_min)/float(x_max-x_min))*(nx-1)))
 
+# def index_x(x_val, x_min, x_max, nx, wrap=False):
+    # '''Find the index of a value in an array between a maximum and minimum value.
+
+    # Arguments:
+        # x_val (): Value to be indexed
+        # x_min (): Minimum value in the range to index
+        # x_max (): Maximum value in the range to index
+        # nx (int): Number of bins in the range to index
+        # wrap (bool): If True, values in the last index will be placed in the 0th index.
+
+    # Returns:
+        # x_out (int): Index that x_val should be place within the range.
+    # '''
+    # dx = (x_max - x_min) / nx
+    # x_out = int(round((x_val - x_min) / dx))
+    # if wrap and x_out == nx:
+        # x_out = 0
+    # return x_out
+
 def index_x(x_val, x_min, x_max, nx, wrap=False):
     '''Find the index of a value in an array between a maximum and minimum value.
 
@@ -31,7 +50,8 @@ def index_x(x_val, x_min, x_max, nx, wrap=False):
     Returns:
         x_out (int): Index that x_val should be place within the range.
     '''
-    dx = (x_max - x_min) / nx
+    dx = (x_max - x_min) / (nx - 1)
+    print(dx)
     x_out = int(round((x_val - x_min) / dx))
     if wrap and x_out == nx:
         x_out = 0
