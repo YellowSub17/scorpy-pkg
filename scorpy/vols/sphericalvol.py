@@ -19,36 +19,32 @@ class SphericalVol(Vol, SphericalVolProps):
         path (str): path to dbin (and log) if being created from memory.
     '''
 
-    def __init__(self, nq=100, nangle=180, qmax=1, comp=False, gridtype='DH2', extend=False, path=None):
-        assert nangle % 2 == 0, 'nangle must be even'
-        # assert not extend, "Only working with non-extended grids"
+    # def __init__(self, nq=100, nangle=180, qmax=1, comp=False, path=None):
+    def __init__(self, nq=100, ntheta=180, nphi=360, qmax=1, comp=False, path=None):
 
-        if gridtype == 'DH1':
-            ntheta = nangle
-            nphi = nangle
-            nl = int(nangle / 2)
-            if extend:
-                ntheta += 1
-                nphi += 1
+#         ntheta = nangle
+        # if nangle % 2 == 1:
+            # nphi = 2*nangle - 1
+        # else:
+            # nphi = 2*nangle
+        # nl = int(nangle / 2)
+        nl = 8
+       
 
-        elif gridtype == 'DH2':
-            ntheta = nangle
-            nphi = 2 * nangle
-            nl = int(nangle / 2)
-            if extend:
-                ntheta += 1
-                nphi += 1
+#         if gridtype == 'DH2':
+            # nphi = 2 * nangle
+            # nl = int(nangle / 2)
+            # if extend:
+                # ntheta += 1
+                # nphi += 1
 
-        else:
-            print('WARNING: not using DH grid.')
-            ntheta = nangle
-            nphi = 2 * nangle - 1
-            nl = int(nangle)
-            if extend:
-                nphi += 1
+        # else:
+            # nphi = 2 * nangle - 1
+            # nl = int(nangle)
+            # if extend:
+                # nphi += 1
 
-        self._gridtype = gridtype
-        self._extend = extend
+        # self._extend = extend
         self._nl = nl
 
         Vol.__init__(self, nx=nq, ny=ntheta, nz=nphi,
@@ -69,13 +65,13 @@ class SphericalVol(Vol, SphericalVolProps):
         f.write(f'dq = {self.dq}\n')
         f.write(f'dtheta = {self.dtheta}\n')
         f.write(f'dphi = {self.dphi}\n')
-        f.write(f'gridtype = {self.gridtype}\n')
-        f.write(f'extend = {self.extend}\n')
+        # f.write(f'gridtype = {self.gridtype}\n')
+        # f.write(f'extend = {self.extend}\n')
         f.write(f'nl = {self.nl}\n')
 
     def _load_extra(self, config):
-        self._gridtype = config['sphv']['gridtype']
-        self._extend = config.getboolean('sphv', 'extend')
+        # self._gridtype = config['sphv']['gridtype']
+        # self._extend = config.getboolean('sphv', 'extend')
         self._nl = float(config['sphv']['nl'])
 
     def fill_from_cif(self, cif):
@@ -112,10 +108,7 @@ class SphericalVol(Vol, SphericalVolProps):
     def get_q_grid(self, q_ind):
         assert q_ind >= 0 and q_ind < self.nq, 'fail'
         q_slice = self.vol[q_ind, ...]
-        if self.gridtype == 'DH1' or self.gridtype == 'DH2':
-            sh_grid = pysh.shclasses.DHRealGrid(q_slice)
-        else:
-            sh_grid = pysh.shclasses.GLQRealGrid(q_slice)
+        sh_grid = pysh.shclasses.DHRealGrid(q_slice)
 
         return sh_grid
 

@@ -1,3 +1,4 @@
+import numpy as np
 
 
 class VolProps:
@@ -63,17 +64,17 @@ class VolProps:
         assert new_vol.shape == self.vol.shape, 'Cannot replace vols with different shapes'
         self._vol = new_vol
 
-    # @property
-    # def xpts(self):
-        # return np.linspace(self.xmin, self.xmax, self.nx)
+    @property
+    def xpts(self):
+        return np.linspace(self.xmin, self.xmax, self.nx)
 
-    # @property
-    # def ypts(self):
-        # return np.linspace(self.ymin, self.ymax, self.ny)
+    @property
+    def ypts(self):
+        return np.linspace(self.ymin, self.ymax, self.ny)
 
-    # @property
-    # def zpts(self):
-        # return np.linspace(self.zmin, self.zmax, self.nz)
+    @property
+    def zpts(self):
+        return np.linspace(self.zmin, self.zmax, self.nz)
 
 
 class CorrelationVolProps:
@@ -98,6 +99,14 @@ class CorrelationVolProps:
     def dpsi(self):
         return self.dz
 
+    @property
+    def qpts(self):
+        return self.xpts
+
+    @property
+    def psipts(self):
+        return self.zpts
+
 
 class BlqqVolProps:
 
@@ -120,6 +129,15 @@ class BlqqVolProps:
     @property
     def dq(self):
         return self.dx
+
+    @property
+    def qpts(self):
+        return self.xpts
+
+    @property
+    def lpts(self):
+        return self.zpts
+
 
 
 class PadfVolProps:
@@ -151,6 +169,15 @@ class PadfVolProps:
     @property
     def wavelength(self):
         return self._wavelength
+
+    @property
+    def rpts(self):
+        return self.xpts
+
+    @property
+    def psipts(self):
+        return self.zpts
+
 
 
 class SphericalVolProps:
@@ -198,3 +225,16 @@ class SphericalVolProps:
     @property
     def lmax(self):
         return self.nl - 1
+
+    @property
+    def qpts(self):
+        return self.xpts
+
+    @property
+    def thetapts(self):
+        return self.ypts
+
+    @property
+    def phipts(self):
+        return self.zpts
+
