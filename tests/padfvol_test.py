@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
+import os
+import sys
 import unittest
 
 import scorpy
 import numpy as np
 np.random.seed(0)
-
-import sys, os
 
 
 test_data_dir = '/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/tests/data'
@@ -44,7 +44,7 @@ class TestPadfVol(unittest.TestCase):
         self.assertEqual(self.padf.xmin, 0)
         self.assertEqual(self.padf.ymin, 0)
         self.assertEqual(self.padf.zmin, 0)
-    
+
         self.assertEqual(self.padf.npsi, self.npsi)
         self.assertEqual(self.padf.nr, self.nr)
         self.assertEqual(self.padf.rmax, self.rmax)
@@ -61,7 +61,7 @@ class TestPadfVol(unittest.TestCase):
     def test_saveload(self):
 
         self.padf.save(f'{test_data_dir}/tmp/padf')
-        padf_loaded = scorpy.PadfVol(self.nr + 1, self.npsi + 1, self.rmax + 1, self.nl + 1, self.wavelength + 1,\
+        padf_loaded = scorpy.PadfVol(self.nr + 1, self.npsi + 1, self.rmax + 1, self.nl + 1, self.wavelength + 1,
                                      path=f'{test_data_dir}/tmp/padf')
 
         self.assertEqual(self.padf.nx, padf_loaded.nx)

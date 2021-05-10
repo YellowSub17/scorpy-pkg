@@ -5,10 +5,10 @@ make-sphv.py
 Make Spherical vol objects.
 '''
 
+import matplotlib.pyplot as plt
 import scorpy
 import numpy as np
 np.random.seed(0)
-import matplotlib.pyplot as plt
 
 
 nq = 200

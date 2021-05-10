@@ -71,7 +71,7 @@ class PeakData:
 
         diffrat_t = np.degrees(np.arctan2(r_mag, pix_pos[:, 2]))
         q_mag = (2 * np.pi / self.geo.wavelength) * \
-        np.sin(np.radians(diffrat_t)) / 1e10  # 1/A
+            np.sin(np.radians(diffrat_t)) / 1e10  # 1/A
 
         scat_sqr = np.array([pix_pos[:, 0], pix_pos[:, 1], inten_df]).T
         scat_pol = np.array([q_mag, polar_t, inten_df]).T

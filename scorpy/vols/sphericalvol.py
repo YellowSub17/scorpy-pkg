@@ -3,8 +3,6 @@
 from .vol import Vol
 from ..utils import index_x
 import numpy as np
-from scipy import special
-import matplotlib.pyplot as plt
 import pyshtools as pysh
 from .volspropertymixins import SphericalVolProps
 
@@ -53,9 +51,9 @@ class SphericalVol(Vol, SphericalVolProps):
         self._extend = extend
         self._nl = nl
 
-        Vol.__init__(self, nx=nq, ny=ntheta, nz=nphi, \
-                     xmax=qmax, ymax=np.pi / 2, zmax=2 * np.pi, \
-                     xmin=0, ymin=-np.pi / 2, zmin=0, \
+        Vol.__init__(self, nx=nq, ny=ntheta, nz=nphi,
+                     xmax=qmax, ymax=np.pi / 2, zmax=2 * np.pi,
+                     xmin=0, ymin=-np.pi / 2, zmin=0,
                      comp=comp, path=path)
 
     def _save_extra(self, f):
@@ -79,34 +77,6 @@ class SphericalVol(Vol, SphericalVolProps):
         self._gridtype = config['sphv']['gridtype']
         self._extend = config.getboolean('sphv', 'extend')
         self._nl = float(config['sphv']['nl'])
-
-
-#     def pass_filter(self, lmin=None, lmax=None):
-        # print('Filtering')
-
-        # for iq in range(self.nx):
-        # print(iq)
-        # q_slice = self.vol[iq,...]
-        # if self.gridtype =='DH1' or self.gridtype =='DH2':
-        # sh_grid = pysh.shclasses.shgrid.DHRealGrid(q_slice)
-        # else:
-        # sh_grid = pysh.shclasses.shgrid.GLQRealGrid(q_slice)
-
-        # sh_coeffs = sh_grid.expand()
-
-        # coeffs = sh_coeffs.coeffs
-
-        # filt_coeffs = np.zeros(coeffs.shape)
-
-        # filt_coeffs[:,lmin:lmax,:] = coeffs[:,lmin:lmax,:]
-
-        # sh_coeffs = pysh.shclasses.shcoeffs.SHRealCoeffs(filt_coeffs)
-
-        # sh_grid = sh_coeffs.expand(extend = self.extend, grid=self.gridtype)
-
-        # q_slice_filt = sh_grid.data
-
-        # self.vol[iq,...] = q_slice_filt
 
     def fill_from_cif(self, cif):
 
@@ -139,6 +109,20 @@ class SphericalVol(Vol, SphericalVolProps):
 
         return c
 
+    def get_angle_sampling(self):
+
+        q_slice = self.vol[-1, ...]
+        if self.gridtype == 'DH1' or self.gridtype == 'DH2':
+        sh_grid = pysh.shclasses.shgrid.DHRealGrid(q_slice)
+        else:
+        sh_grid = pysh.shclasses.shgrid.GLQRealGrid(q_slice)
+
+        # fix
+        lats = np.radians(sh_grid.lats())
+        lons = np.radians(sh_grid.lons())
+
+        return lats, lons
+
     # def rotate(self, a,b,c):
         # print('Rotating')
 
@@ -164,20 +148,6 @@ class SphericalVol(Vol, SphericalVolProps):
         # q_slice_rot = sh_grid.data
 
         # self.vol[iq,...] = q_slice_rot
-
-    # def get_angle_sampling(self):
-
-        # q_slice = self.vol[-1,...]
-        # if self.gridtype =='DH1' or self.gridtype =='DH2':
-        # sh_grid = pysh.shclasses.shgrid.DHRealGrid(q_slice)
-        # else:
-        # sh_grid = pysh.shclasses.shgrid.GLQRealGrid(q_slice)
-
-        # #fix
-        # lats = np.radians(sh_grid.lats())
-        # lons = np.radians(sh_grid.lons())
-
-        # return lats, lons
 
     # def rm_odds(self):
         # print('Removing odd harmonics.')
@@ -219,3 +189,30 @@ class SphericalVol(Vol, SphericalVolProps):
         # coeffs = sh_coeffs.coeffs
 
         # return coeffs
+
+#     def pass_filter(self, lmin=None, lmax=None):
+        # print('Filtering')
+
+        # for iq in range(self.nx):
+        # print(iq)
+        # q_slice = self.vol[iq,...]
+        # if self.gridtype =='DH1' or self.gridtype =='DH2':
+        # sh_grid = pysh.shclasses.shgrid.DHRealGrid(q_slice)
+        # else:
+        # sh_grid = pysh.shclasses.shgrid.GLQRealGrid(q_slice)
+
+        # sh_coeffs = sh_grid.expand()
+
+        # coeffs = sh_coeffs.coeffs
+
+        # filt_coeffs = np.zeros(coeffs.shape)
+
+        # filt_coeffs[:,lmin:lmax,:] = coeffs[:,lmin:lmax,:]
+
+        # sh_coeffs = pysh.shclasses.shcoeffs.SHRealCoeffs(filt_coeffs)
+
+        # sh_grid = sh_coeffs.expand(extend = self.extend, grid=self.gridtype)
+
+        # q_slice_filt = sh_grid.data
+
+        # self.vol[iq,...] = q_slice_filt

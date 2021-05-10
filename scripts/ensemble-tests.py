@@ -1,9 +1,9 @@
 
+import datetime
+import scorpy
 import numpy as np
 import matplotlib.pyplot as plt
 plt.close('all')
-import scorpy
-import datetime
 
 
 n = 4

@@ -22,8 +22,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
         '''
         Class constructor.
         '''
-        Vol.__init__(self, nq, nq, npsi, qmax, qmax,
-                     180, 0, 0, 0, comp=False, path=path)
+        Vol.__init__(self, nq, nq, npsi, qmax, qmax, 180, 0, 0, 0, comp=False, path=path)
 
         self.plot_q1q2 = self.plot_xy
 
@@ -128,8 +127,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
         # calculate q indices of every scattering vector outside of loop
         ite = np.ones(qti.shape[0])
-        q_inds = list(
-            map(index_x, qti[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
+        q_inds = list(map(index_x, qti[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
 
         for i, q1 in enumerate(qti):
             # get q index
@@ -141,7 +139,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
                 # get the angle between vectors, and index it
                 psi = angle_between_pol(q1[1], q2[1])
-                psi_ind = index_x(psi, 0, 180, self.npsi)
+                psi_ind = index_x(psi, 0, 180, self.npsi, wrap=True)
 
                 # fill the volume
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
@@ -170,8 +168,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
         # calculate q indices of every scattering vector outside of loop
         ite = np.ones(qxyzi.shape[0])
-        q_inds = list(map(index_x, qmags, 0 * ite,
-                      self.qmax * ite, self.nq * ite))
+        q_inds = list(map(index_x, qmags, 0 * ite, self.qmax * ite, self.nq * ite))
 
         for i, q1 in enumerate(qxyzi):
             # get q index
@@ -183,7 +180,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
                 # get the angle between vectors, and index it
                 psi = angle_between_rect(q1[:3], q2[:3])
-                psi_ind = index_x(psi, 0, np.pi, self.npsi)
+                psi_ind = index_x(psi, 0, np.pi, self.npsi, wrap=True)
 
                 # fill the volume
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
@@ -209,8 +206,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
         # calculate q indices of every scattering vector outside of loop
         ite = np.ones(qtpi.shape[0])
-        q_inds = list(
-            map(index_x, qtpi[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
+        q_inds = list(map(index_x, qtpi[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
 
         for i, q1 in enumerate(qtpi):
             # get q index, theta and phi
@@ -226,7 +222,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
                 # get the angle between angluar coordinates, and index it
                 psi = angle_between_sph(theta1, theta2, phi1, phi2)
-                psi_ind = index_x(psi, 0, np.pi, self.npsi)
+                psi_ind = index_x(psi, 0, np.pi, self.npsi, wrap=True)
 
                 # fill the volume
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]

@@ -31,9 +31,9 @@ class MaskData:
 
         diffrat_t = np.degrees(np.arctan2(r_mag, pix_pos[:, 2]))
         q_mag = (2 * np.pi / self.geo.wavelength) * \
-        np.sin(np.radians(diffrat_t)) / 1e10  # 1/A
+            np.sin(np.radians(diffrat_t)) / 1e10  # 1/A
         qlist = np.array([pix_pos[:, 0], pix_pos[:, 1], pix_pos[:, 2],
-                         r_mag, diffrat_t, q_mag, polar_t, inten_df])
+                          r_mag, diffrat_t, q_mag, polar_t, inten_df])
 
         return qlist.T
 

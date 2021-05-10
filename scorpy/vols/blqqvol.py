@@ -3,7 +3,6 @@
 from .vol import Vol
 import numpy as np
 from scipy import special
-import matplotlib.pyplot as plt
 from .volspropertymixins import BlqqVolProps
 
 
@@ -57,13 +56,13 @@ class BlqqVol(Vol, BlqqVolProps):
         # plt.figure()
         # plt.imshow(np.matmul(fmat_inv, fmat))
         # plt.title('fmat inv * fmat')
-        
-        u, s, vh = np.linalg.svd(fmat)
-        print('min s:', s.min())
-        print('max s:', s.max())
-        print(s.shape)
-        plt.figure()
-        plt.plot(s)
+
+        # u, s, vh = np.linalg.svd(fmat)
+        # print('min s:', s.min())
+        # print('max s:', s.max())
+        # print(s.shape)
+        # plt.figure()
+        # plt.plot(s)
 
         for iq1 in range(self.nq):
             for iq2 in range(iq1, self.nq):
@@ -86,8 +85,7 @@ class BlqqVol(Vol, BlqqVolProps):
 
                 self.vol[i, j + i, :] = multi.sum(axis=0).sum(axis=1)[:self.nl]
                 if j > 0:
-                    self.vol[j + i, i,
-                        :] = multi.sum(axis=0).sum(axis=1)[:self.nl]
+                    self.vol[j + i, i, :] = multi.sum(axis=0).sum(axis=1)[:self.nl]
 
     # def fill_from_sph(self, sph):
 

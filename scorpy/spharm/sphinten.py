@@ -11,7 +11,7 @@ class SphInten:
 
         self.nq = nq
         self.nside = nside
-        self.npix  = hp.nside2npix(self.nside)
+        self.npix = hp.nside2npix(self.nside)
         self.ivol = np.zeros((self.nq, self.npix))
         self.qmax = qmax
 

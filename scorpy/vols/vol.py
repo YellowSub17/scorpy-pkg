@@ -13,9 +13,9 @@ from datetime import datetime
 
 class Vol(VolProps):
 
-    def __init__(self, nx=10, ny=20, nz=30, \
-                 xmax=1, ymax=2, zmax=3, \
-                 xmin=-3, ymin=2, zmin=.6, \
+    def __init__(self, nx=10, ny=20, nz=30,
+                 xmax=1, ymax=2, zmax=3,
+                 xmin=-3, ymin=2, zmin=.6,
                  comp=False, path=None):
 
         if not path is None:
@@ -171,13 +171,13 @@ class Vol(VolProps):
 
         # calculates the guassian kernel and convolve
         kern = np.exp(- (x_mesh**2 / (2 * std_x**2) + y_mesh **
-                      2 / (2 * std_y**2) + z_mesh**2 / (2 * std_z**2)))
+                         2 / (2 * std_y**2) + z_mesh**2 / (2 * std_z**2)))
         blur = signal.fftconvolve(self.vol, kern)
 
         # bring the volume in by half the kernal window width (removes edge effects)
         kern_n_half = int((kern_n - 1) / 2)
-        blur = blur[kern_n_half:-kern_n_half, kern_n_half:- \
-            kern_n_half, kern_n_half:-kern_n_half]
+        blur = blur[kern_n_half:-kern_n_half, kern_n_half:-
+                    kern_n_half, kern_n_half:-kern_n_half]
         self.vol = blur
 
     def get_xy(self):

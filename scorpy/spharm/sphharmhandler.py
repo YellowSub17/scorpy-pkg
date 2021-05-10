@@ -34,7 +34,7 @@ class SphHarmHandler:
         ite = np.ones(len(scat_sph[:, 0]))
         q_inds = np.array(
             list(map(index_x, scat_sph[:, 0], 0 * ite, self.qmax * ite, self.nq * ite)))
-        
+
         for l in range(0, self.nl, 2):
 
             ls = []

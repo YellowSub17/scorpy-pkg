@@ -49,10 +49,10 @@ class ExpGeom:
                 loc = np.where(int(panel['min_ss'] / 64) == panel_mods)
 
                 pix_posx[loc] = panel['fs_xy'][0] * (pix_fss[loc] % 128) \
-                + panel['ss_xy'][0] * (pix_sss[loc] % 64)
+                    + panel['ss_xy'][0] * (pix_sss[loc] % 64)
 
                 pix_posy[loc] = panel['fs_xy'][1] * (pix_fss[loc] % 128) \
-                + panel['ss_xy'][1] * (pix_sss[loc] % 64)
+                    + panel['ss_xy'][1] * (pix_sss[loc] % 64)
 
                 pix_posz[loc] = panel['coffset']
 
@@ -86,7 +86,7 @@ class ExpGeom:
 
         for line in config['params']:
             if '/' in line:  # check if thise argument is a panel eg. p0a4/fs
-                                # if it is a panel, split by name/attribute, add to panel_dict
+                # if it is a panel, split by name/attribute, add to panel_dict
                 panel_split = line.split('/')
                 # if the panel is no already in the dictionary
                 if panel_split[0] not in parsed_panels.keys():
@@ -96,7 +96,7 @@ class ExpGeom:
 
                 # after adding the panel, add the panel attribute
                 parsed_panels[panel_split[0]][panel_split[1]
-                    ] = config['params'][line]
+                                              ] = config['params'][line]
 
             else:  # if the argument is not a panel argument, add to the arg dictionary instead
                 parsed_args[line] = config['params'][line]

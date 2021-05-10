@@ -10,7 +10,7 @@ import numpy as np
 np.random.seed(0)
 
 
-names  = ['1al1']
+names = ['1al1']
 nl = 11
 
 

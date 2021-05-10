@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
+import os
+import sys
 import unittest
 
 import scorpy
 import numpy as np
 np.random.seed(0)
-
-import sys, os
 
 
 test_data_dir = '/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/tests/data'
@@ -48,7 +48,7 @@ class TestBlqqVol(unittest.TestCase):
 
     def test_saveload(self):
         self.blqq.save(f'{test_data_dir}/tmp/blqq')
-        blqq_loaded = scorpy.BlqqVol(self.nq + 1, self.nl + 1, self.qmax + 1,\
+        blqq_loaded = scorpy.BlqqVol(self.nq + 1, self.nl + 1, self.qmax + 1,
                                      path=f'{test_data_dir}/tmp/blqq')
 
         self.assertEqual(self.blqq.nx, blqq_loaded.nx)

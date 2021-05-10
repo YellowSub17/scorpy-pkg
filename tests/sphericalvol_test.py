@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
+import os
+import sys
 import unittest
 
 import scorpy
 import numpy as np
 np.random.seed(0)
-
-import sys, os
 
 
 test_data_dir = '/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/tests/data'
@@ -46,7 +46,7 @@ class TestSphericalVol(unittest.TestCase):
         self.assertEqual(self.sphv.xmin, 0)
         self.assertEqual(self.sphv.ymin, -np.pi / 2)
         self.assertEqual(self.sphv.zmin, 0)
-    
+
         self.assertEqual(self.sphv.nq, self.nq)
         self.assertEqual(self.sphv.ntheta, self.nangle)
         if self.gridtype == 'DH1':

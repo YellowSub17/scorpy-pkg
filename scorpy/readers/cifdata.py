@@ -23,12 +23,12 @@ class CifData(CifDataProperties):
         a_unit = np.array([1.0, 0.0, 0.0])
         b_unit = np.array([np.cos(self.gamma), np.sin(self.gamma), 0])
         c_unit = np.array([
-                            np.cos(self.beta),
-                           (np.cos(self.alpha) - np.cos(self.beta) * \
-                            np.cos(self.gamma)) / np.sin(self.gamma),
-                            np.sqrt(1 - np.cos(self.beta)**2 - ((np.cos(self.alpha) - \
-                                    np.cos(self.beta) * np.cos(self.gamma)) / np.sin(self.gamma))**2)
-                        ])
+            np.cos(self.beta),
+            (np.cos(self.alpha) - np.cos(self.beta) *
+             np.cos(self.gamma)) / np.sin(self.gamma),
+            np.sqrt(1 - np.cos(self.beta)**2 - ((np.cos(self.alpha) -
+                                                 np.cos(self.beta) * np.cos(self.gamma)) / np.sin(self.gamma))**2)
+        ])
 
         self._a = float(self.cif['_cell.length_a']) * np.round(a_unit, 14)
         self._b = float(self.cif['_cell.length_b']) * np.round(b_unit, 14)
@@ -111,7 +111,7 @@ class CifData(CifDataProperties):
         # around
         phi = np.arctan2(scattering[:, 1], scattering[:, 0])  # -pi -> pi
         phi[np.where(phi < 0)] = phi[np.where(phi < 0)] + 2 * np.pi  # 0 -> 2pi
-        spherical  = np.array([q_mag, theta, phi, bragg[:, -1]]).T
+        spherical = np.array([q_mag, theta, phi, bragg[:, -1]]).T
 
         if not qmax is None:
             loc = np.where(spherical[:, 0] <= qmax)
@@ -130,10 +130,10 @@ class CifData(CifDataProperties):
         ite = np.ones(np.shape(qs))
 
         qinds = list(map(index_x, qs, 0 * ite, self.qmax * ite, nq * ite))
-        tinds = list(map(index_x, ts * ite, -np.pi * ite / \
-                     2, np.pi * ite / 2, ntheta * ite))
+        tinds = list(map(index_x, ts * ite, -np.pi * ite /
+                         2, np.pi * ite / 2, ntheta * ite))
         pinds = list(map(index_x, ps * ite, 0 * ite,
-                     2 * np.pi * ite, nphi * ite))
+                         2 * np.pi * ite, nphi * ite))
 
         qspace = np.linspace(0, self.qmax, nq)
         tspace = np.linspace(-np.pi / 2, np.pi / 2, ntheta)
