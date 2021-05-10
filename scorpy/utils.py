@@ -51,9 +51,8 @@ def index_x(x_val, x_min, x_max, nx, wrap=False):
         x_out (int): Index that x_val should be place within the range.
     '''
     dx = (x_max - x_min) / (nx - 1)
-    print(dx)
     x_out = int(round((x_val - x_min) / dx))
-    if wrap and x_out == nx:
+    if wrap and x_out == nx - 1:
         x_out = 0
     return x_out
 
@@ -100,17 +99,28 @@ def angle_between_rect(q1, q2):
 
 def angle_between_sph(theta1, theta2, phi1, phi2):
     # TODO docstring
-    sinterm = np.sin(theta1) * np.sin(theta2)
-    costerm = np.cos(theta1) * np.cos(theta2) * np.cos(phi2 - phi1)
+    # sinterm = np.sin(theta1) * np.sin(theta2)
+    # costerm = np.cos(theta1) * np.cos(theta2) * np.cos(phi2 - phi1)
+    # dot = sinterm + costerm
 
-    addterm = sinterm + costerm
+    w1 = np.array([np.cos(phi1) * np.sin(theta1),
+                   np.sin(phi1) * np.sin(theta1),
+                   np.cos(theta1)])
 
-    if addterm > 1:
-        addterm = 1
-    elif addterm < -1:
-        addterm = -1
+    w2 = np.array([np.cos(phi2) * np.sin(theta2),
+                   np.sin(phi2) * np.sin(theta2),
+                   np.cos(theta2)])
 
-    return np.round(np.arccos(addterm), 14)
+    return angle_between_rect(w1, w2)
+
+    # dot = np.dot(w1,w2)
+
+    # if dot > 1:
+        # dot = 1
+    # elif dot < -1:
+        # dot = -1
+
+    # return np.round(np.arccos(dot), 14)
 
 
 def cosinesim(v1, v2):

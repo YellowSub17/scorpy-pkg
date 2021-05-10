@@ -22,14 +22,14 @@ class SphericalVol(Vol, SphericalVolProps):
     # def __init__(self, nq=100, nangle=180, qmax=1, comp=False, path=None):
     def __init__(self, nq=100, ntheta=180, nphi=360, qmax=1, comp=False, path=None):
 
-#         ntheta = nangle
+        #         ntheta = nangle
         # if nangle % 2 == 1:
-            # nphi = 2*nangle - 1
+        # nphi = 2*nangle - 1
         # else:
-            # nphi = 2*nangle
+        # nphi = 2*nangle
         # nl = int(nangle / 2)
         nl = 8
-       
+
 
 #         if gridtype == 'DH2':
             # nphi = 2 * nangle
@@ -48,15 +48,15 @@ class SphericalVol(Vol, SphericalVolProps):
         self._nl = nl
 
         Vol.__init__(self, nx=nq, ny=ntheta, nz=nphi,
-                     xmax=qmax, ymax=np.pi / 2, zmax=2 * np.pi,
-                     xmin=0, ymin=-np.pi / 2, zmin=0,
+                     xmax=qmax, ymax=np.pi, zmax=2 * np.pi,
+                     xmin=0, ymin=0, zmin=0,
                      comp=comp, path=path)
 
     def _save_extra(self, f):
         f.write('[sphv]\n')
         f.write(f'qmax = {self.qmax}\n')
-        f.write(f'thetamax = {np.pi/2}\n')
-        f.write(f'thetamin = {-np.pi/2}\n')
+        f.write(f'thetamax = {np.pi}\n')
+        f.write(f'thetamin = {0}\n')
         f.write(f'phimax = {2*np.pi}\n')
         f.write(f'phimin = {0}\n')
         f.write(f'nq = {self.nq}\n')
@@ -111,7 +111,6 @@ class SphericalVol(Vol, SphericalVolProps):
         sh_grid = pysh.shclasses.DHRealGrid(q_slice)
 
         return sh_grid
-
 
     # def rotate(self, a,b,c):
         # print('Rotating')

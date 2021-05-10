@@ -212,7 +212,7 @@ class Vol(VolProps):
         if new_fig:
             plt.colorbar()
 
-    def plot_sumax(self, axis=0, new_fig=True, aspect='auto', extent=True, cmap='virids'):
+    def plot_sumax(self, axis=0, new_fig=True, aspect='auto', extent=True, cmap='viridis'):
 
         im = self.vol.sum(axis=axis)
         if new_fig:

@@ -103,17 +103,16 @@ class CifData(CifDataProperties):
 
         # convert rect reciprocal units to spherical coords
         q_mag = np.linalg.norm(scattering[:, :3], axis=1)
-        #up and down
-        theta = np.arctan2(np.linalg.norm(
-            scattering[:, :2], axis=1), scattering[:, 2])  # 0 -> pi
-        theta -= np.pi / 2  # -pi/2 -> pi/2
+        # up and down
+        theta = np.arctan2(np.linalg.norm(scattering[:, :2], axis=1), scattering[:, 2])  # 0 -> pi
+        # theta -= np.pi / 2  # -pi/2 -> pi/2
 
         # around
         phi = np.arctan2(scattering[:, 1], scattering[:, 0])  # -pi -> pi
         phi[np.where(phi < 0)] = phi[np.where(phi < 0)] + 2 * np.pi  # 0 -> 2pi
         spherical = np.array([q_mag, theta, phi, bragg[:, -1]]).T
 
-        if not qmax is None:
+        if qmax is not None:
             loc = np.where(spherical[:, 0] <= qmax)
             scattering = scattering[loc]
             bragg = bragg[loc]

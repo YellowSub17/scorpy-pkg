@@ -139,7 +139,6 @@ class BlqqVolProps:
         return self.zpts
 
 
-
 class PadfVolProps:
 
     @property
@@ -177,7 +176,6 @@ class PadfVolProps:
     @property
     def psipts(self):
         return self.zpts
-
 
 
 class SphericalVolProps:
@@ -237,4 +235,3 @@ class SphericalVolProps:
     @property
     def phipts(self):
         return self.zpts
-

@@ -4,6 +4,7 @@ from .vol import Vol
 import numpy as np
 from scipy import special
 from .volspropertymixins import BlqqVolProps
+import matplotlib.pyplot as plt
 
 
 class BlqqVol(Vol, BlqqVolProps):
@@ -41,7 +42,8 @@ class BlqqVol(Vol, BlqqVolProps):
         # q_range = np.linspace(0,self.qmax, self.nq)
 
         # create args of legendre eval
-        args = np.cos(np.linspace(0, np.pi, corr.npsi))
+        # args = np.cos(np.linspace(0, np.pi, corr.npsi))
+        args = np.cos(np.radians(corr.psipts))
 
         # initialze fmat matrix
         fmat = np.zeros((corr.npsi, self.nl))
@@ -53,16 +55,15 @@ class BlqqVol(Vol, BlqqVolProps):
 
         # TODO check svd
         fmat_inv = np.linalg.pinv(fmat, rcond=1e-3)
-        # plt.figure()
-        # plt.imshow(np.matmul(fmat_inv, fmat))
-        # plt.title('fmat inv * fmat')
+        plt.figure()
+        plt.imshow(np.matmul(fmat_inv, fmat))
+        plt.title('fmat inv * fmat')
 
-        # u, s, vh = np.linalg.svd(fmat)
-        # print('min s:', s.min())
-        # print('max s:', s.max())
-        # print(s.shape)
-        # plt.figure()
-        # plt.plot(s)
+        u, s, vh = np.linalg.svd(fmat)
+        print('min s:', s.min())
+        print('max s:', s.max())
+        plt.figure()
+        plt.plot(s)
 
         for iq1 in range(self.nq):
             for iq2 in range(iq1, self.nq):

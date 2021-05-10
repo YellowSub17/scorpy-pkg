@@ -84,7 +84,8 @@ class CorrelationVol(Vol, CorrelationVolProps):
         '''
 
         # arguments for the legendre polynomial
-        args = np.cos(np.linspace(0, np.pi, self.npsi))
+        # args = np.cos(np.linspace(0, np.pi, self.npsi))
+        args = np.cos(np.radians(self.psipts))
 
         # initialze fmat matrix
         fmat = np.zeros((self.npsi, blqq.nl))
@@ -228,6 +229,13 @@ class CorrelationVol(Vol, CorrelationVolProps):
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
                 if j > 0:  # if not on diagonal
                     self.vol[q2_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
+
+
+    def force_sym(self):
+        half_ind = int(self.npsi/2)
+        for psi_ind in range(0, half_ind):
+            self.vol[..., psi_ind] = self.vol[..., -1-psi_ind]
+
 
     def theta_multi(self):
         pass
