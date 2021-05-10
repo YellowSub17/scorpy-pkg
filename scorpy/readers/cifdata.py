@@ -147,30 +147,27 @@ class CifData(CifDataProperties):
 
 
 
-    # def bin_sph(self, nq, ntheta, nphi):
+    def bin_sph(self, nq, ntheta, nphi):
 
-        # qs = self.spherical[:,0]
-        # ts = self.spherical[:,1]+np.pi/2 #0 -> pi
-        # ps = self.spherical[:,2]
+        qs = self.scat_sph[:,0]
+        ts = self.scat_sph[:,1]
+        ps = self.scat_sph[:,2]
 
-        # ite = np.ones(np.shape(qs))
+        ite = np.ones(np.shape(qs))
 
-        # qinds = list(map(index_x, qs, self.qmax*ite, nq*ite))
-        # tinds = list(map(index_x, ts*ite, np.pi*ite, ntheta*ite))
-        # pinds = list(map(index_x, ps*ite, 2*np.pi*ite, nphi*ite))
-
-
-
-        # print(qinds)
-
-        # qspace = np.linspace(0, self.qmax, nq)
-        # tspace = np.linspace(-np.pi/2, np.pi/2, ntheta)
-        # pspace = np.linspace(0, 2*np.pi, nphi)
+        qinds = list(map(index_x, qs,0*ite, self.qmax*ite, nq*ite))
+        tinds = list(map(index_x, ts*ite, -np.pi*ite/2,  np.pi*ite/2, ntheta*ite))
+        pinds = list(map(index_x, ps*ite, 0*ite, 2*np.pi*ite, nphi*ite))
 
 
 
 
+        qspace = np.linspace(0, self.qmax, nq)
+        tspace = np.linspace(-np.pi/2, np.pi/2, ntheta)
+        pspace = np.linspace(0, 2*np.pi, nphi)
 
-        # self.spherical[:,0] = qspace[qinds]
-        # self.spherical[:,1] = tspace[tinds]
-        # self.spherical[:,2] = pspace[pinds]
+
+
+        self.scat_sph[:,0] = qspace[qinds]
+        self.scat_sph[:,1] = tspace[tinds]
+        self.scat_sph[:,2] = pspace[pinds]

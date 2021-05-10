@@ -43,35 +43,35 @@ class Vol(VolProps):
 
     def _load(self, path):
 
-            if type(path) == str:
-                path = Path(path)
+        if type(path) == str:
+            path = Path(path)
 
-            tag = path.stem
-            config = cfp.ConfigParser()
-            config.read(f'{path.parent}/{tag}_log.txt')
+        tag = path.stem
+        config = cfp.ConfigParser()
+        config.read(f'{path.parent}/{tag}_log.txt')
 
-            self._nx = int(config['vol']['nx'])
-            self._ny = int(config['vol']['ny'])
-            self._nz = int(config['vol']['nz'])
+        self._nx = int(config['vol']['nx'])
+        self._ny = int(config['vol']['ny'])
+        self._nz = int(config['vol']['nz'])
 
-            self._xmin = float(config['vol']['xmin'])
-            self._ymin = float(config['vol']['ymin'])
-            self._zmin = float(config['vol']['zmin'])
+        self._xmin = float(config['vol']['xmin'])
+        self._ymin = float(config['vol']['ymin'])
+        self._zmin = float(config['vol']['zmin'])
 
-            self._xmax = float(config['vol']['xmax'])
-            self._ymax = float(config['vol']['ymax'])
-            self._zmax = float(config['vol']['zmax'])
+        self._xmax = float(config['vol']['xmax'])
+        self._ymax = float(config['vol']['ymax'])
+        self._zmax = float(config['vol']['zmax'])
 
-            self._comp = config.getboolean('vol', 'comp')
+        self._comp = config.getboolean('vol', 'comp')
 
-            if self.comp:
-                file_vol = np.fromfile(f'{path.parent}/{tag}.dbin', dtype=np.complex64)
-            else:
-                file_vol = np.fromfile(f'{path.parent}/{tag}.dbin')
+        if self.comp:
+            file_vol = np.fromfile(f'{path.parent}/{tag}.dbin', dtype=np.complex64)
+        else:
+            file_vol = np.fromfile(f'{path.parent}/{tag}.dbin')
 
-            self._vol = file_vol.reshape((self.nx, self.ny, self.nz))
+        self._vol = file_vol.reshape((self.nx, self.ny, self.nz))
 
-            self._load_extra(config)
+        self._load_extra(config)
 
 
 

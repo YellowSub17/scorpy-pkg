@@ -60,11 +60,20 @@ class BlqqVol(Vol, BlqqVolProps):
 
 
         #TODO check svd
-        fmat_inv = np.linalg.pinv(fmat)
+        fmat_inv = np.linalg.pinv(fmat,rcond=1e-3)
+        # plt.figure()
+        # plt.imshow(np.matmul(fmat_inv, fmat))
+        # plt.title('fmat inv * fmat')
+        
 
+        u, s, vh = np.linalg.svd(fmat)
+        print('min s:', s.min())
+        print('max s:', s.max())
+        print(s.shape)
         plt.figure()
-        plt.imshow(np.matmul(fmat_inv, fmat))
-        plt.title('fmat inv * fmat')
+        plt.plot(s)
+
+
 
         for iq1 in range(self.nq):
             for iq2 in range(iq1, self.nq):

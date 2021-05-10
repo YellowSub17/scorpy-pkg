@@ -13,8 +13,21 @@ def mydiv(x,y):
 
 
 
+# def index_x(x_val,x_min, x_max, nx):
+    # return np.int(np.round(np.interp(x_val, (x_min, x_max), (0, nx-1))))
+
+# def index_x(x_val,x_min, x_max, nx, period=180):
+    # return np.int(np.round(np.interp(x_val, (x_min, x_max), (0, nx-1), period=period)))
+
+# def index_x(x_val,x_min, x_max, nx):
+    # return int(round((float(x_val-x_min)/float(x_max-x_min))*(nx-1)))
+
 def index_x(x_val,x_min, x_max, nx):
-    return np.int(np.round(np.interp(x_val, (x_min, x_max), (0, nx-1))))
+    dx = (x_max-x_min)/nx
+    x_out = int(round((x_val - x_min)/dx))
+    if x_out==nx:
+        x_out=0
+    return x_out
 
 
 

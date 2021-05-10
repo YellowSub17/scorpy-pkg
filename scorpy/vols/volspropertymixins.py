@@ -66,6 +66,19 @@ class VolProps:
         self._vol = new_vol
 
 
+    # @property
+    # def xpts(self):
+        # return np.linspace(self.xmin, self.xmax, self.nx)
+
+    # @property
+    # def ypts(self):
+        # return np.linspace(self.ymin, self.ymax, self.ny)
+
+    # @property
+    # def zpts(self):
+        # return np.linspace(self.zmin, self.zmax, self.nz)
+
+
 
 
 class CorrelationVolProps:

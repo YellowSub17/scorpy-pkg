@@ -38,7 +38,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
 
-    def fill_from_cif(self,cif, cords='scat_rect'):
+    def fill_from_cif(self,cif, cords='scat_sph'):
         '''
         Fill the CorrelationVol from a CifData
 
@@ -251,3 +251,9 @@ class CorrelationVol(Vol, CorrelationVolProps):
                 self.vol[q1_ind, q2_ind, psi_ind] +=q1[-1]*q2[-1]
                 if j>0: #if not on diagonal
                     self.vol[q2_ind, q2_ind, psi_ind] +=q1[-1]*q2[-1]
+
+
+    def theta_multi(self):
+        pass
+        # self.vol[...,0] *=4*np.pi
+        # self.vol[...,-1] *=4*np.pi
