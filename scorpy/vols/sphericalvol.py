@@ -21,7 +21,7 @@ class SphericalVol(Vol, SphericalVolProps):
 
     def __init__(self, nq=100, nangle=180, qmax=1, comp=False, gridtype='DH2', extend=False, path=None):
         assert nangle % 2 == 0, 'nangle must be even'
-        assert not extend, "Only working with non-extended grids"
+        # assert not extend, "Only working with non-extended grids"
 
         if gridtype == 'DH1':
             ntheta = nangle
@@ -84,24 +84,15 @@ class SphericalVol(Vol, SphericalVolProps):
 
         ite = np.ones(cif.scat_sph[:, 0].shape)
 
-        q_inds = list(
-            map(index_x, cif.scat_sph[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
-        theta_inds = list(
-            map(index_x, cif.scat_sph[:, 1], self.ymin * ite, self.ymax * ite, self.ny * ite))
-        phi_inds = list(
-            map(index_x, cif.scat_sph[:, 2], self.zmin * ite, self.zmax * ite, self.nz * ite))
+        q_inds = list(map(index_x, cif.scat_sph[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
+        theta_inds = list(map(index_x, cif.scat_sph[:, 1], self.ymin * ite, self.ymax * ite, self.ny * ite))
+        phi_inds = list(map(index_x, cif.scat_sph[:, 2], self.zmin * ite, self.zmax * ite, self.nz * ite))
 
         for q_ind, theta_ind, phi_ind, I in zip(q_inds, theta_inds, phi_inds, cif.scat_sph[:, -1]):
             self.vol[q_ind, theta_ind, phi_ind] += I
 
     def get_coeffs(self, q_ind):
-        assert q_ind >= 0 and q_ind < self.nq, 'fail'
-
-        q_slice = self.vol[q_ind, ...]
-        if self.gridtype == 'DH1' or self.gridtype == 'DH2':
-            sh_grid = pysh.shclasses.DHRealGrid(q_slice)
-        else:
-            sh_grid = pysh.shclasses.GLQRealGrid(q_slice)
+        sh_grid = self.get_q_grid(q_ind)
 
         c = sh_grid.expand(normalization='4pi').coeffs
 
@@ -111,17 +102,23 @@ class SphericalVol(Vol, SphericalVolProps):
 
     def get_angle_sampling(self):
 
-        q_slice = self.vol[-1, ...]
-        if self.gridtype == 'DH1' or self.gridtype == 'DH2':
-        sh_grid = pysh.shclasses.shgrid.DHRealGrid(q_slice)
-        else:
-        sh_grid = pysh.shclasses.shgrid.GLQRealGrid(q_slice)
-
+        sh_grid = self.get_q_grid(0)
         # fix
         lats = np.radians(sh_grid.lats())
         lons = np.radians(sh_grid.lons())
 
         return lats, lons
+
+    def get_q_grid(self, q_ind):
+        assert q_ind >= 0 and q_ind < self.nq, 'fail'
+        q_slice = self.vol[q_ind, ...]
+        if self.gridtype == 'DH1' or self.gridtype == 'DH2':
+            sh_grid = pysh.shclasses.DHRealGrid(q_slice)
+        else:
+            sh_grid = pysh.shclasses.GLQRealGrid(q_slice)
+
+        return sh_grid
+
 
     # def rotate(self, a,b,c):
         # print('Rotating')
