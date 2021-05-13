@@ -22,34 +22,14 @@ class SphericalVol(Vol, SphericalVolProps):
     # def __init__(self, nq=100, nangle=180, qmax=1, comp=False, path=None):
     def __init__(self, nq=100, ntheta=180, nphi=360, qmax=1, comp=False, path=None):
 
-        #         ntheta = nangle
-        # if nangle % 2 == 1:
-        # nphi = 2*nangle - 1
-        # else:
-        # nphi = 2*nangle
-        # nl = int(nangle / 2)
-        nl = 8
+        assert nphi == 2 * ntheta, 'nphi must be 2x ntheta for SphericalVol'
 
-
-#         if gridtype == 'DH2':
-            # nphi = 2 * nangle
-            # nl = int(nangle / 2)
-            # if extend:
-                # ntheta += 1
-                # nphi += 1
-
-        # else:
-            # nphi = 2 * nangle - 1
-            # nl = int(nangle)
-            # if extend:
-                # nphi += 1
-
-        # self._extend = extend
-        self._nl = nl
+        self._nl = int(ntheta / 2)
 
         Vol.__init__(self, nx=nq, ny=ntheta, nz=nphi,
                      xmax=qmax, ymax=np.pi, zmax=2 * np.pi,
                      xmin=0, ymin=0, zmin=0,
+                     xwrap=False, ywrap=True, zwrap=True,
                      comp=comp, path=path)
 
     def _save_extra(self, f):
@@ -85,6 +65,17 @@ class SphericalVol(Vol, SphericalVolProps):
         phi_inds = list(map(index_x, cif.scat_sph[:, 2], self.zmin * ite, self.zmax * ite, self.nz * ite))
 
         for q_ind, theta_ind, phi_ind, I in zip(q_inds, theta_inds, phi_inds, cif.scat_sph[:, -1]):
+            self.vol[q_ind, theta_ind, phi_ind] += I
+
+    def fill_from_scat_sph(self, scat_sph):
+
+        ite = np.ones(scat_sph[:, 0].shape)
+
+        q_inds = list(map(index_x, scat_sph[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
+        theta_inds = list(map(index_x, scat_sph[:, 1], self.ymin * ite, self.ymax * ite, self.ny * ite))
+        phi_inds = list(map(index_x, scat_sph[:, 2], self.zmin * ite, self.zmax * ite, self.nz * ite))
+
+        for q_ind, theta_ind, phi_ind, I in zip(q_inds, theta_inds, phi_inds, scat_sph[:, -1]):
             self.vol[q_ind, theta_ind, phi_ind] += I
 
     def get_coeffs(self, q_ind):

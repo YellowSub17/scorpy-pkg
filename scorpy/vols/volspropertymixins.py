@@ -40,16 +40,52 @@ class VolProps:
         return self._zmax
 
     @property
+    def xwrap(self):
+        return self._xwrap
+
+    @property
+    def ywrap(self):
+        return self._ywrap
+
+    @property
+    def zwrap(self):
+        return self._zwrap
+
+    @property
     def dx(self):
-        return (self.xmax - self.xmin) / (self.nx - 1)
+        return (self.xmax - self.xmin) / (self.nx)
 
     @property
     def dy(self):
-        return (self.ymax - self.ymin) / (self.ny - 1)
+        return (self.ymax - self.ymin) / (self.ny)
 
     @property
     def dz(self):
-        return (self.zmax - self.zmin) / (self.nz - 1)
+        return (self.zmax - self.zmin) / (self.nz)
+
+    @property
+    def xbins(self):
+        return np.linspace(self.xmin, self.xmax, self.nx + 1)
+
+    @property
+    def ybins(self):
+        return np.linspace(self.ymin, self.ymax, self.ny + 1)
+
+    @property
+    def zbins(self):
+        return np.linspace(self.zmin, self.zmax, self.nz + 1)
+
+    @property
+    def xpts(self):
+        return self.xbins[:-1] + self.dx / 2
+
+    @property
+    def ypts(self):
+        return self.ybins[:-1] + self.dy / 2
+
+    @property
+    def zpts(self):
+        return self.zbins[:-1] + self.dz / 2
 
     @property
     def comp(self):
@@ -63,18 +99,6 @@ class VolProps:
     def vol(self, new_vol):
         assert new_vol.shape == self.vol.shape, 'Cannot replace vols with different shapes'
         self._vol = new_vol
-
-    @property
-    def xpts(self):
-        return np.linspace(self.xmin, self.xmax, self.nx, endpoint=False)
-
-    @property
-    def ypts(self):
-        return np.linspace(self.ymin, self.ymax, self.ny, endpoint=False)
-
-    @property
-    def zpts(self):
-        return np.linspace(self.zmin, self.zmax, self.nz, endpoint=False)
 
 
 class CorrelationVolProps:

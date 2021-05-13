@@ -22,7 +22,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
         '''
         Class constructor.
         '''
-        Vol.__init__(self, nq, nq, npsi, qmax, qmax, 180, 0, 0, 0, comp=False, path=path)
+        Vol.__init__(self, nq, nq, npsi, qmax, qmax, 180, 0, 0, 0, False, False, True, comp=False, path=path)
 
         self.plot_q1q2 = self.plot_xy
 
@@ -230,12 +230,10 @@ class CorrelationVol(Vol, CorrelationVolProps):
                 if j > 0:  # if not on diagonal
                     self.vol[q2_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
 
-
     def force_sym(self):
-        half_ind = int(self.npsi/2)
+        half_ind = int(self.npsi / 2)
         for psi_ind in range(0, half_ind):
-            self.vol[..., psi_ind] = self.vol[..., -1-psi_ind]
-
+            self.vol[..., psi_ind] = self.vol[..., -1 - psi_ind]
 
     def theta_multi(self):
         pass

@@ -6,8 +6,8 @@ plt.close('all')
 
 
 nq = 100
-npsi = 700
-nl = 341
+npsi = 300
+nl = 120
 
 qmax = 0.36992983463258367 / 3
 
@@ -21,7 +21,7 @@ blqqs_titles = []
 cif = scorpy.CifData('../data/xtal/1al1-sf.cif', qmax)
 # cif.bin_sph(nq, npsi, 2 * npsi)
 
-sphv = scorpy.SphericalVol(nq, npsi, 2*npsi, qmax)
+sphv = scorpy.SphericalVol(nq, npsi, 2 * npsi, qmax)
 sphv.fill_from_cif(cif)
 
 qs = np.unique(np.where(sphv.vol > 0)[0])
@@ -65,8 +65,6 @@ for corr, title in zip(corrs, corrs_titles):
 for corr, title in zip(corrs, corrs_titles):
     corr.plot_slice(axis=2, index=40)
     plt.title(title + f' theta slice: {40}')
-
-
 
 
 plt.show()

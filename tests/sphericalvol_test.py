@@ -16,15 +16,12 @@ class TestSphericalVol(unittest.TestCase):
     def setUp(self):
 
         self.nq = 10
-        self.nangle = 36
+        self.ntheta = 18
+        self.nphi = 36
         self.qmax = 1.4
 
-        self.comp = False
-        self.gridtype = 'DH1'
-        self.extend = False
-
         self.sphv = scorpy.SphericalVol(
-            self.nq, self.nangle, self.qmax, self.comp, self.gridtype, self.extend)
+            self.nq, self.ntheta, self.nphi, self.qmax)
 
     def tearDown(self):
         pass
@@ -32,45 +29,39 @@ class TestSphericalVol(unittest.TestCase):
     def test_properties(self):
 
         self.assertEqual(self.sphv.nx, self.nq)
-        self.assertEqual(self.sphv.ny, self.nangle)
+        self.assertEqual(self.sphv.ny, self.ntheta)
 
-        if self.gridtype == 'DH1':
-            self.assertEqual(self.sphv.nz, self.nangle)
-        elif self.gridtype == 'DH2':
-            self.assertEqual(self.sphv.nz, 2 * self.nangle)
+        self.assertEqual(self.sphv.nz, self.nphi)
 
         self.assertEqual(self.sphv.xmax, self.qmax)
-        self.assertEqual(self.sphv.ymax, np.pi / 2)
+        self.assertEqual(self.sphv.ymax, np.pi)
         self.assertEqual(self.sphv.zmax, 2 * np.pi)
 
         self.assertEqual(self.sphv.xmin, 0)
-        self.assertEqual(self.sphv.ymin, -np.pi / 2)
+        self.assertEqual(self.sphv.ymin, 0)
         self.assertEqual(self.sphv.zmin, 0)
 
         self.assertEqual(self.sphv.nq, self.nq)
-        self.assertEqual(self.sphv.ntheta, self.nangle)
-        if self.gridtype == 'DH1':
-            self.assertEqual(self.sphv.nphi, self.nangle)
-        elif self.gridtype == 'DH2':
-            self.assertEqual(self.sphv.nphi, 2 * self.nangle)
+        self.assertEqual(self.sphv.ntheta, self.ntheta)
+        self.assertEqual(self.sphv.nphi, self.nphi)
 
         self.assertEqual(self.sphv.qmax, self.qmax)
 
-        qspace = np.linspace(0, self.qmax, self.nq, endpoint=False)
-        self.assertEqual(self.sphv.dq, qspace[1] - qspace[0])
+   #      qspace = np.linspace(0, self.qmax, self.nq, endpoint=False)
+        # self.assertEqual(self.sphv.dq, qspace[1] - qspace[0])
 
-        thetaspace = np.linspace(-np.pi / 2, np.pi / 2,
-                                 self.nangle, endpoint=False)
-        np.testing.assert_allclose(
-            self.sphv.dtheta, thetaspace[1] - thetaspace[0])
+        # thetaspace = np.linspace(-np.pi / 2, np.pi / 2,
+                                 # self.nangle, endpoint=False)
+        # np.testing.assert_allclose(
+            # self.sphv.dtheta, thetaspace[1] - thetaspace[0])
 
-        if self.gridtype == 'DH1':
-            phispace = np.linspace(0, 2 * np.pi, self.nangle, endpoint=False)
-        elif self.gridtype == 'DH2':
-            phispace = np.linspace(
-                0, 2 * np.pi, 2 * self.nangle, endpoint=False)
+        # if self.gridtype == 'DH1':
+            # phispace = np.linspace(0, 2 * np.pi, self.nangle, endpoint=False)
+        # elif self.gridtype == 'DH2':
+            # phispace = np.linspace(
+                # 0, 2 * np.pi, 2 * self.nangle, endpoint=False)
 
-        self.assertEqual(self.sphv.dphi, phispace[1] - phispace[0])
+        # self.assertEqual(self.sphv.dphi, phispace[1] - phispace[0])
 
     # def test_saveload(self):
 

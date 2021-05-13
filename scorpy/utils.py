@@ -16,6 +16,7 @@ def mydiv(x, y):
     # return np.int(np.round(np.interp(x_val, (x_min, x_max), (0, nx-1), period=period)))
 
 # def index_x(x_val,x_min, x_max, nx):
+    # print((float(x_val-x_min)/float(x_max-x_min))*(nx-1))
     # return int(round((float(x_val-x_min)/float(x_max-x_min))*(nx-1)))
 
 # def index_x(x_val, x_min, x_max, nx, wrap=False):
@@ -31,9 +32,9 @@ def mydiv(x, y):
     # Returns:
         # x_out (int): Index that x_val should be place within the range.
     # '''
-    # dx = (x_max - x_min) / nx
+    # dx = (x_max - x_min) / (nx - 1)
     # x_out = int(round((x_val - x_min) / dx))
-    # if wrap and x_out == nx:
+    # if wrap and x_out == nx - 1:
         # x_out = 0
     # return x_out
 
@@ -50,10 +51,20 @@ def index_x(x_val, x_min, x_max, nx, wrap=False):
     Returns:
         x_out (int): Index that x_val should be place within the range.
     '''
-    dx = (x_max - x_min) / (nx - 1)
-    x_out = int(round((x_val - x_min) / dx))
-    if wrap and x_out == nx - 1:
-        x_out = 0
+
+    dx = (x_max - x_min) / nx
+
+    if not wrap:
+        x_out = int((x_val - x_min) / dx)
+        if x_val == x_max:
+            x_out = nx - 1
+    else:
+        if x_val <= dx / 2 or x_val >= x_max - dx / 2:
+            x_out = 0
+
+        else:
+            x_out = index_x(x_val, dx / 2, x_max - dx / 2, nx - 1) + 1
+
     return x_out
 
 

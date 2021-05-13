@@ -13,24 +13,30 @@ from datetime import datetime
 
 class Vol(VolProps):
 
-    def __init__(self, nx=10, ny=20, nz=30,
-                 xmax=1, ymax=2, zmax=3,
-                 xmin=-3, ymin=2, zmin=.6,
+    def __init__(self, nx=10, ny=10, nz=10,
+                 xmax=1, ymax=1, zmax=1,
+                 xmin=0, ymin=0, zmin=0,
+                 xwrap=False, ywrap=False, zwrap=False,
                  comp=False, path=None):
 
-        if not path is None:
+        if path is not None:
             self._load(path)
         else:
             self._nx = nx
             self._ny = ny
             self._nz = nz
-            self._xmax = xmax
-            self._ymax = ymax
-            self._zmax = zmax
 
             self._xmin = xmin
             self._ymin = ymin
             self._zmin = zmin
+
+            self._xmax = xmax
+            self._ymax = ymax
+            self._zmax = zmax
+
+            self._xwrap = xwrap
+            self._ywrap = ywrap
+            self._zwrap = zwrap
 
             self._comp = comp
 
@@ -60,8 +66,11 @@ class Vol(VolProps):
         self._ymax = float(config['vol']['ymax'])
         self._zmax = float(config['vol']['zmax'])
 
-        self._comp = config.getboolean('vol', 'comp')
+        self._xwrap = config.getboolean('vol', 'xwrap')
+        self._ywrap = config.getboolean('vol', 'ywrap')
+        self._zwrap = config.getboolean('vol', 'zwrap')
 
+        self._comp = config.getboolean('vol', 'comp')
         if self.comp:
             file_vol = np.fromfile(
                 f'{path.parent}/{tag}.dbin', dtype=np.complex64)
@@ -102,6 +111,9 @@ class Vol(VolProps):
         f.write(f'xmax = {self.xmax}\n')
         f.write(f'ymax = {self.ymax}\n')
         f.write(f'zmax = {self.zmax}\n')
+        f.write(f'xwrap = {self.xwrap}\n')
+        f.write(f'ywrap = {self.ywrap}\n')
+        f.write(f'zwrap = {self.zwrap}\n')
         f.write(f'dx = {self.dx}\n')
         f.write(f'dy = {self.dy}\n')
         f.write(f'dz = {self.dz}\n')
