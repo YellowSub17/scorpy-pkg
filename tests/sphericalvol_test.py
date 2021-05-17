@@ -5,6 +5,7 @@ import unittest
 
 import scorpy
 import numpy as np
+import pyshtools as pysh
 np.random.seed(0)
 
 
@@ -34,11 +35,11 @@ class TestSphericalVol(unittest.TestCase):
         self.assertEqual(self.sphv.nz, self.nphi)
 
         self.assertEqual(self.sphv.xmax, self.qmax)
-        self.assertEqual(self.sphv.ymax, np.pi)
-        self.assertEqual(self.sphv.zmax, 2 * np.pi)
+        self.assertEqual(self.sphv.ymax, -np.pi/2)
+        self.assertEqual(self.sphv.zmax, 2*np.pi)
 
         self.assertEqual(self.sphv.xmin, 0)
-        self.assertEqual(self.sphv.ymin, 0)
+        self.assertEqual(self.sphv.ymin, np.pi/2)
         self.assertEqual(self.sphv.zmin, 0)
 
         self.assertEqual(self.sphv.nq, self.nq)
@@ -47,7 +48,17 @@ class TestSphericalVol(unittest.TestCase):
 
         self.assertEqual(self.sphv.qmax, self.qmax)
 
-   #      qspace = np.linspace(0, self.qmax, self.nq, endpoint=False)
+    def test_pysh_sampling(self):
+        q_slice = np.zeros((self.ntheta, self.nphi))
+        grid_slice = pysh.SHGrid.from_array(q_slice)
+
+        lats = np.radians(grid_slice.lats())
+        lons = np.radians(grid_slice.lons())
+
+        np.testing.assert_allclose(lats, self.sphv.ypts)
+        np.testing.assert_allclose(lons, self.sphv.zpts)
+
+   #      qspace = np.linspace(0, self.qmax-a, self.nq, endpoint=False)
         # self.assertEqual(self.sphv.dq, qspace[1] - qspace[0])
 
         # thetaspace = np.linspace(-np.pi / 2, np.pi / 2,
@@ -66,7 +77,7 @@ class TestSphericalVol(unittest.TestCase):
     # def test_saveload(self):
 
         # self.sphv.save(f'{test_data_dir}/tmp/sphv')
-        # sphv_loaded = scorpy.PadfVol(self.nr+1, self.npsi+1, self.rmax+1, self.nl+1, self.wavelength+1,\
+        # sphv_loaded = scorpy.PadfVol(self.nr+1, self.npsi+1, self.rma+1, self.nl+1, self.wavelength+1,\
         # path=f'{test_data_dir}/tmp/sphv')
 
         # self.assertEqual(self.sphv.nx, sphv_loaded.nx)

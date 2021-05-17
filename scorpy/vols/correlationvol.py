@@ -72,6 +72,8 @@ class CorrelationVol(Vol, CorrelationVolProps):
         for frame in frames:
             self.correlate_scat_pol(frame.scat_pol)
 
+    
+
     def fill_from_blqq(self, blqq):
         '''
         Fill the CorrelationVol from a BlqqVol
@@ -109,6 +111,22 @@ class CorrelationVol(Vol, CorrelationVolProps):
                     self.vol[q1_ind, q2_ind, psi_ind] = x
                     if q1_ind != q2_ind:  # if not on diagonal
                         self.vol[q2_ind, q1_ind, psi_ind] = x
+
+#     def fill_from_sphv(self, sphv):
+        # assert sphv.qmax == self.qmax
+        # assert sphv.nq == self.nq
+
+        # lats, lons = sphv.ypts, sphv.zpts
+        # pp, tt = np.meshgrid(lons, lats)
+
+        # pp_flat = pp.flatten()
+        # tt_flat = tt.flatten()
+
+        # angle_between = np.arccos(np.cos(np.radians(
+
+
+
+
 
     def correlate_scat_pol(self, qti):
         '''

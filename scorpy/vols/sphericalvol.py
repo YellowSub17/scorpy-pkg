@@ -27,18 +27,21 @@ class SphericalVol(Vol, SphericalVolProps):
         self._nl = int(ntheta / 2)
 
         Vol.__init__(self, nx=nq, ny=ntheta, nz=nphi,
-                     xmax=qmax, ymax=np.pi, zmax=2 * np.pi,
-                     xmin=0, ymin=0, zmin=0,
+                     xmax=qmax, ymax=-np.pi/2, zmax=2*np.pi,
+                     xmin=0, ymin=np.pi/2, zmin=0,
+
+                     # xmax=qmax, ymax=np.pi, zmax=2*np.pi,
+                     # xmin=0, ymin=0, zmin=0,
                      xwrap=False, ywrap=True, zwrap=True,
                      comp=comp, path=path)
 
     def _save_extra(self, f):
         f.write('[sphv]\n')
         f.write(f'qmax = {self.qmax}\n')
-        f.write(f'thetamax = {np.pi}\n')
-        f.write(f'thetamin = {0}\n')
-        f.write(f'phimax = {2*np.pi}\n')
-        f.write(f'phimin = {0}\n')
+        # f.write(f'thetamax = {np.pi}\n')
+        # f.write(f'thetamin = {0}\n')
+        # f.write(f'phimax = {2*np.pi}\n')
+        # f.write(f'phimin = {0}\n')
         f.write(f'nq = {self.nq}\n')
         f.write(f'ntheta = {self.ntheta}\n')
         f.write(f'nphi = {self.dphi}\n')
@@ -65,6 +68,7 @@ class SphericalVol(Vol, SphericalVolProps):
         phi_inds = list(map(index_x, cif.scat_sph[:, 2], self.zmin * ite, self.zmax * ite, self.nz * ite, ite))
 
         for q_ind, theta_ind, phi_ind, I in zip(q_inds, theta_inds, phi_inds, cif.scat_sph[:, -1]):
+
             self.vol[q_ind, theta_ind, phi_ind] += I
 
     def fill_from_scat_sph(self, scat_sph):
@@ -72,8 +76,8 @@ class SphericalVol(Vol, SphericalVolProps):
         ite = np.ones(scat_sph[:, 0].shape)
 
         q_inds = list(map(index_x, scat_sph[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
-        theta_inds = list(map(index_x, scat_sph[:, 1], self.ymin * ite, self.ymax * ite, self.ny * ite))
-        phi_inds = list(map(index_x, scat_sph[:, 2], self.zmin * ite, self.zmax * ite, self.nz * ite))
+        theta_inds = list(map(index_x, scat_sph[:, 1], self.ymin * ite, self.ymax * ite, self.ny * ite, ite))
+        phi_inds = list(map(index_x, scat_sph[:, 2], self.zmin * ite, self.zmax * ite, self.nz * ite, ite))
 
         for q_ind, theta_ind, phi_ind, I in zip(q_inds, theta_inds, phi_inds, scat_sph[:, -1]):
             self.vol[q_ind, theta_ind, phi_ind] += I
@@ -82,19 +86,10 @@ class SphericalVol(Vol, SphericalVolProps):
         sh_grid = self.get_q_grid(q_ind)
 
         c = sh_grid.expand(normalization='4pi').coeffs
-
         # c[:,1::2,:] *=0
-
         return c
 
-    def get_angle_sampling(self):
 
-        sh_grid = self.get_q_grid(0)
-        # fix
-        lats = np.radians(sh_grid.lats())
-        lons = np.radians(sh_grid.lons())
-
-        return lats, lons
 
     def get_q_grid(self, q_ind):
         assert q_ind >= 0 and q_ind < self.nq, 'fail'
@@ -102,6 +97,45 @@ class SphericalVol(Vol, SphericalVolProps):
         sh_grid = pysh.shclasses.DHRealGrid(q_slice)
 
         return sh_grid
+
+    def fill_random(self, lmax):
+
+        degrees = np.arange(self.nl, dtype = float)
+        power = degrees
+
+        for q_ind in range(self.nq):
+            # coeffs = pysh.SHCoeffs.from_random(power).to_array()
+            coeffs = np.zeros( (2, self.nl, self.nl))
+            coeffs[0, 1,0] = 1
+
+            coeffs[:, lmax:, :] *= 0
+            coeffs = pysh.SHCoeffs.from_array(coeffs)
+
+            q_slice = coeffs.expand().to_array()[:-1, :-1]
+
+            self.vol[q_ind, ...] = q_slice
+
+    
+
+        # return bink
+
+
+#     def fill_random_sh(self, q, lmax=999999):
+        # for q_ind in range(self.nq):
+            # sh = np.random.random((2, int(self.ntheta / 2), int(self.ntheta / 2)))
+            # sh[:, lmax:, :] *= 0
+            # sh[1, 0, :] *= 0
+
+            # sh[0] = np.tril(sh[0])
+            # sh[1] = np.tril(sh[1])
+
+            # sh = pysh.SHCoeffs.from_array(sh)
+            # grid = sh.expand()
+            # print(grid.lats().shape)
+
+        # # sh_coeffs = pysh.shclasses.shcoeffs.SHRealCoeffs(filt_coeffs)
+
+        # return sh
 
     # def rotate(self, a,b,c):
         # print('Rotating')

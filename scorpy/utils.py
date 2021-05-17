@@ -55,7 +55,7 @@ def index_x(x_val, x_min, x_max, nx, wrap=False):
     dx = (x_max - x_min) / nx
 
     if not wrap:
-        x_out = int((x_val - x_min) / dx)
+        x_out = (x_val - x_min) / dx
         if x_val == x_max:
             x_out = nx - 1
     else:
@@ -65,7 +65,7 @@ def index_x(x_val, x_min, x_max, nx, wrap=False):
         else:
             x_out = index_x(x_val, dx / 2, x_max - dx / 2, nx - 1) + 1
 
-    return x_out
+    return int(x_out)
 
 
 def angle_between_pol(t1, t2):

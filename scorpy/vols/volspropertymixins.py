@@ -53,39 +53,37 @@ class VolProps:
 
     @property
     def dx(self):
-        return (self.xmax - self.xmin) / (self.nx)
+        return np.abs((self.xmax - self.xmin) / (self.nx))
 
     @property
     def dy(self):
-        return (self.ymax - self.ymin) / (self.ny)
+        return np.abs((self.ymax - self.ymin) / (self.ny))
 
     @property
     def dz(self):
-        return (self.zmax - self.zmin) / (self.nz)
-
-    @property
-    def xbins(self):
-        return np.linspace(self.xmin, self.xmax, self.nx + 1)
-
-    @property
-    def ybins(self):
-        return np.linspace(self.ymin, self.ymax, self.ny + 1)
-
-    @property
-    def zbins(self):
-        return np.linspace(self.zmin, self.zmax, self.nz + 1)
+        return np.abs((self.zmax - self.zmin) / (self.nz))
 
     @property
     def xpts(self):
-        return self.xbins[:-1] + self.dx / 2
+        if self.xwrap:
+            return np.linspace(self.xmin, self.xmax, self.nx, endpoint=False)
+        else:
+            return np.linspace(self.xmin, self.xmax, self.nx+1, endpoint=True)[:-1] + self.dx/2
+        # return np.linspace(self.xmin, self.xmax, self.nx+1, endpoint=True)[:-1] + self.dx/2
+
 
     @property
     def ypts(self):
-        return self.ybins[:-1] + self.dy / 2
+        if self.ywrap:
+            return np.linspace(self.ymin, self.ymax, self.ny, endpoint=False)
+        else:
+            return np.linspace(self.ymin, self.ymax, self.ny+1, endpoint=True)[:-1] + self.dy/2
+
+        # return np.linspace(self.ymin, self.ymax, self.ny+1, endpoint=True)[:-1] + self.dy/2
 
     @property
     def zpts(self):
-        return self.zbins[:-1] + self.dz / 2
+        return np.linspace(self.zmin, self.zmax, self.nz, endpoint=not self.zwrap)
 
     @property
     def comp(self):
@@ -158,9 +156,9 @@ class BlqqVolProps:
     def qpts(self):
         return self.xpts
 
-    @property
-    def lpts(self):
-        return self.zpts
+    # @property
+    # def lpts(self):
+        # return self.zpts
 
 
 class PadfVolProps:

@@ -42,6 +42,8 @@ class TestCorrelationVol(unittest.TestCase):
         self.assertEqual(self.corr.npsi, self.npsi)
         self.assertEqual(self.corr.qmax, self.qmax)
 
+        
+
     #     qspace = np.linspace(0, self.qmax, self.nq)
         # # TODO: why does self.nq+1, endpoint=True work?
         # # qspace = np.linspace(0, self.qmax, self.nq+1)
@@ -73,6 +75,13 @@ class TestCorrelationVol(unittest.TestCase):
         self.assertEqual(self.corr.qmax, corr_loaded.qmax)
         self.assertEqual(self.corr.dq, corr_loaded.dq)
         self.assertEqual(self.corr.dpsi, corr_loaded.dpsi)
+
+
+    def test_cifdata_correl(self):
+        pass
+
+    def test_peakdata_correl(self):
+        pass
 
 
 if __name__ == '__main__':
