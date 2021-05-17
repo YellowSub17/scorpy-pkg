@@ -61,8 +61,8 @@ class SphericalVol(Vol, SphericalVolProps):
         ite = np.ones(cif.scat_sph[:, 0].shape)
 
         q_inds = list(map(index_x, cif.scat_sph[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
-        theta_inds = list(map(index_x, cif.scat_sph[:, 1], self.ymin * ite, self.ymax * ite, self.ny * ite))
-        phi_inds = list(map(index_x, cif.scat_sph[:, 2], self.zmin * ite, self.zmax * ite, self.nz * ite))
+        theta_inds = list(map(index_x, cif.scat_sph[:, 1], self.ymin * ite, self.ymax * ite, self.ny * ite, ite))
+        phi_inds = list(map(index_x, cif.scat_sph[:, 2], self.zmin * ite, self.zmax * ite, self.nz * ite, ite))
 
         for q_ind, theta_ind, phi_ind, I in zip(q_inds, theta_inds, phi_inds, cif.scat_sph[:, -1]):
             self.vol[q_ind, theta_ind, phi_ind] += I

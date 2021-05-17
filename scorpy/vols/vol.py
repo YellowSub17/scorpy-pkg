@@ -182,14 +182,12 @@ class Vol(VolProps):
         x_mesh, y_mesh, z_mesh = np.meshgrid(x_space, y_space, z_space)
 
         # calculates the guassian kernel and convolve
-        kern = np.exp(- (x_mesh**2 / (2 * std_x**2) + y_mesh **
-                         2 / (2 * std_y**2) + z_mesh**2 / (2 * std_z**2)))
+        kern = np.exp(- (x_mesh**2 / (2 * std_x**2) + y_mesh **2 / (2 * std_y**2) + z_mesh**2 / (2 * std_z**2)))
         blur = signal.fftconvolve(self.vol, kern)
 
         # bring the volume in by half the kernal window width (removes edge effects)
         kern_n_half = int((kern_n - 1) / 2)
-        blur = blur[kern_n_half:-kern_n_half, kern_n_half:-
-                    kern_n_half, kern_n_half:-kern_n_half]
+        blur = blur[kern_n_half:-kern_n_half, kern_n_half:-kern_n_half, kern_n_half:-kern_n_half]
         self.vol = blur
 
     def get_xy(self):

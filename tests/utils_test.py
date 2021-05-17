@@ -30,8 +30,8 @@ class TestUtils(unittest.TestCase):
 
                     (2, 2),
                     (3, 3),
-                    (5, 5),
 
+                    (5, 5),
                     (5.5, 5),
                     (5.999, 5),
                     (6, 5)]
