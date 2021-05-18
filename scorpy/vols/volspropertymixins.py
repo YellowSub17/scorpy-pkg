@@ -68,16 +68,15 @@ class VolProps:
         if self.xwrap:
             return np.linspace(self.xmin, self.xmax, self.nx, endpoint=False)
         else:
-            return np.linspace(self.xmin, self.xmax, self.nx+1, endpoint=True)[:-1] + self.dx/2
+            return np.linspace(self.xmin, self.xmax, self.nx + 1, endpoint=True)[:-1] + self.dx / 2
         # return np.linspace(self.xmin, self.xmax, self.nx+1, endpoint=True)[:-1] + self.dx/2
-
 
     @property
     def ypts(self):
         if self.ywrap:
             return np.linspace(self.ymin, self.ymax, self.ny, endpoint=False)
         else:
-            return np.linspace(self.ymin, self.ymax, self.ny+1, endpoint=True)[:-1] + self.dy/2
+            return np.linspace(self.ymin, self.ymax, self.ny + 1, endpoint=True)[:-1] + self.dy / 2
 
         # return np.linspace(self.ymin, self.ymax, self.ny+1, endpoint=True)[:-1] + self.dy/2
 

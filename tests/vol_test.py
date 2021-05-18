@@ -41,29 +41,36 @@ class TestVol(unittest.TestCase):
 
     def test_properties(self):
 
-        self.assertEqual(self.vol.nx, self.nx)
-        self.assertEqual(self.vol.ny, self.ny)
-        self.assertEqual(self.vol.nz, self.nz)
+        np.testing.assert_allclose(self.vol.nx, self.nx)
+        np.testing.assert_allclose(self.vol.ny, self.ny)
+        np.testing.assert_allclose(self.vol.nz, self.nz)
 
-        self.assertEqual(self.vol.xmax, self.xmax)
-        self.assertEqual(self.vol.ymax, self.ymax)
-        self.assertEqual(self.vol.zmax, self.zmax)
+        np.testing.assert_allclose(self.vol.xmax, self.xmax)
+        np.testing.assert_allclose(self.vol.ymax, self.ymax)
+        np.testing.assert_allclose(self.vol.zmax, self.zmax)
 
-        self.assertEqual(self.vol.xmin, self.xmin)
-        self.assertEqual(self.vol.ymin, self.ymin)
-        self.assertEqual(self.vol.zmin, self.zmin)
+        np.testing.assert_allclose(self.vol.xmin, self.xmin)
+        np.testing.assert_allclose(self.vol.ymin, self.ymin)
+        np.testing.assert_allclose(self.vol.zmin, self.zmin)
 
-        self.assertEqual(self.vol.xwrap, self.xwrap)
-        self.assertEqual(self.vol.ywrap, self.ywrap)
-        self.assertEqual(self.vol.zwrap, self.zwrap)
+        np.testing.assert_allclose(self.vol.xwrap, self.xwrap)
+        np.testing.assert_allclose(self.vol.ywrap, self.ywrap)
+        np.testing.assert_allclose(self.vol.zwrap, self.zwrap)
 
     def test_sampling(self):
 
-        self.assertEqual(self.xmin, self.vol.xpts[0])
-        self.assertEqual(self.ymin, self.vol.ypts[0])
-        self.assertEqual(self.zmin, self.vol.zpts[0])
+        np.testing.assert_allclose(self.vol.dx, self.vol.xpts[1] - self.vol.xpts[0])
+        np.testing.assert_allclose(self.vol.dy, self.vol.ypts[1] - self.vol.ypts[0])
+        np.testing.assert_allclose(self.vol.dz, self.vol.zpts[1] - self.vol.zpts[0])
 
-        self.assertEqual(self.vol.dx, self.vol.xpts[1]-self.vol.xpts[0])
+        np.testing.assert_allclose(self.xmin + self.vol.dx / 2, self.vol.xpts[0])
+        np.testing.assert_allclose(self.ymin + self.vol.dy / 2, self.vol.ypts[0])
+        np.testing.assert_allclose(self.zmin, self.vol.zpts[0])  # wrapped
+
+        np.testing.assert_allclose(self.xmax - self.vol.dx / 2, self.vol.xpts[-1])
+        np.testing.assert_allclose(self.ymax - self.vol.dy / 2, self.vol.ypts[-1])
+        np.testing.assert_allclose(self.zmax - self.vol.dz, self.vol.zpts[-1])  # wrapped
+
         # self.assertEqual(self.xmax, self.vol.xpts[-1])
         # self.assertEqual(self.ymax, self.vol.ypts[-1])
         # self.assertEqual(self.zmax, self.vol.zpts[-1])

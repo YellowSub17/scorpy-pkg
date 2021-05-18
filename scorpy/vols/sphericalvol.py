@@ -27,8 +27,8 @@ class SphericalVol(Vol, SphericalVolProps):
         self._nl = int(ntheta / 2)
 
         Vol.__init__(self, nx=nq, ny=ntheta, nz=nphi,
-                     xmax=qmax, ymax=-np.pi/2, zmax=2*np.pi,
-                     xmin=0, ymin=np.pi/2, zmin=0,
+                     xmax=qmax, ymax=-np.pi / 2, zmax=2 * np.pi,
+                     xmin=0, ymin=np.pi / 2, zmin=0,
 
                      # xmax=qmax, ymax=np.pi, zmax=2*np.pi,
                      # xmin=0, ymin=0, zmin=0,
@@ -89,8 +89,6 @@ class SphericalVol(Vol, SphericalVolProps):
         # c[:,1::2,:] *=0
         return c
 
-
-
     def get_q_grid(self, q_ind):
         assert q_ind >= 0 and q_ind < self.nq, 'fail'
         q_slice = self.vol[q_ind, ...]
@@ -100,13 +98,23 @@ class SphericalVol(Vol, SphericalVolProps):
 
     def fill_random(self, lmax):
 
-        degrees = np.arange(self.nl, dtype = float)
+        degrees = np.arange(self.nl, dtype=float)
         power = degrees
+        power += 0
 
         for q_ind in range(self.nq):
-            # coeffs = pysh.SHCoeffs.from_random(power).to_array()
-            coeffs = np.zeros( (2, self.nl, self.nl))
-            coeffs[0, 1,0] = 1
+            # coeffs = pysh.SHCoeffs.from_random(power, seed=q_ind).to_array()
+
+            # coeffs = np.zeros( (2, self.nl, self.nl))
+            # coeffs[0,4, 1] = 1
+
+            coeffs = np.zeros((2, self.nl, self.nl))
+
+            cs = np.random.randint(0, 1)
+            l = np.random.randint(0, lmax)
+            m = np.random.randint(0, lmax)
+
+            coeffs[cs, l, m] = 1
 
             coeffs[:, lmax:, :] *= 0
             coeffs = pysh.SHCoeffs.from_array(coeffs)
@@ -114,8 +122,6 @@ class SphericalVol(Vol, SphericalVolProps):
             q_slice = coeffs.expand().to_array()[:-1, :-1]
 
             self.vol[q_ind, ...] = q_slice
-
-    
 
         # return bink
 

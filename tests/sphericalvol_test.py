@@ -29,24 +29,24 @@ class TestSphericalVol(unittest.TestCase):
 
     def test_properties(self):
 
-        self.assertEqual(self.sphv.nx, self.nq)
-        self.assertEqual(self.sphv.ny, self.ntheta)
+        np.testing.assert_allclose(self.sphv.nx, self.nq)
+        np.testing.assert_allclose(self.sphv.ny, self.ntheta)
 
-        self.assertEqual(self.sphv.nz, self.nphi)
+        np.testing.assert_allclose(self.sphv.nz, self.nphi)
 
-        self.assertEqual(self.sphv.xmax, self.qmax)
-        self.assertEqual(self.sphv.ymax, -np.pi/2)
-        self.assertEqual(self.sphv.zmax, 2*np.pi)
+        np.testing.assert_allclose(self.sphv.xmax, self.qmax)
+        np.testing.assert_allclose(self.sphv.ymax, -np.pi / 2)
+        np.testing.assert_allclose(self.sphv.zmax, 2 * np.pi)
 
-        self.assertEqual(self.sphv.xmin, 0)
-        self.assertEqual(self.sphv.ymin, np.pi/2)
-        self.assertEqual(self.sphv.zmin, 0)
+        np.testing.assert_allclose(self.sphv.xmin, 0)
+        np.testing.assert_allclose(self.sphv.ymin, np.pi / 2)
+        np.testing.assert_allclose(self.sphv.zmin, 0)
 
-        self.assertEqual(self.sphv.nq, self.nq)
-        self.assertEqual(self.sphv.ntheta, self.ntheta)
-        self.assertEqual(self.sphv.nphi, self.nphi)
+        np.testing.assert_allclose(self.sphv.nq, self.nq)
+        np.testing.assert_allclose(self.sphv.ntheta, self.ntheta)
+        np.testing.assert_allclose(self.sphv.nphi, self.nphi)
 
-        self.assertEqual(self.sphv.qmax, self.qmax)
+        np.testing.assert_allclose(self.sphv.qmax, self.qmax)
 
     def test_pysh_sampling(self):
         q_slice = np.zeros((self.ntheta, self.nphi))

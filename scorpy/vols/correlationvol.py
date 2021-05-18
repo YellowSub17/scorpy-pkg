@@ -72,8 +72,6 @@ class CorrelationVol(Vol, CorrelationVolProps):
         for frame in frames:
             self.correlate_scat_pol(frame.scat_pol)
 
-    
-
     def fill_from_blqq(self, blqq):
         '''
         Fill the CorrelationVol from a BlqqVol
@@ -123,10 +121,6 @@ class CorrelationVol(Vol, CorrelationVolProps):
         # tt_flat = tt.flatten()
 
         # angle_between = np.arccos(np.cos(np.radians(
-
-
-
-
 
     def correlate_scat_pol(self, qti):
         '''
