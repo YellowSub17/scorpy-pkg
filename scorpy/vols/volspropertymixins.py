@@ -229,13 +229,6 @@ class SphericalVolProps:
     def dphi(self):
         return self.dz
 
-    @property
-    def gridtype(self):
-        return self._gridtype
-
-    @property
-    def extend(self):
-        return self._extend
 
     @property
     def nl(self):

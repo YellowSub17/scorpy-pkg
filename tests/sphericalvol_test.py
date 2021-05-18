@@ -21,17 +21,17 @@ class TestSphericalVol(unittest.TestCase):
         self.nphi = 36
         self.qmax = 1.4
 
-        self.sphv = scorpy.SphericalVol(
-            self.nq, self.ntheta, self.nphi, self.qmax)
+        self.sphv = scorpy.SphericalVol(self.nq, self.ntheta, self.nphi, self.qmax)
 
     def tearDown(self):
         pass
 
-    def test_properties(self):
-
+    def test_inputs(self):
+        '''
+        Ensure correct inputs are made and can be accessed.
+        '''
         np.testing.assert_allclose(self.sphv.nx, self.nq)
         np.testing.assert_allclose(self.sphv.ny, self.ntheta)
-
         np.testing.assert_allclose(self.sphv.nz, self.nphi)
 
         np.testing.assert_allclose(self.sphv.xmax, self.qmax)
@@ -42,11 +42,21 @@ class TestSphericalVol(unittest.TestCase):
         np.testing.assert_allclose(self.sphv.ymin, np.pi / 2)
         np.testing.assert_allclose(self.sphv.zmin, 0)
 
-        np.testing.assert_allclose(self.sphv.nq, self.nq)
-        np.testing.assert_allclose(self.sphv.ntheta, self.ntheta)
-        np.testing.assert_allclose(self.sphv.nphi, self.nphi)
+        np.testing.assert_allclose(self.sphv.xwrap, False)
+        np.testing.assert_allclose(self.sphv.ywrap, True)
+        np.testing.assert_allclose(self.sphv.zwrap, True)
+
+    def test_properties(self):
+        '''
+        Ensure aliases for properties match
+        '''
+        np.testing.assert_allclose(self.sphv.nq, self.sphv.nx)
+        np.testing.assert_allclose(self.sphv.ntheta, self.sphv.ny)
+        np.testing.assert_allclose(self.sphv.nphi, self.sphv.nz)
 
         np.testing.assert_allclose(self.sphv.qmax, self.qmax)
+
+
 
     def test_pysh_sampling(self):
         q_slice = np.zeros((self.ntheta, self.nphi))
@@ -57,6 +67,9 @@ class TestSphericalVol(unittest.TestCase):
 
         np.testing.assert_allclose(lats, self.sphv.ypts)
         np.testing.assert_allclose(lons, self.sphv.zpts)
+
+    def test_sphv_to_blqq(self):
+        pass
 
    #      qspace = np.linspace(0, self.qmax-a, self.nq, endpoint=False)
         # self.assertEqual(self.sphv.dq, qspace[1] - qspace[0])

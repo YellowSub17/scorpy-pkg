@@ -106,15 +106,28 @@ class SphericalVol(Vol, SphericalVolProps):
             # coeffs = pysh.SHCoeffs.from_random(power, seed=q_ind).to_array()
 
             # coeffs = np.zeros( (2, self.nl, self.nl))
-            # coeffs[0,4, 1] = 1
+            # coeffs[0,0, 0] = 1
 
             coeffs = np.zeros((2, self.nl, self.nl))
 
-            cs = np.random.randint(0, 1)
-            l = np.random.randint(0, lmax)
-            m = np.random.randint(0, lmax)
+            cs = np.random.randint(0, 2)
+            l = np.random.randint(0, lmax + 1)
+            m = np.random.randint(0, l + 1)
+            coeffs[cs, l, m] = 2
 
+            print(cs, l, m)
+
+            # if q_ind in [41, 46, 51]:
+                # print(cs,l,m)
+
+            cs = np.random.randint(0, 2)
+            l = np.random.randint(0, lmax + 1)
+            m = np.random.randint(0, l + 1)
             coeffs[cs, l, m] = 1
+
+            print(cs, l, m)
+            # if q_ind in [41, 46, 51]:
+                # print()
 
             coeffs[:, lmax:, :] *= 0
             coeffs = pysh.SHCoeffs.from_array(coeffs)
