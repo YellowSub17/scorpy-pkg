@@ -268,3 +268,7 @@ class Vol(VolProps):
             return [self.zmin, self.zmax, self.xmin, self.xmax]
         else:
             return [self.xmin, self.xmax, self.ymin, self.ymax]
+
+    def round_noise(self, r=1e-15):
+        loc = np.where(np.abs(self.vol) < r)
+        self.vol[loc] = 0
