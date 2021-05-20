@@ -72,8 +72,6 @@ class SphericalVol(Vol, SphericalVolProps):
         for q_ind, theta_ind, phi_ind, I in zip(q_inds, theta_inds, phi_inds, scat_sph[:, -1]):
             self.vol[q_ind, theta_ind, phi_ind] += I
 
-
-
     def get_q_coeffs(self, q_ind):
         q_slice = self.vol[q_ind, ...]
         pysh_grid = pysh.shclasses.DHRealGrid(q_slice)
@@ -83,12 +81,7 @@ class SphericalVol(Vol, SphericalVolProps):
     def set_q_coeffs(self, q_ind, coeffs):
         pysh_coeffs = pysh.shclasses.SHCoeffs.from_array(coeffs)
         pysh_grid = pysh_coeffs.expand()
-        self.vol[q_ind,...] = pysh_grid.to_array()[:-1,:-1]
-
-
-
-
-
+        self.vol[q_ind, ...] = pysh_grid.to_array()[:-1, :-1]
 
     # def fill_random(self, lmax):
 
@@ -112,7 +105,6 @@ class SphericalVol(Vol, SphericalVolProps):
                 # plt.figure()
                 # plt.imshow(pysh.SHCoeffs.from_array(coeffs1).expand().to_array()[:-1,:-1])
                 # plt.title(f"{cs}, {l}, {m}")
-
 
             # coeffs2 = np.zeros((2, self.nl, self.nl))
          # #    cs = np.random.randint(0, 2)

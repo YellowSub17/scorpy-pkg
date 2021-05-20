@@ -229,7 +229,6 @@ class SphericalVolProps:
     def dphi(self):
         return self.dz
 
-
     @property
     def nl(self):
         return self._nl

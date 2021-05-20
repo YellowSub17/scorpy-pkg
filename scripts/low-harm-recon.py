@@ -5,38 +5,18 @@ plt.close('all')
 np.random.seed(0)
 
 
+sphv = scorpy.SphericalVol(10, 180, 360, 1)
 
-
-
-
-sphv = scorpy.SphericalVol(10,180,360,1)
-
-coeffs = np.zeros((2,sphv.nl, sphv.nl))
+coeffs = np.zeros((2, sphv.nl, sphv.nl))
 
 coeffs[0, 4, 1] = 1
 
 sphv.set_q_coeffs(5, coeffs)
 
-blqq = scorpy.BlqqVol( sphv.nq, sphv.nl, sphv.qmax)
-
+blqq = scorpy.BlqqVol(sphv.nq, sphv.nl, sphv.qmax)
 
 
 blqq.fill_from_sphv(sphv)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # sphv2 = scorpy.SphericalVol(50, 180, 360, 1)
