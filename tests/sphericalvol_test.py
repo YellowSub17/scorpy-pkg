@@ -68,8 +68,22 @@ class TestSphericalVol(unittest.TestCase):
         np.testing.assert_allclose(lats, self.sphv.ypts)
         np.testing.assert_allclose(lons, self.sphv.zpts)
 
-    def test_sphv_to_blqq(self):
-        pass
+    # def test_sphv_to_blqq(self):
+
+#         coeffs = np.zeros((2,self.sphv.nl, self.sphv.nl))
+
+        # coeffs[0, 4, 1] = 1
+
+        # sphv.set_q_coeffs(5, coeffs)
+
+        # blqq = scorpy.BlqqVol( self.nq, self.sphv.nl, self.qmax)
+
+
+
+
+
+
+        # pass
 
    #      qspace = np.linspace(0, self.qmax-a, self.nq, endpoint=False)
         # self.assertEqual(self.sphv.dq, qspace[1] - qspace[0])

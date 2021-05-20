@@ -77,7 +77,7 @@ class BlqqVol(Vol, BlqqVolProps):
         assert sphv.nq == self.nq, 'SphericalVol and BlqqVol have different nq'
         assert sphv.qmax == self.qmax, 'SphericalVol and BlqqVol have different nq'
 
-        all_q_coeffs = list(map(sphv.get_coeffs, range(self.nq)))
+        all_q_coeffs = list(map(sphv.get_q_coeffs, range(self.nq)))
 
         for i, q1_coeffs in enumerate(all_q_coeffs):
 

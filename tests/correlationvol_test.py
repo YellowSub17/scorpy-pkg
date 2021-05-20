@@ -20,19 +20,40 @@ class TestCorrelationVol(unittest.TestCase):
         self.qmax = 1.4
 
         self.corr = scorpy.CorrelationVol(self.nq, self.npsi, self.qmax)
+        self.aliases = [('nx', 'nq'),
+                        ('ny', 'nq'),
+                        ('nz', 'npsi'),
+                        ('xmax', 'qmax'),
+                        ('ymax', 'qmax'),
+                        ('dx', 'dq'),
+                        ('dy', 'dq'),
+                        ('dz', 'dpsi'),
+                        ('xpts', 'qpts'),
+                        ('ypts', 'qpts'),
+                        ('zpts', 'psipts')]
+
 
     def tearDown(self):
         pass
 
     def test_aliases(self):
+        for x, y in self.aliases:
+            stmt = f'''
+np.testing.assert_equal(self.corr.{x}, self.corr.{y}, err_msg="Fail at {x}, {y}")
+            '''
+            exec(stmt)
 
-        self.assertEqual(self.corr.nx, self.corr.nq)
-        self.assertEqual(self.corr.ny, self.corr.nq)
-        self.assertEqual(self.corr.nz, self.corr.npsi)
 
-        self.assertEqual(self.corr.xmax, self.corr.qmax)
-        self.assertEqual(self.corr.ymax, self.corr.qmax)
-        self.assertEqual(self.corr.zmax, 180)
+
+    # def test_aliases(self):
+
+        # self.assertEqual(self.corr.nx, self.corr.nq)
+        # self.assertEqual(self.corr.ny, self.corr.nq)
+        # self.assertEqual(self.corr.nz, self.corr.npsi)
+
+        # self.assertEqual(self.corr.xmax, self.corr.qmax)
+        # self.assertEqual(self.corr.ymax, self.corr.qmax)
+        # self.assertEqual(self.corr.zmax, 180)
 
 
         # self.assertEqual(self.corr.qmax, self.qmax)

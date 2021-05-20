@@ -5,6 +5,7 @@ from ..utils import index_x
 import numpy as np
 import pyshtools as pysh
 from .volspropertymixins import SphericalVolProps
+import matplotlib.pyplot as plt
 
 
 class SphericalVol(Vol, SphericalVolProps):
@@ -29,32 +30,21 @@ class SphericalVol(Vol, SphericalVolProps):
         Vol.__init__(self, nx=nq, ny=ntheta, nz=nphi,
                      xmax=qmax, ymax=-np.pi / 2, zmax=2 * np.pi,
                      xmin=0, ymin=np.pi / 2, zmin=0,
-
-                     # xmax=qmax, ymax=np.pi, zmax=2*np.pi,
-                     # xmin=0, ymin=0, zmin=0,
                      xwrap=False, ywrap=True, zwrap=True,
                      comp=comp, path=path)
 
     def _save_extra(self, f):
         f.write('[sphv]\n')
         f.write(f'qmax = {self.qmax}\n')
-        # f.write(f'thetamax = {np.pi}\n')
-        # f.write(f'thetamin = {0}\n')
-        # f.write(f'phimax = {2*np.pi}\n')
-        # f.write(f'phimin = {0}\n')
         f.write(f'nq = {self.nq}\n')
         f.write(f'ntheta = {self.ntheta}\n')
         f.write(f'nphi = {self.dphi}\n')
         f.write(f'dq = {self.dq}\n')
         f.write(f'dtheta = {self.dtheta}\n')
         f.write(f'dphi = {self.dphi}\n')
-        # f.write(f'gridtype = {self.gridtype}\n')
-        # f.write(f'extend = {self.extend}\n')
         f.write(f'nl = {self.nl}\n')
 
     def _load_extra(self, config):
-        # self._gridtype = config['sphv']['gridtype']
-        # self._extend = config.getboolean('sphv', 'extend')
         self._nl = float(config['sphv']['nl'])
 
     def fill_from_cif(self, cif):
@@ -82,59 +72,66 @@ class SphericalVol(Vol, SphericalVolProps):
         for q_ind, theta_ind, phi_ind, I in zip(q_inds, theta_inds, phi_inds, scat_sph[:, -1]):
             self.vol[q_ind, theta_ind, phi_ind] += I
 
-    def get_coeffs(self, q_ind):
-        sh_grid = self.get_q_grid(q_ind)
 
-        c = sh_grid.expand(normalization='4pi').coeffs
-        # c[:,1::2,:] *=0
+
+    def get_q_coeffs(self, q_ind):
+        q_slice = self.vol[q_ind, ...]
+        pysh_grid = pysh.shclasses.DHRealGrid(q_slice)
+        c = pysh_grid.expand().coeffs
         return c
 
-    def get_q_grid(self, q_ind):
-        assert q_ind >= 0 and q_ind < self.nq, 'fail'
-        q_slice = self.vol[q_ind, ...]
-        sh_grid = pysh.shclasses.DHRealGrid(q_slice)
+    def set_q_coeffs(self, q_ind, coeffs):
+        pysh_coeffs = pysh.shclasses.SHCoeffs.from_array(coeffs)
+        pysh_grid = pysh_coeffs.expand()
+        self.vol[q_ind,...] = pysh_grid.to_array()[:-1,:-1]
 
-        return sh_grid
 
-    def fill_random(self, lmax):
 
-        degrees = np.arange(self.nl, dtype=float)
-        power = degrees
-        power += 0
 
-        for q_ind in range(self.nq):
-            # coeffs = pysh.SHCoeffs.from_random(power, seed=q_ind).to_array()
 
-            # coeffs = np.zeros( (2, self.nl, self.nl))
-            # coeffs[0,0, 0] = 1
 
-            coeffs = np.zeros((2, self.nl, self.nl))
+    # def fill_random(self, lmax):
 
-            cs = np.random.randint(0, 2)
-            l = np.random.randint(0, lmax + 1)
-            m = np.random.randint(0, l + 1)
-            coeffs[cs, l, m] = 2
+        # degrees = np.arange(self.nl, dtype=float)
+        # power = degrees
+        # power += 0
 
-            print(cs, l, m)
+        # for q_ind in range(self.nq):
+            # # coeffs = pysh.SHCoeffs.from_random(power, seed=q_ind).to_array()
 
-            # if q_ind in [41, 46, 51]:
+            # # coeffs = np.zeros( (2, self.nl, self.nl))
+            # # coeffs[0,0, 0] = 1
+
+            # coeffs1 = np.zeros((2, self.nl, self.nl))
+            # cs = np.random.randint(0, 2)
+            # l = np.random.randint(0, lmax + 1)
+            # m = np.random.randint(0, l + 1)
+            # coeffs1[cs, l, m] = 1
+            # if q_ind in [30]:
                 # print(cs,l,m)
+                # plt.figure()
+                # plt.imshow(pysh.SHCoeffs.from_array(coeffs1).expand().to_array()[:-1,:-1])
+                # plt.title(f"{cs}, {l}, {m}")
 
-            cs = np.random.randint(0, 2)
-            l = np.random.randint(0, lmax + 1)
-            m = np.random.randint(0, l + 1)
-            coeffs[cs, l, m] = 1
 
-            print(cs, l, m)
-            # if q_ind in [41, 46, 51]:
-                # print()
+            # coeffs2 = np.zeros((2, self.nl, self.nl))
+         # #    cs = np.random.randint(0, 2)
+            # # l = np.random.randint(0, lmax + 1)
+            # # m = np.random.randint(0, l + 1)
+            # # coeffs2[cs, l, m] = 1
+            # # if q_ind in [30]:
+                # # print(cs,l,m)
+                # # plt.figure()
+                # # plt.imshow(pysh.SHCoeffs.from_array(coeffs2).expand().to_array()[:-1,:-1])
+                # # plt.title(f"{cs}, {l}, {m}")
 
-            coeffs[:, lmax:, :] *= 0
-            coeffs = pysh.SHCoeffs.from_array(coeffs)
+            # coeffs = coeffs1+coeffs2
+            # coeffs[:, lmax:, :] *= 0
+            # coeffs = pysh.SHCoeffs.from_array(coeffs)
 
-            q_slice = coeffs.expand().to_array()[:-1, :-1]
+            # q_slice = coeffs.expand().to_array()[:-1, :-1]
 
-            self.vol[q_ind, ...] = q_slice
+            # self.vol[q_ind, ...] = q_slice
 
         # return bink
 

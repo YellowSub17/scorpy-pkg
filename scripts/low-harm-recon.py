@@ -5,19 +5,60 @@ plt.close('all')
 np.random.seed(0)
 
 
-sphv2 = scorpy.SphericalVol(50, 180, 360, 1)
-sphv2.fill_random(lmax=8)
 
 
-blqq = scorpy.BlqqVol(sphv2.nq, sphv2.nl, sphv2.qmax)
-blqq.fill_from_sphv(sphv2)
 
 
-sphv2.plot_slice(0, 25, extent=None)
-blqq.plot_slice(2, 2, extent=None)
+sphv = scorpy.SphericalVol(10,180,360,1)
+
+coeffs = np.zeros((2,sphv.nl, sphv.nl))
+
+coeffs[0, 4, 1] = 1
+
+sphv.set_q_coeffs(5, coeffs)
+
+blqq = scorpy.BlqqVol( sphv.nq, sphv.nl, sphv.qmax)
 
 
-plt.show()
+
+blqq.fill_from_sphv(sphv)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# sphv2 = scorpy.SphericalVol(50, 180, 360, 1)
+# sphv2.fill_random(lmax=8)
+
+
+# blqq = scorpy.BlqqVol(sphv2.nq, sphv2.nl, sphv2.qmax)
+# blqq.fill_from_sphv(sphv2)
+
+
+# sphv2.plot_slice(0, 30, extent=None)
+# plt.title('iq=30')
+# blqq.plot_slice(2, 6, extent=None)
+# plt.title('l=6')
+# blqq.plot_slice(2, 3, extent=None)
+# plt.title('l=3')
+
+# blqq.plot_slice(2, 5, extent=None)
+# plt.title('l=5')
+
+
+# plt.show()
 
 
 # plt.figure()
