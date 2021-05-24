@@ -4,6 +4,7 @@ import numpy as np
 np.random.seed(0)
 import scorpy
 import matplotlib.pyplot as plt
+plt.close('all')
 
 
 def test_zeros():
@@ -17,60 +18,15 @@ def test_zeros():
     blqq = scorpy.BlqqVol(nq, sphv.nl)
     blqq.fill_from_sphv(sphv)
 
-    # assert np.all(blqq.vol == np.zeros(blqq.vol.shape))
     np.testing.assert_array_equal(blqq.vol , np.zeros(blqq.vol.shape))
 
 
 
-# def test_low_sh():
+def test_single_sh():
 
-    # nq = 50
-    # ntheta = 360
-    # nphi = 720
-    # sphv = scorpy.SphericalVol(nq, ntheta, nphi)
-
-    # nl = sphv.nl
-
-    # blqq = scorpy.BlqqVol(nq, nl)
-
-    # lmax = 8
-
-    # for i in range(nq):
-        # coeffs = np.zeros( (2, sphv.nl, sphv.nl) )
-        # cs = np.random.randint(0,2)
-        # # l = np.random.randint(1, lmax+1)
-        # l = i%lmax
-        # m = np.random.randint(-l, l+1)
-        # coeffs[cs, l ,m] = 1
-        # sphv.set_q_coeffs(i,coeffs)
-
-    # blqq.fill_from_sphv(sphv)
-
-    # for i in range(lmax+2):
-        # blqq.plot_slice(2,i, extent=None)
-        # plt.title(i)
-
-    # blqq.plot_sumax(2, extent=None)
-
-    # plt.title('sum')
-
-
-
-
-
-
-
-
-
-def rand_sph(lmax):
-
-    cs = np.random.randint(0,2)
-    l = np.random.randint(0,lmax+1)
-    m = np.random.randint(0, ls1+1)
-
-    return cs, l, m
-
-
+    '''
+    fill each q shell with a spherical harmonic
+    '''
 
 
 
@@ -79,42 +35,76 @@ def rand_sph(lmax):
 if __name__ == '__main__':
 
     nq = 100
-    ntheta = 360
-    nphi = 720
-    lmax = 90
+    ntheta = 36
+    nphi = 72
+    lmax = 17
 
     n_sph = 1
 
+    linterest = 4
     sphv = scorpy.SphericalVol(nq, ntheta, nphi)
     blqq = scorpy.BlqqVol(nq, sphv.nl)
 
+    harms = []
 
-    cs1 = np.random.randint(0,2, nq)
-    ls1 = np.random.randint(0,lmax+1, nq)
-    ms1 = list(map(np.random.randint, np.zeros(nq), ls1+1))
-
-    cs2 = np.random.randint(0,2, nq)
-    ls2 = np.random.randint(0,lmax+1, nq)
-    ms2 = list(map(np.random.randint, np.zeros(nq), ls2+1))
-
-
-    harmonics1 = np.array([cs1,ls1, ms1])
-    harmonics2 = np.array([cs2,ls2, ms2])
 
     for q_ind in range(nq):
         coeffs = np.zeros( (2, sphv.nl, sphv.nl))
-        coeffs[tuple(harmonics1[:,q_ind])] = 1
-        # coeffs[tuple(harmonics2[:,q_ind])] =1
-        print(q_ind, np.where(coeffs==1))
-        sphv.set_q_coeffs(q_ind, coeffs)
+        for i in range(n_sph):
+            cs = np.random.randint(0,2)
+            l = np.random.randint(0,lmax+1)
+            m = np.random.randint(0, l+1)
+            if cs==1 and m==0:
+                cs=0
+            sph = cs, l, m
 
+            while coeffs[sph] ==1 or (cs==1 and m==0):
+                cs = np.random.randint(0,2)
+                l = np.random.randint(0,lmax+1)
+                m = np.random.randint(0, l+1)
+                if cs==1 and m==0:
+                    cs=0
+                sph = cs, l, m
+            coeffs[sph] = 1
+
+            if l==linterest:
+                print('####', q_ind, cs,l,m)
+            # else:
+                # print(q_ind, cs,l,m)
+
+
+
+        sphv.set_q_coeffs(q_ind, coeffs)
+        harms.append( (q_ind, cs, l, m) )
+
+    sphv.plot_slice(0, 10)
+    plt.title('sphv')
 
     blqq.fill_from_sphv(sphv)
 
-    blqq.plot_slice(2,0)
-    blqq.plot_slice(2,1)
-    blqq.plot_slice(2,10)
-    blqq.plot_slice(2,140)
+    blqq.plot_slice(2,linterest, extent=None)
+    plt.title(f'l={linterest}')
+
+    blqq.plot_slice(2,10, extent=None)
+    plt.title('')
+
+    for q_ind, cs, l, m in harms:
+        np.testing.assert_allclose(blqq.vol[q_ind, q_ind, l],1)
+
+
+    for q_ind1, cs1, l1, m1 in harms:
+        for q_ind2, cs2, l2, m2 in harms:
+
+            if q_ind1 == q_ind2:
+                continue
+
+            if l1==l2 and m1==m2 and cs1==cs2:
+                print(q_ind1, cs1, l1, m1)
+                print(q_ind2, cs2, l2, m2)
+                np.testing.assert_allclose(blqq.vol[q_ind1, q_ind2, l1],1)
+                np.testing.assert_allclose(blqq.vol[q_ind2, q_ind1, l2],1)
+
+    plt.show()
 
 
 
