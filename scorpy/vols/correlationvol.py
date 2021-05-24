@@ -111,8 +111,6 @@ class CorrelationVol(Vol, CorrelationVolProps):
                         self.vol[q2_ind, q1_ind, psi_ind] = x
 
 #     def fill_from_sphv(self, sphv):
-        # assert sphv.qmax == self.qmax
-        # assert sphv.nq == self.nq
 
         # lats, lons = sphv.ypts, sphv.zpts
         # pp, tt = np.meshgrid(lons, lats)

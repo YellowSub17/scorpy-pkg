@@ -32,24 +32,26 @@ np.random.seed(0)
 # MAKE CORRELATION FROM ENSEMBLE PEAKS
 
 
-ns = [1, 2, 4, 8]
+ns = [1, 2, 4, 8, 16, 32, 64, 128]
 
 nq = 200
 npsi = 360
+nx = 100
 
 
 geo = scorpy.ExpGeom('../data/geoms/agipd_2304_vj_opt_v3.geom')
 
 for n in ns:
-    print(n)
+    for x in range(nx):
+        print(n, x)
 
-    pk = scorpy.PeakData(
-        f'../data/ensemble_peaks/n{n}/peaks_{n}_0.txt', geo, cxi_flag=False)
+        pk = scorpy.PeakData(
+            f'../data/ensemble_peaks/n{n}/peaks_{n}_{x}.txt', geo, cxi_flag=False)
 
-    corr = scorpy.CorrelationVol(nq, npsi, qmax=1.4)
-    corr.fill_from_peakdata(pk)
+        corr = scorpy.CorrelationVol(nq, npsi, qmax=1.4)
+        corr.fill_from_peakdata(pk)
 
-    corr.save(f'../data/dbins/ensemble_peaks/ensemble_n{n}')
+        corr.save(f'../data/dbins/ensemble_peaks/ensemble_n{n}_{x}')
 
 
 # MAKE CORRELATION FROM PEAK DATA

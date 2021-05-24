@@ -109,10 +109,19 @@ def angle_between_rect(q1, q2):
 
 
 def angle_between_sph(theta1, theta2, phi1, phi2):
-    # TODO docstring
+#     # TODO docstring
     # sinterm = np.sin(theta1) * np.sin(theta2)
     # costerm = np.cos(theta1) * np.cos(theta2) * np.cos(phi2 - phi1)
     # dot = sinterm + costerm
+
+    # # dot = np.dot(w1,w2)
+
+    # if dot > 1:
+        # dot = 1
+    # elif dot < -1:
+        # dot = -1
+
+    # return np.round(np.arccos(dot))
 
     w1 = np.array([np.cos(phi1) * np.sin(theta1),
                    np.sin(phi1) * np.sin(theta1),
@@ -122,16 +131,11 @@ def angle_between_sph(theta1, theta2, phi1, phi2):
                    np.sin(phi2) * np.sin(theta2),
                    np.cos(theta2)])
 
+    # print(w1,w2)
+
     return angle_between_rect(w1, w2)
 
-    # dot = np.dot(w1,w2)
 
-    # if dot > 1:
-        # dot = 1
-    # elif dot < -1:
-        # dot = -1
-
-    # return np.round(np.arccos(dot), 14)
 
 
 def cosinesim(v1, v2):

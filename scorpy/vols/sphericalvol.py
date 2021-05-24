@@ -20,16 +20,14 @@ class SphericalVol(Vol, SphericalVolProps):
         path (str): path to dbin (and log) if being created from memory.
     '''
 
-    # def __init__(self, nq=100, nangle=180, qmax=1, comp=False, path=None):
     def __init__(self, nq=100, ntheta=180, nphi=360, qmax=1, comp=False, path=None):
-
         assert nphi == 2 * ntheta, 'nphi must be 2x ntheta for SphericalVol'
 
         self._nl = int(ntheta / 2)
 
         Vol.__init__(self, nx=nq, ny=ntheta, nz=nphi,
-                     xmax=qmax, ymax=-np.pi / 2, zmax=2 * np.pi,
-                     xmin=0, ymin=np.pi / 2, zmin=0,
+                     xmax=qmax, ymax=np.pi, zmax=2 * np.pi,
+                     xmin=0, ymin=0, zmin=0,
                      xwrap=False, ywrap=True, zwrap=True,
                      comp=comp, path=path)
 
