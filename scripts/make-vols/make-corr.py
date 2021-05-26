@@ -31,11 +31,11 @@ np.random.seed(0)
 
 # MAKE CORRELATION FROM ENSEMBLE PEAKS
 
+# ns = [1, 2, 4, 8, 16, 32, 64, 128]
+ns = [32, 64, 128]
 
-ns = [1, 2, 4, 8, 16, 32, 64, 128]
-
-nq = 200
-npsi = 360
+nq = 100
+npsi = 180
 nx = 100
 
 

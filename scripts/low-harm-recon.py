@@ -40,16 +40,18 @@ q2_slice = sphv.vol[6,...]
 
 pp, tt = np.meshgrid(sphv.phipts, sphv.thetapts)
 
-for q1_ind in range(1, nq):
+for q1_ind in range(0, nq):
     q1_slice = sphv.vol[q1_ind,...]
     print(q1_ind )
 
-    for q2_ind in range(6, nq):
+    for q2_ind in range(0, nq):
         q2_slice = sphv.vol[q2_ind,...]
 
-        for theta_ind in range(5, ntheta):
+        for theta_ind in range(0, ntheta):
 
-            for phi_ind in range(8, nphi):
+            for phi_ind in range(0, nphi):
+
+                print(q1_ind, q2_ind, theta_ind, phi_ind)
 
 
                 pp_rolled = np.roll(pp, (theta_ind, phi_ind), (0,1))
@@ -67,10 +69,10 @@ for q1_ind in range(1, nq):
                 for angle_ind, II_val in zip(angle_between_rolled.flatten(), II.flatten()):
                     corr.vol[q1_ind, q2_ind, angle_ind] +=II_val
 
-                break
-            break
-        break
-    break
+                # break
+            # break
+        # break
+    # break
 
 
 plt.figure()
