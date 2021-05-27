@@ -22,14 +22,6 @@ def test_zeros():
 
 
 
-def test_single_sh():
-
-    '''
-    fill each q shell with a spherical harmonic
-    '''
-
-
-
 
 
 if __name__ == '__main__':

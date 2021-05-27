@@ -261,13 +261,21 @@ class Vol(VolProps):
             plt.figure()
         plt.plot(line)
 
+    # def get_extent(self, axis):
+        # if axis == 0:
+            # return [self.zmin, self.zmax, self.ymin, self.ymax]
+        # elif axis == 1:
+            # return [self.zmin, self.zmax, self.xmin, self.xmax]
+        # else:
+            # return [self.xmin, self.xmax, self.ymin, self.ymax]
+
     def get_extent(self, axis):
         if axis == 0:
-            return [self.zmin, self.zmax, self.ymin, self.ymax]
+            return [self.zpts[0], self.zpts[-1], self.ypts[0], self.ypts[-1]]
         elif axis == 1:
-            return [self.zmin, self.zmax, self.xmin, self.xmax]
+            return [self.zpts[0], self.zpts[-1], self.xpts[0], self.xpts[-1]]
         else:
-            return [self.xmin, self.xmax, self.ymin, self.ymax]
+            return [self.xpts[0], self.xpts[-1], self.ypts[0], self.ypts[-1]]
 
     def round_noise(self, r=1e-15):
         loc = np.where(np.abs(self.vol) < r)
