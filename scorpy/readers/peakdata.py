@@ -26,7 +26,6 @@ class PeakData:
             else:
                 self.df = np.genfromtxt(
                     df, delimiter=' ', skip_header=1, usecols=(0, 2, 1, 3))
-
         else:
             self.df = df
 

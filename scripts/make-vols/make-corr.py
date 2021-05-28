@@ -8,6 +8,7 @@ Make correlation vol objects.
 import matplotlib.pyplot as plt
 import scorpy
 import numpy as np
+import timeit
 np.random.seed(0)
 
 
@@ -31,27 +32,28 @@ np.random.seed(0)
 
 # MAKE CORRELATION FROM ENSEMBLE PEAKS
 
-# ns = [1, 2, 4, 8, 16, 32, 64, 128]
-ns = [32, 64, 128]
+ns = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
 
 nq = 100
 npsi = 180
-nx = 100
+nseeds = 25
 
 
 geo = scorpy.ExpGeom('../data/geoms/agipd_2304_vj_opt_v3.geom')
 
 for n in ns:
-    for x in range(nx):
-        print(n, x)
+    for seed in range(nseeds):
+        print(n, seed)
 
         pk = scorpy.PeakData(
-            f'../data/ensemble_peaks/n{n}/peaks_{n}_{x}.txt', geo, cxi_flag=False)
+            f'../data/ensemble_peaks/n{n}/peaks_{n}_{seed}.txt', geo, cxi_flag=False)
 
         corr = scorpy.CorrelationVol(nq, npsi, qmax=1.4)
+
         corr.fill_from_peakdata(pk)
 
-        corr.save(f'../data/dbins/ensemble_peaks/ensemble_n{n}_{x}')
+
+        corr.save(f'../data/dbins/ensemble_peaks/ensemble_n{n}_{seed}')
 
 
 # MAKE CORRELATION FROM PEAK DATA

@@ -50,7 +50,7 @@ class BlqqVol(Vol, BlqqVolProps):
         fmat = np.zeros((corr.npsi, self.nl))
 
         # for every even spherical harmonic
-        for l in range(0, self.nl, 2):
+        for l in range(0, self.nl):
             leg_vals = special.eval_legendre(l, args)
             fmat[:, l] = leg_vals
 

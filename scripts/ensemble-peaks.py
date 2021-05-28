@@ -5,7 +5,7 @@ plt.close('all')
 
 
 
-nseeds = 15
+nseeds = 5
 
 ns = [1,2,4,8,16,32,64,128]
 # ns = [1,2,8,32,64,128]
@@ -28,8 +28,6 @@ for n in ns:
             print('n:', n, 'i:',i ,'j:', j)
 
 
-
-
             sim = scorpy.utils.cosinesim(corr1.vol, corr2.vol)
             sims[i,j] = sim
             sims[j,i] =sim
@@ -47,7 +45,6 @@ for n in ns:
     print('STD Sim:', np.std(sims))
     print()
     print()
-
 
     aves.append(np.mean(sims[loc]))
     stds.append(np.std(sims[loc]))
