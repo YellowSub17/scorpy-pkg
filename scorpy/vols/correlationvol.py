@@ -245,3 +245,11 @@ class CorrelationVol(Vol, CorrelationVolProps):
         for psi_ind in range(0, half_ind):
             self.vol[..., psi_ind] = self.vol[..., -1 - psi_ind]
 
+
+    def sub_t_mean(self):
+        means = self.vol.mean(axis=(0,1))
+        # print(self.vol, '\n')
+        # print(means, '\n')
+        self.vol -= means[None, None, :]
+        # print(self.vol, '\n')
+

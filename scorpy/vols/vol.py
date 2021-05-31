@@ -280,3 +280,5 @@ class Vol(VolProps):
     def round_noise(self, r=1e-15):
         loc = np.where(np.abs(self.vol) < r)
         self.vol[loc] = 0
+
+
