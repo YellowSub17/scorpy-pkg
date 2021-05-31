@@ -52,7 +52,6 @@ for n in ns:
 
         corr.fill_from_peakdata(pk)
 
-
         corr.save(f'../data/dbins/ensemble_peaks/ensemble_n{n}_{seed}')
 
 

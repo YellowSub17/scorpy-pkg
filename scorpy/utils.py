@@ -2,11 +2,15 @@ import numpy as np
 from scipy import special
 
 
+
+__DATADIR = '/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/data/'
+
 def mydiv(x, y):
     loc = np.where(y != 0)
     z = np.zeros(x.shape)
     z[loc] = x[loc] / y[loc]
     return z
+
 
 
 # def index_x(x_val,x_min, x_max, nx):
@@ -109,7 +113,7 @@ def angle_between_rect(q1, q2):
 
 
 def angle_between_sph(theta1, theta2, phi1, phi2):
-#     # TODO docstring
+    #     # TODO docstring
     # sinterm = np.sin(theta1) * np.sin(theta2)
     # costerm = np.cos(theta1) * np.cos(theta2) * np.cos(phi2 - phi1)
     # dot = sinterm + costerm
@@ -117,9 +121,9 @@ def angle_between_sph(theta1, theta2, phi1, phi2):
     # # dot = np.dot(w1,w2)
 
     # if dot > 1:
-        # dot = 1
+    # dot = 1
     # elif dot < -1:
-        # dot = -1
+    # dot = -1
 
     # return np.round(np.arccos(dot))
 
@@ -134,8 +138,6 @@ def angle_between_sph(theta1, theta2, phi1, phi2):
     # print(w1,w2)
 
     return angle_between_rect(w1, w2)
-
-
 
 
 def cosinesim(v1, v2):

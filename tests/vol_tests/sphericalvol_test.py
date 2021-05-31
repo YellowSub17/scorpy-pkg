@@ -60,7 +60,7 @@ class TestSphericalVol(unittest.TestCase):
         q_slice = np.zeros((self.ntheta, self.nphi))
         grid_slice = pysh.SHGrid.from_array(q_slice)
 
-        lats = -(np.radians(grid_slice.lats()) - np.pi/2)
+        lats = -(np.radians(grid_slice.lats()) - np.pi / 2)
         lons = np.radians(grid_slice.lons())
 
         np.testing.assert_allclose(lats, self.sphv.ypts)

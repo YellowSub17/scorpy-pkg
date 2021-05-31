@@ -245,7 +245,3 @@ class CorrelationVol(Vol, CorrelationVolProps):
         for psi_ind in range(0, half_ind):
             self.vol[..., psi_ind] = self.vol[..., -1 - psi_ind]
 
-    def theta_multi(self):
-        pass
-        # self.vol[...,0] *=4*np.pi
-        # self.vol[...,-1] *=4*np.pi

@@ -4,39 +4,28 @@ import matplotlib.pyplot as plt
 plt.close('all')
 
 
-
-nseeds = 5
-
-ns = [1,2,4,8,16,32,64,128]
-# ns = [1,2,8,32,64,128]
-
-
+nseeds = 25
+ns = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
 
 
 aves = []
 stds = []
 
-
 for n in ns:
 
-    sims = np.zeros((nseeds, nseeds))+1.234567e-27
+    sims = np.zeros((nseeds, nseeds)) + 1.234567e-27
     for i in range(nseeds):
-        corr1 = scorpy.CorrelationVol(path= f'../data/dbins/ensemble_peaks/ensemble_n{n}_{i}.dbin')
-        for j in range(i+1, nseeds):
-            corr2 = scorpy.CorrelationVol(path= f'../data/dbins/ensemble_peaks/ensemble_n{n}_{j}.dbin')
+        corr1 = scorpy.CorrelationVol(path=f'../data/dbins/ensemble_peaks/ensemble_n{n}_{i}.dbin')
+        for j in range(i + 1, nseeds):
+            corr2 = scorpy.CorrelationVol(path=f'../data/dbins/ensemble_peaks/ensemble_n{n}_{j}.dbin')
 
-            print('n:', n, 'i:',i ,'j:', j)
-
+            print('n:', n, 'i:', i, 'j:', j)
 
             sim = scorpy.utils.cosinesim(corr1.vol, corr2.vol)
-            sims[i,j] = sim
-            sims[j,i] =sim
+            sims[i, j] = sim
+            sims[j, i] = sim
 
     loc = np.where(sims != 1.234567e-27)
-
-
-
-
 
     print()
     print()
@@ -57,24 +46,9 @@ for n in ns:
     plt.colorbar()
 
 
-
 plt.figure()
 plt.errorbar(ns, aves, yerr=stds, fmt='b.', barsabove=True)
 plt.title('Average similarity')
 
 
 plt.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
-

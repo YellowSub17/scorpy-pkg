@@ -13,45 +13,38 @@ lmax = 8
 qmax = 1
 
 
-
 sphv = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 
 for q_ind in range(nq):
 
     coeffs = np.zeros((2, sphv.nl, sphv.nl))
 
-    cs_q = np.random.randint(0,2)
-    l_q = np.random.randint(0,9)
-    m_l = np.random.randint(0, l_q+1)
+    cs_q = np.random.randint(0, 2)
+    l_q = np.random.randint(0, 9)
+    m_l = np.random.randint(0, l_q + 1)
 
-    while cs_q ==1 and m_l==0:
-        cs_q = np.random.randint(0,2)
-        m_l = np.random.randint(0, l_q+1)
+    while cs_q == 1 and m_l == 0:
+        cs_q = np.random.randint(0, 2)
+        m_l = np.random.randint(0, l_q + 1)
 
     coeffs[cs_q, l_q, m_l] = 1
     print(q_ind, cs_q, l_q, m_l)
 
-    sphv.set_q_coeffs(q_ind,coeffs)
-
-
-
-
-
+    sphv.set_q_coeffs(q_ind, coeffs)
 
 
 corr_from_sphv = scorpy.CorrelationVol(path='../data/dbins/sphv_sh.dbin')
 
 
-blqq1 = scorpy.BlqqVol(nq,sphv.nl, qmax)
+blqq1 = scorpy.BlqqVol(nq, sphv.nl, qmax)
 blqq1.fill_from_sphv(sphv)
-corr2 = scorpy.CorrelationVol(nq,nphi, qmax)
+corr2 = scorpy.CorrelationVol(nq, nphi, qmax)
 corr2.fill_from_blqq(blqq1)
 
-blqq2 = scorpy.BlqqVol(nq,sphv.nl, qmax)
+blqq2 = scorpy.BlqqVol(nq, sphv.nl, qmax)
 blqq2.fill_from_corr(corr_from_sphv)
-corr3 = scorpy.CorrelationVol(nq,nphi, qmax)
+corr3 = scorpy.CorrelationVol(nq, nphi, qmax)
 corr3.fill_from_blqq(blqq2)
-
 
 
 # corr2.plot_slice(2,0, extent=0)
@@ -71,25 +64,19 @@ plt.title('sphv - corr')
 plt.show()
 
 
-
-
-
-
-
-
-####### SPHV CORRELATION
-corr = scorpy.CorrelationVol(nq, nphi,qmax)
+# SPHV CORRELATION
+corr = scorpy.CorrelationVol(nq, nphi, qmax)
 
 # q2_slice = sphv.vol[6,...]
 
 pp, tt = np.meshgrid(sphv.phipts, sphv.thetapts)
 
 for q1_ind in range(0, nq):
-    q1_slice = sphv.vol[q1_ind,...]
-    print(q1_ind )
+    q1_slice = sphv.vol[q1_ind, ...]
+    print(q1_ind)
 
     for q2_ind in range(0, nq):
-        q2_slice = sphv.vol[q2_ind,...]
+        q2_slice = sphv.vol[q2_ind, ...]
 
         for theta_ind in range(0, ntheta):
 
@@ -97,21 +84,19 @@ for q1_ind in range(0, nq):
 
                 print(q1_ind, q2_ind, theta_ind, phi_ind)
 
+                pp_rolled = np.roll(pp, (theta_ind, phi_ind), (0, 1))
+                tt_rolled = np.roll(tt, (theta_ind, phi_ind), (0, 1))
 
-                pp_rolled = np.roll(pp, (theta_ind, phi_ind), (0,1))
-                tt_rolled = np.roll(tt, (theta_ind, phi_ind), (0,1))
-
-
-                angle_between_flat = list(map( angle_between_sph, tt.flatten(), tt_rolled.flatten(), pp.flatten(), pp_rolled.flatten()))
+                angle_between_flat = list(map(angle_between_sph, tt.flatten(), tt_rolled.flatten(), pp.flatten(), pp_rolled.flatten()))
                 ite = np.ones(len(angle_between_flat))
-                angle_between_ind = list(map(index_x, angle_between_flat, 0*ite, np.pi*ite, nphi*ite))
+                angle_between_ind = list(map(index_x, angle_between_flat, 0 * ite, np.pi * ite, nphi * ite))
 
                 angle_between_rolled = np.array(angle_between_ind).reshape(ntheta, nphi)
 
-                II = q1_slice*np.roll(q2_slice, (theta_ind, phi_ind), (0,1))*np.sin(tt_rolled)*np.sin(tt)
+                II = q1_slice * np.roll(q2_slice, (theta_ind, phi_ind), (0, 1)) * np.sin(tt_rolled) * np.sin(tt)
 
                 for angle_ind, II_val in zip(angle_between_rolled.flatten(), II.flatten()):
-                    corr.vol[q1_ind, q2_ind, angle_ind] +=II_val
+                    corr.vol[q1_ind, q2_ind, angle_ind] += II_val
 
 
 corr.save('../data/dbins/sphv_sh_sin.dbin')
@@ -132,9 +117,6 @@ corr.save('../data/dbins/sphv_sh_sin.dbin')
 # plt.title('q2 slice')
 
 
-
-
-
 # plt.figure()
 # plt.imshow(tt)
 # plt.figure()
@@ -146,22 +128,7 @@ corr.save('../data/dbins/sphv_sh_sin.dbin')
 # plt.imshow(pp_rolled)
 
 
-
-
-
 # plt.show()
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # # plt.figure()
@@ -189,16 +156,6 @@ corr.save('../data/dbins/sphv_sh_sin.dbin')
 # # plt.imshow(angle_between_rolled)
 
 
-
-
-
-
-
-
-
-
-
-
 # # for iq1 in range(nq):
     # # for iq2 in range(nq):
         # # for it in range(ntheta):
@@ -206,11 +163,6 @@ corr.save('../data/dbins/sphv_sh_sin.dbin')
 
                 # # q1_slice_rolled = np.roll(q1_slice, (it, ip), (0,1))
                 # # q2_slice_rolled = np.roll(q2_slice, (it, ip), (0,1))
-
-
-
-
-
 
 
 # plt.show()
@@ -231,11 +183,6 @@ corr.save('../data/dbins/sphv_sh_sin.dbin')
                 # # for p_ind1 in range(nphi):
                     # # for p_ind2 in range(nphi):
                         # # # print(q_ind1, q_ind2, t_ind1, t_ind2, p_ind1, p_ind2)
-
-
-
-
-
 
 
 # # sphv2 = scorpy.SphericalVol(50, 180, 360, 1)
