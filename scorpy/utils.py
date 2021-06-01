@@ -3,44 +3,16 @@ from scipy import special
 
 
 
-__DATADIR = '/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/data/'
 
 def mydiv(x, y):
+    ''' Divide two arrays but avoid division by 0 error.
+    '''
     loc = np.where(y != 0)
     z = np.zeros(x.shape)
     z[loc] = x[loc] / y[loc]
     return z
 
 
-
-# def index_x(x_val,x_min, x_max, nx):
-    # return np.int(np.round(np.interp(x_val, (x_min, x_max), (0, nx-1))))
-
-# def index_x(x_val,x_min, x_max, nx, period=180):
-    # return np.int(np.round(np.interp(x_val, (x_min, x_max), (0, nx-1), period=period)))
-
-# def index_x(x_val,x_min, x_max, nx):
-    # print((float(x_val-x_min)/float(x_max-x_min))*(nx-1))
-    # return int(round((float(x_val-x_min)/float(x_max-x_min))*(nx-1)))
-
-# def index_x(x_val, x_min, x_max, nx, wrap=False):
-    # '''Find the index of a value in an array between a maximum and minimum value.
-
-    # Arguments:
-        # x_val (): Value to be indexed
-        # x_min (): Minimum value in the range to index
-        # x_max (): Maximum value in the range to index
-        # nx (int): Number of bins in the range to index
-        # wrap (bool): If True, values in the last index will be placed in the 0th index.
-
-    # Returns:
-        # x_out (int): Index that x_val should be place within the range.
-    # '''
-    # dx = (x_max - x_min) / (nx - 1)
-    # x_out = int(round((x_val - x_min) / dx))
-    # if wrap and x_out == nx - 1:
-        # x_out = 0
-    # return x_out
 
 def index_x(x_val, x_min, x_max, nx, wrap=False):
     '''Find the index of a value in an array between a maximum and minimum value.
@@ -81,7 +53,6 @@ def angle_between_pol(t1, t2):
         t2 (): Angle 2 [degrees]
 
     Returns:
-
         psi (): Difference between t1 and t2, in degrees between 0 and 180
     '''
     psi = np.abs((t1 - t2 + 180) % 360 - 180)
@@ -97,8 +68,7 @@ def angle_between_rect(q1, q2):
         q2 (): Vector 2
 
     Returns:
-        psi (): Angle between q1 and q2
-
+        psi (): Angle between q1 and q2 [radians]
     '''
     dot = np.dot(q1 / np.linalg.norm(q1), q2 / np.linalg.norm(q2))
 
@@ -113,20 +83,17 @@ def angle_between_rect(q1, q2):
 
 
 def angle_between_sph(theta1, theta2, phi1, phi2):
-    #     # TODO docstring
-    # sinterm = np.sin(theta1) * np.sin(theta2)
-    # costerm = np.cos(theta1) * np.cos(theta2) * np.cos(phi2 - phi1)
-    # dot = sinterm + costerm
+    '''Angle between two vectors defined by spherical corrdinates.
 
-    # # dot = np.dot(w1,w2)
+    Arguments:
+        theta1 (): inclination angle of first vector [radians]
+        theta2 (): inclination angle of second vector [radians]
+        phi1 (): azimuthal angle of first vector [radians]
+        phi2 (): azimuthal angle of second vector [radians]
 
-    # if dot > 1:
-    # dot = 1
-    # elif dot < -1:
-    # dot = -1
-
-    # return np.round(np.arccos(dot))
-
+    Returns:
+        psi (): angle between vectors [radians]
+    '''
     w1 = np.array([np.cos(phi1) * np.sin(theta1),
                    np.sin(phi1) * np.sin(theta1),
                    np.cos(theta1)])
@@ -135,7 +102,6 @@ def angle_between_sph(theta1, theta2, phi1, phi2):
                    np.sin(phi2) * np.sin(theta2),
                    np.cos(theta2)])
 
-    # print(w1,w2)
 
     return angle_between_rect(w1, w2)
 

@@ -50,7 +50,9 @@ for n in ns:
 
 plt.figure()
 plt.errorbar(ns, aves, yerr=stds, fmt='b.', barsabove=True)
-plt.title('Average similarity (Sub T mean)')
+plt.title('Cosine Similarity of Simulated Hits')
+plt.xlabel('# of hits per run')
+plt.ylabel('Similarity')
 
 
 plt.show()

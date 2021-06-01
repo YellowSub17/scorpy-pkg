@@ -7,55 +7,55 @@ Make correlation vol objects.
 
 import matplotlib.pyplot as plt
 import scorpy
+from scorpy.utils import __DATADIR
 import numpy as np
 import timeit
 np.random.seed(0)
 
 
-# MAKE CORRELATION FROM CIF DATA
+####### MAKE CORRELATION FROM CIF DATA
 
-# names  =['1vds'] # 1al1 qmax 0.36992983463258367
-# nq = 200
-# ntheta = 360
-
-
-# qmax=0.2
-
-
-# for name in names:
-# print(f'Correlating: {name}')
-# cif = scorpy.CifData(f'../data/xtal/{name}-sf.cif', qmax=qmax)
-# corr = scorpy.CorrelationVol(nq, ntheta, qmax=qmax)
-# corr.fill_from_cif(cif)
-# corr.save(f'../data/dbins/{name}_qcor')
-
-
-# MAKE CORRELATION FROM ENSEMBLE PEAKS
-
-ns = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
-
+names = ['1vds_fj'] # 1al1 qmax 0.36992983463258367
 nq = 100
-npsi = 180
-nseeds = 25
+ntheta = 180
 
 
-geo = scorpy.ExpGeom('../data/geoms/agipd_2304_vj_opt_v3.geom')
+qmax = 1.4
 
-for n in ns:
-    for seed in range(nseeds):
-        print(n, seed)
-
-        pk = scorpy.PeakData(
-            f'../data/ensemble_peaks/n{n}/peaks_{n}_{seed}.txt', geo, cxi_flag=False)
-
-        corr = scorpy.CorrelationVol(nq, npsi, qmax=1.4)
-
-        corr.fill_from_peakdata(pk)
-
-        corr.save(f'../data/dbins/ensemble_peaks/ensemble_n{n}_{seed}')
+for name in names:
+    print(f'Correlating: {name}')
+    cif = scorpy.CifData(f'{__DATADIR}/xtal/{name}-sf.cif')
+    corr = scorpy.CorrelationVol(nq, ntheta, qmax=qmax)
+    corr.fill_from_cif(cif)
+    corr.save(f'{__DATADIR}/dbins/{name}_qcor')
 
 
-# MAKE CORRELATION FROM PEAK DATA
+######## MAKE CORRELATION FROM ENSEMBLE PEAKS
+
+# ns = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+
+# nq = 100
+# npsi = 180
+# nseeds = 25
+
+
+# geo = scorpy.ExpGeom('../data/geoms/agipd_2304_vj_opt_v3.geom')
+
+# for n in ns:
+    # for seed in range(nseeds):
+        # print(n, seed)
+
+        # pk = scorpy.PeakData(
+            # f'../data/ensemble_peaks/n{n}/peaks_{n}_{seed}.txt', geo, cxi_flag=False)
+
+        # corr = scorpy.CorrelationVol(nq, npsi, qmax=1.4)
+
+        # corr.fill_from_peakdata(pk)
+
+        # corr.save(f'../data/dbins/ensemble_peaks/ensemble_n{n}_{seed}')
+
+
+######## MAKE CORRELATION FROM PEAK DATA
 
 # runs150 = [112,123,113,125,102,103,104,105]
 # runs144 = [118,108,119,109,120,110,121]

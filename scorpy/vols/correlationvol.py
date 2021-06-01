@@ -59,7 +59,6 @@ class CorrelationVol(Vol, CorrelationVolProps):
         Fill the CorrelationVol from a BlqqVol
 
         Arguments:
-            blqq (BlqqVol): The BlqqVol object to to fill the CorrelationVol
 
         Returns:
             None. Updates self.cvol

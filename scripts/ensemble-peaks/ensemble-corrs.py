@@ -19,10 +19,10 @@ corr1024_1 = scorpy.CorrelationVol(path = f'{__DATADIR}/dbins/ensemble_peaks/ens
 
 
 
-corr4_0.sub_t_mean()
-corr4_1.sub_t_mean()
-corr1024_0.sub_t_mean()
-corr1024_1.sub_t_mean()
+# corr4_0.sub_t_mean()
+# corr4_1.sub_t_mean()
+# corr1024_0.sub_t_mean()
+# corr1024_1.sub_t_mean()
 
 
 
