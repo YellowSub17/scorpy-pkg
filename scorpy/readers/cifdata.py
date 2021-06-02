@@ -129,7 +129,7 @@ class CifData(CifDataProperties):
         ite = np.ones(np.shape(qs))
 
         qinds = list(map(index_x, qs, 0 * ite, self.qmax * ite, nq * ite))
-        tinds = list(map(index_x, ts * ite, -np.pi * ite /
+        tinds = list(map(index_x, ts * ite, -np.pi * ite,
                          2, np.pi * ite / 2, ntheta * ite))
         pinds = list(map(index_x, ps * ite, 0 * ite,
                          2 * np.pi * ite, nphi * ite))
