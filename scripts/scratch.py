@@ -2,6 +2,7 @@ import numpy as np
 import scorpy
 from scorpy.env import __DATADIR
 import matplotlib.pyplot as plt
+import time
 
 
 
@@ -13,48 +14,45 @@ geo = scorpy.ExpGeom(f'{__DATADIR}/geoms/agipd_2304_vj_opt_v3.geom')
 
 cif = scorpy.CifData(f'{__DATADIR}/xtal/1vds_fj-sf.cif')
 
-
-pk = scorpy.PeakData(f'{__DATADIR}/ensemble_peaks/n256/peaks_256_0.txt', geo, cxi_flag=False)
-
-
-plt.figure()
-plt.title('N=4, seed0')
-geo.plot_panels()
-pk.split_frames()[0].plot_peaks()
-pk.split_frames()[1].plot_peaks()
-pk.split_frames()[2].plot_peaks()
-pk.split_frames()[3].plot_peaks()
+pk = scorpy.PeakData(f'{__DATADIR}/ensemble_peaks/n1024/peaks_1024_9.txt', geo, cxi_flag=False)
 
 
+# plt.figure()
+# plt.hist(cif.scat_sph[:,0], bins=100)
+# plt.title('cif qmag hist')
+# plt.xlabel('q')
+# plt.ylabel('frequency')
 
-plt.figure()
-plt.title('N=4, seed1')
-geo.plot_panels()
-pk.split_frames()[5].plot_peaks()
-pk.split_frames()[6].plot_peaks()
-pk.split_frames()[7].plot_peaks()
-pk.split_frames()[8].plot_peaks()
+# plt.figure()
+# plt.hist(pk.scat_pol[:,0], bins=100)
+# plt.title('peakdata qmag hist')
+# plt.xlabel('q')
+# plt.ylabel('frequency')
 
 
 
+# corr1 = scorpy.CorrelationVol(100,180, qmax=qmax)
+# corr2 = scorpy.CorrelationVol(100,180, qmax=qmax)
 
-plt.figure()
-plt.title('N=1024, seed0')
-geo.plot_panels()
-for frame in pk.split_frames():
-    frame.plot_peaks()
+# print('Correlating cif')
+# print(time.asctime())
+# corr1.fill_from_cif(cif)
 
+# print('Correlating pk')
+# print(time.asctime())
+# corr2.fill_from_peakdata(pk)
 
+# corr1.save(f'{__DATADIR}/dbins/comp_epvscif_cif.dbin')
+# corr2.save(f'{__DATADIR}/dbins/comp_epvscif_ep.dbin')
 
-plt.figure()
-plt.title('N=1024, seed1')
-geo.plot_panels()
-for frame in pk.split_frames()[-1::-1]:
-    frame.plot_peaks()
+# corr1 = scorpy.CorrelationVol(path = f'{__DATADIR}/dbins/comp_epvscif_cif.dbin')
+# corr2 = scorpy.CorrelationVol(path = f'{__DATADIR}/dbins/comp_epvscif_ep.dbin')
 
-
+# corr1.plot_q1q2()
+# corr2.plot_q1q2()
 
 plt.show()
+
 
 
 
