@@ -10,7 +10,9 @@ from .readers.expgeom import ExpGeom
 from .readers.maskdata import MaskData
 from .readers.peakdata import PeakData
 
+from .env import __DATADIR, __TESTDATADIR, __SCORPYDIR
+
 
 # from .spharm.sphericalhandler import SphericalHandler, SphericalIntenVol
-from .spharm.sphinten import SphInten
-from .spharm.sphharmhandler import SphHarmHandler
+# from .spharm.sphinten import SphInten
+# from .spharm.sphharmhandler import SphHarmHandler

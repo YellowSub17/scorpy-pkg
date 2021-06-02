@@ -1,8 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from .readerspropertymixins import PeakDataProperties
 
-class PeakData:
+
+class PeakData(PeakDataProperties):
 
     def __init__(self, df, geo, cxi_flag=True):
         '''
@@ -14,27 +16,28 @@ class PeakData:
                     to split the frames and calc again anyway
         '''
 
-        self.geo = geo  # ExpGeom object
-        self.cxi_flag = cxi_flag
+        self._geo = geo  # ExpGeom object
+        self._cxi_flag = cxi_flag
 
         # if df is str, read dataframe from file, else, assume df is array
         if type(df) == str:
             if cxi_flag:
                 # 0: frameNumber, 6: peak_x_raw, 7: peak_y_raw, 12: total intens
-                self.df = np.genfromtxt(
+                self._df = np.genfromtxt(
                     df, delimiter=', ', skip_header=1, usecols=(0, 6, 7, 12))
             else:
-                self.df = np.genfromtxt(
+                self._df = np.genfromtxt(
                     df, delimiter=' ', skip_header=1, usecols=(0, 2, 1, 3))
         else:
-            self.df = df
+            self._df = df
+
 
         # multiple frames can be in a single peak file, so list the unique frames
-        self.frame_numbers = np.unique(self.df[:, 0])
+        self._frame_numbers = np.unique(self.df[:, 0])
 
-        # if len(self.frame_numbers)==1:
-        # self.scat_sqr, self.scat_pol = self.get_scat()
-        self.scat_sqr, self.scat_pol = self.get_scat()
+        self._scat_sqr, self._scat_pol = self.get_scat()
+
+        self._qmax = self.scat_pol.max(axis=0)[0]
 
     def split_frames(self):
         '''

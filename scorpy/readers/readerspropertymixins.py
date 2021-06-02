@@ -1,5 +1,4 @@
 
-
 class CifDataProperties:
 
     @property
@@ -112,3 +111,59 @@ class CifDataProperties:
         Determines resolution of reconstructions.
         '''
         return self._qmax
+
+
+
+class PeakDataProperties:
+
+    @property
+    def geo(self):
+        '''
+        ExpoGeom object that handles experiement geometry.
+        '''
+        return self._geo
+
+    @property
+    def cxi_flag(self):
+        '''
+        Boolean flag for if data came from XFEL dataset (True) or simulated ensemble (False)
+        '''
+        return self._cxi_flag
+
+    @property
+    def df(self):
+        '''
+        data frame containing frame numbers, fs and ss pixel indices and scattering intensity 
+        '''
+        return self._df
+
+    @property
+    def frame_numbers(self):
+        '''
+        Set of unique frame numbers for peaklist
+        '''
+        return self._frame_numbers
+
+    @property
+    def scat_pol(self):
+        '''
+        scattering in polar coordinates
+        '''
+        return self._scat_pol
+
+    @property
+    def scat_sqr(self):
+        '''
+        scatting in 2D carteasian coordinates
+        '''
+        return self._scat_sqr
+
+
+
+    @property
+    def qmax(self):
+        return self._qmax
+
+
+
+
