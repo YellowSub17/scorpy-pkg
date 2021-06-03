@@ -42,6 +42,6 @@ This will create a link from your python site-package directory to an egg-info d
 
 The included Makefile will run test files in the test directory.
 
-    make
+    make test
     make clean
 
