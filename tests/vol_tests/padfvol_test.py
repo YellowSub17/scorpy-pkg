@@ -39,11 +39,11 @@ class TestPadfVol(unittest.TestCase):
 
         self.assertEqual(self.padf.xmax, self.rmax)
         self.assertEqual(self.padf.ymax, self.rmax)
-        self.assertEqual(self.padf.zmax, 180)
+        self.assertEqual(self.padf.zmax, 1)
 
         self.assertEqual(self.padf.xmin, 0)
         self.assertEqual(self.padf.ymin, 0)
-        self.assertEqual(self.padf.zmin, 0)
+        self.assertEqual(self.padf.zmin, -1)
 
         self.assertEqual(self.padf.npsi, self.npsi)
         self.assertEqual(self.padf.nr, self.nr)
@@ -55,8 +55,8 @@ class TestPadfVol(unittest.TestCase):
         rspace = np.linspace(0, self.rmax, self.nr, endpoint=False)
         self.assertEqual(self.padf.dr, rspace[1] - rspace[0])
 
-        psispace = np.linspace(0, 180, self.npsi, endpoint=False)
-        self.assertEqual(self.padf.dpsi, psispace[1] - psispace[0])
+        psispace = np.linspace(-1, 1, self.npsi, endpoint=False)
+        np.testing.assert_almost_equal(self.padf.dpsi, psispace[1] - psispace[0])
 
     def test_saveload(self):
 

@@ -77,9 +77,10 @@ def angle_between_rect(q1, q2):
     elif dot < -1:
         dot = -1.0
 
-    psi = np.arccos(dot)
+    return dot
 
-    return psi
+    # psi = np.arccos(dot)
+    # return psi
 
 
 def angle_between_sph(theta1, theta2, phi1, phi2):

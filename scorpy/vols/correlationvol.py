@@ -22,14 +22,13 @@ class CorrelationVol(Vol, CorrelationVolProps):
         '''
         Class constructor.
         '''
-        Vol.__init__(self, nq, nq, npsi, qmax, qmax, 180, 0, 0, 0, False, False, True, comp=False, path=path)
+        Vol.__init__(self, nq, nq, npsi, qmax, qmax, 1, 0, 0, -1, False, False, True, comp=False, path=path)
 
         self.plot_q1q2 = self.plot_xy
 
     def _save_extra(self, f):
         f.write('[corr]\n')
         f.write(f'qmax = {self.qmax}\n')
-        f.write(f'psimax = {180}\n')
         f.write(f'nq = {self.nq}\n')
         f.write(f'npsi = {self.npsi}\n')
         f.write(f'dq = {self.dq}\n')
