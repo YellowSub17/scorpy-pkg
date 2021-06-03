@@ -34,7 +34,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
         f.write(f'dq = {self.dq}\n')
         f.write(f'dpsi = {self.dpsi}\n')
 
-    def fill_from_cif(self, cif, cords='scat_sph'):
+    def fill_from_cif(self, cif, cords='scat_rect'):
         '''
         Fill the CorrelationVol from a CifData
 
@@ -108,15 +108,6 @@ class CorrelationVol(Vol, CorrelationVolProps):
                     if q1_ind != q2_ind:  # if not on diagonal
                         self.vol[q2_ind, q1_ind, psi_ind] = x
 
-#     def fill_from_sphv(self, sphv):
-
-        # lats, lons = sphv.ypts, sphv.zpts
-        # pp, tt = np.meshgrid(lons, lats)
-
-        # pp_flat = pp.flatten()
-        # tt_flat = tt.flatten()
-
-        # angle_between = np.arccos(np.cos(np.radians(
 
     def correlate_scat_pol(self, qti):
         '''
@@ -148,7 +139,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
                 # get the angle between vectors, and index it
                 psi = angle_between_pol(q1[1], q2[1])
-                psi_ind = index_x(psi, 0, 180, self.npsi, wrap=True)
+                psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=True)
 
                 # fill the volume
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
@@ -189,7 +180,8 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
                 # get the angle between vectors, and index it
                 psi = angle_between_rect(q1[:3], q2[:3])
-                psi_ind = index_x(psi, 0, np.pi, self.npsi, wrap=True)
+
+                psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=True)
 
                 # fill the volume
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
@@ -231,7 +223,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
                 # get the angle between angluar coordinates, and index it
                 psi = angle_between_sph(theta1, theta2, phi1, phi2)
-                psi_ind = index_x(psi, 0, np.pi, self.npsi, wrap=True)
+                psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=True)
 
                 # fill the volume
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]

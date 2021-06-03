@@ -35,11 +35,11 @@ def index_x(x_val, x_min, x_max, nx, wrap=False):
         if x_val == x_max:
             x_out = nx - 1
     else:
-        if x_val <= dx / 2 or x_val >= x_max - dx / 2:
+        if x_val <= x_min + dx / 2 or x_val >= x_max - dx / 2:
             x_out = 0
 
         else:
-            x_out = index_x(x_val, dx / 2, x_max - dx / 2, nx - 1) + 1
+            x_out = index_x(x_val, x_min + dx / 2, x_max - dx / 2, nx - 1) + 1
 
     return int(x_out)
 
@@ -56,7 +56,10 @@ def angle_between_pol(t1, t2):
         psi (): Difference between t1 and t2, in degrees between 0 and 180
     '''
     psi = np.abs((t1 - t2 + 180) % 360 - 180)
-    return psi
+    # return psi
+
+    dot = np.cos(np.radians(psi))
+    return dot
 
 
 def angle_between_rect(q1, q2):

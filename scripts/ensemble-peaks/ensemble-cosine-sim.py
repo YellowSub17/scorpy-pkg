@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 plt.close('all')
 
 
-nseeds = 25
+nseeds = 10
 ns = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
 
 

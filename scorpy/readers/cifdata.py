@@ -8,9 +8,9 @@ from .readerspropertymixins import CifDataProperties
 
 class CifData(CifDataProperties):
 
-    def __init__(self, fname, qmax=None, ):
+    def __init__(self, path, qmax=None, ):
 
-        cif = pycif.ReadCif(fname)
+        cif = pycif.ReadCif(path)
         vk = cif.visible_keys[0]
 
         self._cif = dict(cif[vk])

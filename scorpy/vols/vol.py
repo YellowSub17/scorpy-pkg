@@ -215,7 +215,7 @@ class Vol(VolProps):
         if log:
             im = np.log(np.abs(im) + 1)
         plt.imshow(im, origin='lower', extent=[
-                   0, self.zmax, 0, self.xmax], aspect=aspect)
+                   self.zmin, self.zmax, self.xmin, self.xmax], aspect=aspect)
         if extent is None:
             plt.imshow(im, origin='lower', aspect=aspect)
 
