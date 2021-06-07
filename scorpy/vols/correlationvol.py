@@ -22,7 +22,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
         '''
         Class constructor.
         '''
-        Vol.__init__(self, nq, nq, npsi, qmax, qmax, 1, 0, 0, -1, False, False, True, comp=False, path=path)
+        Vol.__init__(self, nq, nq, npsi, qmax, qmax, 1, 0, 0, -1, False, False, False, comp=False, path=path)
 
         self.plot_q1q2 = self.plot_xy
 
@@ -83,13 +83,14 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
         # arguments for the legendre polynomial
         # args = np.cos(np.linspace(0, np.pi, self.npsi))
-        args = np.cos(np.radians(self.psipts))
+        # args = np.cos(np.radians(self.psipts))
+        args = np.cos(np.arccos(self.psipts))
 
         # initialze fmat matrix
         fmat = np.zeros((self.npsi, blqq.nl))
 
         # for every even spherical harmonic
-        for l in range(0, blqq.nl):
+        for l in range(0, blqq.nl, 1):
             leg_vals = (1 / (4 * np.pi)) * special.eval_legendre(l, args)
             fmat[:, l] = leg_vals
 
@@ -139,7 +140,8 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
                 # get the angle between vectors, and index it
                 psi = angle_between_pol(q1[1], q2[1])
-                psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=True)
+                psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=self.zwrap)
+                # print(psi, psi_ind)
 
                 # fill the volume
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
@@ -181,7 +183,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
                 # get the angle between vectors, and index it
                 psi = angle_between_rect(q1[:3], q2[:3])
 
-                psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=True)
+                psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=self.zwrap)
 
                 # fill the volume
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
@@ -223,7 +225,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
                 # get the angle between angluar coordinates, and index it
                 psi = angle_between_sph(theta1, theta2, phi1, phi2)
-                psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=True)
+                psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=self.zwrap)
 
                 # fill the volume
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
@@ -238,8 +240,5 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
     def sub_t_mean(self):
         means = self.vol.mean(axis=(0,1))
-        # print(self.vol, '\n')
-        # print(means, '\n')
         self.vol -= means[None, None, :]
-        # print(self.vol, '\n')
 

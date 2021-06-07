@@ -33,7 +33,7 @@ for q_ind in range(nq):
     sphv.set_q_coeffs(q_ind, coeffs)
 
 
-corr_from_sphv = scorpy.CorrelationVol(path='../data/dbins/sphv_sh.dbin')
+corr_from_sphv = scorpy.CorrelationVol(path='../data/dbins/sphv_sh_sin.dbin')
 
 
 blqq1 = scorpy.BlqqVol(nq, sphv.nl, qmax)
@@ -64,42 +64,42 @@ plt.title('sphv - corr')
 plt.show()
 
 
-# SPHV CORRELATION
-corr = scorpy.CorrelationVol(nq, nphi, qmax)
+# # SPHV CORRELATION
+# corr = scorpy.CorrelationVol(nq, nphi, qmax)
 
-# q2_slice = sphv.vol[6,...]
+# # q2_slice = sphv.vol[6,...]
 
-pp, tt = np.meshgrid(sphv.phipts, sphv.thetapts)
+# pp, tt = np.meshgrid(sphv.phipts, sphv.thetapts)
 
-for q1_ind in range(0, nq):
-    q1_slice = sphv.vol[q1_ind, ...]
-    print(q1_ind)
+# for q1_ind in range(0, nq):
+    # q1_slice = sphv.vol[q1_ind, ...]
+    # print(q1_ind)
 
-    for q2_ind in range(0, nq):
-        q2_slice = sphv.vol[q2_ind, ...]
+    # for q2_ind in range(0, nq):
+        # q2_slice = sphv.vol[q2_ind, ...]
 
-        for theta_ind in range(0, ntheta):
+        # for theta_ind in range(0, ntheta):
 
-            for phi_ind in range(0, nphi):
+            # for phi_ind in range(0, nphi):
 
-                print(q1_ind, q2_ind, theta_ind, phi_ind)
+                # print(q1_ind, q2_ind, theta_ind, phi_ind)
 
-                pp_rolled = np.roll(pp, (theta_ind, phi_ind), (0, 1))
-                tt_rolled = np.roll(tt, (theta_ind, phi_ind), (0, 1))
+                # pp_rolled = np.roll(pp, (theta_ind, phi_ind), (0, 1))
+                # tt_rolled = np.roll(tt, (theta_ind, phi_ind), (0, 1))
 
-                angle_between_flat = list(map(angle_between_sph, tt.flatten(), tt_rolled.flatten(), pp.flatten(), pp_rolled.flatten()))
-                ite = np.ones(len(angle_between_flat))
-                angle_between_ind = list(map(index_x, angle_between_flat, 0 * ite, np.pi * ite, nphi * ite))
+                # angle_between_flat = list(map(angle_between_sph, tt.flatten(), tt_rolled.flatten(), pp.flatten(), pp_rolled.flatten()))
+                # ite = np.ones(len(angle_between_flat))
+                # angle_between_ind = list(map(index_x, angle_between_flat, 0 * ite, np.pi * ite, nphi * ite))
 
-                angle_between_rolled = np.array(angle_between_ind).reshape(ntheta, nphi)
+                # angle_between_rolled = np.array(angle_between_ind).reshape(ntheta, nphi)
 
-                II = q1_slice * np.roll(q2_slice, (theta_ind, phi_ind), (0, 1)) * np.sin(tt_rolled) * np.sin(tt)
+                # II = q1_slice * np.roll(q2_slice, (theta_ind, phi_ind), (0, 1)) * np.sin(tt_rolled) * np.sin(tt)
 
-                for angle_ind, II_val in zip(angle_between_rolled.flatten(), II.flatten()):
-                    corr.vol[q1_ind, q2_ind, angle_ind] += II_val
+                # for angle_ind, II_val in zip(angle_between_rolled.flatten(), II.flatten()):
+                    # corr.vol[q1_ind, q2_ind, angle_ind] += II_val
 
 
-corr.save('../data/dbins/sphv_sh_sin.dbin')
+# corr.save('../data/dbins/sphv_sh_sin.dbin')
 
 # plt.figure()
 # plt.imshow(II)

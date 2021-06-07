@@ -19,8 +19,9 @@ class PadfVol(Vol, PadfVolProps):
         self._wavelength = wavelength
 
         Vol.__init__(self, nr, nr, npsi,
-                     rmax, rmax, 1,
-                     0, 0, -1,
+                     rmax, rmax, 180,
+                     0, 0, 0,
+                     False, False, True,
                      comp=False, path=path)
 
         self.plot_r1r2 = self.plot_xy

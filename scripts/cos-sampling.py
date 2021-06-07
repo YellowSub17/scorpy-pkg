@@ -12,7 +12,6 @@ plt.close('all')
 # from scorpy.utils import angle_between_rect, index_x
 
 
-
 # x = angle_between_rect( [0,0,1], [0,1,-1])
 # print(x)
 

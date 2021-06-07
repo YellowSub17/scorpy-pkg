@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import scorpy
 from scorpy import __DATADIR
 import numpy as np
-import timeit
+import time
 np.random.seed(0)
 
 
@@ -36,12 +36,12 @@ ns = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
 
 nq = 100
 npsi = 180
-nseeds = 25
-
+nseeds = 10
 
 geo = scorpy.ExpGeom('../data/geoms/agipd_2304_vj_opt_v3.geom')
 
 for seed in range(nseeds):
+    print(time.asctime())
     for n in ns:
         print('n:', n, 'seed:', seed)
 
