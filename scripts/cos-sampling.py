@@ -22,12 +22,10 @@ plt.close('all')
 
 
 cif = scorpy.CifData(f'{__DATADIR}/xtal/fcc-sf.cif')
-corr = scorpy.CorrelationVol(100,180, cif.qmax/3)
-
-corr.fill_from_cif(cif)
+corr = scorpy.CorrelationVol(path=f'{__DATADIR}/dbins/fcc_qcor')
 
 
-corr.plot_q1q2(log=False)
+corr.plot_sumax()
 plt.show()
 
 

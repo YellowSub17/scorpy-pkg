@@ -36,10 +36,10 @@ class CifData(CifDataProperties):
 
         cell_volume = np.dot(self.a, np.cross(self.b, self.c))
 
-        # TODO: Work out if we need an extra 2*pi factor on reciprocal units
-        self._ast = np.cross(self.b, self.c) / cell_volume
-        self._bst = np.cross(self.c, self.a) / cell_volume
-        self._cst = np.cross(self.a, self.b) / cell_volume
+        # # TODO: Work out if we need an extra 2*pi factor on reciprocal units
+        self._ast = 2*np.pi * np.cross(self.b, self.c) / cell_volume
+        self._bst = 2*np.pi * np.cross(self.c, self.a) / cell_volume
+        self._cst = 2*np.pi * np.cross(self.a, self.b) / cell_volume
 
         self._scat_bragg, self._scat_rect, self._scat_sph = self.get_scat(qmax)
 

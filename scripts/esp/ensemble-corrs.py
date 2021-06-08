@@ -15,18 +15,36 @@ seed = 0
 n = 1024
 
 
-corr1 = scorpy.CorrelationVol(path=f'{__DATADIR}/dbins/ensemble_n1024_24_wrap.dbin')
-corr2 = scorpy.CorrelationVol(path=f'{__DATADIR}/dbins/ensemble_n1024_0_nowrap.dbin')
+corr1 = scorpy.CorrelationVol(path=f'{__DATADIR}/dbins/ensemble_peaks/ensemble_n1024_0.dbin')
+corr2 = scorpy.CorrelationVol(path=f'{__DATADIR}/dbins/ensemble_peaks/ensemble_n1024_9.dbin')
 
 
-corr1.plot_q1q2()
-plt.title('wrap')
-corr2.plot_q1q2()
-plt.title('no wrap')
+corr1.plot_q1q2(log=True)
+corr2.plot_q1q2(log=True)
+
+
+x = np.linspace(0, np.pi)
+y = 1/(2*np.sin(x/2))
+ys = 1.2/(2*np.sin(x/2))
+
+x2 = np.linspace(-1,1, 1000)
+y2 = 1/(2*np.sin(np.cos(x2)/2))
+y3 = 1.2/(2*np.sin(np.cos(x2)/2))
+
+plt.figure()
+plt.plot(x,y, label='c=1')
+plt.plot(x,ys, label='c=1.2')
+plt.title( 'old sampling: c/(2*sin(x/2))')
+plt.legend()
+
+plt.figure()
+plt.plot(x2,y2, label='c=1')
+plt.plot(x2,y3, label='c=1.2')
+plt.title( 'new sampling: c/(2*sin(cos(x)/2))')
+plt.legend()
+
+
 plt.show()
-
-
-
 
 
 

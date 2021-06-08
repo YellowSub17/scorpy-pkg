@@ -52,7 +52,9 @@ class Vol(VolProps):
 
         tag = path.stem
         config = cfp.ConfigParser()
+        # print('Reading file:',f'{path.parent}/{tag}_log.txt')
         config.read(f'{path.parent}/{tag}_log.txt')
+
 
         self._nx = int(config['vol']['nx'])
         self._ny = int(config['vol']['ny'])

@@ -34,7 +34,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
         f.write(f'dq = {self.dq}\n')
         f.write(f'dpsi = {self.dpsi}\n')
 
-    def fill_from_cif(self, cif, cords='scat_rect'):
+    def fill_from_cif(self, cif, cords='scat_sph'):
         '''
         Fill the CorrelationVol from a CifData
 
@@ -173,6 +173,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
         q_inds = list(map(index_x, qmags, 0 * ite, self.qmax * ite, self.nq * ite))
 
         for i, q1 in enumerate(qxyzi):
+
             # get q index
             q1_ind = q_inds[i]
 
@@ -184,6 +185,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
                 psi = angle_between_rect(q1[:3], q2[:3])
 
                 psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=self.zwrap)
+                print(q1_ind, q1_ind, psi_ind)
 
                 # fill the volume
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
