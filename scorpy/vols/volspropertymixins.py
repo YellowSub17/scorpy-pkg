@@ -5,15 +5,15 @@ class VolProps:
 
     @property
     def nx(self):
-        return self._nx
+        return int(self._nx)
 
     @property
     def ny(self):
-        return self._ny
+        return int(self._ny)
 
     @property
     def nz(self):
-        return self._nz
+        return int(self._nz)
 
     @property
     def xmin(self):
@@ -143,9 +143,9 @@ class BlqqVolProps:
     def qmax(self):
         return self.xmax
 
-    @property
-    def lmax(self):
-        return self.nl - 1
+#     @property
+    # def lmax(self):
+        # return self.nl - 1
 
     @property
     def dq(self):
@@ -155,9 +155,7 @@ class BlqqVolProps:
     def qpts(self):
         return self.xpts
 
-    # @property
-    # def lpts(self):
-        # return self.zpts
+
 
 
 class PadfVolProps:
@@ -231,7 +229,7 @@ class SphericalVolProps:
 
     @property
     def nl(self):
-        return self._nl
+        return int(self._nl)
 
     @property
     def lmax(self):

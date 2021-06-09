@@ -35,9 +35,15 @@ class BlqqVol(Vol, BlqqVolProps):
         f.write(f'lmax = {self.lmax}\n')
         f.write(f'dq = {self.dq}\n')
 
-    def fill_from_corr(self, corr):
+    def fill_from_corr(self, corr, inc_odds=False):
         assert corr.nq == self.nq, 'CorrelationVol and BlqqVol have different nq'
         assert corr.qmax == self.qmax, 'CorrelationVol and BlqqVol have different qmax'
+
+        if inc_odds:
+            lskip = 1
+        else:
+            lskip = 2
+
 
         # #TODO compensate for ewald sphere
         # q_range = np.linspace(0,self.qmax, self.nq)
@@ -45,27 +51,27 @@ class BlqqVol(Vol, BlqqVolProps):
         # create args of legendre eval
         # args = np.cos(np.linspace(0, np.pi, corr.npsi))
         # args = np.cos(np.radians(corr.psipts))
-        args = np.cos(np.arccos(corr.psipts))
+        args = corr.psipts
 
         # initialze fmat matrix
         fmat = np.zeros((corr.npsi, self.nl))
 
         # for every even spherical harmonic
-        for l in range(0, self.nl, 1):
+        for l in range(0, self.nl, lskip):
             leg_vals = special.eval_legendre(l, args)
             fmat[:, l] = leg_vals
 
-        # TODO check svd
         fmat_inv = np.linalg.pinv(fmat, rcond=1e-3)
-        plt.figure()
-        plt.imshow(np.matmul(fmat_inv, fmat))
-        plt.title('fmat inv * fmat')
 
-        u, s, vh = np.linalg.svd(fmat)
-        print('min s:', s.min())
-        print('max s:', s.max())
-        plt.figure()
-        plt.plot(s)
+        # TODO check svd
+        # plt.figure()
+        # plt.imshow(np.matmul(fmat_inv, fmat))
+        # plt.title('fmat inv * fmat')
+        # u, s, vh = np.linalg.svd(fmat)
+        # print('min s:', s.min())
+        # print('max s:', s.max())
+        # plt.figure()
+        # plt.plot(s)
 
         for iq1 in range(self.nq):
             for iq2 in range(iq1, self.nq):

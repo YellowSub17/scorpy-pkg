@@ -70,7 +70,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
         for frame in frames:
             self.correlate_scat_pol(frame.scat_pol)
 
-    def fill_from_blqq(self, blqq):
+    def fill_from_blqq(self, blqq, inc_odds=False):
         '''
         Fill the CorrelationVol from a BlqqVol
 
@@ -80,6 +80,10 @@ class CorrelationVol(Vol, CorrelationVolProps):
         Returns:
             None. Updates self.cvol
         '''
+        if inc_odds:
+            lskip = 1
+        else:
+            lskip = 2
 
         # arguments for the legendre polynomial
         # args = np.cos(np.linspace(0, np.pi, self.npsi))
@@ -90,7 +94,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
         fmat = np.zeros((self.npsi, blqq.nl))
 
         # for every even spherical harmonic
-        for l in range(0, blqq.nl, 1):
+        for l in range(0, blqq.nl, lskip):
             leg_vals = (1 / (4 * np.pi)) * special.eval_legendre(l, args)
             fmat[:, l] = leg_vals
 

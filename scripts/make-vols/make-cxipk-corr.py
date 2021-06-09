@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 '''
-make-corr.py
+make-cxipk-corr.py
 
-Make correlation vol objects.
+Make correlation vol objects from cxi peak data.
 '''
 
 import matplotlib.pyplot as plt

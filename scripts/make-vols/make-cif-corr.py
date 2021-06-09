@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 '''
-make-corr.py
+make-cif-corr.py
 
-Make correlation vol objects.
+Make correlation vol objects from cif data.
 '''
 
 import matplotlib.pyplot as plt

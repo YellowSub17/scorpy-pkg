@@ -8,18 +8,37 @@ Make Spherical vol objects.
 import matplotlib.pyplot as plt
 import scorpy
 import numpy as np
+from scorpy import __DATADIR
 np.random.seed(0)
 
 
-nq = 200
-nangle = 360
-gridtype = 'DH2'
-extend = False
 
 
-cif = scorpy.CifData('../data/xtal/1al1-sf.cif')
-sphvol = scorpy.SphericalVol(
-    256, nangle, qmax=cif.qmax, gridtype=gridtype, extend=extend)
+nq = 10
+ntheta = 18
+nphi = 36
+lmax = 8
+qmax = 1
 
-sphvol.fill_from_cif(cif)
-sphvol.save_dbin('../data/dbins/1al1_sphv')
+
+sphv = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
+
+for q_ind in range(nq):
+
+    coeffs = np.zeros((2, sphv.nl, sphv.nl))
+
+    cs_q = np.random.randint(0, 2)
+    l_q = np.random.randint(0, 9)
+    m_l = np.random.randint(0, l_q + 1)
+
+    while cs_q == 1 and m_l == 0:
+        cs_q = np.random.randint(0, 2)
+        m_l = np.random.randint(0, l_q + 1)
+
+    coeffs[cs_q, l_q, m_l] = 1
+    print(q_ind, cs_q, l_q, m_l)
+
+    sphv.set_q_coeffs(q_ind, coeffs)
+
+
+sphv.save(f'{__DATADIR}/dbins/sphharm_sphv.dbin')
