@@ -30,30 +30,30 @@ for name in names:
     corr.fill_from_cif(cif)
     corr.save(f'{__DATADIR}/dbins/{name}_qcor')
 
+# # #
+# # # # ######## MAKE CORRELATION FROM ENSEMBLE PEAKS
 
-# ######## MAKE CORRELATION FROM ENSEMBLE PEAKS
+# # # # ns = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
 
-# ns = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+# # # # nq = 100
+# # # # npsi = 180
+# # # # nseeds = 10
 
-# nq = 100
-# npsi = 180
-# nseeds = 10
+# # # # geo = scorpy.ExpGeom('../data/geoms/agipd_2304_vj_opt_v3.geom')
 
-# geo = scorpy.ExpGeom('../data/geoms/agipd_2304_vj_opt_v3.geom')
+# # # # for seed in range(nseeds):
+    # # # # print(time.asctime())
+    # # # # for n in ns:
+        # # # # print('n:', n, 'seed:', seed)
 
-# for seed in range(nseeds):
-    # print(time.asctime())
-    # for n in ns:
-        # print('n:', n, 'seed:', seed)
+        # # # # pk = scorpy.PeakData(
+            # # # # f'../data/ensemble_peaks/n{n}/peaks_{n}_{seed}.txt', geo, cxi_flag=False)
 
-        # pk = scorpy.PeakData(
-            # f'../data/ensemble_peaks/n{n}/peaks_{n}_{seed}.txt', geo, cxi_flag=False)
+        # # # # corr = scorpy.CorrelationVol(nq, npsi, qmax=1.4)
 
-        # corr = scorpy.CorrelationVol(nq, npsi, qmax=1.4)
+        # # # # corr.fill_from_peakdata(pk)
 
-        # corr.fill_from_peakdata(pk)
-
-        # corr.save(f'../data/dbins/ensemble_peaks/ensemble_n{n}_{seed}')
+        # # # # corr.save(f'../data/dbins/ensemble_peaks/ensemble_n{n}_{seed}')
 
 
 ######## MAKE CORRELATION FROM PEAK DATA
