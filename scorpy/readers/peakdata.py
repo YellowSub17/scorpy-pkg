@@ -82,23 +82,21 @@ class PeakData(PeakDataProperties):
 
     def crop_scat(self, qmax=None, Imax=None):
 
-        if not qmax is None:
+        if qmax is not None:
             le_qmax = np.where(self.scat_pol[:, 0] <= qmax)[0]
             self.scat_pol = self.scat_pol[le_qmax]
             self.scat_sqr = self.scat_sqr[le_qmax]
 
-        if not Imax is None:
+        if Imax is not None:
             le_Imax = np.where(self.scat_pol[:, -1] <= Imax)[0]
             self.scat_pol = self.scat_pol[le_Imax]
             self.scat_sqr = self.scat_sqr[le_Imax]
 
-    def plot_peaks(self, cmap='viridis', new_fig=False):
+    def plot_peaks(self, cmap=None, new_fig=False):
         if new_fig:
             plt.figure()
-        plt.plot(self.scat_sqr[:, 0], self.scat_sqr[:, 1], '.')
+        if cmap is not None:
+            plt.scatter(self.scat_sqr[:,0], self.scat_sqr[:,1], c=self.scat_sqr[:,-1], s=1, cmap=cmap)
+        else:
+            plt.plot(self.scat_sqr[:, 0], self.scat_sqr[:, 1], '.')
 
-    def plot_hist_I(self, bins):
-        plt.figure()
-        plt.hist(self.scat_pol[:, -1], bins=bins)
-        plt.xlabel('Intensity')
-        plt.ylabel('Frequency')

@@ -4,6 +4,8 @@ from scorpy.env import __DATADIR
 import matplotlib.pyplot as plt
 import time
 
+plt.close('all')
+
 
 
 
@@ -27,12 +29,14 @@ corr_fj = scorpy.CorrelationVol(path = f'{__DATADIR}/dbins/1vds_fj_qcor.dbin')
 
 
 
-
 corr_sum.plot_q1q2()
 plt.title('2D esp q1=q2')
 
 corr_fj.plot_q1q2()
 plt.title('3D esp q1=q2')
+
+corr_sum.plot_q1q2(log=True)
+plt.title('2D esp q1=q2 (log)')
 
 
 qsum1 = corr_sum.vol.sum(axis=1).sum(axis=1)
@@ -57,24 +61,26 @@ plt.legend()
 
 
 
-
-
-
-# cif = scorpy.CifData(f'{__DATADIR}/xtal/1vds_fj-sf.cif')
-# geo = scorpy.ExpGeom(f'{__DATADIR}/geoms/agipd_2304_vj_opt_v3.geom')
-
-# pk = scorpy.PeakData(f'{__DATADIR}/ensemble_peaks/n1024/peaks_1024_0.txt', geo, cxi_flag=False)
+cif = scorpy.CifData(f'{__DATADIR}/xtal/1vds_fj-sf.cif')
+geo = scorpy.ExpGeom(f'{__DATADIR}/geoms/agipd_2304_vj_opt_v3.geom')
+pk = scorpy.PeakData(f'{__DATADIR}/ensemble_peaks/n1024/peaks_1024_0.txt', geo, cxi_flag=False)
 
 
 
 
-# plt.figure()
-# plt.title('3D esp Intensity Histogram')
-# plt.hist(cif.scat_sph[:,0], bins=100, weights=cif.scat_sph[:,-1])
+plt.figure()
+plt.title('3D esp Intensity Histogram')
+plt.hist(cif.scat_sph[:,0], bins=200, weights=cif.scat_sph[:,-1], color='orange')
 
-# plt.figure()
-# plt.title('2D esp Intensity Histogram')
-# plt.hist(pk.scat_pol[:,0], bins=100, weights=pk.scat_pol[:,-1])
+plt.figure()
+plt.title('2D esp Intensity Histogram')
+plt.hist(pk.scat_pol[:,0], bins=200, weights=pk.scat_pol[:,-1])
+
+
+plt.figure()
+plt.title('2D esp Peaks')
+geo.plot_panels()
+pk.split_frames()[0].plot_peaks()
 
 
 
