@@ -22,12 +22,10 @@ corr = scorpy.CorrelationVol(sphv.nq, sphv.nphi, sphv.qmax)
 
 pp, tt = np.meshgrid(sphv.phipts, sphv.thetapts)
 
-# for q1_ind in range(3, 4):
 for q1_ind in range(0, sphv.nq):
     q1_slice = sphv.vol[q1_ind, ...]
 
-    # for q2_ind in range(4, 5):
-    for q2_ind in range(q1_ind, sphv.nq):
+    for q2_ind in range(0, sphv.nq):
         q2_slice = sphv.vol[q2_ind, ...]
 
         print(q1_ind, q2_ind)
@@ -50,9 +48,20 @@ for q1_ind in range(0, sphv.nq):
 
                 for angle_ind, II_val in zip(angle_between_rolled.flatten(), II.flatten()):
                     corr.vol[q1_ind, q2_ind, angle_ind] += II_val
+                    # if q1_ind != q2_ind:
+                        # corr.vol[q2_ind, q1_ind, angle_ind] += II_val
 
-                if q1_ind != q2_ind:
-                    corr.vol[q2_ind, q1_ind, angle_ind] += II_val
+
+
+
+
+plt.figure()
+plt.plot(corr.psipts, corr.vol[1,8,:])
+plt.title('q1=1, q2=8')
+plt.figure()
+plt.plot(corr.psipts, corr.vol[8,1,:])
+plt.title('q1=8, q2=1')
+plt.show()
 
 
 
