@@ -88,14 +88,16 @@ class CorrelationVol(Vol, CorrelationVolProps):
         # arguments for the legendre polynomial
         # args = np.cos(np.linspace(0, np.pi, self.npsi))
         # args = np.cos(np.radians(self.psipts))
-        args = np.cos(np.arccos(self.psipts))
+        # args = np.cos(np.arccos(self.psipts))
+        args = self.psipts
 
         # initialze fmat matrix
         fmat = np.zeros((self.npsi, blqq.nl))
 
         # for every even spherical harmonic
         for l in range(0, blqq.nl, lskip):
-            leg_vals = (1 / (4 * np.pi)) * special.eval_legendre(l, args)
+            # leg_vals = (1 / (4 * np.pi)) * special.eval_legendre(l, args)
+            leg_vals =   special.eval_legendre(l, args)
             fmat[:, l] = leg_vals
 
         # for every q1 and q2 position
@@ -112,6 +114,8 @@ class CorrelationVol(Vol, CorrelationVolProps):
                     self.vol[q1_ind, q2_ind, psi_ind] = x
                     if q1_ind != q2_ind:  # if not on diagonal
                         self.vol[q2_ind, q1_ind, psi_ind] = x
+
+        # self.vol *= 1/(np.pi*4)
 
 
     def correlate_scat_pol(self, qti):

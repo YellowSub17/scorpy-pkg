@@ -102,18 +102,22 @@ corr3.fill_from_blqq(blqq1, inc_odds=False)
 blqq3 = scorpy.BlqqVol(nq, sphv.nl, qmax)
 blqq3.fill_from_corr(corr3, inc_odds=False)
 
+#CorrelationVol from BlqqVol from CorrelationVol from BlqqVol from SphericalVol of single spherical harmonics
+corr4 = scorpy.CorrelationVol(nq, nphi, qmax)
+corr4.fill_from_blqq(blqq3, inc_odds=False)
 
 
 
-for i, corr in enumerate([corr1, corr2, corr3]):
+
+for i, corr in enumerate([corr1, corr2, corr3, corr4]):
     corr.plot_q1q2()
     plt.title(f'corr{i+1}')
 
 
 
 
-l = 0
-for i, blqq in enumerate([blqq1, blqq2, blqq3]):
+l = 4
+for i, blqq in enumerate([blqq1,blqq2, blqq3]):
     blqq.plot_slice(2,l)
     plt.title(f'blqq{i+1}, l={l}')
 

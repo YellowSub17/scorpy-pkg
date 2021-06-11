@@ -59,6 +59,7 @@ class BlqqVol(Vol, BlqqVolProps):
         # for every even spherical harmonic
         for l in range(0, self.nl, lskip):
             leg_vals = special.eval_legendre(l, args)
+            # leg_vals = 4*np.pi * special.eval_legendre(l, args)
             fmat[:, l] = leg_vals
 
         fmat_inv = np.linalg.pinv(fmat, rcond=1e-3)
