@@ -41,11 +41,13 @@ plt.title('2D esp q1=q2 (log)')
 
 qsum1 = corr_sum.vol.sum(axis=1).sum(axis=1)
 qsum2 = corr_fj.vol.sum(axis=1).sum(axis=1)
+qsum3 = corr_fj.vol.sum(axis=1).sum(axis=1)/corr_fj.qpts
 
 plt.figure()
-plt.title('Sum Intensity(q)')
+plt.title('Sum Correlation(q)')
 plt.plot(corr_sum.qpts, qsum1/qsum1.max(), label='2D esp')
 plt.plot(corr_sum.qpts, qsum2/qsum2.max(), label='3D esp')
+plt.plot(corr_sum.qpts, qsum3/qsum3.max(), label='3D esp/q')
 plt.legend()
 
 
@@ -54,7 +56,7 @@ psum1 = corr_sum.vol.sum(axis=0).sum(axis=0)
 psum2 = corr_fj.vol.sum(axis=0).sum(axis=0)
 
 plt.figure()
-plt.title('Sum Intensity(psi)')
+plt.title('Sum Correlation(psi)')
 plt.plot(corr_sum.psipts, psum1/psum1.max(), label='2D esp')
 plt.plot(corr_sum.psipts, psum2/psum2.max(), label='3D esp')
 plt.legend()
@@ -63,7 +65,7 @@ plt.legend()
 
 cif = scorpy.CifData(f'{__DATADIR}/xtal/1vds_fj-sf.cif')
 geo = scorpy.ExpGeom(f'{__DATADIR}/geoms/agipd_2304_vj_opt_v3.geom')
-pk = scorpy.PeakData(f'{__DATADIR}/ensemble_peaks/n1024/peaks_1024_0.txt', geo, cxi_flag=False)
+pk = scorpy.PeakData(f'{__DATADIR}/ensemble_peaks/n1024/peaks_1024_9.txt', geo, cxi_flag=False)
 
 
 
@@ -84,8 +86,15 @@ pk.split_frames()[0].plot_peaks()
 
 
 
+plt.figure()
+q = corr_fj.get_xy()[:,-2]/corr_fj.qpts
+qy = corr_sum.get_xy()[:,-2]
 
 
+ratio = q/qy
+
+
+plt.plot(ratio)
 
 plt.show()
 

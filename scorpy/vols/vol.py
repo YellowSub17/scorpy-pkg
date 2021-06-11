@@ -224,9 +224,13 @@ class Vol(VolProps):
         if new_fig:
             plt.colorbar()
 
-    def plot_sumax(self, axis=0, new_fig=True, aspect='auto', extent=True, cmap='viridis'):
+    def plot_sumax(self, axis=0, new_fig=True, aspect='auto', extent=True, cmap='viridis', log=False):
 
         im = self.vol.sum(axis=axis)
+
+        if log:
+            im = np.log(np.abs(im) + 1)
+
         if new_fig:
             plt.figure()
 
@@ -239,15 +243,18 @@ class Vol(VolProps):
         if new_fig:
             plt.colorbar()
 
-    def plot_slice(self, axis=0, index=0, new_fig=True, aspect='auto', extent=True):
+    def plot_slice(self, axis=0, index=0, new_fig=True, aspect='auto', extent=True, cmap='viridis', log=False):
 
         im = np.rollaxis(self.vol, axis)[index, ...]
+
+        if log:
+            im = np.log(np.abs(im) + 1)
         if new_fig:
             plt.figure()
 
         if extent:
             plt.imshow(im, origin='lower',
-                       extent=self.get_extent(axis), aspect=aspect)
+                       extent=self.get_extent(axis), aspect=aspect, cmap=cmap)
         else:
             plt.imshow(im, origin='lower', aspect=aspect)
 

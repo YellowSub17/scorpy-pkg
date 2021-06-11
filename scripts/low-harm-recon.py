@@ -76,7 +76,7 @@ sphv = scorpy.SphericalVol(path= f'{__DATADIR}/dbins/sphharm_sphv')
 
 
 #BlqqVol from SphericalVol of singular harmonics
-blqq1= scorpy.BlqqVol(nq, sphv.nl, qmax)
+blqq1 = scorpy.BlqqVol(nq, sphv.nl, qmax)
 blqq1.fill_from_sphv(sphv)
 
 
@@ -85,7 +85,7 @@ corr1 = scorpy.CorrelationVol(path=f'{__DATADIR}/dbins/sphharm_qcor.dbin')
 
 
 #BlqqVol from CorrelationVol from SphericalVol of single spherical harmonics
-blqq2= scorpy.BlqqVol(nq, sphv.nl, qmax)
+blqq2 = scorpy.BlqqVol(nq, sphv.nl, qmax)
 blqq2.fill_from_corr(corr1, inc_odds=False)
 
 
@@ -98,6 +98,10 @@ corr2.fill_from_blqq(blqq2, inc_odds=False)
 corr3 = scorpy.CorrelationVol(nq, nphi, qmax)
 corr3.fill_from_blqq(blqq1, inc_odds=False)
 
+#BlqqVol from CorrelationVol from BlqqVol from SphericalVol of single spherical harmonics
+blqq3 = scorpy.BlqqVol(nq, sphv.nl, qmax)
+blqq3.fill_from_corr(corr3, inc_odds=False)
+
 
 
 
@@ -106,8 +110,10 @@ for i, corr in enumerate([corr1, corr2, corr3]):
     plt.title(f'corr{i+1}')
 
 
+
+
 l = 0
-for i, blqq in enumerate([blqq1, blqq2]):
+for i, blqq in enumerate([blqq1, blqq2, blqq3]):
     blqq.plot_slice(2,l)
     plt.title(f'blqq{i+1}, l={l}')
 
