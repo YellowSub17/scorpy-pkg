@@ -14,6 +14,12 @@ lmax = 8
 qmax = 1
 
 
+sphv_fname ='sphharm_sin_sphv'
+corr_fname ='sphharm_sin_qcor'
+
+# sphv_fname ='sphharm_sphv1'
+# corr_fname ='sphharm_qcor1'
+
 sphv = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 
 print('Spherical Harmonics:')
@@ -63,7 +69,7 @@ for q_ind, (cs, l, m) in enumerate(coeffs_key):
 
 
 
-sphv_corred = scorpy.SphericalVol(path= f'{__DATADIR}/dbins/sphharm_sphv1')
+sphv_corred = scorpy.SphericalVol(path= f'{__DATADIR}/dbins/{sphv_fname}')
 assert np.all(sphv_corred.vol == sphv.vol), 'WARNING: different coeffs in spherical volumes'
 
 
@@ -73,7 +79,7 @@ assert np.all(sphv_corred.vol == sphv.vol), 'WARNING: different coeffs in spheri
 
 
 #SphericalVol of singular harmonics
-sphv = scorpy.SphericalVol(path= f'{__DATADIR}/dbins/sphharm_sphv1')
+sphv = scorpy.SphericalVol(path= f'{__DATADIR}/dbins/{sphv_fname}')
 
 
 
@@ -96,7 +102,7 @@ blqq1.fill_from_sphv(sphv)
 
 
 #CorrelationVol from SphericalVol of single spherical harmonics
-corr1 = scorpy.CorrelationVol(path=f'{__DATADIR}/dbins/sphharm_qcor1.dbin')
+corr1 = scorpy.CorrelationVol(path=f'{__DATADIR}/dbins/{corr_fname}.dbin')
 
 
 #BlqqVol from CorrelationVol from SphericalVol of single spherical harmonics
@@ -123,16 +129,16 @@ corr4.fill_from_blqq(blqq3, inc_odds=False)
 
 
 
+sphv.plot_slice(0, 4)
+plt.title('sphv')
 
-for i, corr in enumerate([corr1, corr2, corr3, corr4]):
+for i, corr in enumerate([corr1, corr2, corr3]):
     corr.plot_q1q2()
     plt.title(f'corr{i+1}')
 
 
-
-
-l = 4
-for i, blqq in enumerate([blqq1,blqq2, blqq3]):
+l = 2
+for i, blqq in enumerate([blqq1,blqq2, ]):
     blqq.plot_slice(2,l)
     plt.title(f'blqq{i+1}, l={l}')
 

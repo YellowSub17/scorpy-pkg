@@ -15,8 +15,8 @@ np.random.seed(0)
 
 
 nq = 10
-ntheta = 18*2
-nphi = 36*2
+ntheta = 18
+nphi = 36
 lmax = 8
 qmax = 1
 
@@ -63,4 +63,4 @@ for q_ind, (cs, l, m) in enumerate(coeffs_key):
     # sphv.set_q_coeffs(q_ind, coeffs)
 
 
-sphv.save(f'{__DATADIR}/dbins/sphharm_sphv2.dbin')
+sphv.save(f'{__DATADIR}/dbins/sphharm_sin_sphv.dbin')
