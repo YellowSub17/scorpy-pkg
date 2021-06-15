@@ -15,8 +15,8 @@ np.random.seed(0)
 
 
 nq = 10
-ntheta = 18
-nphi = 36
+ntheta = 18*2
+nphi = 36*2
 lmax = 8
 qmax = 1
 
