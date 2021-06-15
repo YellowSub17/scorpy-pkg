@@ -15,7 +15,7 @@ np.random.seed(0)
 
 
 #open the spherical volume to correlate
-sphv = scorpy.SphericalVol(path = f'{__DATADIR}/dbins/sphharm_sphv')
+sphv = scorpy.SphericalVol(path = f'{__DATADIR}/dbins/sphharm_sphv2')
 
 # initiailize correlation volume
 corr = scorpy.CorrelationVol(sphv.nq, sphv.nphi, sphv.qmax)
@@ -31,10 +31,10 @@ for q1_ind in range(0, sphv.nq):
         q2_slice = sphv.vol[q2_ind, ...]
 
 
-        print(q1_ind, q2_ind)
 
         #for every orientation of shell
         for theta_ind in range(0, sphv.ntheta):
+            print(q1_ind, q2_ind, theta_ind)
             for phi_ind in range(0, sphv.nphi):
 
                 #change the orienation of shell
@@ -61,4 +61,4 @@ for q1_ind in range(0, sphv.nq):
 
 
 
-corr.save(f'{__DATADIR}/dbins/sphharm_qcor.dbin')
+corr.save(f'{__DATADIR}/dbins/sphharm_qcor2.dbin')
