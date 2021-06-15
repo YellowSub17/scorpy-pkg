@@ -63,4 +63,4 @@ for q_ind, (cs, l, m) in enumerate(coeffs_key):
     # sphv.set_q_coeffs(q_ind, coeffs)
 
 
-sphv.save(f'{__DATADIR}/dbins/sphharm_sphv.dbin')
+sphv.save(f'{__DATADIR}/dbins/sphharm_sphv1.dbin')
