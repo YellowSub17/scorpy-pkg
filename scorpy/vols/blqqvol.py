@@ -44,7 +44,6 @@ class BlqqVol(Vol, BlqqVolProps):
         else:
             lskip = 2
 
-
         # #TODO compensate for ewald sphere
         # q_range = np.linspace(0,self.qmax, self.nq)
 

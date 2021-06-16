@@ -97,7 +97,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
         # for every even spherical harmonic
         for l in range(0, blqq.nl, lskip):
             # leg_vals = (1 / (4 * np.pi)) * special.eval_legendre(l, args)
-            leg_vals =   special.eval_legendre(l, args)
+            leg_vals = special.eval_legendre(l, args)
             fmat[:, l] = leg_vals
 
         # for every q1 and q2 position
@@ -116,7 +116,6 @@ class CorrelationVol(Vol, CorrelationVolProps):
                         self.vol[q2_ind, q1_ind, psi_ind] = x
 
         # self.vol *= 1/(np.pi*4)
-
 
     def correlate_scat_pol(self, qti):
         '''
@@ -247,8 +246,6 @@ class CorrelationVol(Vol, CorrelationVolProps):
         for psi_ind in range(0, half_ind):
             self.vol[..., psi_ind] = self.vol[..., -1 - psi_ind]
 
-
     def sub_t_mean(self):
-        means = self.vol.mean(axis=(0,1))
+        means = self.vol.mean(axis=(0, 1))
         self.vol -= means[None, None, :]
-

@@ -113,7 +113,6 @@ class CifDataProperties:
         return self._qmax
 
 
-
 class PeakDataProperties:
 
     @property
@@ -158,12 +157,6 @@ class PeakDataProperties:
         '''
         return self._scat_sqr
 
-
-
     @property
     def qmax(self):
         return self._qmax
-
-
-
-

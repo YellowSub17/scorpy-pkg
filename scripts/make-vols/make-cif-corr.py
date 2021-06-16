@@ -13,13 +13,12 @@ import time
 np.random.seed(0)
 
 
-####### MAKE CORRELATION FROM CIF DATA
+# MAKE CORRELATION FROM CIF DATA
 
-names = ['1vds_fj',] # 1al1 qmax 0.36992983463258367
+names = ['1vds_fj', ]  # 1al1 qmax 0.36992983463258367
 nq = 100
 ntheta = 180
 qmax = 1.4
-
 
 
 for name in names:

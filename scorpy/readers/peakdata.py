@@ -31,7 +31,6 @@ class PeakData(PeakDataProperties):
         else:
             self._df = df
 
-
         # multiple frames can be in a single peak file, so list the unique frames
         self._frame_numbers = np.unique(self.df[:, 0])
 
@@ -96,7 +95,6 @@ class PeakData(PeakDataProperties):
         if new_fig:
             plt.figure()
         if cmap is not None:
-            plt.scatter(self.scat_sqr[:,0], self.scat_sqr[:,1], c=self.scat_sqr[:,-1], s=1, cmap=cmap)
+            plt.scatter(self.scat_sqr[:, 0], self.scat_sqr[:, 1], c=self.scat_sqr[:, -1], s=1, cmap=cmap)
         else:
             plt.plot(self.scat_sqr[:, 0], self.scat_sqr[:, 1], '.')
-

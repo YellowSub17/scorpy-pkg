@@ -156,8 +156,6 @@ class BlqqVolProps:
         return self.xpts
 
 
-
-
 class PadfVolProps:
 
     @property

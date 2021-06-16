@@ -36,7 +36,7 @@ class SphericalVol(Vol, SphericalVolProps):
         f.write(f'qmax = {self.qmax}\n')
         f.write(f'nq = {self.nq}\n')
         f.write(f'ntheta = {self.ntheta}\n')
-        f.write(f'nphi = {self.dphi}\n')
+        f.write(f'nphi = {self.nphi}\n')
         f.write(f'dq = {self.dq}\n')
         f.write(f'dtheta = {self.dtheta}\n')
         f.write(f'dphi = {self.dphi}\n')
@@ -46,29 +46,29 @@ class SphericalVol(Vol, SphericalVolProps):
         self._nl = float(config['sphv']['nl'])
 
     def fill_from_cif(self, cif):
-
         assert cif.qmax == self.qmax, 'CifData and SphericalVol have different qmax'
+        self.fill_from_scat_sph(self, cif.scat_sph)
 
-        ite = np.ones(cif.scat_sph[:, 0].shape)
+    def fill_from_klnm(self, klnm):
+        assert klnm.qmax == self.qmax
+        assert klnm.nq == self.nq
 
-        q_inds = list(map(index_x, cif.scat_sph[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
-        theta_inds = list(map(index_x, cif.scat_sph[:, 1], self.ymin * ite, self.ymax * ite, self.ny * ite, ite))
-        phi_inds = list(map(index_x, cif.scat_sph[:, 2], self.zmin * ite, self.zmax * ite, self.nz * ite, ite))
 
-        for q_ind, theta_ind, phi_ind, I in zip(q_inds, theta_inds, phi_inds, cif.scat_sph[:, -1]):
+        
 
-            self.vol[q_ind, theta_ind, phi_ind] += I
+
+
+
+
 
     def fill_from_scat_sph(self, scat_sph):
-
         ite = np.ones(scat_sph[:, 0].shape)
-
         q_inds = list(map(index_x, scat_sph[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
         theta_inds = list(map(index_x, scat_sph[:, 1], self.ymin * ite, self.ymax * ite, self.ny * ite, ite))
         phi_inds = list(map(index_x, scat_sph[:, 2], self.zmin * ite, self.zmax * ite, self.nz * ite, ite))
-
         for q_ind, theta_ind, phi_ind, I in zip(q_inds, theta_inds, phi_inds, scat_sph[:, -1]):
             self.vol[q_ind, theta_ind, phi_ind] += I
+
 
     def get_q_coeffs(self, q_ind):
         q_slice = self.vol[q_ind, ...]
@@ -84,17 +84,8 @@ class SphericalVol(Vol, SphericalVolProps):
             c.append(pysh_grid.expand().coeffs)
         return c
 
-
-
-
-
-
     def set_q_coeffs(self, q_ind, coeffs):
         pysh_coeffs = pysh.shclasses.SHCoeffs.from_array(coeffs)
         pysh_grid = pysh_coeffs.expand()
         self.vol[q_ind, ...] = pysh_grid.to_array()[:-1, :-1]
-
-
-
-
 

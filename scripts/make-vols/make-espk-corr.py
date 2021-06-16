@@ -13,8 +13,7 @@ import time
 np.random.seed(0)
 
 
-
-######## MAKE CORRELATION FROM ENSEMBLE PEAKS
+# MAKE CORRELATION FROM ENSEMBLE PEAKS
 
 ns = [1024]
 
@@ -36,12 +35,6 @@ for seed in range(10, 30):
         corr.save(f'{__DATADIR}/dbins/ensemble_peaks/ensemble_n{n}_{seed}')
 
 print(time.asctime())
-
-
-
-
-
-
 
 
 # plt.figure()

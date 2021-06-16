@@ -55,7 +55,6 @@ class Vol(VolProps):
         # print('Reading file:',f'{path.parent}/{tag}_log.txt')
         config.read(f'{path.parent}/{tag}_log.txt')
 
-
         self._nx = int(config['vol']['nx'])
         self._ny = int(config['vol']['ny'])
         self._nz = int(config['vol']['nz'])
@@ -289,5 +288,3 @@ class Vol(VolProps):
     def round_noise(self, r=1e-15):
         loc = np.where(np.abs(self.vol) < r)
         self.vol[loc] = 0
-
-

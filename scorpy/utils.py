@@ -2,8 +2,6 @@ import numpy as np
 from scipy import special
 
 
-
-
 def mydiv(x, y):
     ''' Divide two arrays but avoid division by 0 error.
     '''
@@ -12,6 +10,12 @@ def mydiv(x, y):
     z[loc] = x[loc] / y[loc]
     return z
 
+
+def norm01(arr):
+
+    normed = arr - np.min(arr)
+    normed /= np.max(normed)
+    return normed
 
 
 def index_x(x_val, x_min, x_max, nx, wrap=False):
@@ -106,7 +110,6 @@ def angle_between_sph(theta1, theta2, phi1, phi2):
     w2 = np.array([np.cos(phi2) * np.sin(theta2),
                    np.sin(phi2) * np.sin(theta2),
                    np.cos(theta2)])
-
 
     return angle_between_rect(w1, w2)
 
