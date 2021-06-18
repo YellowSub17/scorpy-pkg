@@ -47,7 +47,7 @@ class SphericalVol(Vol, SphericalVolProps):
 
     def fill_from_cif(self, cif):
         assert cif.qmax == self.qmax, 'CifData and SphericalVol have different qmax'
-        self.fill_from_scat_sph(self, cif.scat_sph)
+        self.fill_from_scat_sph(cif.scat_sph)
 
     def fill_from_klnm(self, klnm):
         assert klnm.qmax == self.qmax
