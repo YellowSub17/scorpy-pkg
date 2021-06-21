@@ -13,6 +13,7 @@ import time
 np.random.seed(0)
 
 
+
 # MAKE CORRELATION FROM CIF DATA
 
 names = ['fcc', ]  # 1al1 qmax 0.36992983463258367

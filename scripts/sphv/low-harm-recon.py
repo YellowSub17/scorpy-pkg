@@ -1,3 +1,9 @@
+#!/usr/bin/env/ python3
+'''
+low-harm-recon.py
+
+compare various volumes (blqq, sphv, corr) of low spherical harmonics calculated in various methods
+'''
 import numpy as np
 import scorpy
 from scorpy import __DATADIR

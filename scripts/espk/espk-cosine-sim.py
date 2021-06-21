@@ -1,3 +1,9 @@
+#!/usr/bin/env/ python3
+'''
+espk-cosine-sim.py
+
+Complete cosine similarity across correlation volumes of ensemble peak data (simulated crystals)
+'''
 import scorpy
 import numpy as np
 import matplotlib.pyplot as plt

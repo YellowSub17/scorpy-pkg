@@ -199,6 +199,9 @@ class CorrelationVol(Vol, CorrelationVolProps):
                 if j > 0:  # if not on diagonal
                     self.vol[q2_ind, q1_ind, psi_ind] += q1[-1] * q2[-1]
 
+
+
+
     def correlate_scat_sph(self, qtpi):
         '''
         Correlate diffraction peaks in 3D spherical coordinates.
@@ -241,11 +244,17 @@ class CorrelationVol(Vol, CorrelationVolProps):
                 if j > 0:  # if not on diagonal
                     self.vol[q2_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
 
-    def force_sym(self):
-        half_ind = int(self.npsi / 2)
-        for psi_ind in range(0, half_ind):
-            self.vol[..., psi_ind] = self.vol[..., -1 - psi_ind]
 
-    def sub_t_mean(self):
-        means = self.vol.mean(axis=(0, 1))
-        self.vol -= means[None, None, :]
+
+
+
+
+
+    # def force_sym(self):
+        # half_ind = int(self.npsi / 2)
+        # for psi_ind in range(0, half_ind):
+            # self.vol[..., psi_ind] = self.vol[..., -1 - psi_ind]
+
+    # def sub_t_mean(self):
+        # means = self.vol.mean(axis=(0, 1))
+        # self.vol -= means[None, None, :]

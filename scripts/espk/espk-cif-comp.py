@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+'''
+espk-cif-comp.py
+
+Compare the correlation volumes from simulated ensemble peaks and cif data
+
+'''
 import numpy as np
 import scorpy
 from scorpy.env import __DATADIR

@@ -37,17 +37,4 @@ for seed in range(10, 30):
 print(time.asctime())
 
 
-# plt.figure()
-# ns = [1,2,4,6,16,32]
-# times = [0.64, 1.43, 3.83, 7.412, 15.692, 30.35]
-# plt.plot(ns, times)
 
-# m = (times[-1] - times[-2]) / (ns[-1] - ns[-2])
-
-# x = 1024
-# y = m*x
-# print(y)
-
-# plt.plot(x, y, 'x')
-
-# plt.show()
