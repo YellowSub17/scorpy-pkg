@@ -54,7 +54,18 @@ class SphericalVol(Vol, SphericalVolProps):
         assert klnm.nq == self.nq
 
 
-        
+    def get_scat_sph(self, thresh=0):
+        loc = np.where(self.vol > thresh)
+        nscats = loc[0].size
+
+        scat_sph = np.zeros( ( nscats, 4))
+        scat_sph[:,-1] = self.vol[loc]
+
+        scat_sph[:,0] = self.qpts[loc[0]]
+        scat_sph[:,1] = self.thetapts[loc[1]]
+        scat_sph[:,2] = self.phipts[loc[2]]
+
+        return scat_sph
 
 
 

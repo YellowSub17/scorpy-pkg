@@ -10,6 +10,9 @@ import numpy as np
 np.random.seed(0)
 
 
+
+assert False, 'Need to fix corr -1 to 1 before runnning make-padf'
+
 # MAKE PADF FROM PEAKS DATA CORRELATION
 # runs150 = [112,123,113,125,102,103,104,105]
 # runs144 = [118,108,119,109,120,110,121]
