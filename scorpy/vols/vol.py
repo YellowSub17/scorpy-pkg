@@ -200,7 +200,7 @@ class Vol(VolProps):
             im[xi, :] = self.vol[xi, xi, :]
         return im
 
-    def plot_xy(self, new_fig=True, log=False, extent='default', aspect='auto'):
+    def plot_xy(self, new_fig=True, log=False, extent='default', aspect='auto', title=''):
         '''
         Plot the x=y plane of the volume.
 
@@ -222,8 +222,9 @@ class Vol(VolProps):
 
         if new_fig:
             plt.colorbar()
+        plt.title(f'{title} xy')
 
-    def plot_sumax(self, axis=0, new_fig=True, aspect='auto', extent=True, cmap='viridis', log=False):
+    def plot_sumax(self, axis=0, new_fig=True, aspect='auto', extent=True, cmap='viridis', log=False, title=''):
 
         im = self.vol.sum(axis=axis)
 
@@ -241,6 +242,7 @@ class Vol(VolProps):
 
         if new_fig:
             plt.colorbar()
+        plt.title(f'{title} sumax')
 
     def plot_slice(self, axis=0, index=0, new_fig=True, aspect='auto', extent=True, cmap='viridis', log=False):
 

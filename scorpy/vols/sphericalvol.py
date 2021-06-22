@@ -28,7 +28,7 @@ class SphericalVol(Vol, SphericalVolProps):
         Vol.__init__(self, nx=nq, ny=ntheta, nz=nphi,
                      xmax=qmax, ymax=np.pi, zmax=2 * np.pi,
                      xmin=0, ymin=0, zmin=0,
-                     xwrap=False, ywrap=True, zwrap=True,
+                     xwrap=False, ywrap=False, zwrap=True,
                      comp=comp, path=path)
 
     def _save_extra(self, f):
@@ -75,7 +75,7 @@ class SphericalVol(Vol, SphericalVolProps):
     def fill_from_scat_sph(self, scat_sph):
         ite = np.ones(scat_sph[:, 0].shape)
         q_inds = list(map(index_x, scat_sph[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
-        theta_inds = list(map(index_x, scat_sph[:, 1], self.ymin * ite, self.ymax * ite, self.ny * ite, ite))
+        theta_inds = list(map(index_x, scat_sph[:, 1], self.ymin * ite, self.ymax * ite, self.ny * ite))
         phi_inds = list(map(index_x, scat_sph[:, 2], self.zmin * ite, self.zmax * ite, self.nz * ite, ite))
         for q_ind, theta_ind, phi_ind, I in zip(q_inds, theta_inds, phi_inds, scat_sph[:, -1]):
             self.vol[q_ind, theta_ind, phi_ind] += I
