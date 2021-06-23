@@ -24,7 +24,7 @@ corr1.plot_sumax(title='cif')
 
 sphv = scorpy.SphericalVol(nq, ntheta, nphi, cif.qmax)
 sphv.fill_from_cif(cif)
-sphv_scat_sph = sphv.get_scat_sph()
+sphv_scat_sph = sphv.ls_pts()
 
 
 corr2 = scorpy.CorrelationVol(nq,ntheta, cif.qmax)
@@ -35,18 +35,25 @@ corr2.plot_sumax(title='sphv')
 
 
 
+print('')
 print('sphv_scat_sph:')
 print(sphv_scat_sph)
 
 print('')
-
 print('cif_scat_sph:')
 print(cif.scat_sph)
 
 print('')
-
 print('bragg:')
 print(cif.scat_bragg)
+
+print('')
+print('corr1 pts:')
+print(np.round(corr1.ls_pts(),1))
+
+print('')
+print('corr2 pts:')
+print(np.round(corr2.ls_pts(),1))
 
 
 
