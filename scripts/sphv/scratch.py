@@ -77,20 +77,14 @@ ww = list(range(20,37))
 
 for i in range(4):
     for j in range(4):
-        # print(i, j, ww[4*i+j])
-        # corr_hand[i,2,j] = ww[4*i+j]
         if i==j:
             corr_hand[i,2,j]=1
         elif corr_hand[i,0,j] == corr_hand[i,1,j]:
             corr_hand[i,2,j]=-1
 
 
-        
 
 
-# corr_hand[2,1,:]=1
-# corr_hand[1,1,:]=4
-# corr_hand[3,1,:]=4
 
 def print_row(arr):
     s = ''
