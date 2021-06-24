@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 
+# from rich import print
 
 
 
@@ -47,13 +48,13 @@ print('')
 print('bragg:')
 print(cif.scat_bragg)
 
-print('')
-print('corr1 pts:')
-print(np.round(corr1.ls_pts(),2))
+# print('')
+# print('corr1 pts:')
+# print(np.round(corr1.ls_pts(),1))
 
 print('')
 print('corr2 pts:')
-print(np.round(corr2.ls_pts(),2))
+print(np.round(corr2.ls_pts(),1))
 
 
 

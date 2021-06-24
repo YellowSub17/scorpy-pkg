@@ -152,7 +152,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
                 # fill the volume
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
-                if j > 0:  # if not on diagonal
+                if j !=i :  # if not on diagonal
                     self.vol[q2_ind, q1_ind, psi_ind] += q1[-1] * q2[-1]
 
     def correlate_scat_rect(self, qxyzi):
@@ -196,7 +196,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
                 # fill the volume
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
-                if j > 0:  # if not on diagonal
+                if j != i:  # if not on diagonal
                     self.vol[q2_ind, q1_ind, psi_ind] += q1[-1] * q2[-1]
 
 
@@ -241,7 +241,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
                 # fill the volume
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
-                if j > 0:  # if not on diagonal
+                if j != i:  # if not on diagonal
                     self.vol[q2_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
 
 
