@@ -18,8 +18,8 @@ corr1.fill_from_cif(cif, cords='scat_sph')
 
 
 
-corr1.plot_q1q2(title='cif')
-corr1.plot_sumax(title='cif')
+# corr1.plot_q1q2(title='cif')
+# corr1.plot_sumax(title='cif')
 
 
 sphv = scorpy.SphericalVol(nq, ntheta, nphi, cif.qmax)
@@ -30,8 +30,8 @@ sphv_scat_sph = sphv.ls_pts()
 corr2 = scorpy.CorrelationVol(nq,ntheta, cif.qmax)
 corr2.correlate_scat_sph(sphv_scat_sph)
 
-corr2.plot_q1q2(title='sphv')
-corr2.plot_sumax(title='sphv')
+# corr2.plot_q1q2(title='sphv')
+# corr2.plot_sumax(title='sphv')
 
 
 
@@ -49,13 +49,81 @@ print(cif.scat_bragg)
 
 print('')
 print('corr1 pts:')
-print(np.round(corr1.ls_pts(),1))
+print(np.round(corr1.ls_pts(),2))
 
 print('')
 print('corr2 pts:')
-print(np.round(corr2.ls_pts(),1))
+print(np.round(corr2.ls_pts(),2))
 
 
+
+corr_hand=  np.zeros( (4,3,4))
+
+corr_hand[0,0,:]=1
+corr_hand[2,0,:]=1
+corr_hand[1,0,:]=1.4
+corr_hand[3,0,:]=1.4
+
+corr_hand[:,1,0]=1
+corr_hand[:,1,1]=1.4
+corr_hand[:,1,2]=1
+corr_hand[:,1,3]=1.4
+
+
+count = 0
+
+ww = list(range(20,37))
+
+for i in range(4):
+    for j in range(4):
+        # print(i, j, ww[4*i+j])
+        # corr_hand[i,2,j] = ww[4*i+j]
+        if i==j:
+            corr_hand[i,2,j]=1
+        elif corr_hand[i,0,j] == corr_hand[i,1,j]:
+            corr_hand[i,2,j]=-1
+
+
+        
+
+
+# corr_hand[2,1,:]=1
+# corr_hand[1,1,:]=4
+# corr_hand[3,1,:]=4
+
+def print_row(arr):
+    s = ''
+    for x in arr:
+        # if x >0:
+            # s+='+'
+        s+=str(x)
+        s+='\t'
+    return s
+
+
+
+print('')
+print('     a, \tb, \t-a, \t-b')
+print('')
+print('    ', print_row(corr_hand[0,0,:]))
+print('a,  ', print_row(corr_hand[0,1,:]))
+print('    ', print_row(corr_hand[0,2,:]))
+print('')
+
+print('    ', print_row(corr_hand[1,0,:]))
+print('b,  ', print_row(corr_hand[1,1,:]))
+print('    ', print_row(corr_hand[1,2,:]))
+print('')
+
+print('    ', print_row(corr_hand[2,0,:]))
+print('-a, ', print_row(corr_hand[2,1,:]))
+print('    ', print_row(corr_hand[2,2,:]))
+print('')
+
+print('    ', print_row(corr_hand[3,0,:]))
+print('-b, ', print_row(corr_hand[3,1,:]))
+print('    ', print_row(corr_hand[3,2,:]))
+print('')
 
 
 

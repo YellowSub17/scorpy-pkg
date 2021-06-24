@@ -290,3 +290,22 @@ class Vol(VolProps):
     def round_noise(self, r=1e-15):
         loc = np.where(np.abs(self.vol) < r)
         self.vol[loc] = 0
+
+
+    def ls_pts(self):
+        loc = np.where(self.vol !=0)
+        npts = loc[0].size
+
+        pts = np.zeros( ( npts, 4))
+        pts[:,-1] = self.vol[loc]
+
+        pts[:,0] = self.xpts[loc[0]]
+        pts[:,1] = self.ypts[loc[1]]
+        pts[:,2] = self.zpts[loc[2]]
+
+        pts = pts[pts[:, 2].argsort()]
+        pts = pts[pts[:, 1].argsort(kind='mergesort')]
+        pts = pts[pts[:, 0].argsort(kind='mergesort')]
+        return pts
+
+
