@@ -46,6 +46,9 @@ class CorrelationVol(Vol, CorrelationVolProps):
         Returns:
             None. Updates self.cvol
         '''
+
+        assert cif.qmax==self.qmax
+
         if cords == 'scat_sph':
             self.correlate_scat_sph(cif.scat_sph)
         elif cords == 'scat_rect':
