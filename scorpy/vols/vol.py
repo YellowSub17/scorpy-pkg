@@ -222,7 +222,7 @@ class Vol(VolProps):
 
         if new_fig:
             plt.colorbar()
-        plt.title(f'{title} xy')
+        plt.title(f'{title}')
 
     def plot_sumax(self, axis=0, new_fig=True, aspect='auto', extent=True, cmap='viridis', log=False, title=''):
 
@@ -242,7 +242,7 @@ class Vol(VolProps):
 
         if new_fig:
             plt.colorbar()
-        plt.title(f'{title} sumax')
+        plt.title(f'{title}')
 
     def plot_slice(self, axis=0, index=0, new_fig=True, aspect='auto', extent=True, cmap='viridis', log=False):
 

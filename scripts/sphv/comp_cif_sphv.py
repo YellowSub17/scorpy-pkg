@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 
-# from rich import print
 
 
 
@@ -12,7 +11,7 @@ nq = 100
 ntheta = 180
 nphi = ntheta*2
 
-npsi = 180*4
+npsi = 180
 
 
 cif = scorpy.CifData(path=f'{scorpy.__DATADIR}/xtal/fcc-sf.cif', qmax=20)
@@ -29,7 +28,6 @@ sphv = scorpy.SphericalVol(nq, ntheta, nphi, cif.qmax)
 sphv.fill_from_cif(cif)
 sphv_scat_sph = sphv.ls_pts()
 
-
 corr2 = scorpy.CorrelationVol(nq,npsi, cif.qmax)
 corr2.correlate_scat_sph(sphv_scat_sph)
 
@@ -38,6 +36,18 @@ corr2.plot_sumax(title='sphv')
 
 
 plt.show()
+
+
+
+
+# #DEBUGGING
+# # Comapare scattering vectors and correlation points for 4 vectors
+# # a  = 1,0,0
+# # b = 0,1,1
+# # -a
+# # -b
+
+
 
 # print('')
 # print('sphv_scat_sph:')
@@ -88,7 +98,6 @@ plt.show()
 
 
 
-
 # def print_row(arr):
     # s = ''
     # for x in arr:
@@ -97,7 +106,6 @@ plt.show()
         # s+=str(x)
         # s+='\t'
     # return s
-
 
 
 # print('')
