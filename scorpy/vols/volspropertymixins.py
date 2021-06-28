@@ -244,3 +244,9 @@ class SphericalVolProps:
     @property
     def phipts(self):
         return self.zpts
+
+    @property
+    def normalization(self):
+        return self._normaization
+
+

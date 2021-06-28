@@ -44,12 +44,6 @@ class BlqqVol(Vol, BlqqVolProps):
         else:
             lskip = 2
 
-        # #TODO compensate for ewald sphere
-        # q_range = np.linspace(0,self.qmax, self.nq)
-
-        # create args of legendre eval
-        # args = np.cos(np.linspace(0, np.pi, corr.npsi))
-        # args = np.cos(np.radians(corr.psipts))
         args = corr.psipts
 
         # initialze fmat matrix
@@ -63,15 +57,6 @@ class BlqqVol(Vol, BlqqVolProps):
 
         fmat_inv = np.linalg.pinv(fmat, rcond=1e-3)
 
-        # TODO check svd
-        # plt.figure()
-        # plt.imshow(np.matmul(fmat_inv, fmat))
-        # plt.title('fmat inv * fmat')
-        # u, s, vh = np.linalg.svd(fmat)
-        # print('min s:', s.min())
-        # print('max s:', s.max())
-        # plt.figure()
-        # plt.plot(s)
 
         for iq1 in range(self.nq):
             for iq2 in range(iq1, self.nq):
@@ -80,35 +65,25 @@ class BlqqVol(Vol, BlqqVolProps):
                 if iq2 > iq1:
                     self.vol[iq2, iq1, :] = dot
 
-    def fill_from_sphv(self, sphv):
+    def fill_from_sphv(self, sphv, inc_odds=False):
         assert sphv.nq == self.nq, 'SphericalVol and BlqqVol have different nq'
         assert sphv.qmax == self.qmax, 'SphericalVol and BlqqVol have different nq'
-
-        all_q_coeffs = list(map(sphv.get_q_coeffs, range(self.nq)))
+        
+        all_q_coeffs = sphv.get_all_q_coeffs()
 
         for i, q1_coeffs in enumerate(all_q_coeffs):
 
             for j, q2_coeffs in enumerate(all_q_coeffs[i:]):
 
-                multi = np.conj(q1_coeffs) * q2_coeffs
+                multi = q1_coeffs * q2_coeffs
 
+                if not inc_odds:
+                    multi[:,1::2,:] =0
+
+                if multi.min() <0:
+                    print(i, j, multi.min(), np.where(multi==multi.min()))
+                
                 self.vol[i, j + i, :] = multi.sum(axis=0).sum(axis=1)[:self.nl]
                 if j > 0:
                     self.vol[j + i, i, :] = multi.sum(axis=0).sum(axis=1)[:self.nl]
 
-    # def fill_from_sph(self, sph):
-
-        # if self.comp:
-            # bl = np.zeros((self.nq, self.nq), dtype=np.complex128)
-        # else:
-            # bl = np.zeros((self.nq, self.nq))
-
-        # for l in range(0, self.nl, 2):
-            # for iq1 in range(self.nq):
-                # for iq2 in range(iq1, self.nq):
-                    # bl[iq1,iq2] = np.sum(np.conj(sph.vals_lnm[l][iq1])*sph.vals_lnm[l][iq2])
-
-                    # if iq1 !=iq2:
-                    # bl[iq2,iq1] = np.sum(np.conj(sph.vals_lnm[l][iq2])*sph.vals_lnm[l][iq1])
-
-            # self.vol[...,l] = bl
