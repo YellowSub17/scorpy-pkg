@@ -73,6 +73,16 @@ class CorrelationVol(Vol, CorrelationVolProps):
         for frame in frames:
             self.correlate_scat_pol(frame.scat_pol)
 
+
+
+
+
+
+
+
+
+
+
     def fill_from_blqq(self, blqq, inc_odds=False):
         '''
         Fill the CorrelationVol from a BlqqVol
@@ -83,15 +93,15 @@ class CorrelationVol(Vol, CorrelationVolProps):
         Returns:
             None. Updates self.cvol
         '''
+        assert self.nq == blqq.nq
+        assert self.qmax == blqq.qmax
+
         if inc_odds:
             lskip = 1
         else:
             lskip = 2
 
         # arguments for the legendre polynomial
-        # args = np.cos(np.linspace(0, np.pi, self.npsi))
-        # args = np.cos(np.radians(self.psipts))
-        # args = np.cos(np.arccos(self.psipts))
         args = self.psipts
 
         # initialze fmat matrix
@@ -118,7 +128,6 @@ class CorrelationVol(Vol, CorrelationVolProps):
                     if q1_ind != q2_ind:  # if not on diagonal
                         self.vol[q2_ind, q1_ind, psi_ind] = x
 
-        # self.vol *= 1/(np.pi*4)
 
     def correlate_scat_pol(self, qti):
         '''

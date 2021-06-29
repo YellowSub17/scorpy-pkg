@@ -35,6 +35,19 @@ class BlqqVol(Vol, BlqqVolProps):
         f.write(f'lmax = {self.lmax}\n')
         f.write(f'dq = {self.dq}\n')
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     def fill_from_corr(self, corr, inc_odds=False):
         assert corr.nq == self.nq, 'CorrelationVol and BlqqVol have different nq'
         assert corr.qmax == self.qmax, 'CorrelationVol and BlqqVol have different qmax'
@@ -55,7 +68,12 @@ class BlqqVol(Vol, BlqqVolProps):
             # leg_vals = 4*np.pi * special.eval_legendre(l, args)
             fmat[:, l] = leg_vals
 
-        fmat_inv = np.linalg.pinv(fmat, rcond=1e-3)
+        fmat_inv = np.linalg.pinv(fmat, rcond=1e-1)
+        # calc with svd
+        # so we can pull out uvs
+        # reuse uvs for iteralgo
+        # in iteralgo, tweak algo type/inputs + rcond
+
 
 
         for iq1 in range(self.nq):
@@ -64,6 +82,19 @@ class BlqqVol(Vol, BlqqVolProps):
                 self.vol[iq1, iq2, :] = dot
                 if iq2 > iq1:
                     self.vol[iq2, iq1, :] = dot
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def fill_from_sphv(self, sphv, inc_odds=False):
         assert sphv.nq == self.nq, 'SphericalVol and BlqqVol have different nq'
@@ -80,8 +111,8 @@ class BlqqVol(Vol, BlqqVolProps):
                 if not inc_odds:
                     multi[:,1::2,:] =0
 
-                if multi.min() <0:
-                    print(i, j, multi.min(), np.where(multi==multi.min()))
+                # if multi.min() <0:
+                    # print(i, j, multi.min(), np.where(multi==multi.min()))
                 
                 self.vol[i, j + i, :] = multi.sum(axis=0).sum(axis=1)[:self.nl]
                 if j > 0:

@@ -4,7 +4,6 @@ from scorpy import __DATADIR
 import matplotlib.pyplot as plt
 
 
-
 nq = 100
 ntheta = 180
 nphi = 360
@@ -19,11 +18,11 @@ corr1.fill_from_cif(cif, cords='scat_sph')
 print('corr1 done')
 
 blqq2 = scorpy.BlqqVol(nq, nl,cif.qmax)
-blqq2.fill_from_corr(corr1)
+blqq2.fill_from_corr(corr1, inc_odds=True)
 print('blqq2 done')
 
 corr4 = scorpy.CorrelationVol(nq,npsi, cif.qmax)
-corr4.fill_from_blqq(blqq2)
+corr4.fill_from_blqq(blqq2, inc_odds=True)
 print('corr4 done')
 
 sphv = scorpy.SphericalVol(nq, ntheta, nphi, cif.qmax, normalization='4pi')
@@ -38,32 +37,32 @@ corr2.correlate_scat_sph(sphv_scat_sph)
 print('corr2 done')
 
 blqq3 = scorpy.BlqqVol(nq, nl,cif.qmax)
-blqq3.fill_from_corr(corr2)
+blqq3.fill_from_corr(corr2, inc_odds=True)
 print('blqq3 done')
 
 corr5 = scorpy.CorrelationVol(nq,npsi, cif.qmax)
-corr5.fill_from_blqq(blqq3)
+corr5.fill_from_blqq(blqq3, inc_odds=True)
 print('corr5 done')
 
 # branch 3
 blqq1 = scorpy.BlqqVol(nq, nl,cif.qmax)
-blqq1.fill_from_sphv(sphv)
+blqq1.fill_from_sphv(sphv, inc_odds=True)
 print('blqq1 done')
 
 corr3 = scorpy.CorrelationVol(nq,npsi, cif.qmax)
-corr3.fill_from_blqq(blqq1)
+corr3.fill_from_blqq(blqq1, inc_odds=True)
 print('corr3 done')
 
 blqq4 = scorpy.BlqqVol(nq, nl,cif.qmax)
-blqq4.fill_from_corr(corr3)
+blqq4.fill_from_corr(corr3, inc_odds=True)
 print('blqq4 done')
 
 corr6 = scorpy.CorrelationVol(nq,npsi, cif.qmax)
-corr6.fill_from_blqq(blqq4)
+corr6.fill_from_blqq(blqq4, inc_odds=True)
 print('corr6 done')
 
 blqq5 = scorpy.BlqqVol(nq, nl,cif.qmax)
-blqq5.fill_from_corr(corr6)
+blqq5.fill_from_corr(corr6, inc_odds=True)
 print('blqq5 done')
 
 
@@ -71,12 +70,11 @@ print('blqq5 done')
 # for i, corr in enumerate([corr1, corr2, corr3, corr4, corr5, corr6]):
     # corr.plot_q1q2()
     # plt.title(f'corr{i+1}')
-
-
+l = 8
 for i, blqq in enumerate([blqq1, blqq2, blqq3, blqq4, blqq5]):
     blqq.plot_q1q2()
-    plt.title(f'blqq{i+1}')
+    plt.title(f'blqq{i+1} q1=q2')
 
-
-
+    # blqq.plot_slice(2, l)
+    # plt.title(f'blqq{i+1} L={l}')
 plt.show()

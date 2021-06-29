@@ -74,60 +74,45 @@ class SphericalVol(Vol, SphericalVolProps):
 
 
 
-    # def get_q_coeffs(self, q_ind):
-        # q_slice = self.vol[q_ind,...]
 
-        # pysh_grid = pysh.shclasses.DHRealGrid(q_slice)
+#     def get_all_q_coeffs(self):
+
         # lats = -1*(np.degrees(self.thetapts) - 90)
         # lons = np.degrees(self.phipts)
-        # llats, llons = np.meshgrid(lats,lons)
+        # llons, llats = np.meshgrid(lons,lats)
 
+        # all_coeffs = []
+        # for q_ind, q_slice in enumerate(self.vol):
+            # if np.all(q_slice==0):
+                # print('0 qslice found: ', q_ind)
+                # coeffs = np.zeros((2,self.nl, self.nl))
+            # else:
+                # print('***\t\tNon 0 qslice found:', q_ind)
+                # print('Calculating SHExpandLSQ', time.asctime())
+                # coeffs = pysh.expand.SHExpandLSQ(q_slice, llats, llons, self.nl-1)[0]
+                # print('Done', time.asctime())
+            # all_coeffs.append(coeffs)
 
-        # # print('pyshlats', pysh_grid.lats())
-        # # print(lats)
-        # # print()
-        # # print('pyshlats', pysh_grid.lons())
-        # # print(lons)
-        # print(q_slice.T.shape)
-        # print(llats.shape)
-        # print(llons.shape)
+        # return all_coeffs
 
-        # # c = pysh.expand.SHExpandLSQ(q_slice.T.flatten(), llats.flatten(), llons.flatten(), self.nl).coeffs
-        # # c = pysh_grid.expand(normalization=self.normalization).coeffs
-        # return c
 
     def get_all_q_coeffs(self):
-
-        lats = -1*(np.degrees(self.thetapts) - 90)
-        lons = np.degrees(self.phipts)
-        llons, llats = np.meshgrid(lons,lats)
-
         all_coeffs = []
-        for q_ind, q_slice in enumerate(self.vol):
-            if np.all(q_slice==0):
-                print('0 qslice found: ', q_ind)
-                coeffs = np.zeros((2,self.nl, self.nl))
-            else:
-                print('***\t\tNon 0 qslice found:', q_ind)
-                print('Calculating SHExpandLSQ', time.asctime())
-                coeffs = pysh.expand.SHExpandLSQ(q_slice, llats, llons, self.nl-1)[0]
-                print('Done', time.asctime())
+        for q_slice in self.vol:
+            pysh_grid = pysh.shclasses.DHRealGrid(q_slice)
+            coeffs = pysh_grid.expand(normalization=self.normalization).coeffs
             all_coeffs.append(coeffs)
-
         return all_coeffs
 
+            
+    
 
 
-
-
-
-
-
-    # def get_q_coeffs(self, q_ind):
-        # q_slice = self.vol[q_ind, ...]
-        # pysh_grid = pysh.shclasses.DHRealGrid(q_slice)
-        # c = pysh_grid.expand(normalization=self.normalization).coeffs
-        # return c
+    def get_q_coeffs(self, q_ind):
+        q_slice = self.vol[q_ind, ...]
+        pysh_grid = pysh.shclasses.DHRealGrid(q_slice)
+        c = pysh_grid.expand(normalization=self.normalization).coeffs
+        return c
 
 
     def set_q_coeffs(self, q_ind, coeffs):
