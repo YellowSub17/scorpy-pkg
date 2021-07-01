@@ -194,6 +194,7 @@ class Vol(VolProps):
     def get_xy(self):
         assert self.nx == self.ny, 'vol.nx != vol.ny, cannot retrieve x=y plane of vol.'
         assert self.xmax == self.ymax, 'vol.xmax != vol.ymax, cannot retrieve x=y plane of vol.'
+        assert self.xmin == self.ymin, 'vol.xmin != vol.ymin, cannot retrieve x=y plane of vol.'
 
         im = np.zeros((self.nx, self.nz))
         for xi in range(self.nx):
