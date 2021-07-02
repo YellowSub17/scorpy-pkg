@@ -34,6 +34,11 @@ class CorrelationVol(Vol, CorrelationVolProps):
         f.write(f'dq = {self.dq}\n')
         f.write(f'dpsi = {self.dpsi}\n')
 
+
+
+
+
+
     def fill_from_cif(self, cif, cords='scat_sph'):
         '''
         Fill the CorrelationVol from a CifData
