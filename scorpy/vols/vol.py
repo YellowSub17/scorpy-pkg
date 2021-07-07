@@ -201,7 +201,7 @@ class Vol(VolProps):
             im[xi, :] = self.vol[xi, xi, :]
         return im
 
-    def plot_xy(self, new_fig=True, log=False, extent='default', aspect='equal', title=''):
+    def plot_xy(self, new_fig=True, log=False, extent='default', aspect='auto', title=''):
         '''
         Plot the x=y plane of the volume.
 

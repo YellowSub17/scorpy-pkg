@@ -70,6 +70,8 @@ print('blqq5 done')
 # for i, corr in enumerate([corr1, corr2, corr3, corr4, corr5, corr6]):
     # corr.plot_q1q2()
     # plt.title(f'corr{i+1}')
+
+
 l = 8
 for i, blqq in enumerate([blqq1, blqq2, blqq3, blqq4, blqq5]):
     blqq.plot_q1q2()

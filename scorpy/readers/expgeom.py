@@ -18,7 +18,10 @@ class ExpGeom:
         self.res = float(self.file_args['res'])
         self.clen = float(self.file_args['clen'])  # camera length
         self.photon_energy = float(self.file_args['photon_energy'])  # eV
-        self.wavelength = (4.135667e-15 * 2.99792e8) / self.photon_energy  # m
+        
+        #props
+        self.wavelength = (4.135667e-15 * 2.99792e8 *1e10) / self.photon_energy  # A
+        self.k = (2 * np.pi) / self.wavelength # 1/A
 
         self.panels = self.make_panels(self.panel_args)  # make the panels
 
@@ -113,6 +116,10 @@ class ExpGeom:
         Returns:
             None.
         '''
+        # plt.axis('equal')
+        plt.vlines(0, -0.005, 0.005)
+        plt.hlines(0, -0.005, 0.005)
+    
         for panel in self.panels:
             # size of the panel
             # check if we implemented the fs_xy and ss_xy correctly
@@ -145,6 +152,8 @@ class ExpGeom:
                      panel['corner_xy'][1] / self.res, 'rx')
             plt.text(panel['corner_xy'][0] / self.res, panel['corner_xy']
                      [1] / self.res, panel['name'], fontsize=6)
+        plt.xlabel('x [m]')
+        plt.ylabel('y [m]')
 
     def make_panels(self, file_panels):
         '''

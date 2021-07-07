@@ -11,7 +11,7 @@ plt.close('all')
 
 
 nseeds = 10
-ns = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+ns = [1, 2, 4, 8, 16, 32]#, 64, 128, 256, 512, 1024]
 
 
 aves = []
@@ -21,11 +21,10 @@ for n in ns:
 
     sims = np.zeros((nseeds, nseeds)) + 1.234567e-27
     for i in range(nseeds):
-        corr1 = scorpy.CorrelationVol(path=f'../data/dbins/ensemble_peaks/ensemble_n{n}_{i}.dbin')
-        corr1.sub_t_mean()
+        corr1 = scorpy.CorrelationVol(path=f'../data/dbins/espk/ensemble_n{n}_{i}.dbin')
+
         for j in range(i + 1, nseeds):
-            corr2 = scorpy.CorrelationVol(path=f'../data/dbins/ensemble_peaks/ensemble_n{n}_{j}.dbin')
-            corr2.sub_t_mean()
+            corr2 = scorpy.CorrelationVol(path=f'../data/dbins/espk/ensemble_n{n}_{j}.dbin')
 
             print('n:', n, 'i:', i, 'j:', j)
 
@@ -38,8 +37,8 @@ for n in ns:
     print()
     print()
     print('n:', n)
-    print('Average Sim (Sub T mean):', np.mean(sims))
-    print('STD Sim (Sub T mean):', np.std(sims))
+    print('Average Sim:', np.mean(sims))
+    print('STD Sim:', np.std(sims))
     print()
     print()
 
@@ -48,7 +47,7 @@ for n in ns:
 
     plt.figure()
     plt.imshow(sims)
-    plt.title(f'Cosine Sim n:{n} (Sub T mean)')
+    plt.title(f'Cosine Sim n:{n}')
     plt.xlabel('Seed')
     plt.ylabel('Seed')
     plt.colorbar()

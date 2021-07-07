@@ -151,11 +151,18 @@ class PeakDataProperties:
         return self._scat_pol
 
     @property
-    def scat_sqr(self):
+    def scat_rect(self):
         '''
-        scatting in 2D carteasian coordinates
+        scatting in 3D carteasian coordinates
         '''
-        return self._scat_sqr
+        return self._scat_rect
+
+    @property
+    def scat_sph(self):
+        '''
+        scatting in 3D spherical coordinates
+        '''
+        return self._scat_sph
 
     @property
     def qmax(self):

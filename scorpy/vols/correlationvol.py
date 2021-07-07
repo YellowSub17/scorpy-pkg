@@ -3,6 +3,7 @@ from ..utils import angle_between_pol, angle_between_sph, angle_between_rect, in
 from .vol import Vol
 from scipy import special
 import numpy as np
+import time
 
 from .volspropertymixins import CorrelationVolProps
 
@@ -39,44 +40,81 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
 
-    def fill_from_cif(self, cif, cords='scat_sph'):
+    def fill_from_cif(self, cif, method='scat_sph'):
         '''
         Fill the CorrelationVol from a CifData
 
         Arguments:
             cif (CifData): The CifData object to to fill the CorrelationVol
-            cords (str: "scat_sph"|"scat_rect"): Method of correlation, selecting
-                    the spherical coordinates or rectilinear coordinates (default)
 
         Returns:
             None. Updates self.cvol
         '''
 
-        assert cif.qmax==self.qmax
+        assert cif.qmax==self.qmax, 'CifData and CorrelationVol hae different qmax values.'
+        assert method in ['scat_sph', 'scat_rect'], 'Invalid correlation method.'
 
-        if cords == 'scat_sph':
+
+        if method == 'scat_sph':
             self.correlate_scat_sph(cif.scat_sph)
-        elif cords == 'scat_rect':
+        elif method == 'scat_rect':
             self.correlate_scat_rect(cif.scat_rect)
-        else:
-            print('WARNING: CorrelationVol.fill_from_cif: cords undefined')
 
-    def fill_from_peakdata(self, peakdata):
+
+
+
+    def fill_from_peakdata(self, pk, method='scat_sph', verbose=True):
+
         '''
-        Fill the CorrelationVol from a BlqqVol
+        Fill the CorrelationVol from a PeakData
 
         Arguments:
 
         Returns:
             None. Updates self.cvol
         '''
-        if peakdata.frame_numbers.size > 1:
-            frames = peakdata.split_frames()
-        else:
-            frames = [peakdata]
 
-        for frame in frames:
-            self.correlate_scat_pol(frame.scat_pol)
+        assert self.qmax == pk.qmax, 'Peakdata and CorrelationVol have different qmax values.'
+        assert method in ['scat_pol', 'scat_sph', 'scat_rect'], 'Invalid correlation method.'
+
+
+        nframes = len(pk.split_frames())
+        nscats = pk.scat_rect.shape[0]
+
+        if verbose:
+            print('')
+            print('############')
+            print(f'Filling CorrelationVol from Peakdata via {method}.')
+            print(f'Correlating {nscats} vectors over {nframes} frames. (Approx. {int(nscats/nframes)} vectors per frame.)')
+
+            print(f'Correlation started: {time.asctime()}\n')
+
+        if method=='scat_pol':
+            for i, frame in enumerate(pk.split_frames()):
+                # print(f'Frame: {i+1}/{nframes}', end='\r')
+                self.correlate_scat_pol(frame.scat_pol)
+                print('', end='')
+
+        if method=='scat_sph':
+            for i, frame in enumerate(pk.split_frames()):
+                # print(f'Frame: {i+1}/{nframes}', end='\r')
+                self.correlate_scat_sph(frame.scat_sph)
+                print('', end='')
+
+        if method=='scat_rect':
+            for i, frame in enumerate(pk.split_frames()):
+                # print(f'Frame: {i+1}/{nframes}', end='\r')
+                self.correlate_scat_rect(frame.scat_rect)
+                print('', end='')
+
+        if verbose:
+            print(f'Correlation finished: {time.asctime()}')
+            print('############')
+            print('')
+
+
+
+
 
 
 
@@ -98,8 +136,8 @@ class CorrelationVol(Vol, CorrelationVolProps):
         Returns:
             None. Updates self.cvol
         '''
-        assert self.nq == blqq.nq
-        assert self.qmax == blqq.qmax
+        assert self.nq == blqq.nq, 'BlqqVol and CorrelationVol have different nq'
+        assert self.qmax == blqq.qmax, 'BlqqVol and CorrelationVol have different qmax'
 
         if inc_odds:
             lskip = 1
@@ -134,6 +172,13 @@ class CorrelationVol(Vol, CorrelationVolProps):
                         self.vol[q2_ind, q1_ind, psi_ind] = x
 
 
+
+
+
+
+
+
+
     def correlate_scat_pol(self, qti):
         '''
         Correlate diffraction peaks in 2D polar coordinates.
@@ -150,6 +195,8 @@ class CorrelationVol(Vol, CorrelationVolProps):
         le_qmax = np.where(qti[:, 0] <= self.qmax)[0]
         qti = qti[le_qmax]
 
+        qti[:,1] = np.degrees(qti[:,1])
+
         # calculate q indices of every scattering vector outside of loop
         ite = np.ones(qti.shape[0])
         q_inds = list(map(index_x, qti[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
@@ -165,12 +212,15 @@ class CorrelationVol(Vol, CorrelationVolProps):
                 # get the angle between vectors, and index it
                 psi = angle_between_pol(q1[1], q2[1])
                 psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=self.zwrap)
-                # print(psi, psi_ind)
 
                 # fill the volume
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
                 if j > 0:  # if not on diagonal
                     self.vol[q2_ind, q1_ind, psi_ind] += q1[-1] * q2[-1]
+
+
+
+
 
     def correlate_scat_rect(self, qxyzi):
         '''
@@ -209,7 +259,6 @@ class CorrelationVol(Vol, CorrelationVolProps):
                 psi = angle_between_rect(q1[:3], q2[:3])
 
                 psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=self.zwrap)
-                print(q1_ind, q1_ind, psi_ind)
 
                 # fill the volume
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]

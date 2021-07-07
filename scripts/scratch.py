@@ -1,11 +1,69 @@
 
 import numpy as np
 import pyshtools as pysh
+import matplotlib.pyplot as plt
 
 import scorpy
 
 
-v = scorpy.Vol(10,6,360, 1, 180, 2*np.pi, 0, 0, 0, False, False, True)
+
+
+
+
+
+geom = scorpy.ExpGeom('../data/geoms/agipd_2304_vj_opt_v3.geom')
+geom.plot_panels()
+pk = scorpy.PeakData(f'../data/espk/homebrew-peaks.txt', geom, cxi_flag=False, qmax=4)
+pk.plot_peaks()
+
+
+pol_points = pk.scat_pol
+pol_points[:,1] = np.degrees(pol_points[:,1])
+
+sph_points = pk.scat_sph
+sph_points[:,1] = np.degrees(sph_points[:,1])
+sph_points[:,2] = np.degrees(sph_points[:,2])
+
+
+print('Polar Coordinates:')
+print('\tq:\tphi:\t\tI:')
+print(pol_points)
+print()
+
+print('Spherical Coordinates:')
+print('\tq:\ttheta:\tphi\t\tI:')
+print(sph_points)
+print()
+
+
+
+
+corr1 = scorpy.CorrelationVol(100,180, pk.qmax)
+corr1.fill_from_peakdata(pk, method='scat_sph', verbose=False)
+
+# print(corr1.ls_pts())
+# print()
+
+corr2 = scorpy.CorrelationVol(100,180, pk.qmax)
+corr2.fill_from_peakdata(pk, method='scat_pol', verbose=False)
+# print(corr2.ls_pts())
+# print()
+
+
+corr1.plot_q1q2()
+plt.title('3D spherical q1q2')
+corr2.plot_q1q2()
+plt.title('2D Polar q1q2')
+
+corr1.plot_sumax()
+plt.title('3D spherical sumax')
+corr2.plot_sumax()
+plt.title('2D Polar sumax')
+
+plt.show()
+
+
+
 
 
 

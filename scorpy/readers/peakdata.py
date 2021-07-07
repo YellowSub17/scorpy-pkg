@@ -6,14 +6,11 @@ from .readerspropertymixins import PeakDataProperties
 
 class PeakData(PeakDataProperties):
 
-    def __init__(self, df, geo, cxi_flag=True):
+    def __init__(self, df, geo, cxi_flag=True, qmax=None):
         '''
         handler for a peaks.txt file
         df: dataframe of the peak data, or str file path to txt
         geo: ExpGeom object associated to experiement geomtery
-        qlist_flag: flag to generate qvector correlation list
-                    dont waste time generateing calculating a list if we need
-                    to split the frames and calc again anyway
         '''
 
         self._geo = geo  # ExpGeom object
@@ -34,9 +31,13 @@ class PeakData(PeakDataProperties):
         # multiple frames can be in a single peak file, so list the unique frames
         self._frame_numbers = np.unique(self.df[:, 0])
 
-        self._scat_sqr, self._scat_pol = self.get_scat()
+        self._scat_rect, self._scat_pol, self._scat_sph = self.get_scat(qmax=qmax)
 
-        self._qmax = self.scat_pol.max(axis=0)[0]
+
+        if qmax is not None:
+            self._qmax = qmax
+        else:
+            self._qmax = self.scat_pol.max(axis=0)[0]
 
     def split_frames(self):
         '''
@@ -52,7 +53,7 @@ class PeakData(PeakDataProperties):
             frames.append(PeakData(frame_df, self.geo))
         return frames  # return the list of appended peak datas
 
-    def get_scat(self):
+    def get_scat(self, qmax=None):
         '''
         generate a list of important values to calculate from
         it's easier to work with arrays the panda dataframes
@@ -62,39 +63,58 @@ class PeakData(PeakDataProperties):
         sss_df = self.df[:, 2]  # ss direction
         inten_df = self.df[:, 3]  # intensity
 
+        nscats = inten_df.size
+
         pix_pos = self.geo.translate_pixels(
             sss_df, fss_df)  # x,y,z position [m]
 
-        r_mag = np.hypot(pix_pos[:, 0], pix_pos[:, 1])
 
-        polar_t = np.degrees(np.arctan2(pix_pos[:, 1], pix_pos[:, 0]))
-        polar_t[np.where(polar_t < 0)] = polar_t[np.where(polar_t < 0)] + 360
+        scat_rect = np.zeros( (nscats, 4) )
+        scat_rect[:,:3] = pix_pos
+        scat_rect[:,-1] = inten_df
 
-        diffrat_t = np.degrees(np.arctan2(r_mag, pix_pos[:, 2]))
-        q_mag = (2 * np.pi / self.geo.wavelength) * \
-            np.sin(np.radians(diffrat_t)) / 1e10  # 1/A
+        pol_r_mag = np.hypot(pix_pos[:, 0], pix_pos[:, 1]) #distance in meters from detector center to pixel
+        pol_phi = np.arctan2(pix_pos[:, 1], pix_pos[:, 0]) # angular polar coordinate of pixel
+        pol_phi[np.where(pol_phi < 0)] = pol_phi[np.where(pol_phi < 0)] + 2*np.pi #angle measures from 0 to 360 degrees
 
-        scat_sqr = np.array([pix_pos[:, 0], pix_pos[:, 1], inten_df]).T
-        scat_pol = np.array([q_mag, polar_t, inten_df]).T
 
-        return scat_sqr, scat_pol
+        theta1 = np.arctan2(pol_r_mag, pix_pos[:, 2])
 
-    def crop_scat(self, qmax=None, Imax=None):
+        # q_mag = (self.geo.k) * np.sin(theta1)  # 1/A
+        q_mag = 2*self.geo.k*np.sin(0.5*theta1)
+
+        scat_pol = np.zeros( (nscats, 3) )
+        scat_pol[:,0] = q_mag
+        scat_pol[:,1] = pol_phi
+        scat_pol[:,-1] = inten_df
+
+        # scat_pol = np.array([q_mag, pol_phi, inten_df]).T
+
+
+        # saldin_sph_theta = np.pi/2 - np.arcsin((q_mag)/(2*self.geo.k))
+
+
+        sph_theta = 0.5*(np.pi + theta1)
+        scat_sph = np.zeros( ( nscats, 4))
+        scat_sph[:,0] = q_mag
+        scat_sph[:,1] = sph_theta
+        scat_sph[:,2] = pol_phi
+        scat_sph[:,-1] = inten_df
 
         if qmax is not None:
-            le_qmax = np.where(self.scat_pol[:, 0] <= qmax)[0]
-            self.scat_pol = self.scat_pol[le_qmax]
-            self.scat_sqr = self.scat_sqr[le_qmax]
+            loc = np.where(q_mag <= qmax)
+            scat_sph = scat_sph[loc]
+            scat_rect = scat_rect[loc]
+            scat_pol = scat_pol[loc]
 
-        if Imax is not None:
-            le_Imax = np.where(self.scat_pol[:, -1] <= Imax)[0]
-            self.scat_pol = self.scat_pol[le_Imax]
-            self.scat_sqr = self.scat_sqr[le_Imax]
+
+        return scat_rect, scat_pol, scat_sph
+
 
     def plot_peaks(self, cmap=None, new_fig=False):
         if new_fig:
             plt.figure()
         if cmap is not None:
-            plt.scatter(self.scat_sqr[:, 0], self.scat_sqr[:, 1], c=self.scat_sqr[:, -1], s=1, cmap=cmap)
+            plt.scatter(self.scat_rect[:, 0], self.scat_rect[:, 1], c=self.scat_rect[:, -1], s=1, cmap=cmap)
         else:
-            plt.plot(self.scat_sqr[:, 0], self.scat_sqr[:, 1], '.')
+            plt.plot(self.scat_rect[:, 0], self.scat_rect[:, 1], '.')
