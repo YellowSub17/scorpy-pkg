@@ -141,3 +141,6 @@ class CifData(CifDataProperties):
         self.scat_sph[:, 0] = qspace[qinds]
         self.scat_sph[:, 1] = tspace[tinds]
         self.scat_sph[:, 2] = pspace[pinds]
+
+
+

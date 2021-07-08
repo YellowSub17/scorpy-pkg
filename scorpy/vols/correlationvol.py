@@ -91,20 +91,14 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
         if method=='scat_pol':
             for i, frame in enumerate(pk.split_frames()):
-                # print(f'Frame: {i+1}/{nframes}', end='\r')
+                print(f'Frame: {i+1}/{nframes}', end='\r')
                 self.correlate_scat_pol(frame.scat_pol)
                 print('', end='')
 
         if method=='scat_sph':
             for i, frame in enumerate(pk.split_frames()):
-                # print(f'Frame: {i+1}/{nframes}', end='\r')
+                print(f'Frame: {i+1}/{nframes}', end='\r')
                 self.correlate_scat_sph(frame.scat_sph)
-                print('', end='')
-
-        if method=='scat_rect':
-            for i, frame in enumerate(pk.split_frames()):
-                # print(f'Frame: {i+1}/{nframes}', end='\r')
-                self.correlate_scat_rect(frame.scat_rect)
                 print('', end='')
 
         if verbose:

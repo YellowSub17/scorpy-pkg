@@ -33,11 +33,11 @@ for seed in range(nseeds):
             f'{__DATADIR}/espk/n{n}/peaks_{n}_{seed}.txt', geo, cxi_flag=False, qmax=qmax)
 
         corr = scorpy.CorrelationVol(nq, npsi, qmax=qmax)
-        corr.fill_from_peakdata(pk)
+        corr.fill_from_peakdata(pk, method='scat_pol')
         corr.save(f'{__DATADIR}/dbins/espk/ensemble_n{n}_{seed}')
         print()
+        print()
 
-print(time.asctime())
 
 
 

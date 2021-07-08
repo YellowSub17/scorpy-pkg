@@ -16,12 +16,12 @@ plt.close('all')
 
 corr_sum = scorpy.CorrelationVol(100, 180, 1.4)
 
+for n in [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]:
+    for seed in range(10):
+        print('seed:', seed, 'n:', n)
+        corr_seed = scorpy.CorrelationVol(path=f'{__DATADIR}/dbins/espk/ensemble_n{n}_{seed}')
 
-for seed in range(30):
-    print('seed:', seed)
-    corr_seed = scorpy.CorrelationVol(path=f'{__DATADIR}/dbins/espk/ensemble_n1024_{seed}')
-
-    corr_sum.vol += corr_seed.vol
+        corr_sum.vol += corr_seed.vol
 
 
 corr_fj = scorpy.CorrelationVol(path=f'{__DATADIR}/dbins/xtal/1vds_fj_qcor.dbin')
@@ -85,12 +85,25 @@ plt.title('2D esp Intensity Histogram')
 plt.hist(pk.scat_pol[:, 0], bins=100, weights=pk.scat_pol[:, -1])
 
 
+# plt.figure()
+# plt.title('2D esp Peaks')
+# geo.plot_panels()
+# pk.split_frames()[0].plot_peaks()
+
+
+
+
 plt.figure()
-plt.title('2D esp Peaks')
-geo.plot_panels()
-pk.split_frames()[0].plot_peaks()
+plt.hist(cif.scat_bragg[:,-1], bins=100)
+plt.title('cif inten dist')
+plt.xlabel('Intensity')
+plt.ylabel('frequency')
 
-
+plt.figure()
+plt.hist(pk.scat_pol[:,-1], bins=100)
+plt.title('pk inten dist')
+plt.xlabel('Intensity')
+plt.ylabel('frequency')
 
 
 plt.show()
