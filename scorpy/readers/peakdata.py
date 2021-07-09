@@ -14,19 +14,9 @@ class PeakData(PeakDataProperties):
         '''
 
         self._geo = geo  # ExpGeom object
-        self._cxi_flag = cxi_flag
+        # self._cxi_flag = cxi_flag
 
-        # if df is str, read dataframe from file, else, assume df is array
-        if type(df) == str:
-            if cxi_flag:
-                # 0: frameNumber, 6: peak_x_raw, 7: peak_y_raw, 12: total intens
-                self._df = np.genfromtxt(
-                    df, delimiter=', ', skip_header=1, usecols=(0, 6, 7, 12))
-            else:
-                self._df = np.genfromtxt(
-                    df, delimiter=' ', skip_header=1, usecols=(0, 2, 1, 3))
-        else:
-            self._df = df
+        self.read_df(df, cxi_flag)
 
         # multiple frames can be in a single peak file, so list the unique frames
         self._frame_numbers = np.unique(self.df[:, 0])
@@ -38,6 +28,24 @@ class PeakData(PeakDataProperties):
             self._qmax = qmax
         else:
             self._qmax = self.scat_pol.max(axis=0)[0]
+
+    def read_df(self, df, cxi_flag):
+        # if df is str, read dataframe from file, else, assume df is array
+        if type(df) == str:
+            if df[-3:] =='txt':
+                if cxi_flag:
+                    # 0: frameNumber, 6: peak_x_raw, 7: peak_y_raw, 12: total intens
+                    self._df = np.genfromtxt(
+                        df, delimiter=', ', skip_header=1, usecols=(0, 6, 7, 12))
+                else:
+                    self._df = np.genfromtxt(
+                        df, delimiter=' ', skip_header=1, usecols=(0, 2, 1, 3))
+            elif df[-2:] == 'h5':
+                self._df = 0
+                assert False, 'ERROR: h5 to pk not implemented'
+        else:
+            self._df = df
+
 
     def split_frames(self):
         '''
@@ -111,10 +119,11 @@ class PeakData(PeakDataProperties):
         return scat_rect, scat_pol, scat_sph
 
 
-    def plot_peaks(self, cmap=None, new_fig=False):
+    def plot_peaks(self, cmap=None, new_fig=False, s=100):
         if new_fig:
             plt.figure()
         if cmap is not None:
-            plt.scatter(self.scat_rect[:, 0], self.scat_rect[:, 1], c=self.scat_rect[:, -1], s=1, cmap=cmap)
+            plt.scatter(self.scat_rect[:, 0], self.scat_rect[:, 1], \
+                        c=self.scat_rect[:, -1], s=s*self.scat_rect[:,-1,]/self.scat_rect[:,-1].max(), cmap=cmap)
         else:
-            plt.plot(self.scat_rect[:, 0], self.scat_rect[:, 1], '.')
+            plt.plot(self.scat_rect[:, 0], self.scat_rect[:, 1], '.', ms=s*self.scat_rect[:,-1,]/self.scat_rect[:,-1].max(),)

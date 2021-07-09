@@ -2,9 +2,46 @@
 
 DATA_PATH='/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/data'
 
+## Experiment Params
 GEOM="${DATA_PATH}/geoms/agipd_2304_vj_opt_v3.geom"
-PDB="${DATA_PATH}/xtal/fcc.pdb"
-OUT="${DATA_PATH}/out.h5"
+BEAM_RADIUS="1e-6"
+NUM_PHOTONS="1e12"
+PHOTON_E="9300"
+#PHOTON_E="18600"
+BEAM_BANDWIDTH="0.01"
+SPECTRUM_SHAPE="tophat"
+NUM_SAMPLE_SPEC="1"
 
 
-pattern_sim -r -g ${GEOM} -p ${PDB} -o ${OUT}
+## Crystal Params
+PDB="${DATA_PATH}/xtal/1al1.pdb"
+NUM_CRYSTALS="1"
+SIZE="900"
+
+
+
+
+
+
+
+pattern_sim \
+    --gpu \
+    --random-orientation \
+    --really-random \
+    --no-fringes \
+    -n ${NUM_CRYSTALS} \
+    --max-size=${SIZE} \
+    --min-size=${SIZE} \
+    --beam-radius=${BEAM_RADIUS} \
+    --nphotons=${NUM_PHOTONS} \
+    --beam-bandwidth=${BEAM_BANDWIDTH} \
+    --photon-energy=${PHOTON_E} \
+    --spectrum=${SPECTRUM_SHAPE} \
+    --sample-spectrum ${NUM_SAMPLE_SPEC} \
+    -g ${GEOM} \
+    -p ${PDB} \
+    -o ${DATA_PATH}/out.h5
+
+
+
+

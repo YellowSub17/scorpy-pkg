@@ -58,13 +58,16 @@ plt.legend()
 lhs = 10
 rhs = -10
 
-psum1 = corr_sum.vol.sum(axis=0).sum(axis=0)[lhs:rhs]
-psum2 = corr_fj.vol.sum(axis=0).sum(axis=0)[lhs:rhs]
+psum1 = corr_sum.get_xy().sum(axis=0)[lhs:rhs]
+psum2 = corr_fj.get_xy().sum(axis=0)[lhs:rhs]
+
+# psum1 = corr_sum.vol.sum(axis=0).sum(axis=0)[lhs:rhs]
+# psum2 = corr_fj.vol.sum(axis=0).sum(axis=0)[lhs:rhs]
 
 psi = corr_sum.psipts[lhs:rhs]
 
 plt.figure()
-plt.title('Sum Correlation(psi)')
+plt.title('Sum Correlation(psi) q1=q2')
 plt.plot(psi, psum1 / psum1.max(), label='2D esp')
 plt.plot(psi, psum2 / psum2.max(), label='3D esp')
 # plt.plot(psi, (psum1*psum2.max()) / (psum2*psum1.max()), label='ratio')
