@@ -1,4 +1,4 @@
-#! /usr/bin/bash
+#!/usr/bin/bash
 
 
 
@@ -18,7 +18,7 @@ BACKGROUND="0"
 ## Crystal Params
 PDB="${DATA_PATH}/xtal/1al1.pdb"
 NUM_CRYSTALS="1"
-SIZE="10"
+SIZE="50"
 
 
 ## Calc Params
@@ -38,6 +38,8 @@ fi
 
 
 
+    #--background=${BACKGROUND} \
+    #--flat \
 
 
 pattern_sim \
@@ -46,9 +48,7 @@ pattern_sim \
     --really-random \
     --no-fringes \
     --no-noise \
-    --flat \
     -n ${NUM_CRYSTALS} \
-    --background=${BACKGROUND} \
     --max-size=${SIZE} \
     --min-size=${SIZE} \
     --beam-radius=${BEAM_RADIUS} \
@@ -77,6 +77,10 @@ for f in $(ls ${DATA_PATH}/${TAG}*); do
     fi
 
 done
+
+
+python3 ./crystfel/h5totxt.py ${DATA_PATH}/out ${DATA_PATH}/out
+
 
 
 

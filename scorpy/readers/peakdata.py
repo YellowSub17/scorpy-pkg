@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import h5py
 
 from .readerspropertymixins import PeakDataProperties
 
@@ -41,8 +42,19 @@ class PeakData(PeakDataProperties):
                     self._df = np.genfromtxt(
                         df, delimiter=' ', skip_header=1, usecols=(0, 2, 1, 3))
             elif df[-2:] == 'h5':
-                self._df = 0
-                assert False, 'ERROR: h5 to pk not implemented'
+                h5f = h5py.File(df, 'r')
+                data = h5f['entry_1/instrument_1/detector_1/data'][:]
+                assert np.all(data !=0), 'Loaded H5 file has no intensity'
+                h5f.close()
+
+                loc = np.where(data >0)
+                df = np.zeros( (len(loc[0]), 4))
+                df[:,1] = loc[1]
+                df[:,2] = loc[2]
+                df[:,3] = data[loc[1], loc[2]]
+                self._df = df
+
+                # assert False, 'ERROR: h5 to pk not implemented'
         else:
             self._df = df
 
@@ -126,4 +138,4 @@ class PeakData(PeakDataProperties):
             plt.scatter(self.scat_rect[:, 0], self.scat_rect[:, 1], \
                         c=self.scat_rect[:, -1], s=s*self.scat_rect[:,-1,]/self.scat_rect[:,-1].max(), cmap=cmap)
         else:
-            plt.plot(self.scat_rect[:, 0], self.scat_rect[:, 1], '.', ms=s*self.scat_rect[:,-1,]/self.scat_rect[:,-1].max(),)
+            plt.plot(self.scat_rect[:, 0], self.scat_rect[:, 1], '.')
