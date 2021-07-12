@@ -47,16 +47,16 @@ qmax=3.5
 
 geo = scorpy.ExpGeom(f'{__DATADIR}/geoms/agipd_2304_vj_opt_v3.geom')
 
-for n in range(2,32):
+for n in range(1,65):
     print()
     print(f'Correlating test Peaks: n={n}')
 
     pk = scorpy.PeakData(
-        f'{__DATADIR}/test/test_n{n}.txt', geo, cxi_flag=False, qmax=3.5)
+        f'{__DATADIR}/test/test-{n}.txt', geo, cxi_flag=False, qmax=3.5)
 
     corr = scorpy.CorrelationVol(nq, npsi, qmax=pk.qmax)
     corr.fill_from_peakdata(pk, method='scat_pol')
-    corr.save(f'{__DATADIR}/test/test_n{n}_qcor')
+    corr.save(f'{__DATADIR}/test/test-{n}_qcor')
     print()
     print()
 

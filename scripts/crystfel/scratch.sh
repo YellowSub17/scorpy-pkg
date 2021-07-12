@@ -12,12 +12,12 @@ PHOTON_E="9300"
 #PHOTON_E="19300"
 BEAM_BANDWIDTH="0.01"
 SPECTRUM_SHAPE="tophat"
-NUM_SAMPLE_SPEC="5"
+NUM_SAMPLE_SPEC="3"
 
 
 ## Crystal Params
 PDB="${DATA_PATH}/xtal/1al1.pdb"
-NUM_CRYSTALS="32"
+NUM_CRYSTALS="64"
 SIZE="100"
 
 
@@ -62,7 +62,7 @@ pattern_sim \
 
 
 
-for f in $(ls ${DATA_PATH}/${TAG}*); do
+for f in $(ls ${DATA_PATH}/${TAG}*.h5); do
     h5ls -d ${f}/entry_1/instrument_1/detector_1/data | grep -m 1 -q -e '\.'
     if  [ $? -eq 0 ]
     then
