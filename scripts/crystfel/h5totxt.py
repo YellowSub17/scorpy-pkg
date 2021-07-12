@@ -36,12 +36,12 @@ else:
 
 
 
-outf = open(f'{outfpath}.txt', 'w')
+outf = open(f'{__DATADIR}/{outfpath}.txt', 'w')
 outf.write('# #frameNumber, peak_x_raw, peak_y_raw, totalIntensity\n')
 
 
 if ncrystals is None:
-    h5f = h5py.File(f'{infpath}.h5', 'r')
+    h5f = h5py.File(f'{__DATADIR}/{infpath}.h5', 'r')
     data = h5f['entry_1/instrument_1/detector_1/data'][:]
     h5f.close()
 
@@ -52,51 +52,30 @@ if ncrystals is None:
 
 
 else:
-    for n in range(1, ncrystals):
-        h5f = h5py.File(f'{infpath}-{n}.h5', 'r')
+    for n in range(1, ncrystals+1):
+        print(n)
+        h5f = h5py.File(f'{__DATADIR}/{infpath}-{n}.h5', 'r')
         data = h5f['entry_1/instrument_1/detector_1/data'][:]
         h5f.close()
 
         for peak_x_raw, peak_y_raw in zip(*np.where(data>0)):
             outf.write(f'{n} {peak_x_raw} {peak_y_raw} {data[peak_x_raw, peak_y_raw]}\n')
 
-        outf.close()
-
-
-
-geo = scorpy.ExpGeom(f'{__DATADIR}/geoms/agipd_2304_vj_opt_v3.geom')
-pk = scorpy.PeakData(f'{__DATADIR}/out.txt', geo, cxi_flag=False)
-
-geo.plot_panels()
-pk.plot_peaks(cmap='hot')
-plt.show()
+    outf.close()
 
 
 
 # geo = scorpy.ExpGeom(f'{__DATADIR}/geoms/agipd_2304_vj_opt_v3.geom')
-# # pk = scorpy.PeakData(outfname, geo, cxi_flag=False)
+# pk = scorpy.PeakData(f'{__DATADIR}/out.txt', geo, cxi_flag=False)
 
-# # plt.figure()
-# # ax = plt.axes()
-# # ax.set_facecolor('#000000')
-# # geo.plot_panels()
-# # pk.plot_peaks(cmap='summer')
-# # plt.colorbar()
-
-
-
-
-# pk = scorpy.PeakData(f'{scorpy.env.__DATADIR}/out.h5', geo)
+# print(pk.scat_rect.shape)
 
 # plt.figure()
-# ax = plt.axes()
-# ax.set_facecolor('#000000')
 # geo.plot_panels()
-# pk.plot_peaks(cmap='summer')
+# pk.plot_peaks(cmap='hot')
 # plt.colorbar()
 
-
-
 # plt.show()
+
 
 

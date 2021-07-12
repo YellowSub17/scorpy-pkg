@@ -20,6 +20,7 @@ class PeakData(PeakDataProperties):
         self.read_df(df, cxi_flag)
 
         # multiple frames can be in a single peak file, so list the unique frames
+        #todo: fix bug when only one peak in df
         self._frame_numbers = np.unique(self.df[:, 0])
 
         self._scat_rect, self._scat_pol, self._scat_sph = self.get_scat(qmax=qmax)

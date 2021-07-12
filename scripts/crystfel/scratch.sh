@@ -9,21 +9,21 @@ GEOM="${DATA_PATH}/geoms/agipd_2304_vj_opt_v3.geom"
 BEAM_RADIUS="1e-6"
 NUM_PHOTONS="1e12"
 PHOTON_E="9300"
-BEAM_BANDWIDTH="0.001"
+#PHOTON_E="19300"
+BEAM_BANDWIDTH="0.01"
 SPECTRUM_SHAPE="tophat"
-NUM_SAMPLE_SPEC="1"
-BACKGROUND="0"
+NUM_SAMPLE_SPEC="5"
 
 
 ## Crystal Params
 PDB="${DATA_PATH}/xtal/1al1.pdb"
-NUM_CRYSTALS="1"
-SIZE="50"
+NUM_CRYSTALS="32"
+SIZE="100"
 
 
 ## Calc Params
 GRAD='mosaic'
-TAG="out"
+TAG="test/test"
 
 
 
@@ -35,19 +35,15 @@ fi
 
 
 
-
-
-
     #--background=${BACKGROUND} \
-    #--flat \
-
 
 pattern_sim \
     --gpu \
     --random-orientation \
     --really-random \
-    --no-fringes \
     --no-noise \
+    --flat \
+    --no-fringes \
     -n ${NUM_CRYSTALS} \
     --max-size=${SIZE} \
     --min-size=${SIZE} \
@@ -75,11 +71,11 @@ for f in $(ls ${DATA_PATH}/${TAG}*); do
         echo "${f} has no Intensity"
         rm ${f}
     fi
-
 done
 
 
-python3 ./crystfel/h5totxt.py ${DATA_PATH}/out ${DATA_PATH}/out
+
+#python3 ./crystfel/h5totxt.py ${DATA_PATH}/test ${DATA_PATH}/out
 
 
 
