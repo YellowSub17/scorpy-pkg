@@ -1,31 +1,44 @@
 import scorpy
 import numpy as np
 import matplotlib.pyplot as plt
+from scorpy.env import __DATADIR
 
 
-sphv1 = scorpy.SphericalVol(path='../data/dbins/klnm_sphv')
 
-blqq = scorpy.BlqqVol(sphv1.nq, sphv1.nl, sphv1.qmax)
-blqq.fill_from_sphv(sphv1)
+
+cif = scorpy.CifData(f'{__DATADIR}/xtal/fcc-sf.cif')
+
+sphv = scorpy.SphericalVol(100, 180, 360, cif.qmax)
+
+
+
+
+print('filling blqq')
+blqq = scorpy.BlqqVol(sphv.nq, sphv.nl, sphv.qmax)
+blqq.fill_from_sphv(sphv)
 
 
 lams, us = blqq.get_eig()
 
 
-klnm1 = scorpy.KlnmHandler(sphv1.nl, sphv1.nq, sphv1.qmax)
+print('filling ilm')
+klnm1 = scorpy.KlnmHandler(sphv.nl, sphv.nq, sphv.qmax)
+klnm1.fill_ilm(sphv)
 
-klnm1.fill_ilm(sphv1)
 
-
+print('filling klnm')
 klnm2 = klnm1.copy()
-
 klnm2.fill_klnm(us)
 
+
+print('filling kprime')
 klnm3 = klnm2.copy()
 klnm3.fill_kprime(lams)
 
 
+print('filling ilmprime')
 klnm4 = klnm3.copy()
 klnm4.fill_ilmprime(us)
+
 
 

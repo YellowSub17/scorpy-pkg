@@ -66,47 +66,49 @@ psum2 = corr_fj.get_xy().sum(axis=0)[lhs:rhs]
 
 psi = corr_sum.psipts[lhs:rhs]
 
-plt.figure()
-plt.title('Sum Correlation(psi) q1=q2')
-plt.plot(psi, psum1 / psum1.max(), label='2D esp')
-plt.plot(psi, psum2 / psum2.max(), label='3D esp')
-# plt.plot(psi, (psum1*psum2.max()) / (psum2*psum1.max()), label='ratio')
-plt.legend()
+# plt.figure()
+# plt.title('Sum Correlation(psi) q1=q2')
+# plt.plot(psi, psum1 / psum1.max(), label='2D esp')
+# plt.plot(psi, psum2 / psum2.max(), label='3D esp')
+# # plt.plot(psi, (psum1*psum2.max()) / (psum2*psum1.max()), label='ratio')
+# plt.legend()
 
 
 cif = scorpy.CifData(f'{__DATADIR}/xtal/1vds_fj-sf.cif')
 geo = scorpy.ExpGeom(f'{__DATADIR}/geoms/agipd_2304_vj_opt_v3.geom')
-pk = scorpy.PeakData(f'{__DATADIR}/espk/n1024/peaks_1024_9.txt', geo, cxi_flag=False)
+pk = scorpy.PeakData(f'{__DATADIR}/espk/1vds/n1024/peaks_1024_9.txt', geo, cxi_flag=False)
 
 
-plt.figure()
-plt.title('3D esp Intensity Histogram')
-plt.hist(cif.scat_sph[:, 0], bins=100, weights=cif.scat_sph[:, -1], color='orange')
-
-plt.figure()
-plt.title('2D esp Intensity Histogram')
-plt.hist(pk.scat_pol[:, 0], bins=100, weights=pk.scat_pol[:, -1])
 
 
 # plt.figure()
-# plt.title('2D esp Peaks')
-# geo.plot_panels()
-# pk.split_frames()[0].plot_peaks()
+# plt.title('3D esp Intensity Histogram')
+# plt.hist(cif.scat_sph[:, 0], bins=100, weights=cif.scat_sph[:, -1], color='orange')
 
-
+# plt.figure()
+# plt.title('2D esp Intensity Histogram')
+# plt.hist(pk.scat_pol[:, 0], bins=100, weights=pk.scat_pol[:, -1])
 
 
 plt.figure()
-plt.hist(cif.scat_bragg[:,-1], bins=100)
-plt.title('cif inten dist')
-plt.xlabel('Intensity')
-plt.ylabel('frequency')
+plt.title('2D esp Peaks')
+geo.plot_panels()
+pk.split_frames()[0].plot_peaks()
 
-plt.figure()
-plt.hist(pk.scat_pol[:,-1], bins=100)
-plt.title('pk inten dist')
-plt.xlabel('Intensity')
-plt.ylabel('frequency')
+
+
+
+# plt.figure()
+# plt.hist(cif.scat_bragg[:,-1], bins=100)
+# plt.title('cif inten dist')
+# plt.xlabel('Intensity')
+# plt.ylabel('frequency')
+
+# plt.figure()
+# plt.hist(pk.scat_pol[:,-1], bins=100)
+# plt.title('pk inten dist')
+# plt.xlabel('Intensity')
+# plt.ylabel('frequency')
 
 
 plt.show()

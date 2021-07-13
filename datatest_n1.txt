@@ -1,1 +1,0 @@
-# #frameNumber, peak_x_raw, peak_y_raw, totalIntensity

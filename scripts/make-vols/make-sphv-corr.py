@@ -15,7 +15,7 @@ np.random.seed(0)
 
 
 # open the spherical volume to correlate
-sphv = scorpy.SphericalVol(path=f'{__DATADIR}/dbins/fcc_sphv')
+sphv = scorpy.SphericalVol(path=f'{__DATADIR}/low-harm/low-harm_sphv')
 
 
 # initiailize correlation volume
@@ -27,21 +27,20 @@ pp, tt = np.meshgrid(sphv.phipts, sphv.thetapts)
 
 zero_slice = np.zeros( (sphv.ntheta, sphv.nphi))
 
+print('Started: ', time.asctime())
 # for every pair of q1 and q2 shells...
 for q1_ind in range(0, sphv.nq):
     q1_slice = sphv.vol[q1_ind, ...]
     #if the slice is 0, the correlation is 0
     if np.all(q1_slice == zero_slice):
         continue
-    
     for q2_ind in range(q1_ind, sphv.nq):
         q2_slice = sphv.vol[q2_ind, ...]
         #if the slice is 0, the correlation is 0
         if np.all(q2_slice == zero_slice):
             continue
 
-        print(time.asctime())
-        print('q1_ind:', q1_ind, 'q2ind:', q2_ind, '\n')
+        print('q1_ind:', q1_ind, 'q2ind:', q2_ind, end='\r')
         # for every orientation of shell
         for theta_ind in range(0, sphv.ntheta):
             for phi_ind in range(0, sphv.nphi):
@@ -86,4 +85,4 @@ for q1_ind in range(0, sphv.nq):
 
 
 print('Finished: ', time.asctime())
-corr.save(f'{__DATADIR}/dbins/fccsphv_qcor')
+corr.save(f'{__DATADIR}/low-harm/low-harm_qcor')
