@@ -19,7 +19,7 @@ corr_sum = scorpy.CorrelationVol(100, 180, 1.4)
 for n in [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]:
     for seed in range(10):
         print('seed:', seed, 'n:', n)
-        corr_seed = scorpy.CorrelationVol(path=f'{__DATADIR}/dbins/espk/ensemble_n{n}_{seed}')
+        corr_seed = scorpy.CorrelationVol(path=f'{__DATADIR}/espk/espk-dbinsensemble_n{n}_{seed}')
 
         corr_sum.vol += corr_seed.vol
 

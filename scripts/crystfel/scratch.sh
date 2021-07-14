@@ -9,7 +9,6 @@ GEOM="${DATA_PATH}/geoms/agipd_2304_vj_opt_v3.geom"
 BEAM_RADIUS="1e-6"
 NUM_PHOTONS="1e12"
 PHOTON_E="9300"
-#PHOTON_E="19300"
 BEAM_BANDWIDTH="0.01"
 SPECTRUM_SHAPE="tophat"
 NUM_SAMPLE_SPEC="3"
@@ -17,13 +16,13 @@ NUM_SAMPLE_SPEC="3"
 
 ## Crystal Params
 PDB="${DATA_PATH}/xtal/1al1.pdb"
-NUM_CRYSTALS="64"
-SIZE="100"
+NUM_CRYSTALS="1"
+SIZE="50"
 
 
 ## Calc Params
 GRAD='mosaic'
-TAG="test/test"
+TAG="x/2d2n-pk"
 
 
 
@@ -36,13 +35,13 @@ fi
 
 
     #--background=${BACKGROUND} \
+    #--flat \
 
 pattern_sim \
     --gpu \
     --random-orientation \
-    --really-random \
     --no-noise \
-    --flat \
+    --really-random \
     --no-fringes \
     -n ${NUM_CRYSTALS} \
     --max-size=${SIZE} \
@@ -62,21 +61,20 @@ pattern_sim \
 
 
 
-for f in $(ls ${DATA_PATH}/${TAG}*.h5); do
+for f in $(ls ${DATA_PATH}/${TAG}); do
     h5ls -d ${f}/entry_1/instrument_1/detector_1/data | grep -m 1 -q -e '\.'
     if  [ $? -eq 0 ]
     then
         echo "${f} has Intensity"
     else
         echo "${f} has no Intensity"
-        rm ${f}
     fi
 done
 
 
 
-#python3 ./crystfel/h5totxt.py ${DATA_PATH}/test ${DATA_PATH}/out
 
+python3 crystfel/checkh5.py ${TAG}
 
 
 

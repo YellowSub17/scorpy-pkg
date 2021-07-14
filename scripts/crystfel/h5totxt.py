@@ -65,17 +65,3 @@ else:
 
 
 
-# geo = scorpy.ExpGeom(f'{__DATADIR}/geoms/agipd_2304_vj_opt_v3.geom')
-# pk = scorpy.PeakData(f'{__DATADIR}/out.txt', geo, cxi_flag=False)
-
-# print(pk.scat_rect.shape)
-
-# plt.figure()
-# geo.plot_panels()
-# pk.plot_peaks(cmap='hot')
-# plt.colorbar()
-
-# plt.show()
-
-
-

@@ -1,13 +1,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import h5py
+from .expgeom import ExpGeom
+from ..env import __DATADIR
 
 from .readerspropertymixins import PeakDataProperties
 
+DEFAULT_GEO = ExpGeom(f'{__DATADIR}/geoms/agipd_2304_vj_opt_v3.geom')
 
 class PeakData(PeakDataProperties):
 
-    def __init__(self, df, geo, cxi_flag=True, qmax=None):
+    def __init__(self, df, geo=DEFAULT_GEO, cxi_flag=True, qmax=None):
         '''
         handler for a peaks.txt file
         df: dataframe of the peak data, or str file path to txt
@@ -45,14 +48,14 @@ class PeakData(PeakDataProperties):
             elif df[-2:] == 'h5':
                 h5f = h5py.File(df, 'r')
                 data = h5f['entry_1/instrument_1/detector_1/data'][:]
-                assert np.all(data !=0), 'Loaded H5 file has no intensity'
+                # assert np.all(data !=0), 'Loaded 5 file has no intensity'
                 h5f.close()
 
                 loc = np.where(data >0)
                 df = np.zeros( (len(loc[0]), 4))
                 df[:,1] = loc[1]
-                df[:,2] = loc[2]
-                df[:,3] = data[loc[1], loc[2]]
+                df[:,2] = loc[0]
+                df[:,3] = data[loc[0], loc[1]]
                 self._df = df
 
                 # assert False, 'ERROR: h5 to pk not implemented'
