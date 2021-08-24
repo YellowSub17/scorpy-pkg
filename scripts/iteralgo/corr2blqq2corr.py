@@ -14,7 +14,7 @@ nl = 81
 # branch 1
 cif = scorpy.CifData(path=f'{scorpy.__DATADIR}/xtal/fcc-sf.cif', qmax=20)
 corr1 = scorpy.CorrelationVol(nq,npsi, cif.qmax)
-corr1.fill_from_cif(cif, cords='scat_sph')
+corr1.fill_from_cif(cif, method='scat_sph')
 print('corr1 done')
 
 blqq2 = scorpy.BlqqVol(nq, nl,cif.qmax)
@@ -25,7 +25,7 @@ corr4 = scorpy.CorrelationVol(nq,npsi, cif.qmax)
 corr4.fill_from_blqq(blqq2, inc_odds=True)
 print('corr4 done')
 
-sphv = scorpy.SphericalVol(nq, ntheta, nphi, cif.qmax, normalization='4pi')
+sphv = scorpy.SphericalVol(nq, ntheta, nphi, cif.qmax)
 sphv.fill_from_cif(cif)
 sphv_scat_sph = sphv.ls_pts()
 print('sphv done')
@@ -66,17 +66,21 @@ blqq5.fill_from_corr(corr6, inc_odds=True)
 print('blqq5 done')
 
 
+rcond=1
 
-# for i, corr in enumerate([corr1, corr2, corr3, corr4, corr5, corr6]):
-    # corr.plot_q1q2()
-    # plt.title(f'corr{i+1}')
+for i, corr in enumerate([corr1, corr2, corr3, corr4, corr5, corr6]):
+    corr.plot_q1q2()
+    plt.title(f'corr{i+1}')
+    plt.axis([-1,1,10, 18])
+    plt.savefig(f'/home/pat/Documents/cloudstor/phd/latex/scorpy-script-reports/figs/iteralgo-corr{i+1}rcond{rcond}.png')
 
 
-l = 8
+
+
 for i, blqq in enumerate([blqq1, blqq2, blqq3, blqq4, blqq5]):
     blqq.plot_q1q2()
     plt.title(f'blqq{i+1} q1=q2')
+    plt.axis([0,80,10, 18])
+    plt.savefig(f'/home/pat/Documents/cloudstor/phd/latex/scorpy-script-reports/figs/iteralgo-blqq{i+1}rcond{rcond}.png')
 
-    # blqq.plot_slice(2, l)
-    # plt.title(f'blqq{i+1} L={l}')
 plt.show()

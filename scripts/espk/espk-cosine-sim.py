@@ -21,10 +21,10 @@ for n in ns:
 
     sims = np.zeros((nseeds, nseeds)) + 1.234567e-27
     for i in range(nseeds):
-        corr1 = scorpy.CorrelationVol(path=f'../data/dbins/espk/ensemble_n{n}_{i}.dbin')
+        corr1 = scorpy.CorrelationVol(path=f'{scorpy.__DATADIR}/espk/espk-dbins/ensemble_n{n}_{i}')
 
         for j in range(i + 1, nseeds):
-            corr2 = scorpy.CorrelationVol(path=f'../data/dbins/espk/ensemble_n{n}_{j}.dbin')
+            corr2 = scorpy.CorrelationVol(path=f'{scorpy.__DATADIR}/espk/espk-dbins/ensemble_n{n}_{j}')
 
             print('n:', n, 'i:', i, 'j:', j)
 
@@ -51,6 +51,7 @@ for n in ns:
     plt.xlabel('Seed')
     plt.ylabel('Seed')
     plt.colorbar()
+    # plt.savefig(f'/home/pat/Documents/cloudstor/phd/latex/scorpy-script-reports/figs/espk-cossim-n{n}.png')
 
 
 plt.figure()
@@ -58,6 +59,8 @@ plt.errorbar(ns, aves, yerr=stds, fmt='b.', barsabove=True)
 plt.title('Cosine Similarity of Simulated Hits')
 plt.xlabel('# of hits per run')
 plt.ylabel('Similarity')
+# plt.savefig('/home/pat/Documents/cloudstor/phd/latex/scorpy-script-reports/figs/espk-cossim-ave.png')
+
 
 
 plt.show()

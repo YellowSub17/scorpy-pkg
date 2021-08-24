@@ -33,7 +33,7 @@ blqq1.fill_from_sphv(sphv)
 
 
 # CorrelationVol from SphericalVol of single spherical harmonics
-corr1 = scorpy.CorrelationVol(path=f'{__DATADIR}/low-harm/low-harm_qcor.dbin')
+corr1 = scorpy.CorrelationVol(path=f'{__DATADIR}/low-harm/low-harm_qcor')
 
 
 
@@ -61,16 +61,37 @@ corr4.fill_from_blqq(blqq3, inc_odds=False)
 
 
 sphv.plot_slice(0, 4)
-plt.title('sphv')
+plt.title('sphv L=2 M=1')
+plt.savefig(f'/home/pat/Documents/cloudstor/phd/latex/scorpy-script-reports/figs/low-harm-recon-sphv21.png')
 
-for i, corr in enumerate([corr1, corr2, corr3]):
+sphv.plot_slice(0, 9)
+plt.title('sphv L=4 M=2')
+plt.savefig(f'/home/pat/Documents/cloudstor/phd/latex/scorpy-script-reports/figs/low-harm-recon-sphv42.png')
+
+for i, corr in enumerate([corr1, corr2, corr3, corr4]):
     corr.plot_q1q2()
     plt.title(f'corr{i+1}')
+    plt.savefig(f'/home/pat/Documents/cloudstor/phd/latex/scorpy-script-reports/figs/low-harm-recon-corr{i+1}.png')
+
 
 
 l = 0
-for i, blqq in enumerate([blqq1, blqq2, ]):
+for i, blqq in enumerate([blqq1, blqq2, blqq3 ]):
     blqq.plot_slice(2, l)
     plt.title(f'blqq{i+1}, l={l}')
+    plt.savefig(f'/home/pat/Documents/cloudstor/phd/latex/scorpy-script-reports/figs/low-harm-recon-blqq{i+1}l{l}.png')
+
+
+l = 2
+for i, blqq in enumerate([blqq1, blqq2, blqq3 ]):
+    blqq.plot_slice(2, l)
+    plt.title(f'blqq{i+1}, l={l}')
+    plt.savefig(f'/home/pat/Documents/cloudstor/phd/latex/scorpy-script-reports/figs/low-harm-recon-blqq{i+1}l{l}.png')
+
+l = 4
+for i, blqq in enumerate([blqq1, blqq2,  blqq3]):
+    blqq.plot_slice(2, l)
+    plt.title(f'blqq{i+1}, l={l}')
+    plt.savefig(f'/home/pat/Documents/cloudstor/phd/latex/scorpy-script-reports/figs/low-harm-recon-blqq{i+1}l{l}.png')
 
 plt.show()

@@ -120,6 +120,14 @@ class CifData(CifDataProperties):
 
         return bragg, scattering, spherical
 
+    def make_2D(self, lam):
+
+        if lam is None:
+            self._scat_sph[:,1] = np.pi/2
+        else:
+            self._scat_sph[:,1] = np.arccos( self._scat_sph[:,0]*lam/2)
+
+
     def bin_sph(self, nq, ntheta, nphi):
 
         qs = self.scat_sph[:, 0]

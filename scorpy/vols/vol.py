@@ -50,10 +50,16 @@ class Vol(VolProps):
         if type(path) == str:
             path = Path(path)
 
+        #check if path exists
+        assert Path(f'{path}_log.txt').is_file(), f'ERROR: file {path} not found'
+
+
+
         tag = path.stem
         config = cfp.ConfigParser()
         # print('Reading file:',f'{path.parent}/{tag}_log.txt')
         config.read(f'{path.parent}/{tag}_log.txt')
+
 
         self._nx = int(config['vol']['nx'])
         self._ny = int(config['vol']['ny'])

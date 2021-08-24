@@ -69,6 +69,9 @@ class BlqqVol(Vol, BlqqVolProps):
             fmat[:, l] = leg_vals
 
         fmat_inv = np.linalg.pinv(fmat, rcond=1e-1)
+        # fmat_inv = np.linalg.pinv(fmat)
+
+
         # calc with svd
         # so we can pull out uvs
         # reuse uvs for iteralgo
