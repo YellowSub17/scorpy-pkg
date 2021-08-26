@@ -48,7 +48,7 @@ class BlqqVol(Vol, BlqqVolProps):
 
 
 
-    def fill_from_corr(self, corr, inc_odds=False):
+    def fill_from_corr(self, corr, inc_odds=False, rcond=None):
         assert corr.nq == self.nq, 'CorrelationVol and BlqqVol have different nq'
         assert corr.qmax == self.qmax, 'CorrelationVol and BlqqVol have different qmax'
 
@@ -68,7 +68,12 @@ class BlqqVol(Vol, BlqqVolProps):
             # leg_vals = 4*np.pi * special.eval_legendre(l, args)
             fmat[:, l] = leg_vals
 
-        fmat_inv = np.linalg.pinv(fmat, rcond=1e-1)
+        #if rcond is given, use it, else, use default
+        if rcond is not None:
+            fmat_inv = np.linalg.pinv(fmat, rcond=rcond)
+        else:
+            fmat_inv = np.linalg.pinv(fmat)
+
         # fmat_inv = np.linalg.pinv(fmat)
 
 
