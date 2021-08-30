@@ -5,38 +5,47 @@ class VolProps:
 
     @property
     def nx(self):
+        '''Number of voxels in x-axis direction.'''
         return int(self._nx)
 
     @property
     def ny(self):
+        '''Number of voxels in y-axis direction.'''
         return int(self._ny)
 
     @property
     def nz(self):
+        '''Number of voxels in z-axis direction.'''
         return int(self._nz)
 
     @property
     def xmin(self):
+        '''Minimum value of x-axis.'''
         return self._xmin
 
     @property
     def ymin(self):
+        '''Minimum value of y-axis.'''
         return self._ymin
 
     @property
     def zmin(self):
+        '''Minimum value of z-axis.'''
         return self._zmin
 
     @property
     def xmax(self):
+        '''Maximum value of x-axis.'''
         return self._xmax
 
     @property
     def ymax(self):
+        '''Maximum value of y-axis.'''
         return self._ymax
 
     @property
     def zmax(self):
+        '''Maximum value of z-axis.'''
         return self._zmax
 
     @property

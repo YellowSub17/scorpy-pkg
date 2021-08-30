@@ -12,12 +12,37 @@ from datetime import datetime
 
 
 class Vol(VolProps):
+    """
+    A class to describe and arbitrary volume or 3D function.
+
+    ...
+    Attributes:
+        nx,ny,nz : int
+            Number of voxels in each of x, y, and z axes.
+
+        xmin,ymin,zmin : float
+            Minimum values for each of the x, y, and z axes.
+
+        xmax,ymax,zmax : float
+            Maximum values for each of the x, y, and z axes.
+
+        xwrap, ywrap, zwrap : bool
+            Indicates if x, y or z axes are period (True) or not (False).
+
+        comp : bool
+            Indicates if values are complex (True) or real (False).
+
+
+
+
+    """
 
     def __init__(self, nx=10, ny=10, nz=10,
-                 xmax=1, ymax=1, zmax=1,
                  xmin=0, ymin=0, zmin=0,
+                 xmax=1, ymax=1, zmax=1,
                  xwrap=False, ywrap=False, zwrap=False,
                  comp=False, path=None):
+
 
         if path is not None:
             self._load(path)
@@ -57,7 +82,6 @@ class Vol(VolProps):
 
         tag = path.stem
         config = cfp.ConfigParser()
-        # print('Reading file:',f'{path.parent}/{tag}_log.txt')
         config.read(f'{path.parent}/{tag}_log.txt')
 
 
