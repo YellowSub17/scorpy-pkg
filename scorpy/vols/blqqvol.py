@@ -39,15 +39,6 @@ class BlqqVol(Vol, BlqqVolProps):
 
 
 
-
-
-
-
-
-
-
-
-
     def fill_from_corr(self, corr, inc_odds=False, rcond=None):
         assert corr.nq == self.nq, 'CorrelationVol and BlqqVol have different nq'
         assert corr.qmax == self.qmax, 'CorrelationVol and BlqqVol have different qmax'
@@ -97,17 +88,9 @@ class BlqqVol(Vol, BlqqVolProps):
 
 
 
-
-
-
-
-
-
-
     def fill_from_sphv(self, sphv, inc_odds=False):
         assert sphv.nq == self.nq, 'SphericalVol and BlqqVol have different nq'
         assert sphv.qmax == self.qmax, 'SphericalVol and BlqqVol have different nq'
-        
         all_q_coeffs = sphv.get_all_q_coeffs()
 
         for i, q1_coeffs in enumerate(all_q_coeffs):
@@ -119,8 +102,6 @@ class BlqqVol(Vol, BlqqVolProps):
                 if not inc_odds:
                     multi[:,1::2,:] =0
 
-                # if multi.min() <0:
-                    # print(i, j, multi.min(), np.where(multi==multi.min()))
                 
                 self.vol[i, j + i, :] = multi.sum(axis=0).sum(axis=1)[:self.nl]
                 if j > 0:
