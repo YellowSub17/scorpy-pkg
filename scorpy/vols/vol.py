@@ -7,11 +7,12 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 
 from .volspropertymixins import VolProps
+from .volsplotmixins import VolPlot
 
 from datetime import datetime
 
 
-class Vol(VolProps):
+class Vol(VolProps, VolPlot):
     """scorpy.Vol:
     A class to describe an arbitrary volume or 3D function.
 
@@ -256,7 +257,6 @@ class Vol(VolProps):
                 standard deviation of the guassian in each x,y,z axis.
         ...
         '''
-
         # make linear spaces and meshes for each kernel direction
         x_space = np.linspace(-kern_L, kern_L, kern_n)
         y_space = np.linspace(-kern_L, kern_L, kern_n)
@@ -291,91 +291,7 @@ class Vol(VolProps):
             xy[xi, :] = self.vol[xi, xi, :]
         return xy
 
-    def plot_xy(self, new_fig=True, log=False, extent='default', aspect='auto', title=''):
-        '''scorpy.Vol.plot_xy()
-        Plot the x=y plane of the volume.
-
-        Arguments:
-            
-        '''
-        if new_fig:
-            plt.figure()
-        im = self.get_xy()
-        if log:
-            im = np.log(np.abs(im) + 1)
-        plt.imshow(im, origin='lower', extent=[
-                   self.zmin, self.zmax, self.xmin, self.xmax], aspect=aspect)
-        if extent is None:
-            plt.imshow(im, origin='lower', aspect=aspect)
-
-        if new_fig:
-            plt.colorbar()
-        plt.title(f'{title}')
-
-    def plot_sumax(self, axis=0, new_fig=True, aspect='auto', extent=True, cmap='viridis', log=False, title=''):
-
-        im = self.vol.sum(axis=axis)
-
-        if log:
-            im = np.log(np.abs(im) + 1)
-
-        if new_fig:
-            plt.figure()
-
-        if extent:
-            plt.imshow(im, origin='lower', extent=self.get_extent(
-                axis), aspect=aspect, cmap=cmap)
-        else:
-            plt.imshow(im, origin='lower', aspect=aspect, cmap=cmap)
-
-        if new_fig:
-            plt.colorbar()
-        plt.title(f'{title}')
-
-    def plot_slice(self, axis=0, index=0, new_fig=True, aspect='auto', extent=True, cmap='viridis', log=False):
-
-        im = np.rollaxis(self.vol, axis)[index, ...]
-
-        if log:
-            im = np.log(np.abs(im) + 1)
-        if new_fig:
-            plt.figure()
-
-        if extent:
-            plt.imshow(im, origin='lower',
-                       extent=self.get_extent(axis), aspect=aspect, cmap=cmap)
-        else:
-            plt.imshow(im, origin='lower', aspect=aspect)
-
-        if new_fig:
-            plt.colorbar()
-
-    def plot_line(self, axis=0, in1=0, in2=0, new_fig=True):
-
-        line = np.rollaxis(self.vol, axis)[in1, in2, ...]
-        if self.comp:
-            line = np.abs(line)
-        if new_fig:
-            plt.figure()
-        plt.plot(line)
-
-    # def get_extent(self, axis):
-        # if axis == 0:
-            # return [self.zmin, self.zmax, self.ymin, self.ymax]
-        # elif axis == 1:
-            # return [self.zmin, self.zmax, self.xmin, self.xmax]
-        # else:
-            # return [self.xmin, self.xmax, self.ymin, self.ymax]
-
-    def get_extent(self, axis):
-        if axis == 0:
-            return [self.zmin, self.zmax, self.ymin, self.ymax]
-        elif axis == 1:
-            return [self.zmin, self.zmax, self.xmin, self.xmax]
-        else:
-            return [self.xmin, self.xmax, self.ymin, self.ymax]
-
-
+ 
 
     def ls_pts(self):
         loc = np.where(self.vol !=0)

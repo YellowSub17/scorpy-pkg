@@ -6,12 +6,8 @@ import matplotlib.pyplot as plt
 import scorpy
 
 
+v = scorpy.Vol(20,20,20, 0,0,0, 1,1,1)
 
 
-vwrap = scorpy.Vol(6,10,10, 0,0,0, 360, 1, 2, True, False, True)
-
-print(scorpy.Vol.__doc__)
-print(scorpy.Vol.nx.__doc__)
-
-
+v._setup_fig()
 
