@@ -7,7 +7,7 @@ from matplotlib.colors import Normalize
 
 class VolPlot:
 
-    def get_extent(self, axis):
+    def get_extent(self, extent_axis):
         '''scorpy.Vol.get_extent():
         When plotting a slice of the volume, get the bounds of the figure.
 
@@ -21,18 +21,165 @@ class VolPlot:
                 higher horizontal bounds for the plot.
         ...
         '''
-        if axis == 0:
-            return [self.zmin, self.zmax, self.ymin, self.ymax]
-        elif axis == 1:
-            return [self.zmin, self.zmax, self.xmin, self.xmax]
+
+
+
+    def _plot_2D(self, im, extent_axis=1, fig=None, axes=None, log=False, cmap='viridis', cb=True, vminmax=(None, None)):
+        '''scorpy.Vol._plot_2D()
+        Plot the 2D get_image.
+
+        ...
+        Arguments:
+            im : numpy.ndarray
+                2D array to be plotted
+
+            extent_axis : int
+                axis perpendicular to the image plane.
+
+            fig : matplotlib.figure.Figure
+                Figure to plot on. Default None will make a new figure.
+
+            axes : matplotlib.axes._subplot.AxesSubplot
+                Axes to plot on. Used for subplots.
+
+            log : bool
+                Flag for plotting log10(|x|+1) instead of x.
+
+            cmap : str | matplotlib.colors.LinearSegmentedColormap
+                Colourmap of the plot.
+
+            cb : bool
+                Flag for plott colourbar beside plot
+        ...
+        '''
+
+
+        # Make figure if none given
+        if fig is None:
+            fig = plt.figure()
+            axes = plt.gca()
+
+        #Preprocessing: log intensity scale
+        if log:
+            im = np.log10(np.abs(im)+1)
+
+        if extent_axis == 0:
+            extent = [self.zmin, self.zmax, self.ymin, self.ymax]
+        elif extent_axis == 1:
+            extent = [self.zmin, self.zmax, self.xmin, self.xmax]
         else:
-            return [self.xmin, self.xmax, self.ymin, self.ymax]
+            extent = [self.xmin, self.xmax, self.ymin, self.ymax]
+
+        axes.imshow(im, origin='lower', extent=extent, aspect='auto', cmap=cmap)
+
+        # Postprocessing: colorscale limits
+        vmin, vmax = vminmax
+        if vmin is None:
+            vmin = im.min()
+        if vmax is None:
+            vmax = im.max()
+
+        # Add colorbar
+        if cb:
+            norm = Normalize(vmin, vmax, clip=True)
+            fig.colorbar(ScalarMappable(norm), ax=axes)
+
+        # Set colorlimits
+        for axes_im in axes.get_images():
+            axes_im.set_clim(vmin,vmax)
 
 
 
-    # def _plot_2D(self, im, fig=None, axes=None, log=False, cmap='viridis', cb=True, cminmax=(None, None)):
+
+    def plot_xy(self, fig=None, axes=None, log=False, cmap='viridis', cb=True, vminmax=(None, None)):
+        '''scorpy.Vol.plot_xy()
+        Plot the x=y plane of the volume.
+
+        '''
+        im = self.get_xy()
+        self._plot_2D(im, 1, fig, axes, log, cmap, cb, vminmax)
+
+    def plot_sumax(self, axis, fig=None, axes=None, log=False, cmap='viridis', cb=True, vminmax=(None, None)):
+        '''scorpy.Vol.plot_xy()
+        Plot the x=y plane of the volume.
+
+        ...
+        Arguments:
+            axis : int
+                Axis through which to integrate through.
+        ...
+        '''
+        im = self.vol.sum(axis=axis)
+        self._plot_2D(im, axis, fig, axes, log, cmap, cb, vminmax)
 
 
+
+
+
+    # def plot_xy(self, fig=None, axes=None, log=False, cmap='viridis', cb=True):
+        # '''scorpy.Vol.plot_xy()
+        # Plot the x=y plane of the volume.
+
+        # ...
+        # Arguments:
+            # fig : matplotlib.figure.Figure
+                # Figure to plot on. Default None will make a new figure.
+
+            # axes : matplotlib.axes._subplot.AxesSubplot
+                # Axes to plot on. Used for subplots.
+
+            # log : bool
+                # Flag for plotting log10(|x|+1) instead of x.
+
+            # cmap : str | matplotlib.colors.LinearSegmentedColormap
+                # Colourmap of the plot.
+
+            # cb : bool
+                # Flag for plott colourbar beside plot
+        # ...
+        # '''
+        # im = self.get_xy()
+        # if log:
+            # im = np.log10(np.abs(im)+1)
+
+        # if fig is None:
+            # fig = plt.figure()
+            # axes = plt.gca()
+
+        # axes.imshow(im, origin='lower', extent=self.get_extent(1), aspect='auto', cmap=cmap)
+        # if cb:
+
+            # norm = Normalize(im.min(), im.max())
+            # fig.colorbar(ScalarMappable(norm), ax=axes)
+
+
+    # def plot_sumax(self, axis=1, fig=None, axes=None, log=False, cmap='viridis', cb=True, vminmax=(None, None)):
+        # '''scorpy.Vol.plot_sumax()
+        # Plot the sum of values through an axis of the volume.
+
+        # ...
+        # Arguments:
+            # axis : int
+                # Axis through which to integrate through.
+
+            # fig : matplotlib.figure.Figure
+                # Figure to plot on. Default None will make a new figure.
+
+            # axes : matplotlib.axes._subplot.AxesSubplot
+                # Axes to plot on. Used for subplots.
+
+            # log : bool
+                # Flag for plotting log10(|x|+1) instead of x.
+
+            # cmap : str | matplotlib.colors.LinearSegmentedColormap
+                # Colourmap of the plot.
+
+            # cb : bool
+                # Flag for plott colourbar beside plot
+        # ...
+        # '''
+
+        # im = self.vol.sum(axis=axis)
         # if log:
             # im = np.log10(np.abs(im)+1)
 
@@ -54,99 +201,6 @@ class VolPlot:
 
         # for im in axes.get_images():
             # im.set_clim(vmin,vmax)
-
-
-
-
-
-
-
-
-    def plot_xy(self, fig=None, axes=None, log=False, cmap='viridis', cb=True):
-        '''scorpy.Vol.plot_xy()
-        Plot the x=y plane of the volume.
-
-        ...
-        Arguments:
-            fig : matplotlib.figure.Figure
-                Figure to plot on. Default None will make a new figure.
-
-            axes : matplotlib.axes._subplot.AxesSubplot
-                Axes to plot on. Used for subplots.
-
-            log : bool
-                Flag for plotting log10(|x|+1) instead of x.
-
-            cmap : str | matplotlib.colors.LinearSegmentedColormap
-                Colourmap of the plot.
-
-            cb : bool
-                Flag for plott colourbar beside plot
-        ...
-        '''
-        im = self.get_xy()
-        if log:
-            im = np.log10(np.abs(im)+1)
-
-        if fig is None:
-            fig = plt.figure()
-            axes = plt.gca()
-
-        axes.imshow(im, origin='lower', extent=self.get_extent(1), aspect='auto', cmap=cmap)
-        if cb:
-
-            norm = Normalize(im.min(), im.max())
-            fig.colorbar(ScalarMappable(norm), ax=axes)
-
-
-    def plot_sumax(self, axis=1, fig=None, axes=None, log=False, cmap='viridis', cb=True, vminmax=(None, None)):
-        '''scorpy.Vol.plot_sumax()
-        Plot the sum of values through an axis of the volume.
-
-        ...
-        Arguments:
-            axis : int
-                Axis through which to integrate through.
-
-            fig : matplotlib.figure.Figure
-                Figure to plot on. Default None will make a new figure.
-
-            axes : matplotlib.axes._subplot.AxesSubplot
-                Axes to plot on. Used for subplots.
-
-            log : bool
-                Flag for plotting log10(|x|+1) instead of x.
-
-            cmap : str | matplotlib.colors.LinearSegmentedColormap
-                Colourmap of the plot.
-
-            cb : bool
-                Flag for plott colourbar beside plot
-        ...
-        '''
-
-        im = self.vol.sum(axis=axis)
-        if log:
-            im = np.log10(np.abs(im)+1)
-
-        if fig is None:
-            fig = plt.figure()
-            axes = plt.gca()
-
-        axes.imshow(im, origin='lower', extent=self.get_extent(axis), aspect='auto', cmap=cmap)
-
-        vmin, vmax = vminmax
-        if vmin is None:
-            vmin = im.min()
-        if vmax is None:
-            vmax = im.max()
-
-        if cb:
-            norm = Normalize(vmin, vmax, clip=True)
-            fig.colorbar(ScalarMappable(norm), ax=axes)
-
-        for im in axes.get_images():
-            im.set_clim(vmin,vmax)
 
 
 
