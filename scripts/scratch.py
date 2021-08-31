@@ -7,26 +7,38 @@ plt.close('all')
 import scorpy
 
 
-v = scorpy.Vol(20,20,25, 0,0,0, 1,1,1)
+v = scorpy.Vol(10,10,10, 0,0,0, 1,1,1)
 
-v.vol = np.random.random(v.vol.shape)
+
+
+
+v.vol = np.ones(v.vol.shape)
+
+
+for i in range(10):
+    v.vol[i,...] *=i
+
+v.vol +=1
+
+
 
 
 fig, axes = plt.subplots(2,2)
 
-# v.plot_sumax(0, fig, axes[0,0], vminmax=(None, None))
-v.plot_sumax(0, vminmax=(None, None))
-v.plot_sumax(0, fig, axes[0,1], vminmax=(None, 9))
-v.plot_sumax(0, fig, axes[1,0], vminmax=(10, None))
-v.plot_sumax(0, fig, axes[1,1], vminmax=(9, 10))
+
+v.plot_xy(fig=fig, axes=axes[0,0])
+v.plot_slice(axis=0, index=0, fig=fig, axes=axes[0,1])
+v.plot_slice(axis=0, index=2, fig=fig, axes=axes[1,0])
+axes[1,0].set_title('snap')
+v.plot_slice(axis=2, index=4, fig=fig, axes=axes[1,1], xlabel='x', title='yahoo')
 
 
-v.plot_xy(vminmax=(0.51, 0.52))
+
+
+
+
 
 
 plt.show()
 
 
-# v.plot_xy()
-
-# plt.show()
