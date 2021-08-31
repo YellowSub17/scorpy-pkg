@@ -15,3 +15,6 @@ from .iteralgo.klnmhandler import KlnmHandler
 from .env import __DATADIR, __TESTDATADIR, __SCORPYDIR
 
 
+from . import plot
+
+
