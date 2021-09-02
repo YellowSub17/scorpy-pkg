@@ -60,6 +60,24 @@ class SphericalVol(Vol, SphericalVolProps):
         assert cif.qmax == self.qmax, 'CifData and SphericalVol have different qmax'
         self.fill_from_scat_sph(cif.scat_sph)
 
+    def fill_from_iqlm(self, iqlm):
+        '''scorpy.SphericalVol.fill_from_iqlm():
+
+        '''
+
+        for q_ind in range(self.nq):
+            coeffs = iqlm.vals[q_ind]
+            pysh_grid =pysh.shclasses.SHCoeffs.from_array(coeffs).expand()
+            self.vol[q_ind,...] = pysh_grid.to_array()[:-1,:-1]
+
+
+    # def set_q_coeffs(self, q_ind, coeffs):
+        # pysh_coeffs = pysh.shclasses.SHCoeffs.from_array(coeffs)
+        # pysh_grid = pysh_coeffs.expand()
+        # self.vol[q_ind, ...] = pysh_grid.to_array()[:-1, :-1]
+
+
+
 
 
     def fill_from_scat_sph(self, scat_sph):
@@ -80,25 +98,30 @@ class SphericalVol(Vol, SphericalVolProps):
 
 
 
-    def get_all_q_coeffs(self):
-        all_coeffs = []
-        for q_slice in self.vol:
-            pysh_grid = pysh.shclasses.DHRealGrid(q_slice)
-            coeffs = pysh_grid.expand().coeffs
-            all_coeffs.append(coeffs)
-        return all_coeffs
 
 
 
-    def get_q_coeffs(self, q_ind):
-        q_slice = self.vol[q_ind, ...]
-        pysh_grid = pysh.shclasses.DHRealGrid(q_slice)
-        c = pysh_grid.expand().coeffs
-        return c
 
 
-    def set_q_coeffs(self, q_ind, coeffs):
-        pysh_coeffs = pysh.shclasses.SHCoeffs.from_array(coeffs)
-        pysh_grid = pysh_coeffs.expand()
-        self.vol[q_ind, ...] = pysh_grid.to_array()[:-1, :-1]
+    # def get_all_q_coeffs(self):
+        # all_coeffs = []
+        # for q_slice in self.vol:
+            # pysh_grid = pysh.shclasses.DHRealGrid(q_slice)
+            # coeffs = pysh_grid.expand().coeffs
+            # all_coeffs.append(coeffs)
+        # return all_coeffs
+
+
+
+    # def get_q_coeffs(self, q_ind):
+        # q_slice = self.vol[q_ind, ...]
+        # pysh_grid = pysh.shclasses.DHRealGrid(q_slice)
+        # c = pysh_grid.expand().coeffs
+        # return c
+
+
+    # def set_q_coeffs(self, q_ind, coeffs):
+        # pysh_coeffs = pysh.shclasses.SHCoeffs.from_array(coeffs)
+        # pysh_grid = pysh_coeffs.expand()
+        # self.vol[q_ind, ...] = pysh_grid.to_array()[:-1, :-1]
 

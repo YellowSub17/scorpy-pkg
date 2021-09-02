@@ -9,7 +9,8 @@ from .readers.cifdata import CifData
 from .readers.expgeom import ExpGeom
 from .readers.peakdata import PeakData
 
-from .iteralgo.klnmhandler import KlnmHandler
+from .iteralgo.iqlmhandler import IqlmHandler
+
 
 
 from .env import __DATADIR, __TESTDATADIR, __SCORPYDIR

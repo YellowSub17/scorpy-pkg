@@ -5,7 +5,7 @@ import numpy as np
 
 
 
-class KlnmHandlerProps:
+class IqlmHandlerProps:
 
 
     @property
