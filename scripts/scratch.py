@@ -25,53 +25,28 @@ import scorpy
 
 
 
-sphv = scorpy.SphericalVol(10, 180, 360,1)
-
-# sphv.vol = np.random.random(sphv.vol.shape)
-iqlm = scorpy.IqlmHandler(sphv.nl, sphv.nq, sphv.qmax)
-
-
-im = np.zeros( (sphv.ntheta, sphv.nphi))
+nq = 1
+nphi = 360
+ntheta = 180
+qmax= 1
 
 
 
 
-xx,yy = np.meshgrid(np.linspace(0, 2*np.pi, sphv.nphi),
-                    np.linspace(0, np.pi, sphv.ntheta))
+sphv = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 
-
-im = np.sin(xx)+np.cos(yy)
-
+iqlm = scorpy.IqlmHandler(nq, sphv.nl, qmax) 
 
 
 
-
-sphv.vol[3,...] = np.abs(im)
-
-
-sphv.plot_slice(0, 3, title='original')
+iqlm.vals[0][0,5,4] = 1
+iqlm.vals[0][1,6,4] = 1
 
 
+sphv.fill_from_iqlm(iqlm)
 
 
-print(iqlm.vals[3])
-iqlm.fill_from_sphv(sphv)
-print(iqlm.vals[3])
-
-
-
-
-sphv2 = scorpy.SphericalVol(10, 180, 360,1)
-
-sphv2.fill_from_iqlm(iqlm)
-
-
-sphv2.plot_slice(0, 3, title='from iqlm')
-
-
-
-
-
+sphv.plot_slice(0,0)
 
 
 

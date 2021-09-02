@@ -6,7 +6,7 @@ import pyshtools as pysh
 
 class IqlmHandler(IqlmHandlerProps):
 
-    def __init__(self, nl, nq, qmax):
+    def __init__(self, nq, nl, qmax):
         self._nq = nq
         self._nl = nl
         self._qmax = qmax
@@ -29,30 +29,27 @@ class IqlmHandler(IqlmHandlerProps):
             self.vals[iq] = coeffs
 
 
+    def mask_ilm(self,lower=None, upper=None):
+
+        if lower is None:
+            lower=0
+        if upper is None:
+            upper=self.nl
+
+        
+        mask = np.zeros( (self.nl, self.nl, 2))
+
+        mask[lower:upper, :,:] = 1
+
+        for q_ind in range(self.nq):
+            self.vals[q_ind] *= mask
 
 
 
-    def get_all_q_coeffs(self):
-        all_coeffs = []
-        for q_slice in self.vol:
-            pysh_grid = pysh.shclasses.DHRealGrid(q_slice)
-            coeffs = pysh_grid.expand().coeffs
-            all_coeffs.append(coeffs)
-        return all_coeffs
+
+        
 
 
-
-    def get_q_coeffs(self, q_ind):
-        q_slice = self.vol[q_ind, ...]
-        pysh_grid = pysh.shclasses.DHRealGrid(q_slice)
-        c = pysh_grid.expand().coeffs
-        return c
-
-
-    def set_q_coeffs(self, q_ind, coeffs):
-        pysh_coeffs = pysh.shclasses.SHCoeffs.from_array(coeffs)
-        pysh_grid = pysh_coeffs.expand()
-        self.vol[q_ind, ...] = pysh_grid.to_array()[:-1, :-1]
 
 
 

@@ -55,15 +55,21 @@ class SphericalVol(Vol, SphericalVolProps):
         Fill the SphericalVol from a CifData object
         Arguments:
             cif : scorpy.CifData
-                The CifData object to to fill the CorrelationVol
+                The CifData object to to fill the SphericalVol
         '''
         assert cif.qmax == self.qmax, 'CifData and SphericalVol have different qmax'
         self.fill_from_scat_sph(cif.scat_sph)
 
     def fill_from_iqlm(self, iqlm):
         '''scorpy.SphericalVol.fill_from_iqlm():
-
+        Fill the SphericalVol from a IqlmHandler object
+        Arguments:
+            iqlm : scorpy.Iqlm
+                The IqlmHandler object to to fill the SphericalVol
         '''
+        assert iqlm.qmax==self.qmax, 'IqlmHandler and SphericalVol have different qmax'
+        assert iqlm.nl==self.nl, 'IqlmHandler and SphericalVol have different nl'
+        assert iqlm.nq==self.nq, 'IqlmHandler and SphericalVol have different nq'
 
         for q_ind in range(self.nq):
             coeffs = iqlm.vals[q_ind]
@@ -71,10 +77,8 @@ class SphericalVol(Vol, SphericalVolProps):
             self.vol[q_ind,...] = pysh_grid.to_array()[:-1,:-1]
 
 
-    # def set_q_coeffs(self, q_ind, coeffs):
-        # pysh_coeffs = pysh.shclasses.SHCoeffs.from_array(coeffs)
-        # pysh_grid = pysh_coeffs.expand()
-        # self.vol[q_ind, ...] = pysh_grid.to_array()[:-1, :-1]
+
+
 
 
 
