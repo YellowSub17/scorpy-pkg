@@ -9,22 +9,26 @@ from .volspropertymixins import CorrelationVolProps
 
 
 class CorrelationVol(Vol, CorrelationVolProps):
-    '''
-    Representation of a scattering correlation volume.
-
-    Arguments:
-        nq (int): number of scattering magnitude bins.
-        ntheta (int): number of angular bins.
-        qmax (float): correlation magnitude limit [1/A].
-        path (str): path to dbin (and log) if being created from memory.
-    '''
+    """scorpy.CorrelationVol:
+    A representaion of the scattering correlation function.
+    Attributes:
+        nq : int
+        npsi : int
+        qmax : float
+        dq,dpsi : float
+        qpts,psipts : numpy.array
+    Methods:
+        CorrelationVol.fill_from_cif()
+        CorrelationVol.fill_from_blqq()
+        CorrelationVol.fill_from_peakdata()
+        CorrelationVol.correlate_scat_rect()
+        CorrelationVol.correlate_scat_pol()
+        CorrelationVol.correlate_scat_sph()
+        CorrelationVol.plot_q1q2()
+    """
 
     def __init__(self, nq=100, npsi=180, qmax=1, path=None):
-        '''
-        Class constructor.
-        '''
         Vol.__init__(self, nq, nq, npsi, qmax, qmax, 1, 0, 0, -1, False, False, False, comp=False, path=path)
-
         self.plot_q1q2 = self.plot_xy
 
     def _save_extra(self, f):
@@ -42,18 +46,18 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
     def fill_from_cif(self, cif, method='scat_sph'):
         '''
-        Fill the CorrelationVol from a CifData
-
+        scorpy.CorrelationVol.fill_from_cif():
+            Fill the CorrelationVol from a CifData object
         Arguments:
-            cif (CifData): The CifData object to to fill the CorrelationVol
-
-        Returns:
-            None. Updates self.cvol
+            cif : scorpy.CifData
+                The CifData object to to fill the CorrelationVol
+            method : str
+                Method to fill the correlation volume. Either "scat_sph" or "scat_rect"
+                to use the spherical or rectilinear coordinates of the CifData.
         '''
 
         assert cif.qmax==self.qmax, 'CifData and CorrelationVol hae different qmax values.'
         assert method in ['scat_sph', 'scat_rect'], 'Invalid correlation method.'
-
 
         if method == 'scat_sph':
             self.correlate_scat_sph(cif.scat_sph)
@@ -64,18 +68,21 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
     def fill_from_peakdata(self, pk, method='scat_sph', verbose=True):
-
         '''
-        Fill the CorrelationVol from a PeakData
-
+        scorpy.CorrelationVol.fill_from_peakdata():
+            Fill the CorrelationVol from a PeakData object.
         Arguments:
-
-        Returns:
-            None. Updates self.cvol
+            pk : scorpy.PeakData
+                The PeakData object to to fill the CorrelationVol
+            method : str
+                Method to fill the correlation volume. Either "scat_sph" or "scat_pol"
+                to use the spherical or polar coordinates of the PeakData.
+            verbose : bool
+                Flag for printing extra information to the screen while correlating.
         '''
 
         assert self.qmax == pk.qmax, 'Peakdata and CorrelationVol have different qmax values.'
-        assert method in ['scat_pol', 'scat_sph', 'scat_rect'], 'Invalid correlation method.'
+        assert method in ['scat_pol', 'scat_sph'], 'Invalid correlation method.'
 
 
         nframes = len(pk.split_frames())
@@ -86,7 +93,6 @@ class CorrelationVol(Vol, CorrelationVolProps):
             print('############')
             print(f'Filling CorrelationVol from Peakdata via {method}.')
             print(f'Correlating {nscats} vectors over {nframes} frames. (Approx. {int(nscats/nframes)} vectors per frame.)')
-
             print(f'Correlation started: {time.asctime()}\n')
 
         if method=='scat_pol':
@@ -115,20 +121,15 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
 
-
-
-
-
-
     def fill_from_blqq(self, blqq, inc_odds=False):
         '''
-        Fill the CorrelationVol from a BlqqVol
-
+        scorpy.CorrelationVol.fill_from_blqq():
+            Fill the CorrelationVol from a BlqqVol object.
         Arguments:
-            blqq (BlqqVol): The BlqqVol object to to fill the CorrelationVol
-
-        Returns:
-            None. Updates self.cvol
+            blqq : BlqqVol
+                The BlqqVol object to to fill the CorrelationVol.
+            inc_odds : bool
+                Flag for including odd order harmonics in the calculation.
         '''
         assert self.nq == blqq.nq, 'BlqqVol and CorrelationVol have different nq'
         assert self.qmax == blqq.qmax, 'BlqqVol and CorrelationVol have different qmax'
@@ -146,22 +147,19 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
         # for every even spherical harmonic
         for l in range(0, blqq.nl, lskip):
-            # leg_vals = (1 / (4 * np.pi)) * special.eval_legendre(l, args)
             leg_vals = special.eval_legendre(l, args)
             fmat[:, l] = leg_vals
 
         # for every q1 and q2 position
         for q1_ind in range(self.nq):
             for q2_ind in range(q1_ind, self.nq):
-                # vector as a function of L
-                blv = blqq.vol[q1_ind, q2_ind, :]
+                blv = blqq.vol[q1_ind, q2_ind, :] # vector as a function of L
 
                 for psi_ind in range(self.npsi):
                     ft = fmat[psi_ind, :]
                     x = np.dot(blv, ft)
 
-                    # fill the volume
-                    self.vol[q1_ind, q2_ind, psi_ind] = x
+                    self.vol[q1_ind, q2_ind, psi_ind] = x # fill the volume
                     if q1_ind != q2_ind:  # if not on diagonal
                         self.vol[q2_ind, q1_ind, psi_ind] = x
 
@@ -175,15 +173,13 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
     def correlate_scat_pol(self, qti):
         '''
-        Correlate diffraction peaks in 2D polar coordinates.
-
+        scorpy.CorrelationVol.correlate_scat_pol():
+            Correlate diffraction peaks in 2D polar coordinates.
         Arguments:
-            qti (n x 3 array): list of peaks to correlate. Columns should be
-                                qti[:,0] = polar radius of peak
-                                qti[:,1] = polar angle of peak
-                                qti[:,2] = intensity of peak
-        Returns:
-            None. Updates self.cvol with correlations.
+            qti : numpy.ndarray
+                n by 3 array of n peaks to correlate. Columns of array should be
+                polar radius or peak (A-1), polar angle of peak (degrees), and
+                intensity of the peak.
         '''
         # only correlate less than qmax
         le_qmax = np.where(qti[:, 0] <= self.qmax)[0]
@@ -218,18 +214,14 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
     def correlate_scat_rect(self, qxyzi):
         '''
-        Correlate diffraction peaks in 3D rectilinear coordinates.
-
+        scorpy.CorrelationVol.correlate_scat_pol():
+            Correlate diffraction peaks in 3D rectilinear coordinates.
         Arguments:
-            qxyzi (n x 4 array): list of peaks to correlate. Columns should be
-                                qti[:,0] = qx coordinate of scattering vector
-                                qti[:,1] = qy coordinate of scattering vector
-                                qti[:,2] = qz coordinate of scattering vector
-                                qti[:,3] = intensity of peak
-        Returns:
-            None. Updates self.cvol with correlations
+            qxyzi : numpy.ndarray
+                n by 4 array of n peaks to correlate. First 3 columns of array
+                should be the reciprocal space coordinates of peaks (qx,qy,qz),
+                and the last coloumn should be the intensity of the peak.
         '''
-
         # only correlate less than qmax
         qmags = np.linalg.norm(qxyzi[:, :3], axis=1)
         le_qmax = np.where(qmags <= self.qmax)[0]
@@ -264,16 +256,13 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
     def correlate_scat_sph(self, qtpi):
         '''
-        Correlate diffraction peaks in 3D spherical coordinates.
-
+        scorpy.CorrelationVol.correlate_scat_sph():
+            Correlate diffraction peaks in 3D spherical coordinates.
         Arguments:
-            qxyzi (n x 4 array): list of peaks to correlate. Columns should be
-                                qti[:,0] = qx coordinate of scattering vector
-                                qti[:,1] = qy coordinate of scattering vector
-                                qti[:,2] = qz coordinate of scattering vector
-                                qti[:,3] = intensity of peak
-        Returns:
-            None. Updates self.cvol with correlations
+            qtpi : numpy.ndarray
+                n by 4 array of n peaks to correlate. Columns of the array should
+                be the spherical radius of the peak (A-1), polar angle of the peak
+                (theta, radians), and the azimuthial angle of the peak (phi, radians).
         '''
         # only correlate less than qmax
         le_qmax = np.where(qtpi[:, 0] <= self.qmax)[0]
@@ -310,11 +299,3 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
 
-    # def force_sym(self):
-        # half_ind = int(self.npsi / 2)
-        # for psi_ind in range(0, half_ind):
-            # self.vol[..., psi_ind] = self.vol[..., -1 - psi_ind]
-
-    # def sub_t_mean(self):
-        # means = self.vol.mean(axis=(0, 1))
-        # self.vol -= means[None, None, :]

@@ -13,27 +13,28 @@ from datetime import datetime
 
 
 class Vol(VolProps, VolPlot):
-    """scorpy.Vol:
-    A class to describe an arbitrary volume or 3D function.
-
-    ...
-    Attributes:
-        nx,ny,nz : int
-
-        xmin,ymin,zmin : float
-
-        xmax,ymax,zmax : float
-
-        xwrap, ywrap, zwrap : bool
-
-        comp : bool
-
-        vol : numpy.ndarray
-    ...
-
-    Methods:
-
-
+    """
+        scorpy.Vol:
+            A class to describe an arbitrary volume or 3D function.
+        Attributes:
+            nx,ny,nz : int
+            xmin,ymin,zmin : float
+            xmax,ymax,zmax : float
+            dx,dy,dz : float
+            xpts,ypts,zpts : numpy.array
+            xwrap, ywrap, zwrap : bool
+            comp : bool
+            vol : numpy.ndarray
+        Methods:
+            Vol.save()
+            Vol.copy()
+            Vol.get_eig()
+            Vol.convolve()
+            Vol.get_xy()
+            Vol.ls_pts()
+            Vol.plot_xy()
+            Vol.plot_slice()
+            Vol.plot_sumax()
     """
 
     def __init__(self, nx=10, ny=10, nz=10,
@@ -41,7 +42,6 @@ class Vol(VolProps, VolPlot):
                  xmax=1, ymax=1, zmax=1,
                  xwrap=False, ywrap=False, zwrap=False,
                  comp=False, path=None):
-
 
         if path is not None:
             self._load(path)
@@ -70,14 +70,12 @@ class Vol(VolProps, VolPlot):
                 self._vol = np.zeros((nx, ny, nz))
 
     def _load(self, path):
-        '''scorpy.Vol._load(path):
-        Loads a Vol object from dbin and log file.
-
-        ...
+        '''
+	scorpy.Vol._load(path):
+            Loads a Vol object from dbin and log file.
         Arguments:
             path : str
                 path to files to be loaded. The filename should exclude filetype.
-        ...
         '''
         assert type(path) == str, 'Argument "path" must be string'
         path = Path(path)
@@ -118,13 +116,11 @@ class Vol(VolProps, VolPlot):
         self._load_extra(config)
 
     def save(self, path):
-        """scorpy.Vol.save(path):
-        Save the current Vol to a dbin and log file.
-
-        ...
+        """
+        scorpy.Vol.save(path):
+            Save the current Vol to a dbin and log file.
         Arguments:
             path: path of the save location with file tag. The filename should exclude filetype.
-        ...
         """
 
         assert type(path) == str,  'Argument "path" must be string'
@@ -161,64 +157,58 @@ class Vol(VolProps, VolPlot):
         f.close()
 
     def _save_extra(self, f):
-        """scorpy.Vol._save_extra(f):
-        Used by children classes to save extra information to log files.
-
-        ...
+        """
+        scorpy.Vol._save_extra(f):
+            Used by children classes to save extra information to log files.
         Arguments:
             f : _io.TestIOWrapper
                 file object of log file, to write extra info.
-        ...
         """
         pass
 
     def _load_extra(self, config):
-        """scorpy.Vol._load_extra(f):
-        Used by children classes to load extra information from log files.
-
-        ...
+        """
+        scorpy.Vol._load_extra(f):
+            Used by children classes to load extra information from log files.
         Arguments:
             config : configparser.Configparser
                 configparser object to load extra information from.
-        ...
         """
         pass
 
     def copy(self):
-        '''scorpy.Vol.copy():
-        Make a copy of the Vol, while keeping the original.
-
-        ...
-        Returns:
-            scorpy.Vol
-        ...
         '''
-        return copy.deepcopy(self)
+	scorpy.Vol.copy():
+            Make a copy of the Vol, while keeping the original.
+        Returns:
+            v :  scorpy.Vol
+                Copy of this volume object
+        '''
+        v = copy.deepcopy(self)
+        return v
 
     def get_eig(self, herm=True):
-        '''scorpy.Vol.get_eig():
-        Calcualte the eigenvectors and eigenvalues of the x and y axes.
-
-        ...
+        '''
+	scorpy.Vol.get_eig():
+            Calcualte the eigenvectors and eigenvalues of the x and y axes.
         Arguments:
             herm : bool
                 Flag for calculating on hermitian matrices.
         Returns:
             lams : numpy.ndarray
                 nx by nz array of eigenvalues. zth column of lams are the
-            eigenvalues for the zth slice of the vol.
-
+                eigenvalues for the zth slice of the vol.
             us : numpy.ndarray
                 nx by ny by nz array of eigenvectors. yth column of the zth slice
                 of us is the eigen vector associated with the eigenvalue of the zth column in lams.
-        ...
         '''
         if herm:
-            lams = np.zeros((self.nx, self.nz))
-            us = np.zeros((self.nx, self.ny, self.nz))
+            dtype = np.float64
         else:
-            lams = np.zeros((self.nx, self.nz), dtype=np.complex64)
-            us = np.zeros((self.nx, self.ny, self.nz), dtype=np.complex64)
+            dtype = np.complex64
+
+        lams = np.zeros((self.nx, self.nz), dtype=dtype)
+        us = np.zeros((self.nx, self.ny, self.nz), dtype=dtype)
 
         for z in range(0, self.nz, 2):
             if herm:
@@ -228,26 +218,12 @@ class Vol(VolProps, VolPlot):
 
             lams[:, z] = lam
             us[:, :, z] = u
-
-        if not herm:
-            if np.all(np.imag(lams) == 0) and np.all(np.imag(us) == 0):
-                print('vol.get_eig(): lams and us are all real')
-                lams = np.real(lams)
-                us = np.real(us)
-            else:
-                print('vol.get_eig(): lams and us are NOT all real')
-                print(
-                    f'max imag: lam: {np.max(np.imag(lams))}, us: {np.max(np.imag(us))}')
-                lams = np.real(lams)
-                us = np.real(us)
-
         return lams, us
 
     def convolve(self, kern_L=2, kern_n=5, std_x=1, std_y=1, std_z=1):
-        '''scorpy.Vol.convolve():
-        Convolve the current vol with a guassian kernel and replace it.
-
-        ...
+        '''
+	scorpy.Vol.convolve():
+            Convolve the current vol with a guassian kernel and replace it.
         Arguments:
             kern_L : int
                 +/- upper and lower limit of the kernel.
@@ -255,7 +231,6 @@ class Vol(VolProps, VolPlot):
                 number of pixels in the kernel matrix.
             std_x, std_y, std_z : float
                 standard deviation of the guassian in each x,y,z axis.
-        ...
         '''
         # make linear spaces and meshes for each kernel direction
         x_space = np.linspace(-kern_L, kern_L, kern_n)
@@ -273,10 +248,9 @@ class Vol(VolProps, VolPlot):
         self.vol = blur
 
     def get_xy(self):
-        '''scorpy.Vol.get_xy():
-        Extract diagonal x=y plane through vol. Only possible if x and y axes are identical.
-
-        ...
+        '''
+	scorpy.Vol.get_xy():
+            Extract diagonal x=y plane through vol. Only possible if x and y axes are identical.
         Returns:
             xy : numpy.ndarray
                 nx by nz array of values in the x=y plane through the volume.
@@ -291,10 +265,21 @@ class Vol(VolProps, VolPlot):
             xy[xi, :] = self.vol[xi, xi, :]
         return xy
 
- 
 
-    def ls_pts(self):
-        loc = np.where(self.vol !=0)
+    def ls_pts(self, thresh=0):
+        '''
+	scorpy.Vol.ls_pts():
+            List the points of intensity in the volume above a treshold.
+        Arguments:
+            thresh : float
+                Threshold value
+        Returns:
+            pts : numpy.ndarray
+                n by 4 array of n points in the volume that are above the threshold.
+                first three columns are the x,y, and z axis positions (according to
+                xpts, ypts, zpts), last column is the intensity value at that position.
+        '''
+        loc = np.where(self.vol >thresh)
         npts = loc[0].size
 
         pts = np.zeros( ( npts, 4))
@@ -310,6 +295,3 @@ class Vol(VolProps, VolPlot):
         return pts
 
 
-    # def round_noise(self, r=1e-15):
-        # loc = np.where(np.abs(self.vol) < r)
-        # self.vol[loc] = 0

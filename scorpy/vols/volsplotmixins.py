@@ -163,19 +163,3 @@ class VolPlot:
 
 
 
-
-
-
-    # def plot_line(self, axis=0, in1=0, in2=0, new_fig=True):
-
-        # line = np.rollaxis(self.vol, axis)[in1, in2, ...]
-        # if self.comp:
-            # line = np.abs(line)
-        # if new_fig:
-            # plt.figure()
-        # plt.plot(line)
-
-
-
-
-
