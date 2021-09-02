@@ -12,8 +12,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
     """scorpy.CorrelationVol:
     A representaion of the scattering correlation function.
     Attributes:
-        nq : int
-        npsi : int
+        nq, npsi : int
         qmax : float
         dq,dpsi : float
         qpts,psipts : numpy.array

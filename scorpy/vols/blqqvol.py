@@ -8,15 +8,18 @@ import matplotlib.pyplot as plt
 
 
 class BlqqVol(Vol, BlqqVolProps):
-    '''
-    Representation of the B_l(q1,q2) volume, an invertible correlation matrix.
-
-    Arguments:
-        nq (int): number of scattering magnitude bins.
-        nl (int): number of spherical harmonics (inc. 0th harmonic, so 1+lmax).
-        qmax (float): correlation magnitude limit [1/A].
-        path (str): path to dbin (and log) if being created from memory.
-    '''
+    """scorpy.Blqq:
+    A representaion of a Harmonic Order Correlation function.
+    Attributes:
+        nq, nl : int
+        qmax : float
+        dq : float
+        qpts : numpy.array
+    Methods:
+        BlqqVol.fill_from_corr()
+        BlqqVol.fill_from_sphv()
+        BlqqVol.plot_q1q2()
+    """
 
     def __init__(self, nq=100, nl=37, qmax=1, path=None, comp=False):
         Vol.__init__(self, nx=nq, ny=nq, nz=nl,
@@ -40,6 +43,18 @@ class BlqqVol(Vol, BlqqVolProps):
 
 
     def fill_from_corr(self, corr, inc_odds=False, rcond=None):
+        '''
+        scorpy.BlqqVol.fill_from_corr():
+            Fill the Blqq from a CorrelationVol object
+        Arguments:
+            corr : scorpy.CorrelationVol
+                The CorrelationVol object to to fill from.
+            inc_odds : bool
+                Flag for including odd order harmonic functions in calculation.
+            rcond : float
+                Condition number scale for SVD calculation.
+        '''
+
         assert corr.nq == self.nq, 'CorrelationVol and BlqqVol have different nq'
         assert corr.qmax == self.qmax, 'CorrelationVol and BlqqVol have different qmax'
 
@@ -67,13 +82,10 @@ class BlqqVol(Vol, BlqqVolProps):
 
         # fmat_inv = np.linalg.pinv(fmat)
 
-
         # calc with svd
         # so we can pull out uvs
         # reuse uvs for iteralgo
         # in iteralgo, tweak algo type/inputs + rcond
-
-
 
         for iq1 in range(self.nq):
             for iq2 in range(iq1, self.nq):
@@ -89,6 +101,15 @@ class BlqqVol(Vol, BlqqVolProps):
 
 
     def fill_from_sphv(self, sphv, inc_odds=False):
+        '''
+        scorpy.BlqqVol.fill_from_sphv():
+            Fill the Blqq from a SphericalVol object
+        Arguments:
+            sphv : scorpy.SphericalVol
+                The CorrelationVol object to to fill from.
+            inc_odds : bool
+                Flag for including odd order harmonic functions in calculation.
+        '''
         assert sphv.nq == self.nq, 'SphericalVol and BlqqVol have different nq'
         assert sphv.qmax == self.qmax, 'SphericalVol and BlqqVol have different nq'
         all_q_coeffs = sphv.get_all_q_coeffs()
@@ -102,7 +123,6 @@ class BlqqVol(Vol, BlqqVolProps):
                 if not inc_odds:
                     multi[:,1::2,:] =0
 
-                
                 self.vol[i, j + i, :] = multi.sum(axis=0).sum(axis=1)[:self.nl]
                 if j > 0:
                     self.vol[j + i, i, :] = multi.sum(axis=0).sum(axis=1)[:self.nl]

@@ -12,35 +12,25 @@ class VolPlot:
     def _plot_2D(self, im, **new_kwargs):
         '''scorpy.Vol._plot_2D()
         Plot the 2D get_image.
-
-        ...
         Arguments:
             im : numpy.ndarray
                 2D array to be plotted
-
         Keyword Arguments:
             extent_axis : int
                 axis perpendicular to the image plane.
-
             fig : matplotlib.figure.Figure
                 Figure to plot on. Default None will make a new figure.
-
             axes : matplotlib.axes._subplot.AxesSubplot
                 Axes to plot on. Used for subplots.
-
             log : bool
                 Flag for plotting log10(|x|+1) instead of x.
-
             cmap : str | matplotlib.colors.LinearSegmentedColormap
                 Colourmap of the plot.
-
             cb : bool
                 Flag for plotting colourbar beside plot
-
             vminmax : tuple
                 Upper and lower bounds of colour limits. Use None on either
                 bound to specify min or max value of image.
-        ...
         '''
         kwargs = {  'extent_axis':1,
                     'fig':None,
@@ -106,10 +96,6 @@ class VolPlot:
     def plot_xy(self, **new_kwargs):
         '''scorpy.Vol.plot_xy()
         Plot the x=y plane of the volume.
-
-        ...
-        Extra Keyword Arguments:
-            See scorpy.Vol._plot_2D.__doc__
         '''
         im = self.get_xy()
         self._plot_2D(im, **new_kwargs)
@@ -120,15 +106,9 @@ class VolPlot:
     def plot_sumax(self, axis, **new_kwargs):
         '''scorpy.Vol.plot_sumax()
         Sum the values through an axis and plot the image.
-
-        ...
         Arguments:
             axis : int
                 Axis through which to integrate through.
-
-        Extra Keyword Arguments:
-            See scorpy.Vol._plot_2D.__doc__
-        ...
         '''
         im = self.vol.sum(axis=axis)
         self._plot_2D(im, extent_axis=axis,**new_kwargs)
@@ -137,20 +117,12 @@ class VolPlot:
     def plot_slice(self, axis, index, **new_kwargs):
         '''scorpy.Vol.plot_slice()
         Extract a slice of the volume (plane perpendicular to an axis) and plot the image.
-
-        ...
         Arguments:
             axis : int
                 Axis perpendicular to slice.
-
             index : int
                 Index of the slice to extract.
-
-        Extra Keyword Arguments:
-            See scorpy.Vol._plot_2D.__doc__
-        ...
         '''
-
         if axis%3==0:
             im = self.vol[index,:,:]
         if axis%3==1:

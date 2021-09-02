@@ -9,18 +9,19 @@ import matplotlib.pyplot as plt
 import time
 
 
+
 class SphericalVol(Vol, SphericalVolProps):
-    '''
-    Representation of a spherical coordinate volume.
-
-    Arguments:
-        nq (int): number of scattering magnitude bins.
-        n_angle: number of angluar bins
-        qmax (float): scattering magnitude limit [1/A].
-        grid_type: type of sampling grid. See https://shtools.oca.eu/shtools/public/grid-formats.html for info
-        path (str): path to dbin (and log) if being created from memory.
-    '''
-
+    """scorpy.SphericalVol:
+    A representaion of the spherical coordinate function.
+    Attributes:
+        nq, ntheta, nphi : int
+        qmax : float
+        dq, dtheta, dphi : float
+        qpts, thetapts, phipts : numpy.array
+    Methods:
+         SphericalVol.fill_from_cif()
+         SphericalVol.fill_from_scat_sph()
+    """
     def __init__(self, nq=100, ntheta=180, nphi=360, qmax=1, comp=False, path=None):
 
         assert nphi == 2 * ntheta, 'nphi must be 2x ntheta for SphericalVol'
@@ -49,33 +50,27 @@ class SphericalVol(Vol, SphericalVolProps):
 
 
 
-
-
-
-
     def fill_from_cif(self, cif):
+        '''scorpy.SphericalVol.fill_from_cif():
+        Fill the SphericalVol from a CifData object
+        Arguments:
+            cif : scorpy.CifData
+                The CifData object to to fill the CorrelationVol
+        '''
         assert cif.qmax == self.qmax, 'CifData and SphericalVol have different qmax'
         self.fill_from_scat_sph(cif.scat_sph)
 
 
 
-
-
-    # def fill_from_klnm(self, klnm):
-        # assert klnm.qmax == self.qmax
-        # assert klnm.nq == self.nq
-
-        # for iq in range(self.nq):
-            # coeffs = np.zeros( (2, self.nl, self.nl) )
-            # for l in range(self.nl):
-                # for im in zip(range(l)):
-                    # pass
-
-
-
-
-
     def fill_from_scat_sph(self, scat_sph):
+        '''scorpy.SphericalVol.fill_from_scat_sph():
+        Fill the SphericalVol from a list of peaks in spherical coordinates.
+        Arguments:
+            scat_sph : numpy.ndarray
+                n by 4 array of n peaks to fill from. Columns of the array should
+                be the spherical radius of the peak (A-1), polar angle of the peak
+                (theta, radians), and the azimuthial angle of the peak (phi, radians).
+        '''
         ite = np.ones(scat_sph[:, 0].shape)
         q_inds = list(map(index_x, scat_sph[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
         theta_inds = list(map(index_x, scat_sph[:, 1], self.ymin * ite, self.ymax * ite, self.ny * ite))

@@ -123,10 +123,6 @@ class VolProps:
         '''
         return np.abs((self.zmax - self.zmin) / (self.nz))
 
-
-    # '''Array of sample points on the axis. If no wrapping, sample points
-    # are at the centre of each voxel. If wrapping, sample points are at the
-    # start of each voxel.'''
     @property
     def xpts(self):
         '''
@@ -187,7 +183,7 @@ class CorrelationVolProps:
     @property
     def nq(self):
         '''
-	scorpy.Vol.nx:
+	scorpy.CorrelationVol.nx:
             Number of voxels in q-axis directions.
         '''
         return self.nx
@@ -245,117 +241,209 @@ class BlqqVolProps:
 
     @property
     def nq(self):
+        '''
+	scorpy.BlqqVol.nx:
+            Number of voxels in q-axis directions.
+        '''
         return self.nx
 
     @property
     def nl(self):
+        '''
+	scorpy.BlqqVol.dq:
+            Number of spherical harmonics.
+        '''
         return self.nz
 
     @property
     def qmax(self):
+        '''
+	scorpy.BlqqVol.qmax:
+            Maximum value of q-axes.
+        '''
         return self.xmax
-
 
     @property
     def dq(self):
+        '''
+	scorpy.BlqqVol.dq:
+            Size of a voxel in q-axis
+        '''
         return self.dx
 
     @property
     def qpts(self):
+        '''
+	scorpy.CorrelationVol.qpts:
+            Array of sample points on the q-axis.
+        '''
         return self.xpts
-
-
-class PadfVolProps:
-
-    @property
-    def nr(self):
-        return self.nx
-
-    @property
-    def npsi(self):
-        return self.nz
-
-    @property
-    def rmax(self):
-        return self.xmax
-
-    @property
-    def dr(self):
-        return self.dx
-
-    @property
-    def dpsi(self):
-        return self.dz
-
-    @property
-    def nl(self):
-        return self._nl
-
-    @property
-    def wavelength(self):
-        return self._wavelength
-
-    @property
-    def rpts(self):
-        return self.xpts
-
-    @property
-    def psipts(self):
-        return self.zpts
 
 
 class SphericalVolProps:
 
     @property
     def nq(self):
+        '''
+	scorpy.SphericalVol.nq:
+            Number of voxels in q-axis directions.
+        '''
         return self.nx
 
     @property
     def ntheta(self):
+        '''
+	scorpy.SphericalVol.ntheta:
+            Number of voxels in theta-axis direction.
+        '''
         return self.ny
 
     @property
     def nphi(self):
+        '''
+	scorpy.SphericalVol.nphi:
+            Number of voxels in phi-axis direction.
+        '''
         return self.nz
 
     @property
     def qmax(self):
+        '''
+	scorpy.SphericalVol.qmax:
+            Maximum value of q-axes.
+        '''
         return self.xmax
 
     @property
     def dq(self):
+        '''
+	scorpy.SphericalVol.dq:
+            Size of a voxel in q-axis
+        '''
         return self.dx
 
     @property
     def dtheta(self):
+        '''
+	scorpy.SphericalVol.dtheta:
+            Size of a voxel in theta-axis
+        '''
         return self.dy
 
     @property
     def dphi(self):
+        '''
+	scorpy.SphericalVol.dphi:
+            Size of a voxel in phi-axis
+        '''
         return self.dz
 
     @property
     def nl(self):
+        '''
+	scorpy.SphericalVol.nl:
+            Number of spherical harmonics to satisfy sampling.
+        '''
         return int(self._nl)
 
     @property
-    def lmax(self):
-        return self.nl - 1
-
-    @property
     def qpts(self):
+        '''
+	scorpy.SphericalVol.qpts:
+            Array of sample points on the q-axis.
+        '''
         return self.xpts
 
     @property
     def thetapts(self):
+        '''
+	scorpy.SphericalVol.thetapts:
+            Array of sample points on the theta-axis.
+        '''
         return self.ypts
 
     @property
     def phipts(self):
+        '''
+	scorpy.SphericalVol.phipts:
+            Array of sample points on the phi-axis.
+        '''
+        return self.zpts
+
+
+class PadfVolProps:
+
+    @property
+    def nr(self):
+        '''
+	scorpy.PadfVol.nr:
+            Number of voxels in r-axis directions.
+        '''
+        return self.nx
+
+    @property
+    def npsi(self):
+        '''
+	scorpy.PadfVol.nr:
+            Number of voxels in psi-axis direction.
+        '''
+        return self.nz
+
+    @property
+    def rmax(self):
+        '''
+	scorpy.PadfVol.rmax:
+            Maximum value of r-axes.
+        '''
+        return self.xmax
+
+    @property
+    def dr(self):
+        '''
+	scorpy.PadfVol.dr:
+            Size of a voxel in r-axis
+        '''
+        return self.dx
+
+    @property
+    def dpsi(self):
+        '''
+	scorpy.PadfVol.dpsi:
+            Size of a voxel in psi-axis
+        '''
+        return self.dz
+
+    @property
+    def nl(self):
+        '''
+	scorpy.PadfVol.nl:
+            Number of spherical harmonics in calculation.
+        '''
+        return self._nl
+
+
+    @property
+    def rpts(self):
+        '''
+	scorpy.PadfVol.rpts:
+            Array of sample points on the r-axis.
+        '''
+        return self.xpts
+
+    @property
+    def psipts(self):
+        '''
+	scorpy.PadfVol.psipts:
+            Array of sample points on the psi-axis.
+        '''
         return self.zpts
 
     @property
-    def normalization(self):
-        return self._normaization
+    def wavelength(self):
+        '''
+	scorpy.PadfVol.wavelength:
+            wavelength of experiment, used in PADF calculation.
+        '''
+        return self._wavelength
 
 
