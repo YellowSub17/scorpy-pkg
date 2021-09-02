@@ -44,9 +44,18 @@ iqlm.vals[0][1,6,4] = 1
 
 
 sphv.fill_from_iqlm(iqlm)
+sphv.plot_slice(0,0, cmap='Dark2')
 
 
-sphv.plot_slice(0,0)
+iqlm.mask_ilm(6, 7)
+
+sphv.fill_from_iqlm(iqlm)
+sphv.plot_slice(0,0, cmap='Dark2')
+
+
+
+
+# iqlm
 
 
 

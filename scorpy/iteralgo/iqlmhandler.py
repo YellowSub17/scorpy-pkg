@@ -37,9 +37,9 @@ class IqlmHandler(IqlmHandlerProps):
             upper=self.nl
 
         
-        mask = np.zeros( (self.nl, self.nl, 2))
+        mask = np.zeros( (2, self.nl, self.nl))
 
-        mask[lower:upper, :,:] = 1
+        mask[:, lower:upper, :] = 1
 
         for q_ind in range(self.nq):
             self.vals[q_ind] *= mask
