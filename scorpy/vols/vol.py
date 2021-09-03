@@ -187,13 +187,15 @@ class Vol(VolProps, VolPlot):
         v = copy.deepcopy(self)
         return v
 
-    def get_eig(self, herm=True):
+    def get_eig(self, herm=True, inc_odds=False):
         '''
 	scorpy.Vol.get_eig():
             Calcualte the eigenvectors and eigenvalues of the x and y axes.
         Arguments:
             herm : bool
                 Flag for calculating on hermitian matrices.
+            inc_odds : bool
+                Flag for including odd z slices
         Returns:
             lams : numpy.ndarray
                 nx by nz array of eigenvalues. zth column of lams are the
@@ -204,17 +206,21 @@ class Vol(VolProps, VolPlot):
         '''
         if herm:
             dtype = np.float64
+            eig_fn = np.linalg.eigh
         else:
             dtype = np.complex64
+            eig_fn = np.linalg.eig
+
+        if inc_odds:
+            zskip=1
+        else:
+            zskip=2
 
         lams = np.zeros((self.nx, self.nz), dtype=dtype)
         us = np.zeros((self.nx, self.ny, self.nz), dtype=dtype)
 
-        for z in range(0, self.nz, 2):
-            if herm:
-                lam, u = np.linalg.eigh(self.vol[..., z])
-            else:
-                lam, u = np.linalg.eig(self.vol[..., z])
+        for z in range(0, self.nz, zskip):
+            lam, u = eig_fn(self.vol[..., z])
 
             lams[:, z] = lam
             us[:, :, z] = u
