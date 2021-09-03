@@ -10,118 +10,68 @@ import scorpy
 
 
 
-nq = 25
+nq = 45
 nphi = 180
 ntheta = 90
 nl = int(ntheta/2)
 qmax= 1
-n_harms = 3
-lmax = 6
-qs = 12
+n_harms = 2
+lmax = 20
+qs=18##working
+# qs=15 #notworking
 
-
-
-
-# sphv = scorpy.SphericalVol(nq,ntheta, nphi, qmax)
-
-# sphv.vol[0, 45,45] =1
-# sphv.vol[0, 60,105] =1
-# sphv.plot_slice(0,0)
-
-# iqlm = scorpy.IqlmHandler(nq, nl, qmax)
-
-# iqlm.fill_from_sphv(sphv)
-# iqlm.mask_ilm(35)
-# iqlm.mask_ilm(lstep=3)
-
-
-
-# sphv.fill_from_iqlm(iqlm)
-
-# sphv.plot_slice(0,0)
-
-
-
-
-
-
-
-
-
-
-
-
-sphv = scorpy.SphericalVol(nq,ntheta, nphi, qmax)
-nl = sphv.nl
-
+# initialize spherical volume and Iqlm handler
+sphv1 = scorpy.SphericalVol(nq,ntheta, nphi, qmax)
 iqlm = scorpy.IqlmHandler(nq, nl, qmax)
+5
 
+# fill each q shell with n_harm harmonics
+print('Spherical Harmonics')
 for q_ind in range(nq):
+
+    print()
     for _ in range(n_harms):
         cs = np.random.randint(0, 2)
-        l = np.random.randint(cs,lmax+1)
+        l = np.random.randint(cs,lmax+1)*2
         m = np.random.randint(cs, l+1)
 
         if cs == 0:
             print(q_ind, l, f'+{m}')
         else:
             print(q_ind, l, f'-{m}')
+        iqlm.vals[q_ind, cs, l, m] += 1
 
 
-        iqlm.vals[q_ind][cs, l, m] += 1
-
-
-
-
-sphv.fill_from_iqlm(iqlm)
-
-sphv.plot_slice(0,qs)
+sphv1.fill_from_iqlm(iqlm)
 
 
 
-
-
-
-
+# get the harmonic order matrix
 blqq = scorpy.BlqqVol(nq, nl, qmax)
-
 blqq.fill_from_iqlm(iqlm)
 
-# blqq.plot_slice(2,4)
-
-
-
-
+# get eigenvalues and vectors
 lams, us = blqq.get_eig()
 
-
-
-
+# knlm -> iqlm prime calculation
 knlm = iqlm.copy()
 knlm.fill_knlm(us)
-
-
-
 iqlmp = knlm.copy()
 iqlmp.fill_iqlm_prime(us)
 
 
 
-sphv.fill_from_iqlm(iqlmp)
-
-sphv.plot_slice(0,qs)
-
-
+# replot harmonics on new spherical volume
+sphv2 = scorpy.SphericalVol(nq,ntheta, nphi, qmax)
+sphv2.fill_from_iqlm(iqlmp)
 
 
+fig, axes = plt.subplots(1,2)
+plt.suptitle(f'SPHV q={qs} before/after iteration')
 
+sphv1.plot_slice(0,qs, fig=fig, axes=axes[0], title='Before', xlabel='$\\phi$ [rad]', ylabel='$\\theta$ [rad]')
 
-
-
-
-
-
-
+sphv2.plot_slice(0,qs, fig=fig, axes=axes[1], title='After', xlabel='$\\phi$ [rad]', ylabel='$\\theta$ [rad]')
 
 
 

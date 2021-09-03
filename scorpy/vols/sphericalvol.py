@@ -29,8 +29,8 @@ class SphericalVol(Vol, SphericalVolProps):
         self._nl = int(ntheta / 2)
 
         Vol.__init__(self, nx=nq, ny=ntheta, nz=nphi,
-                     xmax=qmax, ymax=np.pi, zmax=2 * np.pi,
                      xmin=0, ymin=0, zmin=0,
+                     xmax=qmax, ymax=np.pi, zmax=2 * np.pi,
                      xwrap=False, ywrap=True, zwrap=True,
                      comp=comp, path=path)
 
