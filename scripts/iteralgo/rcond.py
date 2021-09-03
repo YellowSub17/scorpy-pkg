@@ -8,7 +8,7 @@ nq = 100
 ntheta = 180
 nphi = 360
 npsi = 180
-nl = 81
+nl = 90
 
 rcond = 1e-15
 rcond_str = 15
@@ -47,8 +47,12 @@ corr5.fill_from_blqq(blqq3, inc_odds=True)
 print('corr5 done')
 
 # branch 3
+
+iqlm = scorpy.IqlmHandler(nq, nl, cif.qmax)
+iqlm.fill_from_sphv(sphv)
+
 blqq1 = scorpy.BlqqVol(nq, nl,cif.qmax)
-blqq1.fill_from_sphv(sphv, inc_odds=True)
+blqq1.fill_from_iqlm(iqlm, inc_odds=True)
 print('blqq1 done')
 
 corr3 = scorpy.CorrelationVol(nq,npsi, cif.qmax)

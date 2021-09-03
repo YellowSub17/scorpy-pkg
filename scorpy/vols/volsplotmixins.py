@@ -9,6 +9,20 @@ class VolPlot:
 
 
 
+    @property
+    def xlabel(self):
+        return 'x [units]'
+
+    @property
+    def ylabel(self):
+        return 'y [units]'
+
+    @property
+    def zlabel(self):
+        return 'z [units]'
+
+
+
     def _plot_2D(self, im, **new_kwargs):
         '''scorpy.Vol._plot_2D()
         Plot the 2D get_image.
@@ -38,10 +52,10 @@ class VolPlot:
                     'log':False,
                     'cmap':'viridis',
                     'cb':True,
-                    'vminmax':(None, None), 
-                    'title':'',
+                    'vminmax':(None, None),
                     'xlabel':'',
-                    'ylabel':'',}
+                    'ylabel':'',
+                    'title':'',}
 
         kwargs.update(new_kwargs)
 
@@ -61,6 +75,8 @@ class VolPlot:
             extent = [self.zmin, self.zmax, self.xmin, self.xmax]
         else:
             extent = [self.xmin, self.xmax, self.ymin, self.ymax]
+
+
 
         kwargs['axes'].imshow(im, origin='lower', extent=extent, aspect='auto', cmap=kwargs['cmap'])
 
@@ -130,7 +146,6 @@ class VolPlot:
             im = self.vol[:,:,index]
 
         self._plot_2D(im, extent_axis=axis, **new_kwargs)
-
 
 
 
