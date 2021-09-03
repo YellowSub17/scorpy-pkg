@@ -24,7 +24,7 @@ class Vol(VolProps, VolPlot):
             xpts,ypts,zpts : numpy.array
             xwrap, ywrap, zwrap : bool
             comp : bool
-            vol : numpy.ndarray
+vol : numpy.ndarray
         Methods:
             Vol.save()
             Vol.copy()
@@ -299,5 +299,7 @@ class Vol(VolProps, VolPlot):
         pts = pts[pts[:, 1].argsort(kind='mergesort')]
         pts = pts[pts[:, 0].argsort(kind='mergesort')]
         return pts
+
+
 
 

@@ -27,7 +27,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
     """
 
     def __init__(self, nq=100, npsi=180, qmax=1, path=None):
-        Vol.__init__(self, nq, nq, npsi, qmax, qmax, 1, 0, 0, -1, False, False, False, comp=False, path=path)
+        Vol.__init__(self, nq, nq, npsi, 0, 0, -1, qmax, qmax, 1, False, False, False, comp=False, path=path)
         self.plot_q1q2 = self.plot_xy
 
     def _save_extra(self, f):

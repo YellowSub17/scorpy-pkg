@@ -74,7 +74,6 @@ class VolPlot:
 
         #TODO: why is colorbar incorrect when min=max?
         if vmax==vmin:
-            print('Warning: Image has uniform intensity, so colorbar will be incorrect. Turning off colourbar.')
             kwargs['cb']=False
 
         # Add colorbar
