@@ -20,8 +20,7 @@ class IqlmHandler(IqlmHandlerProps):
     def copy(self):
         return copy.deepcopy(self)
 
-    def mask_ilm(self,upperl=None, lowerl=None, lstep=None):
-
+    def mask_l(self,upperl=None, lowerl=None, lstep=None):
         if lowerl is None:
             lower=0
         if upperl is None:
@@ -34,8 +33,7 @@ class IqlmHandler(IqlmHandlerProps):
         self.vals *= mask
 
 
-
-    def set_val(self, q, l, m, val=1):
+    def _check_qlm(self, q, l, m):
         assert abs(m) <= l, 'Cannot set harmonic for M > L.'
         assert q < self.nq, 'q index out of range'
         assert l < self.nl, 'l index out of range'
@@ -43,19 +41,21 @@ class IqlmHandler(IqlmHandlerProps):
             cs=1
         else:
             cs=0
+        return cs
 
-        self.vals[q, cs, l, abs(m)] = val
 
     def get_val(self, q, l, m):
-        assert abs(m) <= l, 'Cannot get harmonic for M > L.'
-        assert q < self.nq, 'q index out of range'
-        assert l < self.nl, 'l index out of range'
-        if m < 0:
-            cs=1
-        else:
-            cs=0
-
+        cs = self._check_qlm(q, l, m)
         return self.vals[q, cs, l, abs(m)]
+
+    def set_val(self, q, l, m, val=1):
+        cs = self._check_qlm(q, l, m)
+        self.vals[q, cs, l, abs(m)] = val
+
+    def add_val(self, q, l, m, val=1):
+        cs = self._check_qlm(q, l, m)
+        self.vals[q, cs, l, abs(m)] += val
+
 
 
 
