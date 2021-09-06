@@ -33,6 +33,32 @@ class IqlmHandler(IqlmHandlerProps):
         mask[:, :, lowerl:upperl:lstep, :] = 1
         self.vals *= mask
 
+
+
+    def set_val(self, q, l, m, val=1):
+        assert abs(m) <= l, 'Cannot set harmonic for M > L.'
+        assert q < self.nq, 'q index out of range'
+        assert l < self.nl, 'l index out of range'
+        if m < 0:
+            cs=1
+        else:
+            cs=0
+
+        self.vals[q, cs, l, abs(m)] = val
+
+    def get_val(self, q, l, m):
+        assert abs(m) <= l, 'Cannot get harmonic for M > L.'
+        assert q < self.nq, 'q index out of range'
+        assert l < self.nl, 'l index out of range'
+        if m < 0:
+            cs=1
+        else:
+            cs=0
+
+        return self.vals[q, cs, l, abs(m)]
+
+
+
     def fill_from_sphv(self, sphv):
 
         for iq, q_slice in enumerate(sphv.vol):
@@ -43,11 +69,7 @@ class IqlmHandler(IqlmHandlerProps):
 
 
 
-
-
-
-    def fill_knlm(self, bl_u):
-        
+    def calc_knlm(self, bl_u):
         #initiailize new values
         new_vals = []
         for iq in range(self.nq):
@@ -63,15 +85,13 @@ class IqlmHandler(IqlmHandlerProps):
                         i_q = self.vals[:,cs, l, m]*self.qpts**2
                         x = np.dot(i_q, bl_u[:, n, l])
 
-                        # if x.max() != 0:
-                            # print(x.max())
 
                         new_vals[n, cs, l, m] = x
         self.vals = new_vals
 
 
 
-    def fill_iqlm_prime(self, bl_u):
+    def calc_iqlm_prime(self, bl_u):
         #initiailize new values
         new_vals = []
         for iq in range(self.nq):
@@ -97,43 +117,11 @@ class IqlmHandler(IqlmHandlerProps):
 
 
 
-#     def fill_ilmprime(self, bl_u):
-
-        # for l in range(0, self.nl, 2):
-            # ul = bl_u[..., l]
-            # for im, m in zip(range(0, 2 * l + 1), range(-l, l + 1)):
-                # kp = self.vals[l][:, im]
-                # ku = np.dot(ul, kp)
-                # self.vals[l][:, im] = ku
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-    # def fill_klnm(self, bl_u):
-
-
-        # for l in range(0, self.nl, 2):
-            # new_vals = np.zeros(self.vals[l].shape)
-            # for im, m in zip(range(0, 2 * l + 1), range(-l, l + 1)):
-                # ilm = self.vals[l][:, im] * self.qpts**2
-
-                # for iq in range(self.nq):
-                    # x = np.dot(ilm, bl_u[:, iq, l])
-                    # new_vals[iq, m] = x
-            # self.vals[l] = new_vals
 
 
 

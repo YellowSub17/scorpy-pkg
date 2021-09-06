@@ -17,13 +17,14 @@ nl = int(ntheta/2)
 qmax= 1
 n_harms = 2
 lmax = 20
+
+
 qs=18##working
-# qs=15 #notworking
+qs=15 #notworking
 
 # initialize spherical volume and Iqlm handler
 sphv1 = scorpy.SphericalVol(nq,ntheta, nphi, qmax)
 iqlm = scorpy.IqlmHandler(nq, nl, qmax)
-5
 
 # fill each q shell with n_harm harmonics
 print('Spherical Harmonics')
