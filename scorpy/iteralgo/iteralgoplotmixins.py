@@ -103,10 +103,6 @@ class IqlmHandlerPlot:
 
 
 
-
-
-
-
     def plot_l(self, l, cs=None, **new_kwargs):
 
         if cs is not None:

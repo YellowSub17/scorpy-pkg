@@ -12,7 +12,7 @@ plt.close('all')
 
 
 
-nq = 1025*4
+nq = 4097
 ntheta = 180
 nphi = 360
 qmax = 1
@@ -28,7 +28,7 @@ iqlm = scorpy.IqlmHandler(nq, nl, qmax)
 print('Filling iqlm')
 for q_ind in range(nq):
 
-    for harm in harms[:q_ind]:
+    for harm in harms[3000:q_ind+3000]:
         iqlm.add_val(q_ind, harm[0], harm[1])
 print('Done.')
 
@@ -39,7 +39,7 @@ print('Done.')
 
 fig, axes = plt.subplots(3,4)
 for i, q_ind in enumerate([2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]):
-    iqlm.plot_q(q_ind,title=f'{q_ind}', fig=fig, axes=axes.flatten()[i], extent=[-iqlm.nl, iqlmp.nl, 0,  iqlm.nl])
+    iqlm.plot_q(q_ind,title=f'{q_ind}', fig=fig, axes=axes.flatten()[i], extent=[-iqlm.nl, iqlm.nl, 0,  iqlm.nl])
 
 fig, axes = plt.subplots(2,3)
 for i, l_ind in enumerate([5, 10, 15, 20, 25, 30]):
