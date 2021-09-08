@@ -42,7 +42,6 @@ class IqlmHandlerPlot:
                     'xlabel':'',
                     'ylabel':'',
                     'title':'',
-                    'suptitle':'',
                     'origin':'lower',
                  }
 
@@ -85,65 +84,40 @@ class IqlmHandlerPlot:
         kwargs['axes'].set_title(kwargs['title'])
         kwargs['axes'].set_xlabel(kwargs['xlabel'])
         kwargs['axes'].set_ylabel(kwargs['ylabel'])
-        kwargs['fig'].suptitle(kwargs['ylabel'])
 
 
 
-    def plot_qharms(self, q_ind, axespos=None, axesneg=None, **new_kwargs):
+    def plot_q(self, q_ind, cs=None, **new_kwargs):
 
-        impos = self.vals[q_ind, 0, :, :]
-        imneg = self.vals[q_ind, 1, :, :]
-
-        if 'fig' not in new_kwargs.keys():
-            if axespos is not None or axesneg is not None:
-                print('Warning: axespos or axesneg is not None but fig not given, ignoring axes given')
-            fig, axes = plt.subplots(2,1)
-            axespos = axes[0]
-            axesneg = axes[1]
-
-            new_kwargs['fig'] = fig
+        if cs is not None:
+            im = self.vals[q_ind, cs, :, :]
+            self._plot_2D(im, **new_kwargs)
 
         else:
-            assert axespos is not None and axesneg is not None, 'If fig is given, axespos and axesneg are required'
-
-        self._plot_2D(impos, axes=axespos,
-                      extent=[0, self.nl,  0, self.nl], **new_kwargs)
-
-        self._plot_2D(imneg, axes=axesneg,  origin='upper',
-                      extent=[0, self.nl, self.nl, 0], **new_kwargs)
+            impos = self.vals[q_ind, 0, :, :]
+            imneg = self.vals[q_ind, 1, :, :0:-1]
+            im = np.concatenate([imneg, impos], 1)
+            self._plot_2D(im, **new_kwargs)
 
 
 
 
-    def plot_lq(self, l, axespos=None, axesneg=None, **new_kwargs):
 
-        impos = self.vals[:, 0, l, :]
-        imneg = self.vals[:, 1, l, :]
 
-        if 'fig' not in new_kwargs.keys():
-            if axespos is not None or axesneg is not None:
-                print('Warning: axespos or axesneg is not None but fig not given, ignoring axes given')
-            fig, axes = plt.subplots(2,1)
-            axespos = axes[0]
-            axesneg = axes[1]
 
-            new_kwargs['fig'] = fig
+
+
+    def plot_l(self, l, cs=None, **new_kwargs):
+
+        if cs is not None:
+            im = self.vals[:, cs, l,  :]
+            self._plot_2D(im.T, **new_kwargs)
 
         else:
-            assert axespos is not None and axesneg is not None, 'If fig is given, axespos and axesneg are required'
-
-        self._plot_2D(impos.T, axes=axespos,
-                      extent=[0, self.qmax,  0, self.nl], ylabel='M+',
-                      xlabel='q [\u00c5]', **new_kwargs)
-
-
-
-        self._plot_2D(imneg.T, axes=axesneg,  origin='upper', ylabel='M-', xlabel='q [\u00c5]',
-                      extent=[0, self.qmax, self.nl, 0], **new_kwargs)
-
-
-
-
+            impos = self.vals[:, 0, l, :]
+            imneg = self.vals[:, 1, l, :0:-1]
+            im = np.concatenate([imneg.T, impos.T], 0)
+            self._plot_2D(im.T, **new_kwargs)
 
 
 

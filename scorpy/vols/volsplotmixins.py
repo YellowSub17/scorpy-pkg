@@ -40,7 +40,9 @@ class VolPlot:
                     'vminmax':(None, None),
                     'xlabel':'',
                     'ylabel':'',
-                    'title':'',}
+                    'title':'',
+                    'origin':'lower'
+                 }
 
         kwargs.update(new_kwargs)
 
@@ -63,7 +65,7 @@ class VolPlot:
 
 
 
-        kwargs['axes'].imshow(im, origin='lower', extent=extent, aspect='auto', cmap=kwargs['cmap'])
+        kwargs['axes'].imshow(im, origin=kwargs['origin'], extent=extent, aspect='auto', cmap=kwargs['cmap'])
 
         # Postprocessing: colorscale limits
         vmin, vmax = kwargs['vminmax']

@@ -5,13 +5,14 @@ import numpy as np
 import scorpy
 
 import matplotlib.pyplot as plt
+plt.close('all')
 
 
 
 
 
 
-nq = 150
+nq = 1025*4
 ntheta = 180
 nphi = 360
 qmax = 1
@@ -20,20 +21,30 @@ nl = int(ntheta/2)
 
 harms = scorpy.utils.harmonic_list(nl)
 
-
-
 iqlm = scorpy.IqlmHandler(nq, nl, qmax)
 
 
-# for q_ind in range(nq):
-    # lm_ind = np.random.randint(0,len(harms))
-    # lm = harms[lm_ind]
-    # print(lm)
-    # iqlm.add_val(q_ind, lm[0], lm[1])
 
+print('Filling iqlm')
 for q_ind in range(nq):
 
-    iqlm.add_val(q_ind, harms[q_ind][0], harms[q_ind][1]) 
+    for harm in harms[:q_ind]:
+        iqlm.add_val(q_ind, harm[0], harm[1])
+print('Done.')
+
+
+
+
+
+
+fig, axes = plt.subplots(3,4)
+for i, q_ind in enumerate([2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]):
+    iqlm.plot_q(q_ind,title=f'{q_ind}', fig=fig, axes=axes.flatten()[i], extent=[-iqlm.nl, iqlmp.nl, 0,  iqlm.nl])
+
+fig, axes = plt.subplots(2,3)
+for i, l_ind in enumerate([5, 10, 15, 20, 25, 30]):
+    iqlm.plot_l(l_ind,title=f'{l_ind}', fig=fig, axes=axes.flatten()[i], extent=[-iqlm.nl,  iqlm.nl, 0, iqlm.qmax])
+
 
 
 
@@ -43,34 +54,20 @@ for q_ind in range(nq):
 sphv = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv.fill_from_iqlm(iqlm)
 
-
-fig, axes = plt.subplots(2,2)
-
-sphv.plot_slice(0,0, fig=fig, axes=axes[0,0], title=f'qind=0')
-sphv.plot_slice(0,1, fig=fig, axes=axes[0,1], title=f'qind=1')
-sphv.plot_slice(0,2, fig=fig, axes=axes[1,0], title=f'qind=2')
-sphv.plot_slice(0,3, fig=fig, axes=axes[1,1], title=f'qind=3')
+fig, axes = plt.subplots(3,4)
+for i, q_ind in enumerate([2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]):
+    sphv.plot_slice(0,q_ind, title=f'{q_ind}', fig=fig, axes=axes.flatten()[i])
 
 
 
 
 iqlmp = iqlm.copy()
-
-iqlmp.vals *=0
-
 iqlmp.fill_from_sphv(sphv)
-
-
-
-iqlm.plot_qharms(-1)
-
-iqlm.plot_lq(12)
-
-
-
-
 
 
 
 
 plt.show()
+
+
+
