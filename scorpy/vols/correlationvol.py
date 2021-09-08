@@ -120,7 +120,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
 
-    def fill_from_blqq(self, blqq, inc_odds=False):
+    def fill_from_blqq(self, blqq, inc_odds=True):
         '''
         scorpy.CorrelationVol.fill_from_blqq():
             Fill the CorrelationVol from a BlqqVol object.

@@ -1,11 +1,12 @@
 import numpy as np
 import copy
 from .iteralgopropertymixins import IqlmHandlerProps
+from .iteralgoplotmixins import IqlmHandlerPlot
 import pyshtools as pysh
 import matplotlib.pyplot as plt
 
 
-class IqlmHandler(IqlmHandlerProps):
+class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
     def __init__(self, nq, nl, qmax):
         self._nq = nq
@@ -114,7 +115,15 @@ class IqlmHandler(IqlmHandlerProps):
 
 
 
+#     def plot_qharms(self, q_ind):
+        # fig, axes = plt.subplots(1,2)
 
+
+        # axes[0].imshow(self.vals[q_ind, 0, :,:], aspect='equal')
+        # axes[0].set_title('Positive M')
+
+        # axes[1].imshow(self.vals[q_ind, 1, :,:],aspect ='equal')
+        # axes[1].set_title('Negative M')
 
 
 

@@ -42,7 +42,7 @@ class BlqqVol(Vol, BlqqVolProps):
 
 
 
-    def fill_from_corr(self, corr, inc_odds=False, rcond=None):
+    def fill_from_corr(self, corr, inc_odds=True, rcond=None):
         '''
         scorpy.BlqqVol.fill_from_corr():
             Fill the Blqq from a CorrelationVol object
@@ -98,7 +98,7 @@ class BlqqVol(Vol, BlqqVolProps):
 
 
 
-    def fill_from_iqlm(self, iqlm, inc_odds=False):
+    def fill_from_iqlm(self, iqlm, inc_odds=True):
         '''
         scorpy.BlqqVol.fill_from_iqlm():
             Fill the Blqq from a IqlmHandler object
@@ -127,31 +127,4 @@ class BlqqVol(Vol, BlqqVolProps):
 
 
 
-
-    # def fill_from_sphv(self, sphv, inc_odds=False):
-        # '''
-        # scorpy.BlqqVol.fill_from_sphv():
-            # Fill the Blqq from a SphericalVol object
-        # Arguments:
-            # sphv : scorpy.SphericalVol
-                # The CorrelationVol object to to fill from.
-            # inc_odds : bool
-                # Flag for including odd order harmonic functions in calculation.
-        # '''
-        # assert sphv.nq == self.nq, 'SphericalVol and BlqqVol have different nq'
-        # assert sphv.qmax == self.qmax, 'SphericalVol and BlqqVol have different nq'
-        # all_q_coeffs = sphv.get_all_q_coeffs()
-
-        # for i, q1_coeffs in enumerate(all_q_coeffs):
-
-            # for j, q2_coeffs in enumerate(all_q_coeffs[i:]):
-
-                # multi = q1_coeffs * q2_coeffs
-
-                # if not inc_odds:
-                    # multi[:,1::2,:] =0
-
-                # self.vol[i, j + i, :] = multi.sum(axis=0).sum(axis=1)[:self.nl]
-                # if j > 0:
-                    # self.vol[j + i, i, :] = multi.sum(axis=0).sum(axis=1)[:self.nl]
 

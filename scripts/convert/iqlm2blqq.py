@@ -1,6 +1,7 @@
 
 import scorpy
 import numpy as np
+np.random.seed(0)
 import matplotlib.pyplot as plt
 plt.close('all')
 
@@ -15,19 +16,24 @@ qmax = 1
 nl = int(ntheta/2)
 
 
-harms = []
-for l in range(nl):
-    for _, m in zip(range(2*l +1), range(-l, l+1)):
-        harms.append((l, m))
-
+harms = scorpy.utils.harmonic_list(nl)
 
 
 
 iqlm =  scorpy.IqlmHandler(nq, nl, qmax)
 
 
-for q_ind, harm in enumerate(harms):
-    iqlm.set_val(q_ind, harm[0], harm[1])
+
+
+for q_ind in range(nq):
+    lm = harms[np.random.randint(0, len(harms))]
+    iqlm.add_val(q_ind, lm[0], lm[1])
+
+    print(q_ind, lm)
+    lm = harms[np.random.randint(0, len(harms))]
+    iqlm.add_val(q_ind, lm[0], lm[1])
+    print(q_ind, lm)
+
 
 
 
@@ -36,10 +42,15 @@ for q_ind, harm in enumerate(harms):
 
 blqq = scorpy.BlqqVol(nq, nl, qmax)
 
-blqq.fill_from_iqlm(iqlm, inc_odds=True)
+blqq.fill_from_iqlm(iqlm)
 
-for l_ind in range(nl):
-    blqq.plot_slice(2, l_ind)
+
+blqq.plot_slice(2, 8)
+
+
+
+
+
 
 plt.show()
 

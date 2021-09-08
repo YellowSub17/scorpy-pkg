@@ -12,10 +12,29 @@ def mydiv(x, y):
 
 
 def norm01(arr):
-
     normed = arr - np.min(arr)
     normed /= np.max(normed)
     return normed
+
+
+
+def harmonic_list(nl, lmin=0,  inc_odds=True):
+
+    if inc_odds:
+        lskip = 1
+    else:
+        lskip = 2
+
+    harms = []
+    for l in range(lmin, nl, lskip):
+        for _, m in zip(range(2*l +1), range(-l, l+1)):
+            harms.append((l, m))
+
+    return harms
+
+
+    
+    
 
 
 def index_x(x_val, x_min, x_max, nx, wrap=False):

@@ -11,29 +11,23 @@ import scorpy
 
 nl = 50
 
-
-harms = []
-for l in range(0, nl, 2):
-    for _, m in zip(range(2*l +1), range(-l, l+1)):
-        harms.append((l, m))
+harms = scorpy.utils.harmonic_list(nl)
 
 nphi = nl*2*2
 ntheta = nl*2
 qmax= 1
 nq = 150
 
-# iqlm = scorpy.IqlmHandler(nq, nl, qmax)
-# for q_ind, harm in enumerate(harms):
-    # iqlm.set_val(q_ind, harm[0], harm[1])
 
-    # lrand = np.random.randint(0, nl)
-    # mrand = np.random.randint(-lrand, lrand+1)
-    # iqlm.add_val(q_ind,lrand, mrand)
 
 iqlm = scorpy.IqlmHandler(nq, nl, qmax)
-for q_ind in range(nq):
-    iqlm.set_val(q_ind, harms[q_ind][0], harms[q_ind][1])
+# for q_ind in range(nq):
+    # iqlm.set_val(q_ind, harms[q_ind][0], harms[q_ind][1])
+    # iqlm.set_val(q_ind, harms[q_ind][0]+1, harms[q_ind][1])
 
+
+
+iqlm.vals = np.random.random(iqlm.vals.shape)
 
 
 
@@ -65,16 +59,39 @@ sphv2 = scorpy.SphericalVol(nq,ntheta, nphi, qmax)
 sphv2.fill_from_iqlm(iqlmp)
 
 
-fig, axes = plt.subplots(1,2)
 
 
 loc = np.where(iqlmp.vals !=0)
+print('q shells with recovered harmonic intensity:')
+print(f'{loc[0]}')
 
+
+fig, axes = plt.subplots(1,2)
+plt.suptitle(f'q shell {loc[0][0]}')
 sphv1.plot_slice(0, loc[0][0], fig=fig, axes=axes[0])
 sphv2.plot_slice(0, loc[0][0], fig=fig, axes=axes[1])
 
 
-blqq.plot_sumax(2)
+fig, axes = plt.subplots(1,2)
+plt.suptitle(f'q shell {20}')
+sphv1.plot_slice(0, 20, fig=fig, axes=axes[0])
+sphv2.plot_slice(0, 20, fig=fig, axes=axes[1])
+
+
+print(f'Harmonic in qshell {loc[0][0]}')
+print(harms[loc[0][0]])
+
+print(f'Harmonic in qshell {20}')
+print(harms[20])
+
+
+# for i in range(loc[0].size):
+    # print('harmonic', harms[loc[0][i]])
+    # print('iqlm val', iqlm.vals[loc[0][i], loc[1][i], loc[2][i], loc[3][i]])
+    # print('iqlmp val', np.round(iqlmp.vals[loc[0][i], loc[1][i], loc[2][i], loc[3][i]]))
+    # print()
+
+
 
 
 
