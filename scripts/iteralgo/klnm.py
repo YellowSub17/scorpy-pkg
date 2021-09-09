@@ -10,12 +10,16 @@ cif = scorpy.CifData(f'{__DATADIR}/xtal/fcc-sf.cif')
 
 sphv = scorpy.SphericalVol(100, 180, 360, cif.qmax)
 
+iqlm =  scorpy.IqlmHandler(100, 90, cif.qmax)
+iqlm.fill_from_sphv(sphv)
+
+
 
 
 
 print('filling blqq')
 blqq = scorpy.BlqqVol(sphv.nq, sphv.nl, sphv.qmax)
-blqq.fill_from_sphv(sphv)
+blqq.fill_from_iqlm(sphv)
 
 
 lams, us = blqq.get_eig()

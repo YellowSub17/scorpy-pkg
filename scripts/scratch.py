@@ -1,6 +1,7 @@
 
 import numpy as np
 np.random.seed(0)
+import random
 import pyshtools as pysh
 import matplotlib.pyplot as plt
 plt.close('all')
@@ -28,10 +29,12 @@ iqlm = scorpy.IqlmHandler(nq, nl, qmax)
 
 
 
-harms = scorpy.utils.harmonic_list(nl)
+# harms = scorpy.utils.harmonic_list(nl)
 
 for q_ind in range(nq):
-    iqlm.add_val(q_ind, harms[q_ind][0], harms[q_ind][1])
+    for _ in range(100):
+        harm = random.choice(harms)
+        iqlm.add_val(q_ind, harm[0], harm[1])
 
 
 
@@ -46,10 +49,8 @@ blqq = scorpy.BlqqVol(nq, nl, qmax)
 blqq.fill_from_iqlm(iqlm, inc_odds=True)
 
 # get eigenvalues and vectors
-lams, us = blqq.get_eig(herm=False)
+lams, us = blqq.get_eig(herm=True)
 
-lams = np.real(lams)
-us = np.real(us)
 
 
 # knlm -> iqlm prime calculation
@@ -70,14 +71,17 @@ iqlmp_loc = np.where(iqlmp.vals != 0)
 sphv2 = scorpy.SphericalVol(nq,ntheta, nphi, qmax)
 sphv2.fill_from_iqlm(iqlmp)
 
+sphv_diff = sphv2.copy()
+sphv_diff.vol -= sphv1.vol
 
 
-qs = [i for i in range(0, 100, 10)]
+qs = [40, 50, 60, 70]
 for q_ind in qs:
-    fig, axes = plt.subplots(1,2)
+    fig, axes = plt.subplots(1,3)
     plt.suptitle(f'q shell {q_ind}')
-    sphv1.plot_slice(0, q_ind, fig=fig, axes=axes[0])
-    sphv2.plot_slice(0, q_ind, fig=fig, axes=axes[1])
+    sphv1.plot_slice(0, q_ind, fig=fig, axes=axes[0], title='Before')
+    sphv2.plot_slice(0, q_ind, fig=fig, axes=axes[1], title='After')
+    sphv_diff.plot_slice(0, q_ind, fig=fig, axes=axes[2], title='Difference')
 
 
 
