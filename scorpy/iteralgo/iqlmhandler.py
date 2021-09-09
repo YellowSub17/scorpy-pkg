@@ -12,10 +12,7 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
         self._nq = nq
         self._nl = nl
         self._qmax = qmax
-        vals = []
-        for iq in range(self.nq):
-            vals.append(np.zeros((2,self.nl,self.nl)))
-        self.vals = np.stack(vals, 0)
+        self.vals = np.zeros( (self.nq, 2, self.nl, self.nl))
 
 
     def copy(self):
@@ -72,19 +69,16 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
     def calc_knlm(self, bl_u):
         #initiailize new values
-        new_vals = []
-        for iq in range(self.nq):
-            new_vals.append(np.zeros((2,self.nl,self.nl)))
-        new_vals = np.stack(new_vals,0)
-
+        new_vals = np.zeros( (self.nq, 2, self.nl, self.nl))
 
         for n in range(self.nq):
             for cs in range(0,2):
                 for l in range(self.nl):
-                    for m in range(l):
+                    ulq = bl_u[:,n, l]
+                    for m in range(l+1):
 
-                        i_q = self.vals[:,cs, l, m]*self.qpts**2
-                        x = np.dot(i_q, bl_u[:, n, l])
+                        i_q = self.vals[:,cs, l, m]#*self.qpts**2
+                        x = np.dot(i_q, ulq)#*self.dq
 
 
                         new_vals[n, cs, l, m] = x
@@ -92,39 +86,31 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
 
 
-    def calc_iqlm_prime(self, bl_u):
+    def calc_iqlmp(self, bl_u):
         #initiailize new values
-        new_vals = []
-        for iq in range(self.nq):
-            new_vals.append(np.zeros((2,self.nl,self.nl)))
-        new_vals = np.stack(new_vals,0)
+        new_vals = np.zeros( (self.nq, 2, self.nl, self.nl))
 
 
-        for n in range(self.nq):
+        for q_ind in range(self.nq):
             for cs in range(0,2):
                 for l in range(self.nl):
-                    ul = bl_u[:, n,l]
-                    for m in range(l):
-                        kp = self.vals[n,cs,l,m]
-                        ku = np.dot(ul, kp)
+                    ulq = bl_u[q_ind,  :,l]
+                    for m in range(l+1):
+                        kp = self.vals[:,cs,l,m]
+                        ku = np.dot(ulq, kp)
 
-                        new_vals[:, cs, l, m] = ku
+                        new_vals[q_ind, cs, l, m] = ku
         self.vals = new_vals
 
 
+#     def calc_knlmp(self, bl_l):
+
+        # #initiailize new values
+        # new_vals = np.zeros( (self.nq, 2, self.nl, self.nl))
 
 
-
-#     def plot_qharms(self, q_ind):
-        # fig, axes = plt.subplots(1,2)
-
-
-        # axes[0].imshow(self.vals[q_ind, 0, :,:], aspect='equal')
-        # axes[0].set_title('Positive M')
-
-        # axes[1].imshow(self.vals[q_ind, 1, :,:],aspect ='equal')
-        # axes[1].set_title('Negative M')
-
+        # for q_ind in range(self.nq):
+            # km = np.abs(self.vals[q_ind, 
 
 
 
