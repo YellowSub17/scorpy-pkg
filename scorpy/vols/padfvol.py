@@ -47,8 +47,9 @@ class PadfVol(Vol, PadfVolProps):
         corr = CorrelationVol(path=corr_path)
 
         padf_config = open(f'{PADF_PADF}config.txt', 'w')
-        padf_config.write(f'correlationfile = {corr_path}\n\n')
+        padf_config.write(f'correlationfile = {corr_path}.dbin\n\n')
 
+        os.system('rm -rf /tmp/padf')
         os.system('mkdir /tmp/padf')
         padf_config.write('outpath = /tmp/padf\n\n')
         padf_config.write(f'wavelength = {self.wavelength*1e-10}\n\n')

@@ -167,9 +167,6 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
 
-
-
-
     def correlate_scat_pol(self, qti):
         '''
         scorpy.CorrelationVol.correlate_scat_pol():

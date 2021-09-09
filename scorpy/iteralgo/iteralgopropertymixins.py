@@ -18,7 +18,7 @@ class IqlmHandlerProps:
 
     @property
     def qmax(self):
-        return int(self._qmax)
+        return self._qmax
 
 
     @property
