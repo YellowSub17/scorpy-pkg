@@ -26,8 +26,14 @@ class CorrelationVol(Vol, CorrelationVolProps):
         CorrelationVol.plot_q1q2()
     """
 
-    def __init__(self, nq=100, npsi=180, qmax=1, path=None):
-        Vol.__init__(self, nq, nq, npsi, 0, 0, -1, qmax, qmax, 1, False, False, False, comp=False, path=path)
+    def __init__(self, nq=100, npsi=180, qmax=1, cos_sample=True, path=None):
+
+        if cos_sample:
+            Vol.__init__(self, nq, nq, npsi, 0, 0, -1, qmax, qmax, 1, False, False, False, comp=False, path=path)
+        else:
+            Vol.__init__(self, nq, nq, npsi, 0, 0, 0, qmax, qmax, np.pi, False, False, False, comp=False, path=path)
+
+        self._cos_sample = cos_sample
         self.plot_q1q2 = self.plot_xy
 
     def _save_extra(self, f):
@@ -37,6 +43,10 @@ class CorrelationVol(Vol, CorrelationVolProps):
         f.write(f'npsi = {self.npsi}\n')
         f.write(f'dq = {self.dq}\n')
         f.write(f'dpsi = {self.dpsi}\n')
+        f.write(f'cos_sample = {self.cos_sample}\n')
+
+    def _load_extra(self, config):
+        self._cos_sample = config.getboolean('corr', 'cos_sample')
 
 
 
@@ -139,7 +149,10 @@ class CorrelationVol(Vol, CorrelationVolProps):
             lskip = 2
 
         # arguments for the legendre polynomial
-        args = self.psipts
+        if self.cos_sample:
+            args = self.psipts
+        else:
+            args = np.cos(self.psipts[::-1])
 
         # initialze fmat matrix
         fmat = np.zeros((self.npsi, blqq.nl))
@@ -187,6 +200,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
         ite = np.ones(qti.shape[0])
         q_inds = list(map(index_x, qti[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
 
+
         for i, q1 in enumerate(qti):
             # get q index
             q1_ind = q_inds[i]
@@ -197,6 +211,10 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
                 # get the angle between vectors, and index it
                 psi = angle_between_pol(q1[1], q2[1])
+
+                if not self.cos_sample:
+                    psi = np.arccos(psi)
+
                 psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=self.zwrap)
 
                 # fill the volume
@@ -240,6 +258,9 @@ class CorrelationVol(Vol, CorrelationVolProps):
                 # get the angle between vectors, and index it
                 psi = angle_between_rect(q1[:3], q2[:3])
 
+                if not self.cos_sample:
+                    psi = np.arccos(psi)
+
                 psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=self.zwrap)
 
                 # fill the volume
@@ -282,6 +303,10 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
                 # get the angle between angluar coordinates, and index it
                 psi = angle_between_sph(theta1, theta2, phi1, phi2)
+
+                if not self.cos_sample:
+                    psi = np.arccos(psi)
+
                 psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=self.zwrap)
 
                 # fill the volume

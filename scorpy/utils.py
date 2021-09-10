@@ -2,22 +2,6 @@ import numpy as np
 from scipy import special
 
 
-def mydiv(x, y):
-    ''' Divide two arrays but avoid division by 0 error.
-    '''
-    loc = np.where(y != 0)
-    z = np.zeros(x.shape)
-    z[loc] = x[loc] / y[loc]
-    return z
-
-
-def norm01(arr):
-    normed = arr - np.min(arr)
-    normed /= np.max(normed)
-    return normed
-
-
-
 def harmonic_list(nl, lmin=0,  inc_odds=True):
 
     if inc_odds:
@@ -32,9 +16,7 @@ def harmonic_list(nl, lmin=0,  inc_odds=True):
 
     return harms
 
-
-    
-    
+   
 
 
 def index_x(x_val, x_min, x_max, nx, wrap=False):
@@ -139,27 +121,6 @@ def cosinesim(v1, v2):
     sim = np.dot(np.conj(v1f / np.linalg.norm(v1f)), v2f / np.linalg.norm(v2f))
     return sim
 
-
-def ylm_wrapper(l, m, phi, theta, comp=False):
-    # TODO docstring
-    if comp:
-        # COMPLEX BASIS
-        ylm = special.sph_harm(m, l, phi, theta)
-    else:
-        # REAL BASIS
-        # print(l,m,phi,theta)
-        if m < 0:
-            ylm = (np.sqrt(2) * (-1)**m) * \
-                np.imag(special.sph_harm(np.abs(m), l, phi, theta))
-        elif m > 0:
-            ylm = (np.sqrt(2) * (-1)**m) * \
-                np.real(special.sph_harm(m, l, phi, theta))
-        else:
-            ylm = np.real(special.sph_harm(m, l, phi, theta))
-
-    # 2*sqrt(pi) ensures orthogonality
-    ylm *= 2 * np.sqrt(np.pi)
-    return ylm
 
 
 # multiplicty matrices

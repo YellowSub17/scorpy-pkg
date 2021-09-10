@@ -63,7 +63,10 @@ class BlqqVol(Vol, BlqqVolProps):
         else:
             lskip = 2
 
-        args = corr.psipts
+        if corr.cos_sample:
+            args = corr.psipts
+        else:
+            args = np.cos(corr.psipts)
 
         # initialze fmat matrix
         fmat = np.zeros((corr.npsi, self.nl))

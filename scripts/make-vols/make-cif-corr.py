@@ -10,12 +10,12 @@ nq = 100
 ntheta = 180
 nphi = 360
 
-qmax = 100
+qmax = 40
+cos_sample = True
 
 
 
 cif = scorpy.CifData(f'{scorpy.env.__DATADIR}/cifs/fcc-sf.cif', qmax=qmax)
-
 
 sphv = scorpy.SphericalVol(nq, ntheta, nphi, cif.qmax)
 print('a')
@@ -26,30 +26,31 @@ print('b')
 iqlm.fill_from_sphv(sphv)
 
 
-blqq = scorpy.BlqqVol(nq, sphv.nl, cif.qmax)
+blqq1 = scorpy.BlqqVol(nq, sphv.nl, cif.qmax)
 print('c')
-blqq.fill_from_iqlm(iqlm)
+blqq1.fill_from_iqlm(iqlm)
 
-
-corr1 = scorpy.CorrelationVol(nq, ntheta, cif.qmax)
+# correlation function of the harmonic order function from spherical volume
+corr1 = scorpy.CorrelationVol(nq, ntheta, cif.qmax, cos_sample=cos_sample)
 print('d')
-corr1.fill_from_blqq(blqq)
+corr1.fill_from_blqq(blqq1)
 
 
-corr2 = scorpy.CorrelationVol(nq, ntheta, cif.qmax)
+# correlation directly from the cif
+corr2 = scorpy.CorrelationVol(nq, ntheta, cif.qmax, cos_sample=cos_sample)
 print('e')
 corr2.fill_from_cif(cif)
 
 
 
-blqq1 =scorpy.BlqqVol(nq, sphv.nl, qmax)
+blqq2 =scorpy.BlqqVol(nq, sphv.nl, qmax)
 print('f')
-blqq1.fill_from_corr(corr2)
+blqq2.fill_from_corr(corr2)
 
-corr3 = scorpy.CorrelationVol(nq, ntheta, cif.qmax)
-
+# correlation from harmonic order directly from cif
+corr3 = scorpy.CorrelationVol(nq, ntheta, cif.qmax, cos_sample=cos_sample)
 print('g')
-corr3.fill_from_blqq(blqq1)
+corr3.fill_from_blqq(blqq2)
 
 
 

@@ -6,12 +6,12 @@ import matplotlib.pyplot as plt
 
 
 
-nr = 50
+nr = 100
 npsi = 180
 
 
-rmax = 10
-nl = 90
+rmax = 10e-9
+nl = 50
 
 
 

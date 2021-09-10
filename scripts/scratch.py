@@ -60,7 +60,14 @@ knlm.calc_knlm(us)
 knlm_loc = np.where(knlm.vals != 0)
 
 
-iqlmp = knlm.copy()
+
+
+
+knlmp = knlm.copy()
+knlmp.calc_knlmp(lams)
+
+
+iqlmp = knlmp.copy()
 iqlmp.calc_iqlmp(us)
 
 iqlmp_loc = np.where(iqlmp.vals != 0)
@@ -75,7 +82,7 @@ sphv_diff = sphv2.copy()
 sphv_diff.vol -= sphv1.vol
 
 
-qs = [40, 50, 60, 70]
+qs = [40]
 for q_ind in qs:
     fig, axes = plt.subplots(1,3)
     plt.suptitle(f'q shell {q_ind}')

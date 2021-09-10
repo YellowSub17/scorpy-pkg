@@ -78,7 +78,7 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
                     for m in range(l+1):
 
                         i_q = self.vals[:,cs, l, m]#*self.qpts**2
-                        x = np.dot(i_q, ulq)#*self.dq
+                        x = np.dot(i_q, ulq)
 
 
                         new_vals[n, cs, l, m] = x
@@ -103,18 +103,31 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
         self.vals = new_vals
 
 
-#     def calc_knlmp(self, bl_l):
+    def calc_knlmp(self, bl_l, ned_thresh=1e-6):
+        #initiailize new values
+        new_vals = np.zeros( (self.nq, 2, self.nl, self.nl))
 
-        # #initiailize new values
-        # new_vals = np.zeros( (self.nq, 2, self.nl, self.nl))
+        for q_ind in range(self.nq):
+            for l in range(self.nl):
+
+                ned = np.sqrt(np.abs(bl_l[q_ind,l]))
+
+                km = np.abs(self.vals[q_ind, :, l, :])**2
+                donk = np.sqrt(np.sum(km))
+
+                if donk==0 and ned !=0:
+                    print('WARNING: DIV BY ZERO FOR NED/DONK')
+                    print(ned, donk)
+                    if ned <= ned_thresh:
+                        print('Ned is lower than threshold, setting to 0.')
+                        ned=0
 
 
-        # for q_ind in range(self.nq):
-            # km = np.abs(self.vals[q_ind, 
+                if donk==0 and ned ==0:
+                    ned = 1
+                    donk = 1
 
-
-
-
+                self.vals[q_ind, :, l, :] *= ned/donk
 
 
 
