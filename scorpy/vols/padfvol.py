@@ -11,6 +11,10 @@ from .volspropertymixins import PadfVolProps
 PADF_PADF = '/home/pat/Documents/cloudstor/phd/python_projects/padf/'
 
 
+#note to self
+# something up with the config file setting rmax 0
+
+
 class PadfVol(Vol, PadfVolProps):
 
     def __init__(self, nr=100, npsi=180, rmax=5, nl=10, wavelength=1.33, path=None):

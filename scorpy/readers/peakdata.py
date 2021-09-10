@@ -2,11 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import h5py
 from .expgeom import ExpGeom
-from ..env import __DATADIR
+from ..env import DATADIR
 
 from .readerspropertymixins import PeakDataProperties
 
-DEFAULT_GEO = ExpGeom(f'{__DATADIR}/geoms/agipd_2304_vj_opt_v3.geom')
+DEFAULT_GEO = ExpGeom(f'{DATADIR}/geoms/agipd_2304_vj_opt_v3.geom')
 
 class PeakData(PeakDataProperties):
 

@@ -13,7 +13,7 @@ from .iteralgo.iqlmhandler import IqlmHandler
 
 
 
-from .env import __DATADIR, __TESTDATADIR, __SCORPYDIR
+from .env import DATADIR, SCORPYDIR
 
 
 

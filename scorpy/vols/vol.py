@@ -301,5 +301,11 @@ vol : numpy.ndarray
         return pts
 
 
+    def make_mask(self):
+
+        loc = np.where(self.vol != 0)
+        self.vol[loc] *= 1/self.vol[loc]
+
+
 
 

@@ -111,21 +111,12 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
             for l in range(self.nl):
 
                 ned = np.sqrt(np.abs(bl_l[q_ind,l]))
-
                 km = np.abs(self.vals[q_ind, :, l, :])**2
                 donk = np.sqrt(np.sum(km))
-
-                if donk==0 and ned !=0:
-                    print('WARNING: DIV BY ZERO FOR NED/DONK')
-                    print(ned, donk)
-                    if ned <= ned_thresh:
-                        print('Ned is lower than threshold, setting to 0.')
-                        ned=0
-
-
-                if donk==0 and ned ==0:
+                if donk==0:
                     ned = 1
                     donk = 1
+
 
                 self.vals[q_ind, :, l, :] *= ned/donk
 
