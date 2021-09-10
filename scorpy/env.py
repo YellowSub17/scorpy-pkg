@@ -1,9 +1,8 @@
 
 
-__SCORPYDIR = '/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg'
+SCORPYDIR = '/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg'
 
 
-__DATADIR = f'{__SCORPYDIR}/data'
+DATADIR = f'{SCORPYDIR}/data'
 
 
-__TESTDATADIR = '{__SCORPYDIR}/tests/data'
