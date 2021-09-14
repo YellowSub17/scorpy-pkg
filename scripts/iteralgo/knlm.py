@@ -13,9 +13,9 @@ import scorpy
 
 
 nq = 100
-nphi = 360*2
-ntheta = 180*2
-npsi = 180*2
+nphi = 360
+ntheta = 180
+npsi = 180
 nl = int(ntheta/2)
 
 qmax = 40
@@ -59,6 +59,14 @@ sphv_init.plot_slice(0,52)
 sphv_iter = sphv_init.copy()
 iqlm_iter = iqlm_init.copy()
 
+
+
+
+iqlm_iter.calc_knlm(us)
+iqlm_iter.calc_knlmp(lams)
+iqlm_iter.calc_iqlmp(us)
+sphv_iter.fill_from_iqlm(iqlm_iter)
+sphv_iter.plot_slice(0,52)
 
 
 

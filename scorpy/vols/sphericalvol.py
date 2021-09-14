@@ -29,8 +29,8 @@ class SphericalVol(Vol, SphericalVolProps):
         self._nl = int(ntheta / 2)
 
         Vol.__init__(self, nx=nq, ny=ntheta, nz=nphi,
-                     xmin=0, ymin=0, zmin=0,
-                     xmax=qmax, ymax=np.pi, zmax=2 * np.pi,
+                     xmin=0, ymin=-1, zmin=0,
+                     xmax=qmax, ymax=1, zmax=2 * np.pi,
                      xwrap=False, ywrap=True, zwrap=True,
                      comp=comp, path=path)
 
@@ -93,6 +93,9 @@ class SphericalVol(Vol, SphericalVolProps):
                 be the spherical radius of the peak (A-1), polar angle of the peak
                 (theta, radians), and the azimuthial angle of the peak (phi, radians).
         '''
+
+        scat_sph[:, 1] -= np.pi/2
+        scat_sph[:, 1] = np.sin(scat_sph[:,1])
         ite = np.ones(scat_sph[:, 0].shape)
         q_inds = list(map(index_x, scat_sph[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
         theta_inds = list(map(index_x, scat_sph[:, 1], self.ymin * ite, self.ymax * ite, self.ny * ite))
