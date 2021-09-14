@@ -13,9 +13,9 @@ import scorpy
 
 
 nq = 100
-nphi = 360*2
-ntheta = 180*2
-npsi = 180*2
+nphi = 360
+ntheta = 180
+npsi = 180
 nl = int(ntheta/2)
 
 qmax = 40
