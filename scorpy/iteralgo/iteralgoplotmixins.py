@@ -97,8 +97,7 @@ class IqlmHandlerPlot:
             impos = self.vals[q_ind, 0, :, :]
             imneg = self.vals[q_ind, 1, :, :0:-1]
             im = np.concatenate([imneg, impos], 1)
-            self._plot_2D(im, **new_kwargs)
-
+            self._plot_2D(im, extent=[-self.nl, self.nl, 0,  self.nl], xlabel='M', ylabel='L', **new_kwargs)
 
 
 
@@ -108,12 +107,11 @@ class IqlmHandlerPlot:
         if cs is not None:
             im = self.vals[:, cs, l,  :]
             self._plot_2D(im.T, **new_kwargs)
-
         else:
             impos = self.vals[:, 0, l, :]
             imneg = self.vals[:, 1, l, :0:-1]
             im = np.concatenate([imneg.T, impos.T], 0)
-            self._plot_2D(im.T, **new_kwargs)
+            self._plot_2D(im.T, extent=[-self.nl, self.nl, 0,  self.qmax],  xlabel='M', ylabel='q', **new_kwargs)
 
 
 

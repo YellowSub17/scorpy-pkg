@@ -8,10 +8,6 @@ plt.close('all')
 
 import scorpy
 
-
-
-
-
 nq = 100
 nphi = 360
 ntheta = 180
@@ -20,14 +16,14 @@ nl = int(ntheta/2)
 
 qmax = 40
 
-
+lq = 60
+qq = 92
 
 
 cif = scorpy.CifData(f'{scorpy.DATADIR}/cifs/fcc-sf.cif', qmax=qmax)
-
-sphv_mask = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
-sphv_mask.fill_from_cif(cif)
-sphv_mask.plot_slice(0, 52)
+sphv = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
+sphv.fill_from_cif(cif)
+sphv.plot_slice(0, qq, title='From CIF')
 
 
 
@@ -45,28 +41,51 @@ lams, us = np.real(lams), np.real(us)
 
 
 
-iqlm_init = scorpy.IqlmHandler(nq, nl, qmax)
-iqlm_init.fill_from_sphv(sphv_mask)
-# iqlm_init.vals = np.random.random(iqlm_init.vals.shape)
-iqlm_init.mask_l(iqlm_init.nl, 0,2)
-
-
-sphv_init = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
-sphv_init.fill_from_iqlm(iqlm_init)
-sphv_init.plot_slice(0,52)
-
-
-sphv_iter = sphv_init.copy()
-iqlm_iter = iqlm_init.copy()
 
 
 
+iqlm1 = scorpy.IqlmHandler(nq, nl, qmax)
+iqlm1.fill_from_sphv(sphv)
+# iqlm1.mask_l(iqlm1.nl, 0,2)
+iqlm1.plot_q(qq, title=f'q={qq}')
+iqlm1.plot_l(lq, title=f'l={lq}')
 
-iqlm_iter.calc_knlm(us)
-iqlm_iter.calc_knlmp(lams)
-iqlm_iter.calc_iqlmp(us)
-sphv_iter.fill_from_iqlm(iqlm_iter)
-sphv_iter.plot_slice(0,52)
+
+sphv1 = sphv.copy()
+sphv1.fill_from_iqlm(iqlm1)
+sphv1.plot_slice(0, qq, title=f'q={qq}')
+
+
+
+knlm1 = iqlm1.copy()
+knlm1.calc_knlm(us)
+
+knlmp1 = knlm1.copy()
+knlmp1.calc_knlmp(lams)
+
+
+
+
+
+iqlmp1 = knlmp1.copy()
+iqlmp1.calc_iqlmp(us)
+iqlmp1.plot_q(qq, title=f'q={qq}')
+iqlmp1.plot_l(lq, title=f'l={lq}')
+
+
+
+
+
+sphv2 = sphv1.copy()
+sphv2.fill_from_iqlm(iqlmp1)
+sphv2.plot_slice(0,qq)
+
+
+sphv_diff1 = sphv2.copy()
+sphv_diff1.vol -= sphv1.vol
+
+sphv_diff1.plot_slice(0,52)
+
 
 
 
