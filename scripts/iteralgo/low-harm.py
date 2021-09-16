@@ -13,78 +13,79 @@ nphi = 360
 ntheta = 180
 npsi = 180
 nl = int(ntheta/2)
-
-qmax = 40
-
-lq = 60
-qq = 92
+qmax = 1
+qq = 70
 
 
-cif = scorpy.CifData(f'{scorpy.DATADIR}/cifs/fcc-sf.cif', qmax=qmax)
+
+harms = scorpy.utils.harmonic_list(nl, inc_odds=False)
+
+
+
+iqlm = scorpy.IqlmHandler(nq, nl, qmax)
+for q_ind in range(nq):
+
+    # for _ in range(1000):
+        # harm = random.choice(harms)
+        # iqlm.add_val(q_ind, harm[0], harm[1], random.randint(1, 10))
+
+
+
+    for harm_ind in range(2000):
+        harm = harms[harm_ind]
+        iqlm.add_val(q_ind, harm[0], harm[1], random.randint(1, 2))
+
+    harm = harms[q_ind+1000]
+    iqlm.add_val(q_ind, harm[0], harm[1], random.randint(1, 10))
+
+
+iqlm.plot_q(qq)
+
+
+
+
+
+
 sphv = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
-sphv.fill_from_cif(cif)
-sphv.plot_slice(0, qq, title='From CIF')
+sphv.fill_from_iqlm(iqlm)
 
 
-
-
-
-corr = scorpy.CorrelationVol(nq, npsi, qmax)
-corr.fill_from_cif(cif)
+sphv.plot_slice(0, qq)
 
 blqq = scorpy.BlqqVol(nq, nl, qmax)
-blqq.fill_from_corr(corr, inc_odds=True)
-lams, us = blqq.get_eig(herm=True)
+blqq.fill_from_iqlm(iqlm)
 
-lams, us = np.real(lams), np.real(us)
+lams, us = blqq.get_eig()
 
+knlm = iqlm.copy()
+knlm.calc_knlm(us)
 
+knlmp = knlm.copy()
+knlmp.calc_knlmp(lams)
 
+iqlmp = knlmp.copy()
+iqlmp.calc_iqlmp(us)
 
-
-
-
-iqlm1 = scorpy.IqlmHandler(nq, nl, qmax)
-iqlm1.fill_from_sphv(sphv)
-# iqlm1.mask_l(iqlm1.nl, 0,2)
-iqlm1.plot_q(qq, title=f'q={qq}')
-iqlm1.plot_l(lq, title=f'l={lq}')
-
-
-sphv1 = sphv.copy()
-sphv1.fill_from_iqlm(iqlm1)
-sphv1.plot_slice(0, qq, title=f'q={qq}')
+iqlmp.plot_q(qq)
 
 
 
-knlm1 = iqlm1.copy()
-knlm1.calc_knlm(us)
 
-knlmp1 = knlm1.copy()
-knlmp1.calc_knlmp(lams)
+sphvp = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
+sphvp.fill_from_iqlm(iqlmp)
+
+sphvp.plot_slice(0,qq)
 
 
 
 
 
-iqlmp1 = knlmp1.copy()
-iqlmp1.calc_iqlmp(us)
-iqlmp1.plot_q(qq, title=f'q={qq}')
-iqlmp1.plot_l(lq, title=f'l={lq}')
 
 
 
 
 
-sphv2 = sphv1.copy()
-sphv2.fill_from_iqlm(iqlmp1)
-sphv2.plot_slice(0,qq)
 
-
-sphv_diff1 = sphv2.copy()
-sphv_diff1.vol -= sphv1.vol
-
-sphv_diff1.plot_slice(0,52)
 
 
 
