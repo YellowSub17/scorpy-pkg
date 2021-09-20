@@ -8,7 +8,7 @@ plt.close('all')
 
 import scorpy
 
-nq =  1
+nq =  4
 nphi = 360
 ntheta = 180
 npsi = 180
