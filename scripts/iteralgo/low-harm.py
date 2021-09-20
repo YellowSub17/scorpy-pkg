@@ -8,128 +8,64 @@ plt.close('all')
 
 import scorpy
 
-nq = 2
-nphi = 360
-ntheta = 180
+nq = 1
+nphi = 40
+ntheta = 20
 npsi = 180
 nl = int(ntheta/2)
 qmax = 1
 qq = 0
-lq = 20
-
-
-
-harms = scorpy.utils.harmonic_list(nl, inc_odds=True)
-
-
 
 iqlm = scorpy.IqlmHandler(nq, nl, qmax)
+
+harms = scorpy.utils.harmonic_list(nl, inc_odds=True)
 for q_ind in range(nq):
-
-
-
-    for harm_ind in range(3599):
+    for harm_ind in range(48-1):
         harm = harms[harm_ind]
-        iqlm.add_val(q_ind, harm[0], harm[1], 1)
-
-#     for harm_ind in range(3599):
-        # harm = harms[harm_ind]
-        # if harm_ind %2 ==0:
-            # iqlm.add_val(q_ind, harm[0], harm[1], 1)
+        iqlm.add_val(q_ind, harm[0], harm[1], random.randint(-10,20))
+#         if harm[-1] in [1, -2]:
+            # iqlm.add_val(q_ind, harm[0], harm[1], harm[0]+1)
         # else:
-            # iqlm.add_val(q_ind, harm[0], harm[1], 2)
-
-
-
-
-
-
-
-
-
-
-
-
+            # iqlm.add_val(q_ind, harm[0], harm[1], 1)
 
 sphv = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv.fill_from_iqlm(iqlm)
-
-
-
 blqq = scorpy.BlqqVol(nq, nl, qmax)
 blqq.fill_from_iqlm(iqlm)
-
 lams, us = blqq.get_eig()
-
 knlm = iqlm.copy()
 knlm.calc_knlm(us)
-
 knlmp = knlm.copy()
 knlmp.calc_knlmp(lams)
-
 iqlmp = knlmp.copy()
 iqlmp.calc_iqlmp(us)
-
-
-
-
-
-
 sphvp = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphvp.fill_from_iqlm(iqlmp)
 
-# fig, axes = plt.subplots(1,2, figsize=(8,5), dpi=150, sharey=True)
-# plt.suptitle('$I(q=10,\\theta, \\phi)$')
-# sphv.plot_slice(0, qq, fig=fig, axes=axes[0], title='Before', xlabel='$\\phi$ [rad]', ylabel='$\\theta$ [rad]')
-# sphvp.plot_slice(0,qq, fig=fig, axes=axes[1], title='After',  xlabel='$\\phi$ [rad]',)
-# plt.savefig('/home/pat/Documents/cloudstor/phd/latex/iteralgo-lowharm/figs/ktrans-sphvx.png')
+fig, axes = plt.subplots(1,3, figsize=(8,5), dpi=150, sharey=True, sharex=True)
+plt.suptitle(f'$I_{{LM}}$')
+iqlm.plot_q(qq, fig=fig, axes=axes[0], title='Initial')
+iqlmp.plot_q(qq, fig=fig, axes=axes[1], title='Final', ylabel='')
 
 
-fig, axes = plt.subplots(1,2, figsize=(8,5), dpi=150, sharey=True, sharex=True)
-plt.suptitle(f'$I_{{LM}}(nq={nq})$')
-iqlm.plot_q(qq, fig=fig, axes=axes[0], title='Before')
-iqlmp.plot_q(qq, fig=fig, axes=axes[1], title='After', ylabel='')
+iqdiv = iqlmp.copy()
+loc = np.where(iqdiv.vals != 0)
+iqdiv.vals[loc] /= iqlm.vals[loc]
 
-
-# plt.savefig(f'/home/pat/Documents/cloudstor/phd/latex/iteralgo-lowharm/figs/kpcalc-lfmnq{nq}.png')
-
-
-# plt.figure()
-
-# plt.plot(iqlm.vals[qq,0,:60,0], 'bx', label='Before')
-# plt.plot(iqlmp.vals[qq,0,:60,0], 'rx', label='After')
-# plt.plot(np.arange(0, 60), np.sqrt([2*l+1 for l in range(0, 60)]), 'r--', label='$\sqrt{2L+1}$')
-# plt.xlabel('L')
-# plt.ylabel('$I_{L,0}$')
-# plt.legend()
-# plt.title('Factor')
-# plt.savefig(f'/home/pat/Documents/cloudstor/phd/latex/iteralgo-lowharm/figs/kpcalc-lfm0nq{nq}.png')
-
-
-# fig, axes = plt.subplots(1,2, figsize=(8,5), dpi=150, sharey=True)
-# # plt.suptitle('$I_{L=10,M}(q)$')
-# iqlm.plot_l(lq, fig=fig, axes=axes[0],title='Before')
-# iqlmp.plot_l(lq, fig=fig, axes=axes[1],title='After', ylabel='')
-# plt.savefig('/home/pat/Documents/cloudstor/phd/latex/iteralgo-lowharm/figs/ktrans-mqx.png')
+iqdiv.plot_q(qq, fig=fig, axes=axes[2], title='Final/Initial', ylabel='')
 
 
 
-# plt.figure()
-# plt.plot(iqlm.vals[qq, 0, :, 0], label='Before')
-# plt.plot(iqlmp.vals[qq, 0, :, 0], label='After')
-# plt.legend()
-# plt.xlabel('$L$')
-# plt.ylabel('$I_{L,0}$')
-# # plt.title('$I_{L,0}(q=10)$')
-# plt.savefig('/home/pat/Documents/cloudstor/phd/latex/iteralgo-lowharm/figs/ktrans-lqx.png')
-
-
-
-
-
-
-
+# plt.savefig(f'/home/pat/Documents/cloudstor/phd/latex/factors-kprime/figs/no-ldep.png')
 
 
 plt.show()
 
+
+
+
+
+# L = np.arange(40)
+# plt.figure()
+# plt.plot(L, 1/np.sqrt(2*L+1))
+# plt.show()
