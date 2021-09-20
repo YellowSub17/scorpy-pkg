@@ -8,7 +8,7 @@ plt.close('all')
 
 import scorpy
 
-nq =  4
+nq = 2
 nphi = 360
 ntheta = 180
 npsi = 180
@@ -26,18 +26,23 @@ harms = scorpy.utils.harmonic_list(nl, inc_odds=True)
 iqlm = scorpy.IqlmHandler(nq, nl, qmax)
 for q_ind in range(nq):
 
-#     for i in range(len(harms)):
-        # harm = random.choice(harms)
-        # harm = harms[i]
-        # iqlm.add_val(q_ind, harm[0], harm[1], random.randint(0, 100))
 
 
     for harm_ind in range(3721):
         harm = harms[harm_ind]
-        iqlm.add_val(q_ind, harm[0], harm[1], random.randint(1, 1))
+        iqlm.add_val(q_ind, harm[0], harm[1], 1)
 
-    # harm = harms[q_ind+1000]
-    # iqlm.add_val(q_ind, harm[0], harm[1], random.randint(1, 2))
+#     for harm_ind in range(3599):
+        # harm = harms[harm_ind]
+        # if harm_ind %2 ==0:
+            # iqlm.add_val(q_ind, harm[0], harm[1], 1)
+        # else:
+            # iqlm.add_val(q_ind, harm[0], harm[1], 2)
+
+
+
+
+
 
 
 
@@ -80,7 +85,7 @@ sphvp.fill_from_iqlm(iqlmp)
 # plt.savefig('/home/pat/Documents/cloudstor/phd/latex/iteralgo-lowharm/figs/ktrans-sphvx.png')
 
 
-fig, axes = plt.subplots(1,2, figsize=(8,5), dpi=150, sharey=False)
+fig, axes = plt.subplots(1,2, figsize=(8,5), dpi=150, sharey=True, sharex=True)
 plt.suptitle(f'$I_{{LM}}(nq={nq})$')
 iqlm.plot_q(qq, fig=fig, axes=axes[0], title='Before')
 iqlmp.plot_q(qq, fig=fig, axes=axes[1], title='After', ylabel='')
