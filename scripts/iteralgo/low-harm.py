@@ -9,8 +9,10 @@ plt.close('all')
 import scorpy
 
 nq = 1
-nphi = 40
-ntheta = 20
+# nphi = 40
+# ntheta = 20
+nphi = 360
+ntheta = 180
 npsi = 180
 nl = int(ntheta/2)
 qmax = 1
@@ -20,13 +22,10 @@ iqlm = scorpy.IqlmHandler(nq, nl, qmax)
 
 harms = scorpy.utils.harmonic_list(nl, inc_odds=True)
 for q_ind in range(nq):
-    for harm_ind in range(48-1):
+    for harm_ind in range(5393):
         harm = harms[harm_ind]
         iqlm.add_val(q_ind, harm[0], harm[1], random.randint(-10,20))
-#         if harm[-1] in [1, -2]:
-            # iqlm.add_val(q_ind, harm[0], harm[1], harm[0]+1)
-        # else:
-            # iqlm.add_val(q_ind, harm[0], harm[1], 1)
+
 
 sphv = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv.fill_from_iqlm(iqlm)
