@@ -126,7 +126,7 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
                 km = np.abs(self.vals[q_ind, :, l,:])**2
 
-                donk = np.sqrt(np.sum(km))*np.sqrt((2*l+1))#*np.sqrt(self.nq)
+                donk = np.sqrt(np.sum(km))*np.sqrt((2*l+1))*np.sqrt(self.nq)
 
                 print(ned, donk)
                 if donk==0:
@@ -139,32 +139,3 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
 
 
-
-
-    # def fill_kprime(self, bl_l):
-        # for l in range(0, self.nl, 2):
-            # new_vals = np.zeros(self.vals[l].shape)
-            # # for im, m in zip(range(0, 2*l+1), range(-l, l+1)):
-            # for iq in range(self.nq):
-
-                # ned = np.sqrt(np.abs(bl_l[iq, l]))
-                # km = np.abs(self.vals[l][iq, :])**2
-                # donk = np.sqrt(np.sum(km))
-
-                # if donk == 0:
-                    # donk = 1
-
-                # ned = 1
-                # donk = 1
-                # new_vals[iq, :] = (ned / donk) * self.vals[l][iq, :]
-
-            # self.vals[l] = new_vals
-
-    # def fill_ilmprime(self, bl_u):
-
-        # for l in range(0, self.nl, 2):
-            # ul = bl_u[..., l]
-            # for im, m in zip(range(0, 2 * l + 1), range(-l, l + 1)):
-                # kp = self.vals[l][:, im]
-                # ku = np.dot(ul, kp)
-                # self.vals[l][:, im] = ku

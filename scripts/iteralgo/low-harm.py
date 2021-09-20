@@ -28,7 +28,7 @@ for q_ind in range(nq):
 
 
 
-    for harm_ind in range(3721):
+    for harm_ind in range(3599):
         harm = harms[harm_ind]
         iqlm.add_val(q_ind, harm[0], harm[1], 1)
 
@@ -91,7 +91,7 @@ iqlm.plot_q(qq, fig=fig, axes=axes[0], title='Before')
 iqlmp.plot_q(qq, fig=fig, axes=axes[1], title='After', ylabel='')
 
 
-plt.savefig(f'/home/pat/Documents/cloudstor/phd/latex/iteralgo-lowharm/figs/kpcalc-lfmnq{nq}.png')
+# plt.savefig(f'/home/pat/Documents/cloudstor/phd/latex/iteralgo-lowharm/figs/kpcalc-lfmnq{nq}.png')
 
 
 # plt.figure()
