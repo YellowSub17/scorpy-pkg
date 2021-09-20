@@ -122,10 +122,12 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
         for q_ind in range(self.nq):
             for l in range(0, self.nl, lskip):
 
-                ned = np.abs(bl_l[q_ind,l])
-                # ned = bl_l[q_ind,l]
-                km = np.abs(self.vals[q_ind, :, l, :])
-                donk = np.sqrt(np.sum(km))**2
+                ned = bl_l[q_ind,l]
+
+                km = np.abs(self.vals[q_ind, :, l,:])**2
+
+                donk = np.sqrt(np.sum(km))#*np.sqrt((2*l+1))
+
                 print(ned, donk)
                 if donk==0:
                     ned = 1
