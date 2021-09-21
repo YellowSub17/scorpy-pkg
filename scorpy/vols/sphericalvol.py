@@ -100,7 +100,7 @@ class SphericalVol(Vol, SphericalVolProps):
         theta_inds = list(map(index_x, scat_sph[:, 1], self.ymin * ite, self.ymax * ite, self.ny * ite))
         phi_inds = list(map(index_x, scat_sph[:, 2], self.zmin * ite, self.zmax * ite, self.nz * ite, ite))
 
-        intens = scat_sph[:, -1]*np.sin(scat_sph[:,1])
+        intens = scat_sph[:, -1]#*np.sin(scat_sph[:,1])
         for q_ind, theta_ind, phi_ind, I in zip(q_inds, theta_inds, phi_inds, intens):
             self.vol[q_ind, theta_ind, phi_ind] += I
 

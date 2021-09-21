@@ -14,12 +14,12 @@ ntheta = 180
 npsi = 180
 nl = int(ntheta/2)
 qmax = 1
-qq = 0
+qq = 60
 
 iqlm = scorpy.IqlmHandler(nq, nl, qmax)
 
 harms = scorpy.utils.harmonic_list(120, inc_odds=True)
-intens = [-3, -2, -1,2,3]
+# intens = [-3, -2, -1,2,3]
 for q_ind in range(nq):
     for harm_ind in range(5393):
         harm = harms[harm_ind]
@@ -47,14 +47,11 @@ iqlm.plot_q(qq, fig=fig, axes=axes[0], title='Initial')
 iqlmp.plot_q(qq, fig=fig, axes=axes[1], title='Final', ylabel='')
 
 
-iqdiv = iqlmp.copy()
+iqdiv = iqlm.copy()
 loc = np.where(iqdiv.vals != 0)
-iqdiv.vals[loc] /= iqlm.vals[loc]
+iqdiv.vals[loc] *= 1/iqlmp.vals[loc]
 
-infloc1 = np.where(iqdiv.vals == np.inf)
-infloc2 = np.where(iqdiv.vals == -np.inf)
-iqdiv.vals[infloc1] = 1.234567
-iqdiv.vals[infloc2] = -1.234567
+
 
 iqdiv.plot_q(qq, fig=fig, axes=axes[2], title='Final/Initial', ylabel='')
 

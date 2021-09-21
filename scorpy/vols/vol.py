@@ -187,7 +187,7 @@ vol : numpy.ndarray
         v = copy.deepcopy(self)
         return v
 
-    def get_eig(self, herm=True, inc_odds=True):
+    def get_eig(self, herm=False, inc_odds=True):
         '''
 	scorpy.Vol.get_eig():
             Calcualte the eigenvectors and eigenvalues of the x and y axes.
