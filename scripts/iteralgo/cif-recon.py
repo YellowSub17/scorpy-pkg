@@ -15,14 +15,14 @@ npsi = 180
 nl = int(ntheta/2)
 
 
-# qmax = 40
-qmax = 1.5
+qmax = 40
+# qmax = 1.5
 
 lq = 60
 qq = 92
 
 
-cif = scorpy.CifData(f'{scorpy.DATADIR}/cifs/1al1-sf.cif', qmax=qmax)
+cif = scorpy.CifData(f'{scorpy.DATADIR}/cifs/fcc-sf.cif', qmax=qmax)
 sphv = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv.fill_from_cif(cif)
 sphv.plot_slice(0, qq, title='From CIF')
@@ -45,7 +45,6 @@ blqq = scorpy.BlqqVol(nq, nl, qmax)
 blqq.fill_from_iqlm(iqlm)
 lams, us = blqq.get_eig()
 lams, us = np.real(lams), np.real(us)
-
 
 
 
