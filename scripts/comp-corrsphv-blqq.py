@@ -50,16 +50,16 @@ blqq2.fill_from_iqlm(iqlm, inc_odds=False)
 
 
 fig, axes = plt.subplots(1,2)
-blqq1.plot_q1q2(fig=fig, axes=axes[0])
-blqq2.plot_q1q2(fig=fig, axes=axes[1])
+blqq1.plot_q1q2(fig=fig, axes=axes[0], title='from corr')
+blqq2.plot_q1q2(fig=fig, axes=axes[1], title='from sphv')
 
 
 
 
 lq = 32
 fig, axes = plt.subplots(1,2)
-blqq1.plot_slice(2, lq, fig=fig, axes=axes[0])
-blqq2.plot_slice(2, lq, fig=fig, axes=axes[1])
+blqq1.plot_slice(2, lq, fig=fig, axes=axes[0], title='from corr')
+blqq2.plot_slice(2, lq, fig=fig, axes=axes[1], title='from sphv')
 plt.show()
 
 

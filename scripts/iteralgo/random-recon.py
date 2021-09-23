@@ -1,6 +1,15 @@
 
 import numpy as np
-np.random.seed(0)
+
+
+# seed = np.random.randint(0,10000)
+# print(f'seed: {seed}')
+# np.random.seed(seed)
+
+
+np.random.seed(839)
+# np.random.seed(4411)
+
 import random
 import pyshtools as pysh
 import matplotlib.pyplot as plt
@@ -18,8 +27,7 @@ nl = int(ntheta/2)
 qmax = 40
 # qmax = 1.5
 
-lq = 60
-qq = 92
+qq = 81
 
 
 cif = scorpy.CifData(f'{scorpy.DATADIR}/cifs/fcc-sf.cif', qmax=qmax)
@@ -59,7 +67,7 @@ sphv_iter.fill_from_iqlm(iqlm_rand)
 sphv_iter.plot_slice(0, qq, title=f'0')
 iqlm_iter = iqlm_rand.copy()
 
-for i in range(10):
+for i in range(40):
     print(i)
     knlm = iqlm_iter.copy()
     knlm.calc_knlm(us)
@@ -69,11 +77,13 @@ for i in range(10):
     iqlm_iter.calc_iqlmp(us)
     sphv_iter.fill_from_iqlm(iqlm_iter)
 
-    sphv_iter.plot_slice(0, qq, title=f'{i+1}')
+    if i %4 ==0 or i in [1,2,3,4,5]:
+        sphv_iter.plot_slice(0, qq, title=f'{i+1}')
     sphv_iter.vol *= sphv_mask.vol
     iqlm_iter.fill_from_sphv(sphv_iter)
 
 
+sphv_iter.plot_slice(0, qq, title=f'end')
 
 
 iqlmp = iqlm_iter.copy()

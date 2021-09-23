@@ -29,6 +29,7 @@ for q_ind in range(nq):
 
 sphv = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv.fill_from_iqlm(iqlm)
+
 blqq = scorpy.BlqqVol(nq, nl, qmax)
 blqq.fill_from_iqlm(iqlm)
 lams, us = blqq.get_eig(herm=False)

@@ -29,22 +29,23 @@ sphv.plot_slice(0, qq, title='From CIF')
 
 
 
-# corr = scorpy.CorrelationVol(nq, npsi, qmax)
-# corr.fill_from_cif(cif)
-# corr.plot_q1q2()
+corr = scorpy.CorrelationVol(nq, npsi, qmax)
+corr.fill_from_cif(cif)
+corr.plot_q1q2()
+blqq = scorpy.BlqqVol(nq, nl, qmax)
+blqq.fill_from_corr(corr, rcond=1e-1)
+blqq.plot_q1q2()
+lams, us = blqq.get_eig()
+lams, us = np.real(lams), np.real(us)
+
+
+# iqlm = scorpy.IqlmHandler(nq, nl, qmax)
+# iqlm.fill_from_sphv(sphv)
 # blqq = scorpy.BlqqVol(nq, nl, qmax)
-# blqq.fill_from_corr(corr)
+# blqq.fill_from_iqlm(iqlm)
 # blqq.plot_q1q2()
 # lams, us = blqq.get_eig()
 # lams, us = np.real(lams), np.real(us)
-
-
-iqlm = scorpy.IqlmHandler(nq, nl, qmax)
-iqlm.fill_from_sphv(sphv)
-blqq = scorpy.BlqqVol(nq, nl, qmax)
-blqq.fill_from_iqlm(iqlm)
-lams, us = blqq.get_eig()
-lams, us = np.real(lams), np.real(us)
 
 
 

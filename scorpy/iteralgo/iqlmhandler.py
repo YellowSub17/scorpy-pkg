@@ -123,6 +123,7 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
             for l in range(0, self.nl, lskip):
 
                 ned = bl_l[q_ind,l]
+                #sqrt?
 
                 km = np.abs(self.vals[q_ind, :, l,:])**2
                 donk = np.sum(km)
