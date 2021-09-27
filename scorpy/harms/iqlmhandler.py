@@ -1,7 +1,7 @@
 import numpy as np
 import copy
-from .iteralgopropertymixins import IqlmHandlerProps
-from .iteralgoplotmixins import IqlmHandlerPlot
+from .harmspropertymixins import IqlmHandlerProps
+from .harmsplotmixins import IqlmHandlerPlot
 import pyshtools as pysh
 import matplotlib.pyplot as plt
 
@@ -41,7 +41,6 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
             cs=0
         return cs
 
-
     def get_val(self, q, l, m):
         cs = self._check_qlm(q, l, m)
         return self.vals[q, cs, l, abs(m)]
@@ -68,6 +67,9 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
 
     def calc_knlm(self, bl_u, inc_odds=True):
+        '''
+        transform from the spherical harmonics iqlm to k-space coefficients knlm
+        '''
         if inc_odds:
             lskip=1
         else:
@@ -90,6 +92,9 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
 
     def calc_iqlmp(self, bl_u, inc_odds=True):
+        '''
+        transform from k-space coefficients knlm to spherical harmonics iqlm
+        '''
         if inc_odds:
             lskip=1
         else:
@@ -112,6 +117,9 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
 
     def calc_knlmp(self, bl_l, ned_thresh=1e-6, inc_odds=True):
+        '''
+        calculate modified k-space coefficients knlm'
+        '''
         if inc_odds:
             lskip=1
         else:
@@ -127,8 +135,6 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
                 km = np.abs(self.vals[q_ind, :, l,:])**2
                 donk = np.sum(km)
-
-                # print(ned, donk)
                 if donk==0:
                     ned = 1
                     donk = 1

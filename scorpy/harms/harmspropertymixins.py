@@ -20,7 +20,6 @@ class IqlmHandlerProps:
     def qmax(self):
         return self._qmax
 
-
     @property
     def qpts(self):
         return np.linspace(0, self.qmax, self.nq + 1, endpoint=True)[:-1] + self.dq / 2
