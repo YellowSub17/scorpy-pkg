@@ -5,7 +5,7 @@ from .correlationvol import CorrelationVol
 import os
 import numpy as np
 
-from .volspropertymixins import PadfVolProps
+from ..props.volsprops import PadfVolProps
 
 
 PADF_PADF = '/home/pat/Documents/cloudstor/phd/python_projects/padf/'

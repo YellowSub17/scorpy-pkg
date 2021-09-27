@@ -5,7 +5,7 @@ from scipy import special
 import numpy as np
 import time
 
-from .volspropertymixins import CorrelationVolProps
+from ..props.volsprops import CorrelationVolProps
 
 
 class CorrelationVol(Vol, CorrelationVolProps):

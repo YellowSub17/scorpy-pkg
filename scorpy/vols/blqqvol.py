@@ -3,7 +3,7 @@
 from .vol import Vol
 import numpy as np
 from scipy import special
-from .volspropertymixins import BlqqVolProps
+from ..props.volsprops import BlqqVolProps
 import matplotlib.pyplot as plt
 
 

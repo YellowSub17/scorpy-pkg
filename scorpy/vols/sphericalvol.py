@@ -4,7 +4,7 @@ from .vol import Vol
 from ..utils import index_x
 import numpy as np
 import pyshtools as pysh
-from .volspropertymixins import SphericalVolProps
+from ..props.volsprops import SphericalVolProps
 import matplotlib.pyplot as plt
 import time
 
