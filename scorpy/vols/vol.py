@@ -7,7 +7,8 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 
 from .volspropertymixins import VolProps
-from .volsplotmixins import VolPlot
+from ..plot.volsplot import VolPlot
+# from .volsplotmixins import VolPlot
 
 from datetime import datetime
 

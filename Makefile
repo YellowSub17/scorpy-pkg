@@ -3,7 +3,9 @@
 
 
 clean :
-	autopep8 -r -i --ignore=E501,E116 .
+	rm -rf __pyc*
+	rm -rf */__pyc*
+	rm -rf */*/__pyc*
 
 
 	

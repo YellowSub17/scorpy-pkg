@@ -1,7 +1,7 @@
 import numpy as np
 import copy
 from .harmspropertymixins import IqlmHandlerProps
-from .harmsplotmixins import IqlmHandlerPlot
+from ..plot.harmsplot import IqlmHandlerPlot
 import pyshtools as pysh
 import matplotlib.pyplot as plt
 

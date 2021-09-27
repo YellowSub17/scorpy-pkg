@@ -9,7 +9,7 @@ from .readers.expgeom import ExpGeom
 from .readers.peakdata import PeakData
 
 from .harms.iqlmhandler import IqlmHandler
-from .algo.algohandler import AlgoHandler
+# from .algo.algohandler import AlgoHandler
 
 from .env import DATADIR, SCORPYDIR
 
