@@ -1,36 +1,90 @@
 
 
 
-from .algopropertymixins import AlgoHandlerProps
-from .algoplotmixins import AlgoHandlerPlot
+from ..props.algoprops import AlgoHandlerProps
+from ..plot.algoplot import AlgoHandlerPlot
 
 from ..vols import SphericalVol
+from ..harms import IqlmHandler
+
+import numpy as np
+import matplotlib.pyplot as plt
 
 
 
-class AlgoHandler:
+class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
 
 
 
 
-    def __init__(self):
-        self.qmax = 1
-        self.nq = 100
-        self.ntheta = 180
-        self.nphi = 360
-        self.nl = 90
+    def __init__(self, blqq, sphv_mask):
+
+        self.blqq = blqq
+        self.sphv_mask = sphv_mask
 
 
-        self.sphv_add = SphericalVol(self.nq, self.ntheta, self.nphi, self.qmax)
+        assert self.blqq.qmax == self.sphv_mask.qmax
+        self.qmax = self.blqq.qmax
+
+        assert self.blqq.nq == self.sphv_mask.nq
+        self.nq = self.blqq.nq
+
+        assert self.blqq.nl == self.sphv_mask.nl
+        self.nl = self.blqq.nl
+
+        self.ntheta = self.sphv_mask.ntheta
+        self.nphi = self.sphv_mask.nphi
+
+        self.lams, self.us = self.blqq.get_eig()
+
+
+        self.iqlm_base = IqlmHandler(self.nq, self.nl, self.qmax)
+        self.sphv_base = SphericalVol(self.nq, self.ntheta, self.nphi, self.qmax)
+
+        # self.iqlm_diff = self.iqlm_base.copy()
+        # self.sphv_diff = self.sphv_base.copy()
+
+        self.iqlm_iter = self.iqlm_base.copy()
+        self.iqlm_iter.vals = np.random.random(self.iqlm_iter.vals.shape)
+
+        self.sphv_iter = self.sphv_base.copy()
 
 
     def k_constraint(self):
-        pass
+        knlm = self.iqlm_iter.copy()
+        knlm.calc_knlm(self.us)
+
+        iqlmk = knlm.copy()
+        iqlmk.calc_iqlmp(self.us)
+
+        # iqlm_diff = self.iqlm_iter.copy()
+        # self.iqlm_diff.vals -= iqlmk.vals
+
+        knlmp = knlm.copy()
+        knlmp.calc_knlmp(self.lams)
+
+        iqlmp = knlmp.copy()
+        iqlmp.calc_iqlmp(self.us)
+
+        # iqlmp.vals += self.iqlm_diff.vals
+
+        self.iqlm_iter = iqlmp
+
+
 
     def b_constraint(self):
-        pass
+
+        self.sphv_iter.fill_from_iqlm(self.iqlm_iter)
+        self.sphv_iter.plot_slice(0, 49)
+
+        self.sphv_iter.vol *= self.sphv_mask.vol
+
+        self.iqlm_iter.fill_from_sphv(self.sphv_iter)
 
 
 
+    def ER(self):
+        self.k_constraint()
+        self.b_constraint()
 
 

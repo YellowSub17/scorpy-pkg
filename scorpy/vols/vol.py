@@ -225,7 +225,7 @@ vol : numpy.ndarray
 
             lams[:, z] = lam
             us[:, :, z] = u
-        return lams, us
+        return np.real(lams), np.real(us)
 
     def convolve(self, kern_L=2, kern_n=5, std_x=1, std_y=1, std_z=1):
         '''

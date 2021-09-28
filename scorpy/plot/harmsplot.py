@@ -1,5 +1,6 @@
 
 
+import numpy as np
 from .baseplot import BasePlot
 
 class IqlmHandlerPlot(BasePlot):

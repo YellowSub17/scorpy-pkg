@@ -4,7 +4,7 @@ import h5py
 from .expgeom import ExpGeom
 from ..env import DATADIR
 
-from .readerspropertymixins import PeakDataProperties
+from ..props.readersprops import PeakDataProperties
 
 DEFAULT_GEO = ExpGeom(f'{DATADIR}/geoms/agipd_2304_vj_opt_v3.geom')
 
