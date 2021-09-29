@@ -17,7 +17,7 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
 
 
 
-    def __init__(self, blqq, sphv_mask):
+    def __init__(self, blqq, sphv_mask, iqlm_init=None):
 
         self.blqq = blqq
         self.sphv_mask = sphv_mask
@@ -44,8 +44,11 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
         # self.iqlm_diff = self.iqlm_base.copy()
         # self.sphv_diff = self.sphv_base.copy()
 
-        self.iqlm_iter = self.iqlm_base.copy()
-        self.iqlm_iter.vals = np.random.random(self.iqlm_iter.vals.shape)
+        if iqlm_init is not None:
+            self.iqlm_iter = iqlm_init
+        else:
+            self.iqlm_iter = self.iqlm_base.copy()
+            self.iqlm_iter.vals = np.random.random(self.iqlm_iter.vals.shape)
 
         self.sphv_iter = self.sphv_base.copy()
 

@@ -36,9 +36,12 @@ blqq_data.fill_from_iqlm(iqlm_targ)
 a = scorpy.AlgoHandler(blqq_data, sphv_mask)
 
 for i in range(5):
+    print(i)
     a.ER()
 
 
+
+plt.show()
 
 
 
