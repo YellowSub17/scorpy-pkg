@@ -41,8 +41,6 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
         self.iqlm_base = IqlmHandler(self.nq, self.nl, self.qmax)
         self.sphv_base = SphericalVol(self.nq, self.ntheta, self.nphi, self.qmax)
 
-        # self.iqlm_diff = self.iqlm_base.copy()
-        # self.sphv_diff = self.sphv_base.copy()
 
         if iqlm_init is not None:
             self.iqlm_iter = iqlm_init
@@ -51,38 +49,57 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
             self.iqlm_iter.vals = np.random.random(self.iqlm_iter.vals.shape)
 
         self.sphv_iter = self.sphv_base.copy()
+        # self.sphv_iter.fill_from_iqlm(self.iqlm_iter)
+
+        # self.sphv_diff = self.sphv_base.copy()
+        # self.sphv_iter.fill_from_iqlm(iqlm_iter)
 
 
     def k_constraint(self):
+        # Transform K[I_lm(q)]
         knlm = self.iqlm_iter.copy()
         knlm.calc_knlm(self.us)
 
-        iqlmk = knlm.copy()
-        iqlmk.calc_iqlmp(self.us)
+        # Inverse Transform K-1[ K[ I_lm(q)] ]
+        ikqlm = knlm.copy()
+        ikqlm.calc_iqlmp(self.us)
 
-        # iqlm_diff = self.iqlm_iter.copy()
-        # self.iqlm_diff.vals -= iqlmk.vals
+        # Calculate lossy difference
+        iqlm_diff = self.iqlm_iter.copy()
+        iqlm_diff.vals -= iqlmk.vals
 
+        # Calculate K'
         knlmp = knlm.copy()
         knlmp.calc_knlmp(self.lams)
 
+        # Inverse K' to I'_lm(q)
         iqlmp = knlmp.copy()
         iqlmp.calc_iqlmp(self.us)
 
-        # iqlmp.vals += self.iqlm_diff.vals
+        # Add in lossy difference
+        iaddqlmp = iqlmp.copy()
+        iaddqlmp.vals += iqlm_diff.vals
 
-        self.iqlm_iter = iqlmp
+        # Replace iqlm iteration
+        self.iqlm_iter = iaddqlmp
 
 
 
     def b_constraint(self):
 
         self.sphv_iter.fill_from_iqlm(self.iqlm_iter)
-        self.sphv_iter.plot_slice(0, 49)
 
+        self.sphv_iter.vol += self.sphv_diff.vol
         self.sphv_iter.vol *= self.sphv_mask.vol
 
-        self.iqlm_iter.fill_from_sphv(self.sphv_iter)
+        self.iqlm_iter.fill_from_sphv(sphv_iter)
+
+        sphv_lossy = self.sphv_base.copy()
+        sphv_lossy.fill_from_iqlm(self.iqlm_iter)
+
+
+        self.
+
 
 
 

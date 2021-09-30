@@ -16,10 +16,10 @@ ntheta = 180
 nphi = 360
 nl = 90
 qmax = 108
-qq = 5
+qq = 60
 nn = -2
-ll = 4
-rcond = 1e-3
+ll = 40
+rcond = 1e-1
 
 # SET UP DATA
 cif = scorpy.CifData(f'{scorpy.DATADIR}/cifs/fcc-sf.cif', qmax = qmax)
@@ -40,86 +40,65 @@ blqq_data.fill_from_iqlm(iqlm_targ)
 
 
 lams, us = blqq_data.get_eig()
+lams_lossy, us_lossy = blqq_data.get_eig()
 
-
-plt.figure()
-plt.title('Eigenvalues before')
-plt.imshow(lams)
-plt.ylabel('n')
-plt.xlabel('l')
-
-# plt.figure()
-# plt.plot(lams[:,nn], label='before')
-
-eigs_thresh = np.max(lams, axis=0)*rcond
+eigs_thresh = np.max(lams_lossy, axis=0)*rcond
 
 for l_ind, eig_thresh in enumerate(eigs_thresh):
-    # print(l_ind, eig_thresh)
-    loc = np.where(lams[:,l_ind] < eig_thresh)
-    lams[loc, l_ind] = 0
-
-# plt.plot(lams[:,nn], label='after')
-
-
-plt.figure()
-plt.title('Eigenvalues after')
-plt.imshow(lams)
-plt.ylabel('n')
-plt.xlabel('l')
+    loc = np.where(lams_lossy[:,l_ind] < eig_thresh)
+    lams_lossy[loc, l_ind] = 0
+    loc = np.where(lams_lossy[:,l_ind] ==0)
+    us_lossy[:, loc, l_ind] = 0
 
 
 
 
-
-plt.figure()
-plt.imshow(us[:,:, ll])
-plt.title('Eigenvectors before')
-plt.xlabel('n')
-plt.ylabel('q')
+x = np.abs(us_lossy[...,ll]).sum(axis=0)
+neigs = len(np.where(x>0)[0])
 
 
-ones_eigens_loc = np.where(us[:,:,ll].sum(axis=1)==1)[0]
+fig, axes = plt.subplots(2,1, sharex=True, sharey=True)
+plt.suptitle(f'rcond: {rcond}, #eigs:{neigs}')
 
-sumthetaphi = sphv_mask.vol.sum(axis=-1).sum(axis=-1)
-
-qloc = np.where(sumthetaphi == 0)[0]
-
-
-
-
+axes[0].imshow(us[...,ll])
+axes[0].set_title('Evectors before')
+axes[1].imshow(us_lossy[...,ll])
+axes[1].set_title('Evectors after')
 
 
-
-for l_ind in range(nl):
-    loc = np.where(lams[:,l_ind] ==0)
-    us[:, loc, l_ind] = 0
-
-plt.figure()
-plt.imshow(us[:,:, ll])
-plt.title('Eigenvectors after')
-plt.xlabel('n')
-plt.ylabel('q')
+knlm_full = iqlm_targ.copy()
+knlm_full.calc_knlm(us)
+iqlm_full = knlm_full.copy()
+iqlm_full.calc_iqlmp(us)
 
 
 
+knlm_lossy = iqlm_targ.copy()
+knlm_lossy.calc_knlm(us_lossy)
+iqlm_lossy = knlm_lossy.copy()
+iqlm_lossy.calc_iqlmp(us_lossy)
 
-print('q=0')
-print(qloc)
-print('us=1')
-print(ones_eigens_loc)
 
-# knlm_full = iqlm_targ.copy()
-# knlm_full.calc_knlm(us)
 
-# iqlm_full = knlm_full.copy()
-# iqlm_full.calc_iqlmp(us)
+iqlm_diff = iqlm_targ.copy()
+iqlm_diff.vals -= iqlm_lossy.vals
 
 
 
 
 
-# iqlm_targ.plot_q(qq)
-# iqlm_full.plot_q(qq)
+
+fig, axes = plt.subplots(2,2, sharex=True, sharey=True)
+
+plt.suptitle(f'rcond: {rcond}, #eigs:{neigs}')
+iqlm_targ.plot_q(qq, fig=fig, axes=axes[0,0], title='target')
+iqlm_full.plot_q(qq, fig=fig, axes=axes[0,1], title='full')
+iqlm_lossy.plot_q(qq, fig=fig, axes=axes[1,0], title='lossy')
+iqlm_diff.plot_q(qq, fig=fig, axes=axes[1,1], title='diff')
+
+
+
+
 
 
 plt.show()
