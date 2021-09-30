@@ -11,14 +11,15 @@ plt.close('all')
 
 
 # Parameters
-nq= 100
+nq= 200
 ntheta = 180
 nphi = 360
 nl = 90
 qmax = 108
 qq = 5
 nn = -2
-rcond = 1e-1
+ll = 4
+rcond = 1e-3
 
 # SET UP DATA
 cif = scorpy.CifData(f'{scorpy.DATADIR}/cifs/fcc-sf.cif', qmax = qmax)
@@ -47,19 +48,17 @@ plt.imshow(lams)
 plt.ylabel('n')
 plt.xlabel('l')
 
-plt.figure()
-plt.plot(lams[:,nn], label='before')
-
+# plt.figure()
+# plt.plot(lams[:,nn], label='before')
 
 eigs_thresh = np.max(lams, axis=0)*rcond
-
 
 for l_ind, eig_thresh in enumerate(eigs_thresh):
     # print(l_ind, eig_thresh)
     loc = np.where(lams[:,l_ind] < eig_thresh)
     lams[loc, l_ind] = 0
 
-plt.plot(lams[:,nn], label='after')
+# plt.plot(lams[:,nn], label='after')
 
 
 plt.figure()
@@ -70,6 +69,44 @@ plt.xlabel('l')
 
 
 
+
+
+plt.figure()
+plt.imshow(us[:,:, ll])
+plt.title('Eigenvectors before')
+plt.xlabel('n')
+plt.ylabel('q')
+
+
+ones_eigens_loc = np.where(us[:,:,ll].sum(axis=1)==1)[0]
+
+sumthetaphi = sphv_mask.vol.sum(axis=-1).sum(axis=-1)
+
+qloc = np.where(sumthetaphi == 0)[0]
+
+
+
+
+
+
+
+for l_ind in range(nl):
+    loc = np.where(lams[:,l_ind] ==0)
+    us[:, loc, l_ind] = 0
+
+plt.figure()
+plt.imshow(us[:,:, ll])
+plt.title('Eigenvectors after')
+plt.xlabel('n')
+plt.ylabel('q')
+
+
+
+
+print('q=0')
+print(qloc)
+print('us=1')
+print(ones_eigens_loc)
 
 # knlm_full = iqlm_targ.copy()
 # knlm_full.calc_knlm(us)
