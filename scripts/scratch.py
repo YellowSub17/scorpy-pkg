@@ -20,6 +20,7 @@ cif = scorpy.CifData(f'{scorpy.DATADIR}/cifs/fcc-sf.cif', qmax = qmax)
 sphv_mask = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_mask.fill_from_cif(cif)
 sphv_mask.make_mask()
+sphv_mask.plot_slice(0,qq)
 
 # SET UP TARGET HARMONICS
 sphv_targ = sphv_mask.copy()
@@ -38,6 +39,7 @@ a = scorpy.AlgoHandler(blqq_data, sphv_mask)
 for i in range(5):
     print(i)
     a.ER()
+    a.sphv_add.plot_slice(0, qq)
 
 
 

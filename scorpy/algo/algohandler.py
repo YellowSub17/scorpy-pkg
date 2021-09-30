@@ -17,7 +17,7 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
 
 
 
-    def __init__(self, blqq, sphv_mask, iqlm_init=None):
+    def __init__(self, blqq, sphv_mask):
 
         self.blqq = blqq
         self.sphv_mask = sphv_mask
@@ -41,47 +41,50 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
         self.iqlm_base = IqlmHandler(self.nq, self.nl, self.qmax)
         self.sphv_base = SphericalVol(self.nq, self.ntheta, self.nphi, self.qmax)
 
-
-        if iqlm_init is not None:
-            self.iqlm_iter = iqlm_init
-        else:
-            self.iqlm_iter = self.iqlm_base.copy()
-            self.iqlm_iter.vals = np.random.random(self.iqlm_iter.vals.shape)
-
         self.sphv_iter = self.sphv_base.copy()
-        # self.sphv_iter.fill_from_iqlm(self.iqlm_iter)
+        self.sphv_iter.vol = np.random.random(self.sphv_iter.vol.shape)
 
-        # self.sphv_diff = self.sphv_base.copy()
-        # self.sphv_iter.fill_from_iqlm(iqlm_iter)
+        self.iqlm_iter = self.iqlm_base.copy()
+        self.iqlm_iter.fill_from_sphv(self.sphv_iter)
+
+        self.sphv_lm = self.sphv_base.copy()
+        self.sphv_lm.fill_from_iqlm(self.iqlm_iter)
+
+        self.sphv_diff = self.sphv_iter.copy()
+        self.sphv_diff.vol -= self.sphv_lm.vol
+
+
+        self.iqlm_iter.vals = np.random.random(self.iqlm_iter.vals.shape)
+        self.sphv_diff.vol *=0
 
 
     def k_constraint(self):
         # Transform K[I_lm(q)]
-        knlm = self.iqlm_iter.copy()
-        knlm.calc_knlm(self.us)
+        self.knlm = self.iqlm_iter.copy()
+        self.knlm.calc_knlm(self.us)
 
         # Inverse Transform K-1[ K[ I_lm(q)] ]
-        ikqlm = knlm.copy()
-        ikqlm.calc_iqlmp(self.us)
+        self.ikqlm = self.knlm.copy()
+        self.ikqlm.calc_iqlmp(self.us)
 
-        # Calculate lossy difference
-        iqlm_diff = self.iqlm_iter.copy()
-        iqlm_diff.vals -= iqlmk.vals
+#         # Calculate lossy difference
+        # self.iqlm_diff = self.iqlm_iter.copy()
+        # self.iqlm_diff.vals -= self.ikqlm.vals
 
         # Calculate K'
-        knlmp = knlm.copy()
-        knlmp.calc_knlmp(self.lams)
+        self.knlmp = self.knlm.copy()
+        self.knlmp.calc_knlmp(self.lams)
 
         # Inverse K' to I'_lm(q)
-        iqlmp = knlmp.copy()
-        iqlmp.calc_iqlmp(self.us)
+        self.iqlmp = self.knlmp.copy()
+        self.iqlmp.calc_iqlmp(self.us)
 
         # Add in lossy difference
-        iaddqlmp = iqlmp.copy()
-        iaddqlmp.vals += iqlm_diff.vals
+        self.iaddqlmp = self.iqlmp.copy()
+#         self.iaddqlmp.vals += self.iqlm_diff.vals
 
         # Replace iqlm iteration
-        self.iqlm_iter = iaddqlmp
+        self.iqlm_iter = self.iaddqlmp.copy()
 
 
 
@@ -89,16 +92,23 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
 
         self.sphv_iter.fill_from_iqlm(self.iqlm_iter)
 
-        self.sphv_iter.vol += self.sphv_diff.vol
-        self.sphv_iter.vol *= self.sphv_mask.vol
 
-        self.iqlm_iter.fill_from_sphv(sphv_iter)
-
-        sphv_lossy = self.sphv_base.copy()
-        sphv_lossy.fill_from_iqlm(self.iqlm_iter)
+        self.sphv_add = self.sphv_iter.copy()
+#         self.sphv_add.vol += self.sphv_diff.vol
 
 
-        self.
+
+        self.sphv_bra = self.sphv_add.copy()
+        self.sphv_bra.vol *= self.sphv_mask.vol
+
+        self.iqlm_iter.fill_from_sphv(self.sphv_bra)
+
+        self.sphv_lm = self.sphv_base.copy()
+        self.sphv_lm.fill_from_iqlm(self.iqlm_iter)
+
+        # self.sphv_diff = self.sphv_iter.copy()
+        # self.sphv_diff.vol -= self.sphv_lm.vol
+
 
 
 
