@@ -54,8 +54,8 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
         self.sphv_diff.vol -= self.sphv_lm.vol
 
 
-        self.iqlm_iter.vals = np.random.random(self.iqlm_iter.vals.shape)
-        self.sphv_diff.vol *=0
+        # self.iqlm_iter.vals = np.random.random(self.iqlm_iter.vals.shape)
+        # self.sphv_diff.vol *=0
 
 
     def k_constraint(self):
