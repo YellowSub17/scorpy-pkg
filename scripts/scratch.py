@@ -24,6 +24,7 @@ sphv_mask.plot_slice(0,qq)
 
 # SET UP TARGET HARMONICS
 sphv_targ = sphv_mask.copy()
+sphv_targ.vol *= np.random.random(sphv_targ.vol.shape)
 iqlm_targ = scorpy.IqlmHandler(nq, nl, qmax)
 iqlm_targ.fill_from_sphv(sphv_targ)
 
@@ -33,13 +34,26 @@ blqq_data.fill_from_iqlm(iqlm_targ)
 
 
 
+
+# i = scorpy.IqlmHandler(nq, nl, qmax)
+# i.vals = np.random.random(i.vals.shape)
+# i.vals = np.ones(i.vals.shape)
+
+
+# s = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
+# s.fill_from_iqlm(i)
+
+# s.plot_slice(0, qq)
+
+
 # SET UP ALGORITHM
 a = scorpy.AlgoHandler(blqq_data, sphv_mask)
 
-for i in range(5):
+for i in range(10):
     print(i)
     a.ER()
-    a.sphv_add.plot_slice(0, qq)
+    if i%2==0:
+        a.sphv_add.plot_slice(0, qq)
 
 
 

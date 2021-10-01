@@ -140,6 +140,7 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
                     donk = 1
 
 
+
                 self.vals[q_ind, :, l, :] *= (ned/donk)
 
 

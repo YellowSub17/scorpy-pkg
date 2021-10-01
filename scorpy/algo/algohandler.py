@@ -36,10 +36,15 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
         self.nphi = self.sphv_mask.nphi
 
         self.lams, self.us = self.blqq.get_eig()
+        #conditon thresh
 
 
         self.iqlm_base = IqlmHandler(self.nq, self.nl, self.qmax)
         self.sphv_base = SphericalVol(self.nq, self.ntheta, self.nphi, self.qmax)
+
+
+
+
 
         self.sphv_iter = self.sphv_base.copy()
         self.sphv_iter.vol = np.random.random(self.sphv_iter.vol.shape)
@@ -57,8 +62,8 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
         # self.iqlm_iter.vals = np.random.random(self.iqlm_iter.vals.shape)
         # self.sphv_diff.vol *=0
 
-
-    def k_constraint(self):
+#
+    def k_constraint(self, sphv=None):
         # Transform K[I_lm(q)]
         self.knlm = self.iqlm_iter.copy()
         self.knlm.calc_knlm(self.us)
@@ -88,14 +93,13 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
 
 
 
-    def b_constraint(self):
+    def b_constraint(self, lossy_flag=True):
 
         self.sphv_iter.fill_from_iqlm(self.iqlm_iter)
 
 
         self.sphv_add = self.sphv_iter.copy()
-#         self.sphv_add.vol += self.sphv_diff.vol
-
+        self.sphv_add.vol += self.sphv_diff.vol
 
 
         self.sphv_bra = self.sphv_add.copy()
@@ -106,8 +110,8 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
         self.sphv_lm = self.sphv_base.copy()
         self.sphv_lm.fill_from_iqlm(self.iqlm_iter)
 
-        # self.sphv_diff = self.sphv_iter.copy()
-        # self.sphv_diff.vol -= self.sphv_lm.vol
+        self.sphv_diff = self.sphv_iter.copy()
+        self.sphv_diff.vol -= self.sphv_lm.vol
 
 
 
@@ -116,5 +120,15 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
     def ER(self):
         self.k_constraint()
         self.b_constraint()
+
+
+#     def HIO(self):
+        # sphv_cp = self.sphv_iter.copy()
+        # self.k_constraint()
+        # self.b_constraint()
+
+        # self.sphv_iter.vol *=sphv_cp.vol
+
+
 
 
