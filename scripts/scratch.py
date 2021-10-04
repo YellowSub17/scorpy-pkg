@@ -15,16 +15,23 @@ qq = 49
 
 # SET UP DATA
 cif = scorpy.CifData(f'{scorpy.DATADIR}/cifs/fcc-sf.cif', qmax = qmax)
+cif.scat_sph[:,-1] *= 2
+# cif.scat_sph[:,-1] *= np.random.random(len(cif.scat_sph[:,-1]))
+# cif.scat_sph[:,-1] = np.abs(cif.scat_sph[:,-1])**2
 
-# SET UP MASK
-sphv_mask = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
-sphv_mask.fill_from_cif(cif)
-sphv_mask.make_mask()
-sphv_mask.plot_slice(0,qq)
 
 # SET UP TARGET HARMONICS
-sphv_targ = sphv_mask.copy()
-sphv_targ.vol *= np.random.random(sphv_targ.vol.shape)
+sphv_targ = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
+sphv_targ.fill_from_cif(cif)
+sphv_targ.plot_slice(0,qq, title='Target')
+
+# SET UP MASK
+sphv_mask = sphv_targ.copy()
+sphv_mask.make_mask()
+sphv_mask.plot_slice(0,qq, title='Mask')
+
+
+
 iqlm_targ = scorpy.IqlmHandler(nq, nl, qmax)
 iqlm_targ.fill_from_sphv(sphv_targ)
 
@@ -35,25 +42,20 @@ blqq_data.fill_from_iqlm(iqlm_targ)
 
 
 
-# i = scorpy.IqlmHandler(nq, nl, qmax)
-# i.vals = np.random.random(i.vals.shape)
-# i.vals = np.ones(i.vals.shape)
-
-
-# s = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
-# s.fill_from_iqlm(i)
-
-# s.plot_slice(0, qq)
 
 
 # SET UP ALGORITHM
-a = scorpy.AlgoHandler(blqq_data, sphv_mask)
+a_sphv = scorpy.AlgoHandler(blqq_data, sphv_mask, sphv_start=True)
+a_iqlm = scorpy.AlgoHandler(blqq_data, sphv_mask, sphv_start=False)
 
-for i in range(10):
+for i in range(5):
     print(i)
-    a.ER()
-    if i%2==0:
-        a.sphv_add.plot_slice(0, qq)
+    a_iqlm.ER_iqlm()
+    a_sphv.ER_sphv()
+    # if i%1==0:
+        # fig, axes = plt.subplots(1,2, sharex=True, sharey=True)
+        # a.sphv_add.plot_slice(0, qq, fig=fig, axes=axes[0])
+        # a.sphv_b.plot_slice(0, qq, fig=fig, axes=axes[1])
 
 
 
