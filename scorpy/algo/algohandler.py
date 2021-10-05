@@ -10,6 +10,8 @@ from ..harms import IqlmHandler
 import numpy as np
 import matplotlib.pyplot as plt
 
+import copy
+
 
 
 class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
@@ -17,11 +19,15 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
 
 
 
-    def __init__(self, blqq, sphv_mask, sphv_start=True):
+
+    def __init__(self, blqq, sphv_mask, iter_obj='sphv', lossy_sphv=True, lossy_iqlm=True):
 
         ##### save inputs 
         self.blqq = blqq
         self.sphv_mask = sphv_mask
+        self.iter_obj = iter_obj
+        self.lossy_sphv = lossy_sphv
+        self.lossy_iqlm = lossy_iqlm
 
 
         ##### check input properties are consistent and save them
@@ -33,6 +39,8 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
 
         assert self.blqq.nl == self.sphv_mask.nl
         self.nl = self.blqq.nl
+
+        assert self.iter_obj in ['sphv', 'iqlm']
 
         self.ntheta = self.sphv_mask.ntheta
         self.nphi = self.sphv_mask.nphi
@@ -50,7 +58,7 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
         self.sphv_iter = self.sphv_base.copy()
         self.sphv_iter.vol = np.random.random(self.sphv_iter.vol.shape)
 
-        if not sphv_start:
+        if self.iter_obj=='iqlm':
             ##### calculate initial harmonic values and get s_diff
             self.iqlm_iter = self.iqlm_base.copy()
             self.iqlm_iter.fill_from_sphv(self.sphv_iter)
@@ -62,14 +70,19 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
             self.sphv_diff.vol -= self.sphv_lm.vol
 
 
-    def ER_sphv(self):
-        _ = self.k_constraint_sphv()
-        _ = self.b_constraint_sphv()
 
-    def ER_iqlm(self):
-        _ = self.k_constraint_iqlm()
-        _ = self.b_constraint_iqlm()
+    def copy(self):
+        a = copy.deepcopy(self)
+        return a
 
+    def ER(self):
+        if self.iter_obj=='iqlm':
+            _ = self.k_constraint_iqlm()
+            _ = self.b_constraint_iqlm()
+
+        elif self.iter_obj=='sphv':
+            _ = self.k_constraint_sphv()
+            _ = self.b_constraint_sphv()
 
 
 
@@ -116,7 +129,8 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
 
         ##### Add in difference lost over K trasnformation
         self.iqlm_add = self.iqlmp.copy()
-        # self.iqlmp_add.vals += self.iqlm_diff.vals
+        if self.lossy_iqlm:
+            self.iqlm_add.vals += self.iqlm_diff.vals
 
         ##### calculate the spherical coordinates deom new harmonics
         self.sphvp = self.sphv_base.copy()
@@ -125,7 +139,8 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
 
         ##### Add in difference lost over low pass filter 
         self.sphv_add = self.sphvp.copy()
-        # self.sphv_add.vol += self.sphv_diff.vol
+        if self.lossy_sphv:
+            self.sphv_add.vol += self.sphv_diff.vol
 
         ##### replace iterating volume
         self.sphv_iter = self.sphv_add.copy()
@@ -155,7 +170,7 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
 
 
 
-    def k_constraint_iqlm(self, sphv=None):
+    def k_constraint_iqlm(self):
         ##### save input
         iqlm_i = self.iqlm_iter.copy()
 
@@ -181,7 +196,8 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
 
         ##### Add in lossy difference
         self.iqlm_add = self.iqlmp.copy()
-        # self.iqlmp_add.vals += self.iqlm_diff.vals
+        if self.lossy_iqlm:
+            self.iqlm_add.vals += self.iqlm_diff.vals
 
         ##### Replace iterating iqlm 
         self.iqlm_iter = self.iqlm_add.copy()
@@ -192,7 +208,7 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
         ##### return input and output
         return iqlm_i, iqlm_f
 
-    def b_constraint_iqlm(self, lossy_flag=True):
+    def b_constraint_iqlm(self):
         ##### save input
         iqlm_i = self.iqlm_iter.copy()
 
@@ -201,7 +217,8 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot):
 
         ##### add in lost difference from spherical harmonic recomp
         self.sphv_add = self.sphv_iter.copy()
-        # self.sphv_add.vol += self.sphv_diff.vol
+        if self.lossy_sphv:
+            self.sphv_add.vol += self.sphv_diff.vol
 
         ##### only keep intenisty values at bragg positions defined by mask
         self.sphv_b = self.sphv_base.copy()
