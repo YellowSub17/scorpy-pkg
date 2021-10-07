@@ -1,9 +1,10 @@
 import numpy as np
 import copy
-from ..props.harmsprops import IqlmHandlerProps
-from ..plot.harmsplot import IqlmHandlerPlot
 import pyshtools as pysh
 import matplotlib.pyplot as plt
+
+from .harmsprops import IqlmHandlerProps
+from ..plot.harmsplot import IqlmHandlerPlot
 
 
 class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
@@ -138,9 +139,6 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
                 if donk==0:
                     ned = 1
                     donk = 1
-
-
-
                 self.vals[q_ind, :, l, :] *= (ned/donk)
 
 

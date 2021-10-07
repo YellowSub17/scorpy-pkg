@@ -1,12 +1,12 @@
 
+import numpy as np
+import pyshtools as pysh
+import matplotlib.pyplot as plt
+import time
 
 from .vol import Vol
 from ..utils import index_x
-import numpy as np
-import pyshtools as pysh
-from ..props.volsprops import SphericalVolProps
-import matplotlib.pyplot as plt
-import time
+from .volsprops import SphericalVolProps
 
 
 

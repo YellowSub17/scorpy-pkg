@@ -1,10 +1,8 @@
-
-
-from .vol import Vol
 import numpy as np
 from scipy import special
-from ..props.volsprops import BlqqVolProps
 import matplotlib.pyplot as plt
+from .vol import Vol
+from .volsprops import BlqqVolProps
 
 
 class BlqqVol(Vol, BlqqVolProps):

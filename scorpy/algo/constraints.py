@@ -5,7 +5,9 @@
 class AlgoHandlerConstraints:
 
 
- 
+    # def reflector(self, const_fn):
+        # pass
+
     def k_constraint_sphv(self):
         ##### save input
         sphv_i = self.sphv_iter.copy()

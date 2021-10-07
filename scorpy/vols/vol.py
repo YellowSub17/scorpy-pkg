@@ -6,9 +6,8 @@ import configparser as cfp
 from pathlib import Path
 import matplotlib.pyplot as plt
 
-from ..props.volsprops import VolProps
+from .volsprops import VolProps
 from ..plot.volsplot import VolPlot
-# from .volsplotmixins import VolPlot
 
 from datetime import datetime
 

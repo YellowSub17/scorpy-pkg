@@ -1,11 +1,10 @@
 
-
-from .vol import Vol
-from .correlationvol import CorrelationVol
 import os
 import numpy as np
 
-from ..props.volsprops import PadfVolProps
+from .vol import Vol
+from .correlationvol import CorrelationVol
+from .volsprops import PadfVolProps
 
 
 PADF_PADF = '/home/pat/Documents/cloudstor/phd/python_projects/padf/'

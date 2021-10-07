@@ -3,7 +3,7 @@ import CifFile as pycif
 import numpy as np
 from ..utils import index_x, apply_sym
 
-from ..props.readersprops import CifDataProperties
+from .readersprops import CifDataProperties
 
 
 class CifData(CifDataProperties):

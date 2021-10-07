@@ -16,7 +16,6 @@ def harmonic_list(nl, lmin=0,  inc_odds=True):
 
     return harms
 
-   
 
 
 def index_x(x_val, x_min, x_max, nx, wrap=False):

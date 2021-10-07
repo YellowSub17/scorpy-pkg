@@ -1,11 +1,10 @@
-from ..utils import angle_between_pol, angle_between_sph, angle_between_rect, index_x
-
-from .vol import Vol
 from scipy import special
 import numpy as np
 import time
 
-from ..props.volsprops import CorrelationVolProps
+from ..utils import angle_between_pol, angle_between_sph, angle_between_rect, index_x
+from .vol import Vol
+from .volsprops import CorrelationVolProps
 
 
 class CorrelationVol(Vol, CorrelationVolProps):

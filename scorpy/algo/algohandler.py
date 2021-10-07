@@ -1,18 +1,17 @@
 
+import numpy as np
+import matplotlib.pyplot as plt
+import copy
 
 
-from ..props.algoprops import AlgoHandlerProps
-from ..plot.algoplot import AlgoHandlerPlot
-
+from .algoprops import AlgoHandlerProps
 from .constraints import AlgoHandlerConstraints
+from ..plot.algoplot import AlgoHandlerPlot
 
 from ..vols import SphericalVol
 from ..harms import IqlmHandler
 
-import numpy as np
-import matplotlib.pyplot as plt
 
-import copy
 
 
 
@@ -84,6 +83,9 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot, AlgoHandlerConstraints):
         a = copy.deepcopy(self)
         return a
 
+
+
+
     def ER(self):
         if self.iter_obj=='iqlm':
             _ = self.k_constraint_iqlm()
@@ -94,7 +96,8 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot, AlgoHandlerConstraints):
             _ = self.b_constraint_sphv()
 
 
-    def HIO(self):
+    def HIO(self, beta=0.5):
+
         pass
 
 
