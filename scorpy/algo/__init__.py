@@ -1,2 +1,1 @@
-
 from .algohandler import AlgoHandler
