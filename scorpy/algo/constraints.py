@@ -33,8 +33,8 @@ class AlgoHandlerConstraints:
         self.ikqlm.calc_iqlmp(self.us)
 
         ##### difference lost over K transformation
-        self.iqlm_diff = self.iqlm_iter.copy()
-        self.iqlm_diff.vals -= self.ikqlm.vals
+        self.iqlm_diff = self.iqlm_base.copy()
+        self.iqlm_diff.vals = self.iqlm_iter.vals - self.ikqlm.vals
 
         ##### Calculate K' after modifered by lamda
         self.knlmp = self.knlm.copy()
@@ -100,8 +100,8 @@ class AlgoHandlerConstraints:
         self.ikqlm.calc_iqlmp(self.us)
 
         ##### Calculate lossy difference
-        self.iqlm_diff = self.iqlm_iter.copy()
-        self.iqlm_diff.vals -= self.ikqlm.vals
+        self.iqlm_diff = self.iqlm_base.copy()
+        self.iqlm_diff.vals = self.iqlm_iter.vals - self.ikqlm.vals
 
         ##### Calculate K'
         self.knlmp = self.knlm.copy()
