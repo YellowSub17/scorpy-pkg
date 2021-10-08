@@ -19,13 +19,15 @@ class BlqqVol(Vol, BlqqVolProps):
         BlqqVol.plot_q1q2()
     """
 
-    def __init__(self, nq=100, nl=37, qmax=1, path=None, comp=False):
+    def __init__(self, nq=100, nl=37, qmax=1, inc_odds=True, path=None, comp=False):
+
         Vol.__init__(self, nx=nq, ny=nq, nz=nl,
                      xmin=0, ymin=0, zmin=0,
                      xmax=qmax, ymax=qmax, zmax=nl - 1,
                      xwrap=False, ywrap=False, zwrap=False,
                      comp=False, path=path)
 
+        self._inc_odds = inc_odds
         self.plot_q1q2 = self.plot_xy
 
     def _save_extra(self, f):
@@ -35,12 +37,16 @@ class BlqqVol(Vol, BlqqVolProps):
         f.write(f'nl = {self.nl}\n')
         f.write(f'lmax = {self.lmax}\n')
         f.write(f'dq = {self.dq}\n')
+        f.write(f'inc_odds = {self.inc_odds}\n')
+
+
+    def _load_extra(self, config):
+        self._inc_odds = config.getboolean('blqq', 'inc_odds')
 
 
 
 
-
-    def fill_from_corr(self, corr, inc_odds=True, rcond=None):
+    def fill_from_corr(self, corr, rcond=None):
         '''
         scorpy.BlqqVol.fill_from_corr():
             Fill the Blqq from a CorrelationVol object
@@ -56,7 +62,7 @@ class BlqqVol(Vol, BlqqVolProps):
         assert corr.nq == self.nq, 'CorrelationVol and BlqqVol have different nq'
         assert corr.qmax == self.qmax, 'CorrelationVol and BlqqVol have different qmax'
 
-        if inc_odds:
+        if self.inc_odds:
             lskip = 1
         else:
             lskip = 2
@@ -99,7 +105,7 @@ class BlqqVol(Vol, BlqqVolProps):
 
 
 
-    def fill_from_iqlm(self, iqlm, inc_odds=True):
+    def fill_from_iqlm(self, iqlm):
         '''
         scorpy.BlqqVol.fill_from_iqlm():
             Fill the Blqq from a IqlmHandler object
@@ -119,7 +125,7 @@ class BlqqVol(Vol, BlqqVolProps):
 
                 multi = q1_coeffs * q2_coeffs
 
-                if not inc_odds:
+                if not self.inc_odds:
                     multi[:,1::2,:] =0
 
                 self.vol[i, j + i, :] = multi.sum(axis=0).sum(axis=1)[:self.nl]

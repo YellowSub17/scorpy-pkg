@@ -9,10 +9,11 @@ from ..plot.harmsplot import IqlmHandlerPlot
 
 class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
-    def __init__(self, nq, nl, qmax):
+    def __init__(self, nq, nl, qmax, inc_odds=True):
         self._nq = nq
         self._nl = nl
         self._qmax = qmax
+        self._inc_odds = inc_odds
         self.vals = np.zeros( (self.nq, 2, self.nl, self.nl))
 
 
@@ -67,11 +68,11 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
 
 
-    def calc_knlm(self, bl_u, inc_odds=True):
+    def calc_knlm(self, bl_u):
         '''
         transform from the spherical harmonics iqlm to k-space coefficients knlm
         '''
-        if inc_odds:
+        if self.inc_odds:
             lskip=1
         else:
             lskip=2
@@ -92,11 +93,11 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
 
 
-    def calc_iqlmp(self, bl_u, inc_odds=True):
+    def calc_iqlmp(self, bl_u):
         '''
         transform from k-space coefficients knlm to spherical harmonics iqlm
         '''
-        if inc_odds:
+        if self.inc_odds:
             lskip=1
         else:
             lskip=2
@@ -117,11 +118,11 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
         self.vals = new_vals
 
 
-    def calc_knlmp(self, bl_l, ned_thresh=1e-6, inc_odds=True):
+    def calc_knlmp(self, bl_l):
         '''
         calculate modified k-space coefficients knlm'
         '''
-        if inc_odds:
+        if self.inc_odds:
             lskip=1
         else:
             lskip=2
@@ -132,7 +133,7 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
             for l in range(0, self.nl, lskip):
 
                 # ned = bl_l[q_ind,l]
-                ned = np.abs(bl_l[q_ind,l])
+                ned = np.abs(bl_l[q_ind,l])**2
                 # ned = np.sqrt(np.abs(bl_l[q_ind,l]))
                 #sqrt?
 

@@ -283,6 +283,10 @@ class BlqqVolProps:
         '''
         return self.xpts
 
+    @property
+    def inc_odds(self):
+        return self._inc_odds
+
 
 class SphericalVolProps:
 

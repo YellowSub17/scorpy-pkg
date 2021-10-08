@@ -19,9 +19,9 @@ ntheta = 180
 nphi = 360
 nl = 90
 
-# ntheta = 90
-# nphi = 180
-# nl = 45
+# ntheta = 20
+# nphi = 40
+# nl = 10
 qmax = 108
 
 qq = 49
@@ -66,8 +66,6 @@ a = scorpy.AlgoHandler(blqq_data, sphv_mask, iter_obj='sphv', lossy_sphv=True, l
 sphv1 = a.sphv_iter.copy()
 sphv1.plot_slice(0,qq, title='initial')
 a.k_constraint_sphv()
-# sphv1_lm = a.sphv_lm.copy()
-# sphv1_lm.plot_slice(0,qq, title='initial lm')
 
 sphv2 = a.sphv_iter.copy()
 sphv2.plot_slice(0,qq, title='iter1')
@@ -96,8 +94,8 @@ s32 = sphv3.copy()
 s32.vol -=sphv2.vol
 
 
-s21.plot_slice(0,qq, title='iter2 - initial')
-s32.plot_slice(0,qq, title='iter3 - iter2')
+s21.plot_slice(0,qq, title='iter1 - initial')
+s32.plot_slice(0,qq, title='iter2 - iter1')
 
 
 

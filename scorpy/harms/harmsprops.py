@@ -34,6 +34,9 @@ class IqlmHandlerProps:
 
 
 
+    @property
+    def inc_odds(self):
+        return self._inc_odds
 
 
 

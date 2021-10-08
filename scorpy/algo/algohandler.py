@@ -27,8 +27,8 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot, AlgoHandlerConstraints):
         self.iter_obj = iter_obj
         self.lossy_sphv = lossy_sphv
         self.lossy_iqlm = lossy_iqlm
-
         self.rcond = rcond
+        self.inc_odds = inc_odds
 
 
         ##### check input properties are consistent and save them
@@ -46,7 +46,7 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot, AlgoHandlerConstraints):
 
         self.ntheta = self.sphv_mask.ntheta
         self.nphi = self.sphv_mask.nphi
-        self.lams, self.us = self.blqq.get_eig()
+        self.lams, self.us = self.blqq.get_eig(inc_odds=self.inc_odds)
         #condition threshold
 
         eigs_thresh = np.max(self.lams, axis=0)*self.rcond
@@ -67,7 +67,7 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot, AlgoHandlerConstraints):
 
 
         ##### base objects to copy from
-        self.iqlm_base = IqlmHandler(self.nq, self.nl, self.qmax)
+        self.iqlm_base = IqlmHandler(self.nq, self.nl, self.qmax, self.inc_odds)
         self.sphv_base = SphericalVol(self.nq, self.ntheta, self.nphi, self.qmax)
 
 
