@@ -45,6 +45,7 @@ class BasePlot:
                     'ylabel':'',
                     'title':'',
                     'origin':'lower',
+                    'ticks':True,
                  }
 
         kwargs.update(new_kwargs)
@@ -87,4 +88,4 @@ class BasePlot:
         kwargs['axes'].set_xlabel(kwargs['xlabel'])
         kwargs['axes'].set_ylabel(kwargs['ylabel'])
 
-
+ 

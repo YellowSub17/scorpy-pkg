@@ -14,7 +14,7 @@ np.random.seed(0)
 
 
 # Parameters
-nq= 100
+nq= 200
 ntheta = 180
 nphi = 360
 nl = 90
@@ -24,7 +24,7 @@ nl = 90
 # nl = 10
 qmax = 108
 
-qq = 49
+qq = 50
 
 # SET UP MASK DATA
 cif_mask = scorpy.CifData(f'{scorpy.DATADIR}/cifs/fcc-sf.cif', qmax = qmax)
@@ -55,7 +55,8 @@ blqq_data.fill_from_iqlm(iqlm_targ)
 
 
 # SET UP ALGORITHM
-a = scorpy.AlgoHandler(blqq_data, sphv_mask, iter_obj='sphv', lossy_sphv=True, lossy_iqlm=True, rcond=1)
+a = scorpy.AlgoHandler(blqq_data, sphv_mask, iter_obj='sphv', 
+                       lossy_sphv=False, lossy_iqlm=False, rcond=1)
 
 # a.sphv_iter = sphv_targ
 
@@ -63,28 +64,31 @@ a = scorpy.AlgoHandler(blqq_data, sphv_mask, iter_obj='sphv', lossy_sphv=True, l
 
 
 
+fig, axes = plt.subplots(2,3)
+
 sphv1 = a.sphv_iter.copy()
-sphv1.plot_slice(0,qq, title='initial')
+sphv1.plot_slice(0,qq, title='initial', fig=fig, axes=axes[0,0])
 a.k_constraint_sphv()
 
 sphv2 = a.sphv_iter.copy()
-sphv2.plot_slice(0,qq, title='iter1')
+sphv2.plot_slice(0,qq, title='iter1', fig=fig, axes=axes[0,1])
 a.k_constraint_sphv()
 
 sphv3 = a.sphv_iter.copy()
-sphv3.plot_slice(0,qq, title='iter2')
+sphv3.plot_slice(0,qq, title='iter2', fig=fig, axes=axes[0,2])
 a.k_constraint_sphv()
 
 sphv4 = a.sphv_iter.copy()
-sphv4.plot_slice(0,qq, title='iter3')
+sphv4.plot_slice(0,qq, title='iter3', fig=fig, axes=axes[1,0])
 a.k_constraint_sphv()
 
 sphv5 = a.sphv_iter.copy()
-sphv5.plot_slice(0,qq, title='iter4')
+sphv5.plot_slice(0,qq, title='iter4', fig=fig, axes=axes[1,1])
 a.k_constraint_sphv()
 
 sphv6 = a.sphv_iter.copy()
-sphv6.plot_slice(0,qq, title='iter5')
+sphv6.plot_slice(0,qq, title='iter5', fig=fig, axes=axes[1,2])
+a.k_constraint_sphv()
 
 
 s21 = sphv2.copy()
@@ -93,27 +97,33 @@ s21.vol -= sphv1.vol
 s32 = sphv3.copy()
 s32.vol -=sphv2.vol
 
+s43 = sphv4.copy()
+s43.vol -=sphv3.vol
 
-s21.plot_slice(0,qq, title='iter1 - initial')
-s32.plot_slice(0,qq, title='iter2 - iter1')
+s54 = sphv5.copy()
+s54.vol -=sphv4.vol
 
 
-
-# for i, s in enumerate([sphv1, sphv2, sphv3, sphv4, sphv5, sphv6]):
-    # s.plot_slice(0, qq, title=f'sphv{i+1}')
+fig, axes = plt.subplots(2,2, sharex=True, sharey=True)
+plt.suptitle('Differences')
+s21.plot_slice(0,qq, title='iter1 - initial', fig=fig, axes=axes[0,0])
+s32.plot_slice(0,qq, title='iter2 - iter1', fig=fig, axes=axes[0,1])
+s43.plot_slice(0,qq, title='iter3 - iter2', fig=fig, axes=axes[1,0])
+s54.plot_slice(0,qq, title='iter4 - iter3', fig=fig, axes=axes[1,1])
 
 
 
 
 # t = time.time()
-# for i in range(16):
+# for i in range(7):
     # print(i, end='\r')
 
     # a.ER()
- #    if i in [0,1,2,3,4] or i%5==0:
-        # # a.sphv_iter.plot_slice(0, qq, title=f'{i}')
-        # a.sphv_diff.plot_slice(0, qq, title=f'{i}')
-        # a.sphvp.plot_slice(0, qq, title=f'{i}')
+    # a.sphv_add.plot_slice(0, qq, title=f'{i}')
+    # # if i in [0,1,2,3,4] or i%5==0:
+    # # if i in [0,1,2,3,4] or i%5==0:
+        # # a.sphv_diff.plot_slice(0, qq, title=f'{i}')
+        # # a.sphvp.plot_slice(0, qq, title=f'{i}')
         # # a.sphv_add.plot_slice(0, qq, title=f'{i}')
 
 

@@ -19,7 +19,7 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot, AlgoHandlerConstraints):
 
 
 
-    def __init__(self, blqq, sphv_mask, iter_obj='sphv', lossy_sphv=True, lossy_iqlm=True, rcond=0, inc_odds=True):
+    def __init__(self, blqq, sphv_mask, iter_obj='sphv', lossy_sphv=True, lossy_iqlm=True, rcond=None, inc_odds=True):
 
         ##### save inputs 
         self.blqq = blqq
@@ -49,12 +49,13 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot, AlgoHandlerConstraints):
         self.lams, self.us = self.blqq.get_eig(inc_odds=self.inc_odds)
         #condition threshold
 
-        eigs_thresh = np.max(self.lams, axis=0)*self.rcond
-        for l_ind, eig_thresh in enumerate(eigs_thresh):
-            loc = np.where(np.abs(self.lams[:,l_ind]) < eig_thresh)
-            self.lams[loc, l_ind] = 0
-            loc = np.where(self.lams[:,l_ind] ==0)
-            self.us[:, loc, l_ind] = 0
+        if self.rcond is not None:
+            eigs_thresh = np.max(self.lams, axis=0)*self.rcond
+            for l_ind, eig_thresh in enumerate(eigs_thresh):
+                loc = np.where(np.abs(self.lams[:,l_ind]) < eig_thresh)
+                self.lams[loc, l_ind] = 0
+                loc = np.where(self.lams[:,l_ind] ==0)
+                self.us[:, loc, l_ind] = 0
 
 
 
