@@ -55,8 +55,9 @@ blqq_data.fill_from_iqlm(iqlm_targ)
 
 
 # SET UP ALGORITHM
-a = scorpy.AlgoHandler(blqq_data, sphv_mask, iter_obj='sphv', 
-                       lossy_sphv=False, lossy_iqlm=False, rcond=1)
+a = scorpy.AlgoHandler(blqq_data, sphv_mask, iter_obj='sphv',
+                       lossy_sphv=True, lossy_iqlm=False, rcond=1e-3)
+
 
 # a.sphv_iter = sphv_targ
 
@@ -64,31 +65,30 @@ a = scorpy.AlgoHandler(blqq_data, sphv_mask, iter_obj='sphv',
 
 
 
-fig, axes = plt.subplots(2,3)
+fig, axes = plt.subplots(2,3, sharex=True, sharey=True)
 
 sphv1 = a.sphv_iter.copy()
 sphv1.plot_slice(0,qq, title='initial', fig=fig, axes=axes[0,0])
-a.k_constraint_sphv()
 
+a.k_constraint_sphv()
 sphv2 = a.sphv_iter.copy()
 sphv2.plot_slice(0,qq, title='iter1', fig=fig, axes=axes[0,1])
-a.k_constraint_sphv()
 
+a.k_constraint_sphv()
 sphv3 = a.sphv_iter.copy()
 sphv3.plot_slice(0,qq, title='iter2', fig=fig, axes=axes[0,2])
-a.k_constraint_sphv()
 
+a.k_constraint_sphv()
 sphv4 = a.sphv_iter.copy()
 sphv4.plot_slice(0,qq, title='iter3', fig=fig, axes=axes[1,0])
-a.k_constraint_sphv()
 
+a.k_constraint_sphv()
 sphv5 = a.sphv_iter.copy()
 sphv5.plot_slice(0,qq, title='iter4', fig=fig, axes=axes[1,1])
-a.k_constraint_sphv()
 
+a.k_constraint_sphv()
 sphv6 = a.sphv_iter.copy()
 sphv6.plot_slice(0,qq, title='iter5', fig=fig, axes=axes[1,2])
-a.k_constraint_sphv()
 
 
 s21 = sphv2.copy()

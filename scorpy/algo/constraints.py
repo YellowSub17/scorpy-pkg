@@ -5,8 +5,20 @@
 class AlgoHandlerConstraints:
 
 
-    # def reflector(self, const_fn):
-        # pass
+
+
+
+    def r_k_constraint_sphv(self):
+
+        sphv_i, sphv_f = self.k_constraint_sphv()
+
+        self.sphv_iter.vol = 2*sphv_f.vol - sphv_i.vol
+
+
+
+
+
+
 
     def k_constraint_sphv(self):
         ##### save input
@@ -23,6 +35,7 @@ class AlgoHandlerConstraints:
         ##### difference lost between low pass filtered and original coords.
         self.sphv_diff = self.sphv_base.copy()
         self.sphv_diff.vol = self.sphv_iter.vol - self.sphv_lm.vol
+        # self.sphv_diff.vol = self.sphv_lm.vol - self.sphv_iter.vol
 
         ##### Transform K[I_(q, l, m)]
         self.knlm = self.iqlm_iter.copy()
@@ -35,6 +48,7 @@ class AlgoHandlerConstraints:
         ##### difference lost over K transformation
         self.iqlm_diff = self.iqlm_base.copy()
         self.iqlm_diff.vals = self.iqlm_iter.vals - self.ikqlm.vals
+        # self.iqlm_diff.vals = self.ikqlm.vals - self.iqlm_iter.vals
 
         ##### Calculate K' after modifered by lamda
         self.knlmp = self.knlm.copy()

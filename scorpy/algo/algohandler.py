@@ -41,8 +41,8 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot, AlgoHandlerConstraints):
         assert self.blqq.nl == self.sphv_mask.nl
         self.nl = self.blqq.nl
 
-        # assert self.iter_obj in ['sphv', 'iqlm']
-        assert self.iter_obj in ['sphv']
+        assert self.iter_obj in ['sphv', 'iqlm']
+        # assert self.iter_obj in ['sphv']
 
         self.ntheta = self.sphv_mask.ntheta
         self.nphi = self.sphv_mask.nphi
@@ -76,7 +76,12 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot, AlgoHandlerConstraints):
         self.sphv_iter = self.sphv_base.copy()
         self.sphv_iter.vol = np.random.random(self.sphv_iter.vol.shape)
 
-#         if self.iter_obj=='iqlm':
+        # self.iqlm_iter = self.iqlm_base.copy()
+        # self.iqlm_iter.fill_from_sphv(self.sphv_iter)
+
+        # self.sphv_iter.fill_from_iqlm(self.iqlm_iter)
+
+        # if self.iter_obj=='iqlm':
             # ##### calculate initial harmonic values and get s_diff
             # self.iqlm_iter = self.iqlm_base.copy()
             # self.iqlm_iter.fill_from_sphv(self.sphv_iter)
