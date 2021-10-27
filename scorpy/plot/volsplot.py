@@ -9,6 +9,11 @@ class VolPlot(BasePlot):
         '''Plot the x=y plane of the volume.
         '''
         im = self.get_xy()
+
+        if 'extent' not in new_kwargs.keys():
+            extent=[self.zmin,self.zmax,self.xmin,self.xmax]
+            new_kwargs.update({'extent':extent})
+
         self._plot_2D(im, **new_kwargs)
 
 
@@ -20,7 +25,19 @@ class VolPlot(BasePlot):
                 Axis through which to integrate through.
         '''
         im = self.vol.sum(axis=axis)
-        self._plot_2D(im, extent_axis=axis,**new_kwargs)
+
+
+        if 'extent' not in new_kwargs.keys():
+            if axis%3==0:
+                extent=[self.zmin,self.zmax,self.xmin,self.xmax]
+            if axis%3==1:
+                extent=[self.zmin,self.zmax,self.xmin,self.xmax]
+            if axis%3==2:
+                extent=[self.zmin,self.zmax,self.xmin,self.xmax]
+            new_kwargs.update({'extent':extent})
+
+
+        self._plot_2D(im, **new_kwargs)
 
 
     def plot_slice(self, axis, index, **new_kwargs):
@@ -33,10 +50,16 @@ class VolPlot(BasePlot):
         '''
         if axis%3==0:
             im = self.vol[index,:,:]
+            extent=[self.zmin,self.zmax,self.ymin,self.ymax]
         if axis%3==1:
             im = self.vol[:,index,:]
+            extent=[self.xmin,self.xmax,self.zmin,self.zmax]
         if axis%3==2:
             im = self.vol[:,:,index]
+            extent=[self.xmin,self.zmax,self.ymin,self.ymax]
+
+        if 'extent' not in new_kwargs.keys():
+            new_kwargs.update({'extent':extent})
 
         self._plot_2D(im, extent_axis=axis, **new_kwargs)
 

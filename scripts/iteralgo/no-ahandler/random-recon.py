@@ -64,10 +64,10 @@ iqlm_rand.vals = np.random.random(iqlm_rand.vals.shape)
 
 sphv_iter = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_iter.fill_from_iqlm(iqlm_rand)
-sphv_iter.plot_slice(0, qq, title=f'0')
+sphv_iter.plot_slice(0, qq, title='0')
 iqlm_iter = iqlm_rand.copy()
 
-for i in range(40):
+for i in range(10):
     print(i)
     knlm = iqlm_iter.copy()
     knlm.calc_knlm(us)
@@ -83,7 +83,7 @@ for i in range(40):
     iqlm_iter.fill_from_sphv(sphv_iter)
 
 
-sphv_iter.plot_slice(0, qq, title=f'end')
+sphv_iter.plot_slice(0, qq, title='end')
 
 
 iqlmp = iqlm_iter.copy()

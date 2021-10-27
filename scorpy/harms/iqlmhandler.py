@@ -107,7 +107,6 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
         for q_ind in range(self.nq):
             for cs in range(0,2):
-
                 for l in range(0, self.nl, lskip):
                     ulq = bl_u[q_ind,  :,l]
                     for m in range(l+1):

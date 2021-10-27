@@ -8,7 +8,7 @@ tests/data/
 *.dbin
 *.egg-info
 
-
+*.png
 *.aux
 *.bbl
 *.bcf

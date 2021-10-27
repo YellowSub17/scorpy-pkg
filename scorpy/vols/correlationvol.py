@@ -166,7 +166,6 @@ class CorrelationVol(Vol, CorrelationVolProps):
         for q1_ind in range(self.nq):
             for q2_ind in range(q1_ind, self.nq):
                 blv = blqq.vol[q1_ind, q2_ind, :] # vector as a function of L
-
                 for psi_ind in range(self.npsi):
                     ft = fmat[psi_ind, :]
                     x = np.dot(blv, ft)

@@ -64,33 +64,33 @@ a = scorpy.AlgoHandler(blqq_data, sphv_mask, iter_obj='sphv',
 
 
 
-
+#CHeck -1 factor, -1^L, inc-odds
 fig, axes = plt.subplots(2,3, sharex=True, sharey=True)
 
 sphv1 = a.sphv_iter.copy()
 sphv1.plot_slice(0,qq, title='initial', fig=fig, axes=axes[0,0])
+print(1)
 
-a.k_constraint_sphv()
 a.k_constraint_sphv()
 sphv2 = a.sphv_iter.copy()
 sphv2.plot_slice(0,qq, title='iter1', fig=fig, axes=axes[0,1])
 
-a.k_constraint_sphv()
+print(2)
 a.k_constraint_sphv()
 sphv3 = a.sphv_iter.copy()
 sphv3.plot_slice(0,qq, title='iter2', fig=fig, axes=axes[0,2])
 
-a.k_constraint_sphv()
+print(3)
 a.k_constraint_sphv()
 sphv4 = a.sphv_iter.copy()
 sphv4.plot_slice(0,qq, title='iter3', fig=fig, axes=axes[1,0])
 
-a.k_constraint_sphv()
+print(4)
 a.k_constraint_sphv()
 sphv5 = a.sphv_iter.copy()
 sphv5.plot_slice(0,qq, title='iter4', fig=fig, axes=axes[1,1])
 
-a.k_constraint_sphv()
+print(5)
 a.k_constraint_sphv()
 sphv6 = a.sphv_iter.copy()
 sphv6.plot_slice(0,qq, title='iter5', fig=fig, axes=axes[1,2])
@@ -117,25 +117,6 @@ s43.plot_slice(0,qq, title='iter3 - iter2', fig=fig, axes=axes[1,0])
 s54.plot_slice(0,qq, title='iter4 - iter3', fig=fig, axes=axes[1,1])
 
 
-
-
-# t = time.time()
-# for i in range(7):
-    # print(i, end='\r')
-
-    # a.ER()
-    # a.sphv_add.plot_slice(0, qq, title=f'{i}')
-    # # if i in [0,1,2,3,4] or i%5==0:
-    # # if i in [0,1,2,3,4] or i%5==0:
-        # # a.sphv_diff.plot_slice(0, qq, title=f'{i}')
-        # # a.sphvp.plot_slice(0, qq, title=f'{i}')
-        # # a.sphv_add.plot_slice(0, qq, title=f'{i}')
-
-
-# tf = time.time()-t
-
-# print('')
-# print(f'time: {tf}')
 
 
 plt.show()
