@@ -19,7 +19,8 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot, AlgoHandlerConstraints):
 
 
 
-    def __init__(self, blqq, sphv_mask, iter_obj='sphv', lossy_sphv=True, lossy_iqlm=True, rcond=None, inc_odds=True):
+    def __init__(self, blqq, sphv_mask, iter_obj='sphv',
+                 lossy_sphv=True, lossy_iqlm=True, rcond=None, inc_odds=True):
 
         ##### save inputs 
         self.blqq = blqq
@@ -59,14 +60,6 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot, AlgoHandlerConstraints):
 
 
 
-        # x = np.abs(self.us[...,4]).sum(axis=0)
-        # neigs = len(np.where(x>0)[0])
-        # print(neigs)
-
-
-
-
-
         ##### base objects to copy from
         self.iqlm_base = IqlmHandler(self.nq, self.nl, self.qmax, self.inc_odds)
         self.sphv_base = SphericalVol(self.nq, self.ntheta, self.nphi, self.qmax)
@@ -75,22 +68,6 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot, AlgoHandlerConstraints):
         ##### initialize random spherical intensity
         self.sphv_iter = self.sphv_base.copy()
         self.sphv_iter.vol = np.random.random(self.sphv_iter.vol.shape)
-
-        # self.iqlm_iter = self.iqlm_base.copy()
-        # self.iqlm_iter.fill_from_sphv(self.sphv_iter)
-
-        # self.sphv_iter.fill_from_iqlm(self.iqlm_iter)
-
-        # if self.iter_obj=='iqlm':
-            # ##### calculate initial harmonic values and get s_diff
-            # self.iqlm_iter = self.iqlm_base.copy()
-            # self.iqlm_iter.fill_from_sphv(self.sphv_iter)
-
-            # self.sphv_lm = self.sphv_base.copy()
-            # self.sphv_lm.fill_from_iqlm(self.iqlm_iter)
-
-            # self.sphv_diff = self.sphv_iter.copy()
-            # self.sphv_diff.vol -= self.sphv_lm.vol
 
 
 
