@@ -32,30 +32,27 @@ nl = 90
 qmax = 108
 qmax = 89
 
-qq = 72
+qq = 50
 
 
 
 # SET UP MASK DATA
-cif_supp = scorpy.CifData(f'{scorpy.DATADIR}/cifs/ccc-sf.cif', qmax = qmax)
-sphv_supp = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
-sphv_supp.fill_from_cif(cif_supp)
-sphv_supp.make_mask()
-sphv_supp.plot_slice(0, qq, title='support')
-loc = np.where(sphv_supp.vol>0)
-q_loc1 = np.unique(loc[0])
+cif_mask = scorpy.CifData(f'{scorpy.DATADIR}/cifs/ccc-sf.cif', qmax = qmax)
+sphv_mask = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
+sphv_mask.fill_from_cif(cif_mask)
+sphv_mask.make_mask()
 
 
 # SET UP TARGET DATA
-cif_targ = scorpy.CifData(f'{scorpy.DATADIR}/cifs/bcc-sf.cif', qmax = qmax)
+cif_targ = scorpy.CifData(f'{scorpy.DATADIR}/cifs/fcc-sf.cif', qmax = qmax)
 sphv_targ = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_targ.fill_from_cif(cif_targ)
 loc = np.where(sphv_targ.vol>0)
-q_loc2 = np.unique(loc[0])
 
 # add noise
-sphv_targ.vol *= 100
-sphv_targ.vol[loc] += 2*np.random.random(sphv_targ.vol.shape)[loc]
+sphv_targ.vol *= 10
+sphv_targ.vol[loc] += 3*np.random.random(sphv_targ.vol.shape)[loc]
+sphv_targ.vol += np.random.random(sphv_targ.vol.shape)
 
 sphv_targ.plot_slice(0, qq, title='target')
 
@@ -76,17 +73,17 @@ blqq_data.fill_from_iqlm(iqlm_targ)
 
 
 # SET UP ALGORITHM
-a = scorpy.AlgoHandler(blqq_data, sphv_supp,
+a = scorpy.AlgoHandler(blqq_data, sphv_mask,
                        lossy_sphv=True, lossy_iqlm=True, rcond=1e-3)
 
 
 a.sphv_iter = sphv_targ.copy()
+
+
 a.sphv_iter.plot_slice(0, qq, title='initial')
-
-a.ER()
+a.DM()
 a.sphv_iter.plot_slice(0, qq, title='iter1')
-
-a.ER()
+a.DM()
 a.sphv_iter.plot_slice(0, qq, title='iter2')
 
 plt.show()

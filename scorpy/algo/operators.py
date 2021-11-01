@@ -8,7 +8,7 @@ class AlgoHandlerOperators:
 
     def Ref_fn(self, fn, gamma=1, sphv_i=None):
 
-        if sphv_i is none:
+        if sphv_i is None:
             sphv_i = self.sphv_iter.copy()
         else:
             self.sphv_iter = sphv_i.copy()
@@ -44,7 +44,7 @@ class AlgoHandlerOperators:
     def Pm(self, sphv_i=None):
 
 
-        if sphv_i is none:
+        if sphv_i is None:
             sphv_i = self.sphv_iter.copy()
         else:
             self.sphv_iter = sphv_i.copy()
@@ -112,15 +112,15 @@ class AlgoHandlerOperators:
 
     def Ps(self, sphv_i=None):
 
-        if sphv_i is none:
+        if sphv_i is None:
             sphv_i = self.sphv_iter.copy()
         else:
             self.sphv_iter = sphv_i.copy()
 
 
-        ##### only keep intenisty values at bragg positions defined by mask
+        ##### only keep intenisty values at bragg positions defined by support
         self.sphv_b = self.sphv_base.copy()
-        self.sphv_b.vol = self.sphv_iter.vol * self.sphv_mask.vol
+        self.sphv_b.vol = self.sphv_iter.vol * self.sphv_supp.vol
 
         ##### replace iterating sphv
         self.sphv_iter = self.sphv_b.copy()
