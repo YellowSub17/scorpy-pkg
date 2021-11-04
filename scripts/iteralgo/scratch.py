@@ -1,21 +1,10 @@
-#!/usr/bin/env python3
-'''
-solved-test.py
 
-replaces the initial spherical volume object with the target solution,
-and ensures the same values are returned after one iteration.
-'''
-import scorpy
+
 import numpy as np
+import scorpy
 import matplotlib.pyplot as plt
-import time
 plt.close('all')
-
-
 np.random.seed(0)
-
-
-
 
 
 
@@ -26,13 +15,10 @@ ntheta = 180
 nphi = 360
 nl = 90
 
-# ntheta = 20
-# nphi = 40
-# nl = 10
-qmax = 108
 qmax = 89
 
 qq = 72
+
 
 
 
@@ -41,6 +27,7 @@ cif_supp = scorpy.CifData(f'{scorpy.DATADIR}/cifs/ccc-sf.cif', qmax = qmax)
 sphv_supp = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_supp.fill_from_cif(cif_supp)
 sphv_supp.make_mask()
+sphv_supp.plot_slice(0, qq, title='support')
 loc = np.where(sphv_supp.vol>0)
 q_loc1 = np.unique(loc[0])
 
@@ -56,6 +43,7 @@ q_loc2 = np.unique(loc[0])
 sphv_targ.vol *= 100
 sphv_targ.vol[loc] += 2*np.random.random(sphv_targ.vol.shape)[loc]
 
+sphv_targ.plot_slice(0, qq, title='target')
 
 
 # get harmonic coefficients
@@ -70,6 +58,8 @@ sphv_harmed.fill_from_iqlm(iqlm_targ)
 blqq_data = scorpy.BlqqVol(nq, nl, qmax)
 blqq_data.fill_from_iqlm(iqlm_targ)
 
+lams, us = blqq_data.get_eig()
+
 
 
 
@@ -79,37 +69,30 @@ a = scorpy.AlgoHandler(blqq_data, sphv_supp,
 
 
 
-
-# for each algorithm scheme
-for op in [a.ER, a.DM, a.RAAR, a.HIO, a.SF, a.ASR, a.HPR]:
-
-    # place algorithm in "solved" state
-    a.sphv_iter = sphv_targ.copy()
-    print(op, '\n')
-
-    fig, axes = plt.subplots(3,2)
-    plt.suptitle(op)
-
-    a.sphv_iter.plot_slice(0, qq, title='initial', fig=fig, axes=axes[0,0])
-    a.sphv_supp.plot_slice(0, qq, title='supp', fig=fig, axes=axes[0,1])
-
-    in1, out1 = op()
-    a.sphv_iter.plot_slice(0, qq, title='iter1', fig=fig, axes=axes[1,0])
-
-    out1.vol -= in1.vol
-    out1.plot_slice(0, qq, title='diff1', fig=fig, axes=axes[1,1])
+# a.sphv_iter = sphv_targ.copy()
 
 
-    in2, out2 = op()
-    a.sphv_iter.plot_slice(0, qq, title='iter2', fig=fig, axes=axes[2,0])
+iqlm = iqlm_targ.copy()
 
-    out2.vol -= in2.vol
-    out2.plot_slice(0, qq, title='diff2', fig=fig, axes=axes[2,1])
+iqlm.plot_q(qq)
+
+for i in range(20):
+    print(i)
+    a.ER()
+
+
+a.iqlmp.plot_q(qq)
+a.sphv_iter.plot_slice(0, qq)
+
+
+
+# x = iqlmp.vals - iqlm.vals
+
+
+
+
 
 plt.show()
-
-
-
 
 
 

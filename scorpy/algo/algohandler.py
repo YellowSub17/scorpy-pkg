@@ -86,25 +86,4 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot,
 
 
 
-    # def ER(self):
-        # if self.iter_obj=='iqlm':
-            # _ = self.k_constraint_iqlm()
-            # _ = self.k_constraint_iqlm()
-            # _ = self.b_constraint_iqlm()
-
-        # elif self.iter_obj=='sphv':
-            # _ = self.k_constraint_sphv()
-            # _ = self.k_constraint_sphv()
-            # _ = self.b_constraint_sphv()
-
-
-
-
-
-    # def HIO(self, beta=0.5):
-
-        # pass
-
-
-
 

@@ -55,10 +55,11 @@ blqq_data.fill_from_iqlm(iqlm_targ)
 
 
 # SET UP ALGORITHM
-a = scorpy.AlgoHandler(blqq_data, sphv_mask, iter_obj='sphv',
+a = scorpy.AlgoHandler(blqq_data, sphv_mask,
                        lossy_sphv=True, lossy_iqlm=True, rcond=1e-3)
 
 
+op = a.Pm
 # a.sphv_iter = sphv_targ
 
 
@@ -71,27 +72,27 @@ sphv1 = a.sphv_iter.copy()
 sphv1.plot_slice(0,qq, title='initial', fig=fig, axes=axes[0,0])
 print(1)
 
-a.k_constraint_sphv()
+op()
 sphv2 = a.sphv_iter.copy()
 sphv2.plot_slice(0,qq, title='iter1', fig=fig, axes=axes[0,1])
 
 print(2)
-a.k_constraint_sphv()
+op()
 sphv3 = a.sphv_iter.copy()
 sphv3.plot_slice(0,qq, title='iter2', fig=fig, axes=axes[0,2])
 
 print(3)
-a.k_constraint_sphv()
+op()
 sphv4 = a.sphv_iter.copy()
 sphv4.plot_slice(0,qq, title='iter3', fig=fig, axes=axes[1,0])
 
 print(4)
-a.k_constraint_sphv()
+op()
 sphv5 = a.sphv_iter.copy()
 sphv5.plot_slice(0,qq, title='iter4', fig=fig, axes=axes[1,1])
 
 print(5)
-a.k_constraint_sphv()
+op()
 sphv6 = a.sphv_iter.copy()
 sphv6.plot_slice(0,qq, title='iter5', fig=fig, axes=axes[1,2])
 

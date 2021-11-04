@@ -262,6 +262,32 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
 
+    def fill_from_xfmh5(self, xfmh5):
+        pass
+
+
+    def correlate_fft_pol(self, polar1, polar2=None):
+
+        fpolar = np.fft.fft( polar1, axis=1 )
+
+        if polar2 is None:
+            fpolar2 = fpolar
+        else:
+            fpolar2 = np.fft.fft( polar2, axis=1)
+
+        out = np.zeros( (polar1.shape[0],polar1.shape[0],polar1.shape[1]), np.complex128)
+        for i in np.arange(polar1.shape[0]):
+            print( f'{i} \t / {polar1.shape[0]}', end='\r')
+
+            for j in np.arange(polar1.shape[0]):
+                out[i,j,:] = fpolar[i,:]*fpolar2[j,:].conjugate()
+
+        out = np.real(np.fft.ifft( out, axis=2 ))
+
+        return out
+
+
+
 
 
     def correlate_scat_pol(self, qti):
