@@ -5,6 +5,7 @@ import numpy as np
 import scorpy
 import matplotlib.pyplot as plt
 plt.close('all')
+import time
 
 
 
@@ -26,6 +27,9 @@ h5_1 = xfm.ls_h5s()[0]
 
 d = xfm.extract_array(h5_1)
 
+plt.figure()
+plt.imshow(d[0])
+
 
 d_unwrapped = xfm.full_unwrap(d)
 
@@ -35,16 +39,24 @@ plt.imshow(d_unwrapped[0])
 
 
 
-for i in d_unwrapped:
+t = time.time()
+for i in range(d_unwrapped.shape[0]):
 
 
     print(i)
-    corrdu = corr.correlate_fft_pol(i)
+    corrdu = corr.correlate_fft_pol(d_unwrapped[i])
+    print()
 
     corr.vol += np.copy(corrdu)
 
+tf = time.time() - t
 
-corr.plot_q1q2()
+print('time taken', tf)
+
+
+corr.plot_q1q2(title='q1q2')
+corr.plot_slice(0, 100, title='iq=100')
+corr.plot_slice(2, 20, title='itheta=20')
 
 
 
