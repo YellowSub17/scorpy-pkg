@@ -266,41 +266,17 @@ class CorrelationVol(Vol, CorrelationVolProps):
         pass
 
 
-    def correlate_fft_pol(self, polar1, polar2=None):
 
-        fpolar = np.fft.fft( polar1, axis=1 )
-
-        if polar2 is None:
-            fpolar2 = fpolar
-        else:
-            fpolar2 = np.fft.fft( polar2, axis=1)
-
-        out = np.zeros( (polar1.shape[0],polar1.shape[0],polar1.shape[1]), np.complex128)
-        for i in np.arange(polar1.shape[0]):
-            # print( f'{i} \t / {polar1.shape[0]}', end='\r')
-            for j in np.arange(polar1.shape[0]):
-                out[i,j,:] = fpolar[i,:]*fpolar2[j,:].conjugate()
-
-        out = np.real(np.fft.ifft( out, axis=2 ))
-
-        return out
-
-
-
-    def correlate_fft_pol2(self, polar):
+    def correlate_fft_pol(self, polar):
 
         fpolar = np.fft.fft( polar, axis=1 )
 
         out = np.zeros( (polar.shape[0],polar.shape[0],polar.shape[1]), np.complex128)
 
-        for i, fp1_row in enumerate(fpolar):
-            print( f'{i} \t / {polar.shape[0]}', end='\r')
+        for i, fp_rowi in enumerate(fpolar):
+            for j, fp_rowj in enumerate(fpolar):
+                out[i,j,:] = fp_rowi*fp_rowj.conjugate()
 
-            for j, fp2_row in enumerate(fpolar[i:]):
-
-                out[i,j+i,:] = fp1_row*fp2_row.conjugate()
-                if j > 0:
-                    out[i+j,i,:] = fp2_row*fp1_row.conjugate()
 
         out = np.real(np.fft.ifft( out, axis=2 ))
 

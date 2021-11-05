@@ -38,10 +38,30 @@ class AlgoHandlerOperators:
 
 
 
-
-
-
     def Pm(self, sphv_i=None):
+        if sphv_i is None:
+            sphv_i = self.sphv_iter.copy()
+        else:
+            self.sphv_iter = sphv_i.copy()
+
+        _, pout = self._Pm(sphv_i)
+        _, pout = self._Pm(pout)
+
+        ##### copy final output
+        sphv_f = self.sphv_iter.copy()
+
+        ##### retrun input and output
+        return sphv_i, sphv_f
+
+
+
+
+
+
+
+
+    def _Pm(self, sphv_i=None):
+
 
 
         if sphv_i is None:

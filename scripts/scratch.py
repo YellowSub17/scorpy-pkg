@@ -29,14 +29,13 @@ plt.figure()
 plt.imshow(d_unwrapped[0])
 
 
-print('starting loop')
 t = time.time()
-for i in range(d_unwrapped.shape[0]):
+for i, di in enumerate(d_unwrapped):
     print(i)
-    corrdu = corr.correlate_fft_pol(d_unwrapped[i])
+    corrdu = corr.correlate_fft_pol(di)
     print()
 
-    corr.vol += np.copy(corrdu)
+    corr.vol += corrdu
 
 tf = time.time() - t
 print('time taken', tf)
@@ -49,12 +48,12 @@ corr.plot_slice(2, 20, title='itheta=20')
 
 
 
-xfm = scorpy.XfmH5s(group, run)
-corr2 = scorpy.CorrelationVol(xfm.radius, 360, 1, cos_sample=False)
+# xfm = scorpy.XfmH5s(group, run)
+# corr2 = scorpy.CorrelationVol(xfm.radius, 360, 1, cos_sample=False)
 
 
-d = xfm.extract_array(xfm.ls_h5s()[0])
-d_unwrapped = xfm.full_unwrap(d)
+# d = xfm.extract_array(xfm.ls_h5s()[0])
+# d_unwrapped = xfm.full_unwrap(d)
 
 
 ####

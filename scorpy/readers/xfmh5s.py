@@ -2,11 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import h5py
-
 from scorpy.env import DATADIR
-
-
 from ..utils import to_polar
+
+acknowledgements='This object is based on the class XfmHfiveDataset by Jack Binns'
 
 
 
@@ -36,7 +35,7 @@ class XfmH5s:
 
     def calc_pts(self):
 
-        basepts = np.arange(1024)
+        basepts = np.arange(self.radius)
 
         a = np.arctan( ( basepts*self.pix_size) / self.cam_length)
         q = ( (4*np.pi)/ self.wavelength) *np.sin( a/2) *1e-10
@@ -71,13 +70,6 @@ class XfmH5s:
                         ite*self.image_center[0], ite*self.image_center[1])
 
         return np.stack(list(m))
-
-
-
-    # def full_unwrap(self,):
-
-
-
 
 
 

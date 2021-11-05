@@ -16,12 +16,12 @@ class AlgoHandlerSchemes:
             self.sphv_iter = sphv_i.copy()
 
         self.Pm()
-        self.Pm()
         self.Ps()
 
         sphv_f = self.sphv_iter.copy()
 
         return sphv_i, sphv_f
+
 
     def SF(self, sphv_i=None):
         '''Solvent Flipping'''
@@ -32,7 +32,6 @@ class AlgoHandlerSchemes:
         else:
             self.sphv_iter = sphv_i.copy()
 
-        self.Pm()
         self.Pm()
         self.Rs()
 
@@ -53,7 +52,6 @@ class AlgoHandlerSchemes:
         else:
             self.sphv_iter = sphv_i.copy()
 
-        self.Pm()
         self.Pm()
         pm_out, ps_out = self.Ps()
 
@@ -89,7 +87,6 @@ class AlgoHandlerSchemes:
         _, p1 = self.Ps(p1)
 
         _, p2 = self.Rs(gamma_m, sphv_i)
-        _, p2 = self.Pm(p2)
         _, p2 = self.Pm(p2)
 
         self.sphv_iter.vol = sphv_i.vol + beta*(p1.vol - p2.vol)
@@ -178,7 +175,6 @@ class AlgoHandlerSchemes:
         p1.vol *= beta/2
 
         _, p2 = self.Pm(sphv_i)
-        _, p2 = self.Pm(p2)
         p2.vol *= (1-beta)
 
         self.sphv_iter.vol = p1.vol + p2.vol
