@@ -21,18 +21,15 @@ np.random.seed(0)
 
 
 # Parameters
-nq= 100
+nq= 200
 ntheta = 180
 nphi = 360
 nl = 90
 
-# ntheta = 20
-# nphi = 40
-# nl = 10
-qmax = 108
+
 qmax = 89
 
-qq = 72
+qq = 89
 
 
 
@@ -42,15 +39,13 @@ sphv_supp = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_supp.fill_from_cif(cif_supp)
 sphv_supp.make_mask()
 loc = np.where(sphv_supp.vol>0)
-q_loc1 = np.unique(loc[0])
+assert qq in loc, 'change qq, inten=0'
 
 
 # SET UP TARGET DATA
 cif_targ = scorpy.CifData(f'{scorpy.DATADIR}/cifs/bcc-sf.cif', qmax = qmax)
 sphv_targ = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_targ.fill_from_cif(cif_targ)
-loc = np.where(sphv_targ.vol>0)
-q_loc2 = np.unique(loc[0])
 
 # add noise
 sphv_targ.vol *= 100
@@ -81,7 +76,7 @@ a = scorpy.AlgoHandler(blqq_data, sphv_supp,
 
 
 # for each algorithm scheme
-for op in [a.ER, a.DM, a.RAAR, a.HIO, a.SF, a.ASR, a.HPR]:
+for op in [a.ER,]:# a.DM, a.RAAR, a.HIO, a.SF, a.ASR, a.HPR]:
 
     # place algorithm in "solved" state
     a.sphv_iter = sphv_targ.copy()

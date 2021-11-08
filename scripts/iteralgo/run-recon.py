@@ -21,7 +21,7 @@ np.random.seed(0)
 
 
 # Parameters
-nq= 100
+nq= 200
 ntheta = 180
 nphi = 360
 nl = 90

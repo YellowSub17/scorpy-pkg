@@ -19,12 +19,10 @@ ntheta = 180
 nphi = 360
 nl = 90
 
-# ntheta = 20
-# nphi = 40
-# nl = 10
-qmax = 108
 
-qq = 50
+qmax = 89
+
+qq = 89
 
 # SET UP MASK DATA
 cif_mask = scorpy.CifData(f'{scorpy.DATADIR}/cifs/fcc-sf.cif', qmax = qmax)
@@ -56,8 +54,9 @@ blqq_data.fill_from_iqlm(iqlm_targ)
 
 # SET UP ALGORITHM
 a = scorpy.AlgoHandler(blqq_data, sphv_mask,
-                       lossy_sphv=True, lossy_iqlm=True, rcond=1e-3)
+                       lossy_sphv=True, lossy_iqlm=True, rcond=1, inc_odds=False)
 
+# a.Ps()
 
 op = a.Pm
 # a.sphv_iter = sphv_targ
