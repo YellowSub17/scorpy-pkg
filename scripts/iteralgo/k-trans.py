@@ -10,7 +10,7 @@ np.random.seed(0)
 
 
 # Parameters
-nq= 200
+nq= 250
 ntheta = 180
 nphi = 360
 nl = 90
@@ -18,6 +18,8 @@ nl = 90
 qmax = 89
 
 qq = 89
+qq = 39
+
 
 
 
@@ -71,14 +73,24 @@ lams, us = blqq_data.get_eig()
 
 
 
-sphv = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
-sphv.vol = np.random.random(sphv.vol.shape)
+# sphv = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
+# sphv.vol = np.random.random(sphv.vol.shape)
 
+
+sphv = sphv_targ.copy()
+sphv.vol *= 100
+# sphv.vol -=  np.mean(sphv.vol)
+sphv.vol += np.random.random(sphv.vol.shape)
+
+sphv.plot_slice(0, qq)
 
 
 iqlm = scorpy.IqlmHandler(nq, nl, qmax)
 iqlm.fill_from_sphv(sphv)
 iqlm.plot_q(qq, title=f'initial (nq={nq})')
+
+
+# iqlm.vals[:,0,:,:] = 0
 
 
 knlm = iqlm.copy()
