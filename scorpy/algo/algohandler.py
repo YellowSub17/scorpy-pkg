@@ -61,6 +61,10 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot,
                 self.us[:, loc, l_ind] = 0
 
 
+        print('RM ME: LAMS=0')
+        self.lams *= 0
+
+
 
         ##### base objects to copy from
         self.iqlm_base = IqlmHandler(self.nq, self.nl, self.qmax, self.inc_odds)

@@ -128,6 +128,7 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
         #initiailize new values
         new_vals = np.zeros( (self.nq, 2, self.nl, self.nl))
 
+        count = 0
         for q_ind in range(self.nq):
             for l in range(0, self.nl, lskip):
 
@@ -140,11 +141,18 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
                 # ned = np.sqrt(np.abs(bl_l[q_ind,l]))
 
                 km = np.abs(self.vals[q_ind, :, l,:])**2
+                # km = np.abs(self.vals[q_ind, :, l,:])
                 donk = np.sum(km)
                 if donk==0:
+                    count +=1
                     ned = 1
                     donk = 1
                 self.vals[q_ind, :, l, :] *= (ned/donk)
+
+                # *= np.abs(ned/donk) ?
+
+                #algorithms: phase retriaval of partial coherence 
+                #(harmonic m is " coherent modal" value 
 
 
 

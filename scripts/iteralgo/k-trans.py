@@ -73,24 +73,26 @@ lams, us = blqq_data.get_eig()
 
 
 
-# sphv = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
-# sphv.vol = np.random.random(sphv.vol.shape)
+sphv = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
+sphv.vol = np.random.random(sphv.vol.shape)#*sphv_supp.vol
+
+sphv = sphv_harmed.copy()
 
 
-sphv = sphv_targ.copy()
-sphv.vol *= 100
+# iqlmx = scorpy.IqlmHandler(nq, nl, qmax)
+# iqlmx.fill_from_sphv(sphv)
+# sphv.fill_from_iqlm(iqlmx)
+
+
+# sphv = sphv_targ.copy()
+# sphv.vol *= 100
 # sphv.vol -=  np.mean(sphv.vol)
-sphv.vol += np.random.random(sphv.vol.shape)
+# sphv.vol += np.random.random(sphv.vol.shape)
 
-sphv.plot_slice(0, qq)
 
 
 iqlm = scorpy.IqlmHandler(nq, nl, qmax)
 iqlm.fill_from_sphv(sphv)
-iqlm.plot_q(qq, title=f'initial (nq={nq})')
-
-
-# iqlm.vals[:,0,:,:] = 0
 
 
 knlm = iqlm.copy()
@@ -105,15 +107,34 @@ iqlmp = knlmp.copy()
 iqlmp.calc_iqlmp(us)
 
 
-iqlmp.plot_q(qq, title=f'iter1 (nq={nq}')
-
+sphvp = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
+sphvp.fill_from_iqlm(iqlmp)
 
 
 iqlmd = iqlmp.copy()
 iqlmd.vals -= iqlm.vals
 
-iqlmd.plot_q(qq, title=f'diff (nq={nq})')
 
+fig, axes = plt.subplots(2, 3, sharex=True, sharey=True)
+
+iqlm.plot_q(qq, title='initial', fig=fig, axes=axes[0,0])
+iqlmp.plot_q(qq, title='final', fig=fig, axes=axes[0,1])
+iqlmd.plot_q(qq, title='diff', fig=fig, axes=axes[0,2])
+
+iqlm.vals[:,0,0,0] = 0
+iqlmp.vals[:,0,0,0] = 0
+iqlmd.vals[:,0,0,0] = 0
+
+iqlm.plot_q(qq, title='initial l0=0', fig=fig, axes=axes[1,0])
+iqlmp.plot_q(qq, title='final l0=0', fig=fig, axes=axes[1,1])
+iqlmd.plot_q(qq, title='diff l0=0', fig=fig, axes=axes[1,2])
+
+
+
+fig, axes = plt.subplots(1, 2, sharex=True, sharey=True)
+
+sphv.plot_slice(0, qq, title='initial', fig=fig, axes=axes[0])
+sphvp.plot_slice(0, qq, title='final', fig=fig, axes=axes[1])
 
 
 
