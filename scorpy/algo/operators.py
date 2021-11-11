@@ -98,8 +98,8 @@ class AlgoHandlerOperators:
 
         ##### Calculate K' after modifered by lamda
         self.knlmp = self.knlm.copy()
-        print('RM ME: uncomment calc_knlmp')
-        # self.knlmp.calc_knlmp(self.lams)
+        # print('RM ME: uncomment calc_knlmp')
+        self.knlmp.calc_knlmp(self.lams)
 
         ##### Inverse K' to I(q, l, m)
         self.iqlmp = self.knlmp.copy()

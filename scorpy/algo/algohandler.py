@@ -61,8 +61,8 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot,
                 self.us[:, loc, l_ind] = 0
 
 
-        print('RM ME: LAMS=0')
-        self.lams *= 0
+        # print('RM ME: LAMS=0')
+        # self.lams *= 0
 
 
 

@@ -17,9 +17,6 @@ nl = 90
 
 qmax = 89
 
-# qq = 89
-# qq = 39
-
 
 
 
@@ -35,10 +32,9 @@ sphv_supp.make_mask()
 cif_targ = scorpy.CifData(f'{scorpy.DATADIR}/cifs/ccc-sf.cif', qmax = qmax)
 sphv_targ = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_targ.fill_from_cif(cif_targ)
+
 loc = np.where(sphv_targ.vol>0)
 q_inds = np.unique(loc[0])
-
-
 qq = q_inds[-4]
 
 
@@ -58,7 +54,6 @@ blqq_data.fill_from_iqlm(iqlm_targ)
 
 
 
-
 # # # SET UP ALGORITHM
 a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, rcond=1)
 
@@ -73,7 +68,7 @@ a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, r
 # a.sphv_iter = sphv_harmed.copy()
 
 
-a.sphv_iter.vol *= sphv_supp.vol
+# a.sphv_iter.vol *= sphv_supp.vol
 
 
 
@@ -85,7 +80,7 @@ sphv_d.vol -=sphv_i.vol
 
 
 iqlm = a.iqlm_iter.copy()
-iqlmp = a.iqlmp.copy()
+iqlmp = a.iqlm_add.copy()
 
 iqlmd = iqlmp.copy()
 iqlmd.vals -= iqlm.vals
@@ -95,6 +90,7 @@ iqlmd.vals -= iqlm.vals
 
 
 fig, axes = plt.subplots(3,3)
+plt.suptitle('pm')
 sphv_i.plot_slice(0, qq, title='initial', fig=fig, axes=axes[0,0])
 sphv_f.plot_slice(0, qq, title='final', fig=fig, axes=axes[0,1])
 sphv_d.plot_slice(0, qq, title='diff', fig=fig, axes=axes[0,2])
