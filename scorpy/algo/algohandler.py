@@ -83,6 +83,7 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot,
 
 
 
+
     def copy(self):
         a = copy.deepcopy(self)
         return a

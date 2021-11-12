@@ -55,7 +55,7 @@ blqq_data.fill_from_iqlm(iqlm_targ)
 
 
 # # # SET UP ALGORITHM
-a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, rcond=1)
+a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, rcond=1e-15)
 
 
 
@@ -73,7 +73,7 @@ a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, r
 
 
 
-sphv_i, sphv_f = a._Pm()
+sphv_i, sphv_f = a.Pm()
 
 sphv_d = sphv_f.copy()
 sphv_d.vol -=sphv_i.vol
@@ -90,7 +90,6 @@ iqlmd.vals -= iqlm.vals
 
 
 fig, axes = plt.subplots(3,3)
-plt.suptitle('pm')
 sphv_i.plot_slice(0, qq, title='initial', fig=fig, axes=axes[0,0])
 sphv_f.plot_slice(0, qq, title='final', fig=fig, axes=axes[0,1])
 sphv_d.plot_slice(0, qq, title='diff', fig=fig, axes=axes[0,2])

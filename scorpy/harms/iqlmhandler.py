@@ -62,7 +62,7 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
         for iq, q_slice in enumerate(sphv.vol):
             pysh_grid = pysh.shclasses.DHRealGrid(q_slice)
-            coeffs = pysh_grid.expand().coeffs
+            coeffs = pysh_grid.expand(csphase=1).coeffs
 
             self.vals[iq] = coeffs
 
@@ -128,31 +128,41 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
         #initiailize new values
         new_vals = np.zeros( (self.nq, 2, self.nl, self.nl))
 
-        count = 0
+        # ned_0_count = 0
+        # donk_0_count = 0
+        # both_0_count = 0
         for q_ind in range(self.nq):
             for l in range(0, self.nl, lskip):
 
                 ned = bl_l[q_ind,l]
-
                 # ned = np.abs(bl_l[q_ind,l])
-
                 # ned = np.abs(bl_l[q_ind,l])**2
-
                 # ned = np.sqrt(np.abs(bl_l[q_ind,l]))
+
+                # if ned==0:
+                    # ned_0_count += 1
+
 
                 km = np.abs(self.vals[q_ind, :, l,:])**2
                 # km = np.abs(self.vals[q_ind, :, l,:])
+
                 donk = np.sum(km)
                 if donk==0:
-                    count +=1
+                    # donk_0_count +=1
+                    # if ned==0:
+                        # both_0_count += 1
+
                     ned = 1
                     donk = 1
-                self.vals[q_ind, :, l, :] *= (ned/donk)
+                self.vals[q_ind, :, l, :] *= np.sqrt(np.abs(ned/donk))
+                # self.vals[q_ind, :, l, :] *= ned/donk
 
                 # *= np.abs(ned/donk) ?
 
                 #algorithms: phase retriaval of partial coherence 
                 #(harmonic m is " coherent modal" value 
+        # print("ned_0_count", "donk_0_count", "both_0_count")
+        # print(ned_0_count, donk_0_count, both_0_count)
 
 
 
