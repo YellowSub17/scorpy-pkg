@@ -38,29 +38,29 @@ class AlgoHandlerOperators:
 
 
 
-    def Pm(self, sphv_i=None):
-        if sphv_i is None:
-            sphv_i = self.sphv_iter.copy()
-        else:
-            self.sphv_iter = sphv_i.copy()
+    # def Pm(self, sphv_i=None):
+        # if sphv_i is None:
+            # sphv_i = self.sphv_iter.copy()
+        # else:
+            # self.sphv_iter = sphv_i.copy()
 
-        _, pout = self._Pm(sphv_i)
-        _, pout = self._Pm(pout)
+        # _, pout = self._Pm(sphv_i)
+        # _, pout = self._Pm(pout)
 
-        ##### copy final output
-        sphv_f = self.sphv_iter.copy()
+        # ##### copy final output
+        # sphv_f = self.sphv_iter.copy()
 
-        ##### retrun input and output
-        return sphv_i, sphv_f
-
-
+        # ##### retrun input and output
+        # return sphv_i, sphv_f
 
 
 
 
 
 
-    def _Pm(self, sphv_i=None):
+
+
+    def Pm_debug(self, sphv_i=None):
 
 
 
@@ -131,8 +131,9 @@ class AlgoHandlerOperators:
 
 
 
-    def Ps(self, sphv_i=None):
+    def Ps_debug(self, sphv_i=None):
 
+#tight support : known shape
         if sphv_i is None:
             sphv_i = self.sphv_iter.copy()
         else:
@@ -152,4 +153,82 @@ class AlgoHandlerOperators:
         ##### return input and output
         return sphv_i, sphv_f
 
+
+    def Ps(self):
+
+        ##### copy initial input
+        sphv_i = self.sphv_iter.copy()
+
+        ##### mask intensity
+        self.sphv_iter.vol *= self.sphv_supp.vol
+
+        ##### copy final output
+        sphv_f = self.sphv_iter.copy()
+
+        ##### return input and output
+        return sphv_i, sphv_f
+
+
+    def Pm(self):
+
+
+
+        sphv_i = self.sphv_iter.copy()
+
+
+        ##### Convert spherical coordinates to harmonic coeff.
+        self.iqlm_iter.fill_from_sphv(self.sphv_iter)
+
+        ##### get low pass filtered spherical coordinates
+        # self.sphv_lm = self.sphv_base.copy()
+        self.sphv_lm.fill_from_iqlm(self.iqlm_iter)
+
+        ##### difference lost between low pass filtered and original coords.
+        # self.sphv_diff = self.sphv_base.copy()
+        self.sphv_diff.vol = self.sphv_iter.vol - self.sphv_lm.vol
+
+
+        ##### Transform K[I_(q, l, m)]
+        self.knlm = self.iqlm_iter.copy()
+        self.knlm.calc_knlm(self.us)
+
+        ##### Inverse Transform K-1[ K[ I(q, l, m)] ]
+        self.ikqlm = self.knlm.copy()
+        self.ikqlm.calc_iqlmp(self.us)
+
+        ##### difference lost over K transformation
+        # self.iqlm_diff = self.iqlm_base.copy()
+        self.iqlm_diff.vals = self.iqlm_iter.vals - self.ikqlm.vals
+
+        ##### Calculate K' after modifered by lamda
+        # self.knlmp = self.knlm.copy()
+        self.knlm.calc_knlmp(self.lams)
+
+        ##### Inverse K' to I(q, l, m)
+        # self.iqlmp = self.knlmp.copy()
+        self.knlm.calc_iqlmp(self.us)
+
+        ##### Add in difference lost over K trasnformation
+        # self.iqlm_add = self.iqlmp.copy()
+        if self.lossy_iqlm:
+            self.knlm.vals += self.iqlm_diff.vals
+
+        ##### calculate the spherical coordinates deom new harmonics
+        # self.sphvp = self.sphv_base.copy()
+        self.sphv_iter.fill_from_iqlm(self.knlm)
+
+
+        ##### Add in difference lost over low pass filter 
+        # self.sphv_add = self.sphvp.copy()
+        if self.lossy_sphv:
+            self.sphv_iter.vol += self.sphv_diff.vol
+
+        ##### replace iterating volume
+        # self.sphv_iter = self.sphv_add.copy()
+
+        ##### copy final output
+        sphv_f = self.sphv_iter.copy()
+
+        ##### retrun input and output
+        return sphv_i, sphv_f
 

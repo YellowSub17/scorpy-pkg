@@ -75,6 +75,25 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot,
         self.sphv_iter = self.sphv_base.copy()
         self.sphv_iter.vol = np.random.random(self.sphv_iter.vol.shape)
 
+
+
+        self.iqlm_iter = self.iqlm_base.copy()
+        self.knlm = self.iqlm_base.copy()
+        self.iknlm = self.iqlm_base.copy()
+        self.iqlm_diff = self.iqlm_base.copy()
+        self.knlmp = self.iqlm_base.copy()
+        self.iqlmp = self.iqlm_base.copy()
+        self.iqlm_add = self.iqlm_base.copy()
+
+        self.sphv_lm = self.sphv_base.copy()
+        self.sphv_diff = self.sphv_base.copy()
+        self.sphvp = self.sphv_base.copy()
+        self.sphv_add = self.sphv_base.copy()
+
+
+
+        # self.iqlm_iter.fill_from_sphv(self.sphv_iter)
+
         ##### find indices of support that are inside and outside S
         self.supp_loc = np.where(self.sphv_supp == 1 )
         self.supp_notloc = np.where(self.sphv_supp == 0 )

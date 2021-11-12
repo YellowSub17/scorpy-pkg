@@ -64,7 +64,7 @@ a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, r
 
 
 
-op = a._Pm
+op = a.Pm_debug
 
 
 
@@ -84,17 +84,17 @@ op()
 sphv2 = a.sphv_iter.copy()
 sphv2.plot_slice(0,qq, title='iter1', fig=fig, axes=axes[0,1])
 
-iqlm_i = a.iqlm_iter.copy()
-iqlm_a = a.iqlm_add.copy()
-iqlm_d = scorpy.IqlmHandler(nq, nl, qmax)
-iqlm_d.val = iqlm_a.vals - iqlm_i.vals
+# iqlm_i = a.iqlm_iter.copy()
+# iqlm_a = a.iqlm_add.copy()
+# iqlm_d = scorpy.IqlmHandler(nq, nl, qmax)
+# iqlm_d.val = iqlm_a.vals - iqlm_i.vals
 
 
-figx, axess = plt.subplots(1,3)
-plt.suptitle('1')
-iqlm_i.plot_q(qq, fig=figx, axes=axess[0])
-iqlm_a.plot_q(qq, fig=figx, axes=axess[1])
-iqlm_d.plot_q(qq, fig=figx, axes=axess[2])
+# figx, axess = plt.subplots(1,3)
+# plt.suptitle('1')
+# iqlm_i.plot_q(qq, fig=figx, axes=axess[0])
+# iqlm_a.plot_q(qq, fig=figx, axes=axess[1])
+# iqlm_d.plot_q(qq, fig=figx, axes=axess[2])
 
 
 
@@ -103,18 +103,18 @@ op()
 sphv3 = a.sphv_iter.copy()
 sphv3.plot_slice(0,qq, title='iter2', fig=fig, axes=axes[0,2])
 
-iqlm_i = a.iqlm_iter.copy()
-iqlm_a = a.iqlm_add.copy()
-iqlm_d = scorpy.IqlmHandler(nq, nl, qmax)
-iqlm_d.val = iqlm_a.vals - iqlm_i.vals
+# iqlm_i = a.iqlm_iter.copy()
+# iqlm_a = a.iqlm_add.copy()
+# iqlm_d = scorpy.IqlmHandler(nq, nl, qmax)
+# iqlm_d.val = iqlm_a.vals - iqlm_i.vals
 
 
-figx, axess = plt.subplots(1,3)
+# figx, axess = plt.subplots(1,3)
 
-plt.suptitle('2')
-iqlm_i.plot_q(qq, fig=figx, axes=axess[0])
-iqlm_a.plot_q(qq, fig=figx, axes=axess[1])
-iqlm_d.plot_q(qq, fig=figx, axes=axess[2])
+# plt.suptitle('2')
+# iqlm_i.plot_q(qq, fig=figx, axes=axess[0])
+# iqlm_a.plot_q(qq, fig=figx, axes=axess[1])
+# iqlm_d.plot_q(qq, fig=figx, axes=axess[2])
 
 
 print(3)
@@ -122,15 +122,15 @@ op()
 sphv4 = a.sphv_iter.copy()
 sphv4.plot_slice(0,qq, title='iter3', fig=fig, axes=axes[1,0])
 
-# print(4)
-# op()
-# sphv5 = a.sphv_iter.copy()
-# sphv5.plot_slice(0,qq, title='iter4', fig=fig, axes=axes[1,1])
+print(4)
+op()
+sphv5 = a.sphv_iter.copy()
+sphv5.plot_slice(0,qq, title='iter4', fig=fig, axes=axes[1,1])
 
-# print(5)
-# op()
-# sphv6 = a.sphv_iter.copy()
-# sphv6.plot_slice(0,qq, title='iter5', fig=fig, axes=axes[1,2])
+print(5)
+op()
+sphv6 = a.sphv_iter.copy()
+sphv6.plot_slice(0,qq, title='iter5', fig=fig, axes=axes[1,2])
 
 
 s21 = sphv2.copy()
@@ -139,19 +139,19 @@ s21.vol -= sphv1.vol
 s32 = sphv3.copy()
 s32.vol -=sphv2.vol
 
-# s43 = sphv4.copy()
-# s43.vol -=sphv3.vol
+s43 = sphv4.copy()
+s43.vol -=sphv3.vol
 
-# s54 = sphv5.copy()
-# s54.vol -=sphv4.vol
+s54 = sphv5.copy()
+s54.vol -=sphv4.vol
 
 
 fig, axes = plt.subplots(2,2, sharex=True, sharey=True)
 plt.suptitle('Differences')
 s21.plot_slice(0,qq, title='iter1 - initial', fig=fig, axes=axes[0,0])
 s32.plot_slice(0,qq, title='iter2 - iter1', fig=fig, axes=axes[0,1])
-# s43.plot_slice(0,qq, title='iter3 - iter2', fig=fig, axes=axes[1,0])
-# s54.plot_slice(0,qq, title='iter4 - iter3', fig=fig, axes=axes[1,1])
+s43.plot_slice(0,qq, title='iter3 - iter2', fig=fig, axes=axes[1,0])
+s54.plot_slice(0,qq, title='iter4 - iter3', fig=fig, axes=axes[1,1])
 
 
 
