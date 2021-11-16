@@ -14,7 +14,7 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
         self._nl = nl
         self._qmax = qmax
         self._inc_odds = inc_odds
-        self.vals = np.zeros( (self.nq, 2, self.nl, self.nl))
+        self._vals = np.zeros( (self.nq, 2, self.nl, self.nl))
 
 
     def copy(self):
@@ -104,7 +104,6 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
         #initiailize new values
         new_vals = np.zeros( (self.nq, 2, self.nl, self.nl))
 
-
         for q_ind in range(self.nq):
             for cs in range(0,2):
                 for l in range(0, self.nl, lskip):
@@ -128,36 +127,20 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
         #initiailize new values
         new_vals = np.zeros( (self.nq, 2, self.nl, self.nl))
 
-        # ned_0_count = 0
-        # donk_0_count = 0
-        # both_0_count = 0
         for q_ind in range(self.nq):
             for l in range(0, self.nl, lskip):
 
                 ned = bl_l[q_ind,l]
-                # ned = np.abs(bl_l[q_ind,l])
-                # ned = np.abs(bl_l[q_ind,l])**2
-                # ned = np.sqrt(np.abs(bl_l[q_ind,l]))
-
-                # if ned==0:
-                    # ned_0_count += 1
-
 
                 km = np.abs(self.vals[q_ind, :, l,:])**2
-                # km = np.abs(self.vals[q_ind, :, l,:])
 
                 donk = np.sum(km)
                 if donk==0:
-                    # donk_0_count +=1
-                    # if ned==0:
-                        # both_0_count += 1
 
                     ned = 1
                     donk = 1
                 self.vals[q_ind, :, l, :] *= np.sqrt(np.abs(ned/donk))
-                # self.vals[q_ind, :, l, :] *= ned/donk
 
-                # *= np.abs(ned/donk) ?
 
                 #algorithms: phase retriaval of partial coherence 
                 #(harmonic m is " coherent modal" value 

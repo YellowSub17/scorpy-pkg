@@ -7,6 +7,7 @@ import copy
 from .algoprops import AlgoHandlerProps
 from .operators import AlgoHandlerOperators
 from .schemes import AlgoHandlerSchemes
+from .errors import AlgoHandlerErrors
 from ..plot.algoplot import AlgoHandlerPlot
 
 from ..vols import SphericalVol
@@ -17,14 +18,14 @@ from ..harms import IqlmHandler
 
 
 class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot,
-                  AlgoHandlerOperators, AlgoHandlerSchemes):
+                  AlgoHandlerOperators, AlgoHandlerSchemes, AlgoHandlerErrors):
 
 
 
 
 
     def __init__(self, blqq, sphv_supp, lossy_sphv=True, lossy_iqlm=True,
-                 rcond=None, inc_odds=True):
+                 rcond=None, inc_odds=True, sphv_targ = None):
 
 
         ##### save inputs 
@@ -34,6 +35,7 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot,
         self.lossy_iqlm = lossy_iqlm
         self.rcond = rcond
         self.inc_odds = inc_odds
+
 
 
         ##### check input properties are consistent and save them
@@ -75,28 +77,24 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot,
         self.sphv_iter = self.sphv_base.copy()
         self.sphv_iter.vol = np.random.random(self.sphv_iter.vol.shape)
 
+        ##### tracking error for operators
+        self.sphv_ds = self.sphv_base.copy()
+        self.sphv_dm = self.sphv_base.copy()
+
+        ##### tracking error scheme
+        self.sphv_d = self.sphv_base.copy()
 
 
-        self.iqlm_iter = self.iqlm_base.copy()
-        self.knlm = self.iqlm_base.copy()
-        self.iknlm = self.iqlm_base.copy()
-        self.iqlm_diff = self.iqlm_base.copy()
-        self.knlmp = self.iqlm_base.copy()
-        self.iqlmp = self.iqlm_base.copy()
-        self.iqlm_add = self.iqlm_base.copy()
 
-        self.sphv_lm = self.sphv_base.copy()
-        self.sphv_diff = self.sphv_base.copy()
-        self.sphvp = self.sphv_base.copy()
-        self.sphv_add = self.sphv_base.copy()
+
 
 
 
         # self.iqlm_iter.fill_from_sphv(self.sphv_iter)
 
         ##### find indices of support that are inside and outside S
-        self.supp_loc = np.where(self.sphv_supp == 1 )
-        self.supp_notloc = np.where(self.sphv_supp == 0 )
+        self.supp_loc = np.where(self.sphv_supp.vol == 1 )
+        self.supp_notloc = np.where(self.sphv_supp.vol == 0 )
 
 
 

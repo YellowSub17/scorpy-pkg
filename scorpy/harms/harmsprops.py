@@ -32,6 +32,14 @@ class IqlmHandlerProps:
     def dq(self):
         return np.abs(self.qmax / self.nq)
 
+    @property
+    def vals(self):
+        return self._vals
+
+    @vals.setter
+    def vals(self, new_vals):
+        assert new_vals.shape == self.vals.shape, 'Cannot replace vals with different shapes'
+        self._vals = new_vals
 
 
     @property
