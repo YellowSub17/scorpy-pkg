@@ -68,31 +68,42 @@ a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, r
 
 
 t_errs = []
-n_errs = []
+l_errs = []
 ave_diffs = []
 std_diffs = []
 
 
 fnames = []
 
-for i in range(0, 401, 10):
-    fnames.append(f'sphv_iter_ER_{i}')
 
 for i in range(0, 201, 10):
-    fnames.append(f'sphv_iter_ER_400_HIO_{i}')
+    fnames.append(f'HIOa/sphv_iter_HIOa_{i}')
 
-for i in range(0, 201, 10):
-    fnames.append(f'sphv_iter_ER_400_HIO_200_ER_{i}')
+# for i in range(0, 401, 10):
+    # fnames.append(f'ER/sphv_iter_ER_{i}')
+
+# for i in range(10, 201, 10):
+    # fnames.append(f'ER/sphv_iter_ER_400_HIO_{i}')
+
+# for i in range(10, 401, 10):
+    # fnames.append(f'ER/sphv_iter_ER_400_HIO_200_ER_{i}')
+
+# for i in range(10, 201, 10):
+    # fnames.append(f'ER/sphv_iter_ER_400_HIO_200_ER_400_HIO_{i}')
 
 
-for i, fname in enumerate(fnames[1:]):
+e = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
+
+for i, fname in enumerate(fnames):
     print(fname)
-    s = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/ER/{fname}')
-    e = sphv_targ.copy()
-    e.vol -=s.vol
+    s = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{fname}')
+    e.vol = sphv_targ.vol - s.vol
 
     ave_diffs.append(e.vol[a.supp_loc].mean())
     std_diffs.append(e.vol[a.supp_loc].std())
+
+    # ave_diffs.append(e.vol.mean())
+    # std_diffs.append(e.vol.std())
 
     e.vol *= e.vol
 
@@ -103,70 +114,84 @@ for i, fname in enumerate(fnames[1:]):
     t_errs.append(t_err)
 
     if i > 1:
-        s1 = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/ER/{fname}')
-        s2 = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/ER/{fnames[i-1]}')
+        s2 = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{fnames[i-1]}')
 
-        s2.vol -= s1.vol
-        s2.vol *= s2.vol
+        e.vol = s.vol - s2.vol
+        e.vol *= e.vol
 
-        n_err = s2.vol.sum()
-        n_err *= 1/ np.sqrt( np.sum(s1.vol * s1.vol))
-        n_err *= 1/ np.sqrt( np.sum(s2.vol * s2.vol))
+        l_err = e.vol.sum()
+        l_err *= 1/ np.sqrt( np.sum(s.vol * s.vol))
+        l_err *= 1/ np.sqrt( np.sum(s2.vol * s2.vol))
 
-        n_errs.append(n_err)
+        l_errs.append(l_err)
 
 
+
+ns = np.arange(0, 201, 10)
+
+start, stop = 0, 20
 
 
 plt.figure()
-plt.plot(t_errs)
+plt.plot(ns[start:stop], t_errs[start:stop])
 plt.xlabel('n')
 plt.ylabel('$\\frac{\\sum (I_{targ} - I_n)^2}{\\sqrt{\\sum I_{targ}^2}\\sqrt{\\sum I_n^2}}$')
-plt.title('400 ER 200 HIO')
+plt.title('target error')
 
 plt.figure()
-plt.errorbar(list(range(len(ave_diffs))), ave_diffs, yerr=std_diffs)
+plt.errorbar(ns[start:stop] , ave_diffs[start:stop], yerr=std_diffs[start:stop])
 plt.xlabel('n')
 plt.ylabel('Average difference from Target')
-plt.title('400 ER 200 HIO')
+plt.title('target difference')
 
 plt.figure()
-plt.plot(n_errs)
+plt.plot(ns[start+1:stop], l_errs[start:stop])
 plt.xlabel('n')
 plt.ylabel('$\\frac{\\sum (I_{n} - I_{n-10})^2}{\\sqrt{\\sum I_{n-10}^2}\\sqrt{I_n^2}}$')
-plt.title('400 ER 200 HIO')
+plt.title('lagging error')
+
+# start, stop = 10, 20
+
+# plt.figure()
+# plt.plot(ns[start:stop], t_errs[start:stop])
+# plt.xlabel('n')
+# plt.ylabel('$\\frac{\\sum (I_{targ} - I_n)^2}{\\sqrt{\\sum I_{targ}^2}\\sqrt{\\sum I_n^2}}$')
+# plt.title('target error')
+
+# plt.figure()
+# plt.errorbar(ns[start:stop] , ave_diffs[start:stop], yerr=std_diffs[start:stop])
+# plt.xlabel('n')
+# plt.ylabel('Average difference from Target')
+# plt.title('target difference')
+
+# plt.figure()
+# plt.plot(ns[start+1:stop], l_errs[start:stop])
+# plt.xlabel('n')
+# plt.ylabel('$\\frac{\\sum (I_{n} - I_{n-10})^2}{\\sqrt{\\sum I_{n-10}^2}\\sqrt{I_n^2}}$')
+# plt.title('lagging error')
 
 
 
 
 
 
-fig, axes = plt.subplots(2,2, sharex=True, sharey=True)
 
-sphv_targ.plot_slice(0, 34, fig=fig, axes=axes[0,0], title='targ')
 
-s = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/ER/sphv_iter_ER_400')
-s.plot_slice(0, 34, fig=fig, axes=axes[0,1], title='ER 400')
+sphv_targ.plot_slice(0, qq, title='target')
 
-s = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/ER/sphv_iter_ER_400_HIO_200')
-s.plot_slice(0, 34, fig=fig, axes=axes[1,0], title='ER 400 HIO 200')
+fig, axes = plt.subplots(4,5)
 
-s = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/ER/sphv_iter_ER_400_HIO_200_ER_200')
-s.plot_slice(0, 34, fig=fig, axes=axes[1,1], title='ER 400 HIO 200 ER 200')
 
+for i, ax in zip(range(10, 201, 10), axes.flatten()):
+
+    s = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/HIOb/sphv_iter_HIOb_{i}')
+    s.plot_slice(0, qq, title=f'{i}', fig=fig, axes=ax)
 
 
 
 
 
-fig, axes = plt.subplots(1,2, sharex=True, sharey=True)
 
-
-s = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/ER/sphv_iter_ER_400')
-s.plot_slice(0, 34, fig=fig, axes=axes[0], title='')
-
-s = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/ER/sphv_iter_ER_400_HIO_0')
-s.plot_slice(0, 34, fig=fig, axes=axes[1], title='')
 
 
 
