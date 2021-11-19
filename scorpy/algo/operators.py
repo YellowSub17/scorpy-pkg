@@ -120,7 +120,13 @@ class AlgoHandlerOperators:
 
 
 
+
     def Ps(self, sphv_i=None):
+        '''
+
+        add positivitiy constraint
+        set negative values to 0 inside support
+        '''
 
         #tight support : known shape
         if sphv_i is None:

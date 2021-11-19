@@ -69,25 +69,21 @@ a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, r
 
 
 
-
-
-
-
 # sphv_init = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/HIO/sphv_iter_HIO_0')
 # a.sphv_iter = sphv_init.copy()
 
-# print(time.asctime())
+print(time.asctime())
 
-# for i in range(200):
-    # print(i, end='\r')
+for i in range(200):
+    print(i, end='\r')
 
-    # if i%10==0:
-        # a.sphv_iter.save(f'{scorpy.DATADIR}/algo/sphv_iter_HIOb_{i}')
-    # a.HIO(beta=0.7)
+    if i%10==0:
+        a.sphv_iter.save(f'{scorpy.DATADIR}/algo/sphv_iter_HIOb_{i}')
+    a.HIO(beta=0.7)
 
-# a.sphv_iter.save(f'{scorpy.DATADIR}/algo/sphv_iter_HIOb_200')
+a.sphv_iter.save(f'{scorpy.DATADIR}/algo/sphv_iter_HIOb_200')
 
-# print(time.asctime())
+print(time.asctime())
 
 
 

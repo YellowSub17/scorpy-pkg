@@ -77,7 +77,7 @@ fnames = []
 
 
 for i in range(0, 201, 10):
-    fnames.append(f'HIOa/sphv_iter_HIOa_{i}')
+    fnames.append(f'HIOb/sphv_iter_HIOb_{i}')
 
 # for i in range(0, 401, 10):
     # fnames.append(f'ER/sphv_iter_ER_{i}')
@@ -93,12 +93,14 @@ for i in range(0, 201, 10):
 
 
 e = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
+e_neg = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 
 for i, fname in enumerate(fnames):
     print(fname)
     s = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{fname}')
     e.vol = sphv_targ.vol - s.vol
 
+    ave_diffs.append(e.vol[a.supp_loc].mean())
     ave_diffs.append(e.vol[a.supp_loc].mean())
     std_diffs.append(e.vol[a.supp_loc].std())
 
