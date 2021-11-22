@@ -27,8 +27,6 @@ class AlgoHandlerOperators:
         sphv_f = self.sphv_iter.copy()
 
 
-        self.sphv_dm.vol *= np.pi * np.ones(self.sphv_dm.shape)
-        self.sphv_ds.vol *= np.pi * np.ones(self.sphv_ds.shape)
 
         ##### return input and output
         return sphv_i, sphv_f
@@ -112,9 +110,6 @@ class AlgoHandlerOperators:
         sphv_f = self.sphv_iter.copy()
 
 
-        #### distance after applying projection
-        self.sphv_dm.vol = np.abs(sphv_f.vol - sphv_i.vol)
-
         ##### retrun input and output
         return sphv_i, sphv_f
 
@@ -139,14 +134,14 @@ class AlgoHandlerOperators:
         self.sphv_b = self.sphv_base.copy()
         self.sphv_b.vol = self.sphv_iter.vol * self.sphv_supp.vol
 
+        self.sphv_b.vol[ self.sphv_b.vol <0] =0
+
         ##### replace iterating sphv
         self.sphv_iter = self.sphv_b.copy()
 
         ##### copy final output
         sphv_f = self.sphv_iter.copy()
 
-        #### distance after applying projection
-        self.sphv_ds.vol = np.abs(sphv_f.vol - sphv_i.vol)
 
         ##### return input and output
         return sphv_i, sphv_f

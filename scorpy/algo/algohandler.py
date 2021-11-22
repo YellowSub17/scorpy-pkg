@@ -37,7 +37,6 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot,
         self.inc_odds = inc_odds
 
 
-
         ##### check input properties are consistent and save them
         assert self.blqq.qmax == self.sphv_supp.qmax
         self.qmax = self.blqq.qmax
@@ -76,27 +75,12 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot,
         ##### initialize random spherical intensity
         self.sphv_iter = self.sphv_base.copy()
         self.sphv_iter.vol = np.random.random(self.sphv_iter.vol.shape)
+        self.sphv_iter.vol = np.abs(self.sphv_iter.vol)
 
-        ##### tracking error for operators
-        self.sphv_ds = self.sphv_base.copy()
-        self.sphv_dm = self.sphv_base.copy()
-
-        ##### tracking error scheme
-        self.sphv_d = self.sphv_base.copy()
-
-
-
-
-
-
-
-        # self.iqlm_iter.fill_from_sphv(self.sphv_iter)
 
         ##### find indices of support that are inside and outside S
         self.supp_loc = np.where(self.sphv_supp.vol == 1 )
         self.supp_notloc = np.where(self.sphv_supp.vol == 0 )
-
-
 
 
 

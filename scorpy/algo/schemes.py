@@ -20,7 +20,6 @@ class AlgoHandlerSchemes:
 
         sphv_f = self.sphv_iter.copy()
 
-        self.sphv_d.vol = sphv_f.vol - sphv_i.vol
 
 
         return sphv_i, sphv_f
@@ -40,7 +39,6 @@ class AlgoHandlerSchemes:
 
         sphv_f = self.sphv_iter.copy()
 
-        self.sphv_d.vol = sphv_f.vol - sphv_i.vol
 
         return sphv_i, sphv_f
 
@@ -64,7 +62,6 @@ class AlgoHandlerSchemes:
 
         sphv_f = self.sphv_iter.copy()
 
-        self.sphv_d.vol = sphv_f.vol - sphv_i.vol
 
         return sphv_i, sphv_f
 
@@ -102,7 +99,6 @@ class AlgoHandlerSchemes:
 
         sphv_f = self.sphv_iter.copy()
 
-        self.sphv_d.vol = sphv_f.vol - sphv_i.vol
 
         return sphv_i, sphv_f
 
@@ -128,7 +124,6 @@ class AlgoHandlerSchemes:
 
         sphv_f = self.sphv_iter.copy()
 
-        self.sphv_d.vol = sphv_f.vol - sphv_i.vol
 
         return sphv_i, sphv_f
 
@@ -165,7 +160,6 @@ class AlgoHandlerSchemes:
 
         sphv_f = self.sphv_iter.copy()
 
-        self.sphv_d.vol = sphv_f.vol - sphv_i.vol
 
         return sphv_i, sphv_f
 
@@ -198,7 +192,6 @@ class AlgoHandlerSchemes:
 
         sphv_f = self.sphv_iter.copy()
 
-        self.sphv_d.vol = sphv_f.vol - sphv_i.vol
 
         return sphv_i, sphv_f
 
