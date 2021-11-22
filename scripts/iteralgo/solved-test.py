@@ -76,7 +76,7 @@ for op in [a.ER, a.DM, a.RAAR, a.HIO, a.SF, a.ASR, a.HPR]:
 
     # place algorithm in "solved" state
     a.sphv_iter = sphv_targ.copy()
-    print(op, '\n')
+    print(op)
 
     fig, axes = plt.subplots(3,2)
     plt.suptitle(op)
@@ -84,18 +84,21 @@ for op in [a.ER, a.DM, a.RAAR, a.HIO, a.SF, a.ASR, a.HPR]:
     a.sphv_iter.plot_slice(0, qq, title='initial', fig=fig, axes=axes[0,0])
     a.sphv_supp.plot_slice(0, qq, title='supp', fig=fig, axes=axes[0,1])
 
-    in1, out1 = op()
+    in1, out1, err = op()
+    print(err)
     a.sphv_iter.plot_slice(0, qq, title='iter1', fig=fig, axes=axes[1,0])
 
     out1.vol -= in1.vol
     out1.plot_slice(0, qq, title='diff1', fig=fig, axes=axes[1,1])
 
 
-    in2, out2 = op()
+    in2, out2, err = op()
+    print(err)
     a.sphv_iter.plot_slice(0, qq, title='iter2', fig=fig, axes=axes[2,0])
 
     out2.vol -= in2.vol
     out2.plot_slice(0, qq, title='diff2', fig=fig, axes=axes[2,1])
+    print()
 
 plt.show()
 

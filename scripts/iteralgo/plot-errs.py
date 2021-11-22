@@ -76,24 +76,8 @@ std_diffs = []
 fnames = []
 
 
-for i in range(0, 201, 10):
-    fnames.append(f'HIOb/sphv_iter_HIOb_{i}')
-
-# for i in range(0, 401, 10):
-    # fnames.append(f'ER/sphv_iter_ER_{i}')
-
-# for i in range(10, 201, 10):
-    # fnames.append(f'ER/sphv_iter_ER_400_HIO_{i}')
-
-# for i in range(10, 401, 10):
-    # fnames.append(f'ER/sphv_iter_ER_400_HIO_200_ER_{i}')
-
-# for i in range(10, 201, 10):
-    # fnames.append(f'ER/sphv_iter_ER_400_HIO_200_ER_400_HIO_{i}')
-
 
 e = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
-e_neg = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 
 for i, fname in enumerate(fnames):
     print(fname)
@@ -104,8 +88,6 @@ for i, fname in enumerate(fnames):
     ave_diffs.append(e.vol[a.supp_loc].mean())
     std_diffs.append(e.vol[a.supp_loc].std())
 
-    # ave_diffs.append(e.vol.mean())
-    # std_diffs.append(e.vol.std())
 
     e.vol *= e.vol
 
@@ -151,43 +133,6 @@ plt.plot(ns[start+1:stop], l_errs[start:stop])
 plt.xlabel('n')
 plt.ylabel('$\\frac{\\sum (I_{n} - I_{n-10})^2}{\\sqrt{\\sum I_{n-10}^2}\\sqrt{I_n^2}}$')
 plt.title('lagging error')
-
-# start, stop = 10, 20
-
-# plt.figure()
-# plt.plot(ns[start:stop], t_errs[start:stop])
-# plt.xlabel('n')
-# plt.ylabel('$\\frac{\\sum (I_{targ} - I_n)^2}{\\sqrt{\\sum I_{targ}^2}\\sqrt{\\sum I_n^2}}$')
-# plt.title('target error')
-
-# plt.figure()
-# plt.errorbar(ns[start:stop] , ave_diffs[start:stop], yerr=std_diffs[start:stop])
-# plt.xlabel('n')
-# plt.ylabel('Average difference from Target')
-# plt.title('target difference')
-
-# plt.figure()
-# plt.plot(ns[start+1:stop], l_errs[start:stop])
-# plt.xlabel('n')
-# plt.ylabel('$\\frac{\\sum (I_{n} - I_{n-10})^2}{\\sqrt{\\sum I_{n-10}^2}\\sqrt{I_n^2}}$')
-# plt.title('lagging error')
-
-
-
-
-
-
-
-
-sphv_targ.plot_slice(0, qq, title='target')
-
-fig, axes = plt.subplots(4,5)
-
-
-for i, ax in zip(range(10, 201, 10), axes.flatten()):
-
-    s = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/HIOb/sphv_iter_HIOb_{i}')
-    s.plot_slice(0, qq, title=f'{i}', fig=fig, axes=ax)
 
 
 

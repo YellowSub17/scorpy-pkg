@@ -1,14 +1,19 @@
+#!/usr/bin/env python3
+'''
+solved-test.py
+
+replaces the initial spherical volume object with the target solution,
+and ensures the same values are returned after one iteration.
+'''
 import scorpy
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+import os
 plt.close('all')
-import timeit
 
 
 np.random.seed(0)
-
-
 
 
 
@@ -56,34 +61,21 @@ blqq_data.fill_from_iqlm(iqlm_targ)
 
 
 
-sphv_init = sphv_harmed.copy()
-sphv_init.vol = np.random.random(sphv_harmed.vol.shape)
 # # # SET UP ALGORITHM
 a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, rcond=1e-15)
 
-a.sphv_iter = sphv_init.copy()
-
-
-
-fig, axes = plt.subplots(1,2, sharex=True, sharey=True)
-a.sphv_iter.plot_slice(0,qq, fig=fig, axes=axes[0])
-# a.Pm_debug()
-t1 = timeit.timeit('a.Pm_debug()', globals=globals(), number=1)
-a.sphv_iter.plot_slice(0,qq, fig=fig, axes=axes[1])
-
-
-a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, rcond=1e-15)
-a.sphv_iter = sphv_init.copy()
-
-fig, axes = plt.subplots(1,2, sharex=True, sharey=True)
-a.sphv_iter.plot_slice(0,qq, fig=fig, axes=axes[0])
-# a.Pm()
-t2 = timeit.timeit('a.Pm()', globals=globals(), number=1)
-a.sphv_iter.plot_slice(0,qq, fig=fig, axes=axes[1])
 
 
 
 
-plt.show()
+a.sphv_iter.plot_slice(0, qq)
+
+
+
+
+
+
+
+
 
 

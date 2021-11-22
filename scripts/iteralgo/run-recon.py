@@ -77,11 +77,11 @@ print(time.asctime())
 for i in range(200):
     print(i, end='\r')
 
-    if i%10==0:
-        a.sphv_iter.save(f'{scorpy.DATADIR}/algo/sphv_iter_HIOb_{i}')
+    # if i%10==0:
+        # a.sphv_iter.save(f'{scorpy.DATADIR}/algo/sphv_iter_HIOb_{i}')
     a.HIO(beta=0.7)
 
-a.sphv_iter.save(f'{scorpy.DATADIR}/algo/sphv_iter_HIOb_200')
+# a.sphv_iter.save(f'{scorpy.DATADIR}/algo/sphv_iter_HIOb_200')
 
 print(time.asctime())
 
