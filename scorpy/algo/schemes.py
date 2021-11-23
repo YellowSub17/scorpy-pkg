@@ -1,5 +1,6 @@
 
 
+import numpy as np
 
 
 class AlgoHandlerSchemes:
@@ -21,8 +22,9 @@ class AlgoHandlerSchemes:
         sphv_f = self.sphv_iter.copy()
 
 
+        err = np.linalg.norm(sphv_f.vol - sphv_i.vol)
 
-        return sphv_i, sphv_f
+        return sphv_i, sphv_f, err
 
 
     def SF(self, sphv_i=None):
@@ -40,7 +42,8 @@ class AlgoHandlerSchemes:
         sphv_f = self.sphv_iter.copy()
 
 
-        return sphv_i, sphv_f
+        err = np.linalg.norm(sphv_f.vol - sphv_i.vol)
+        return sphv_i, sphv_f, err
 
 
 
@@ -56,14 +59,15 @@ class AlgoHandlerSchemes:
             self.sphv_iter = sphv_i.copy()
 
         self.Pm()
-        pm_out, ps_out = self.Ps()
+        pm_out, ps_out, _ = self.Ps()
 
         self.sphv_iter.vol[self.supp_notloc] = sphv_i.vol[self.supp_notloc] - beta*pm_out.vol[self.supp_notloc]
 
         sphv_f = self.sphv_iter.copy()
 
 
-        return sphv_i, sphv_f
+        err = np.linalg.norm(sphv_f.vol - sphv_i.vol)
+        return sphv_i, sphv_f, err
 
 
     def DM(self, beta=0.7, gamma_m=None, gamma_s=None, sphv_i=None):
@@ -88,19 +92,20 @@ class AlgoHandlerSchemes:
 
 
 
-        _, p1 = self.Rm(gamma_m, sphv_i)
-        _, p1 = self.Ps(p1)
+        _, p1, _ = self.Rm(gamma_m, sphv_i)
+        _, p1, _ = self.Ps(p1)
 
-        _, p2 = self.Rs(gamma_m, sphv_i)
-        _, p2 = self.Pm(p2)
+        _, p2, _ = self.Rs(gamma_m, sphv_i)
+        _, p2, _ = self.Pm(p2)
 
         self.sphv_iter.vol = sphv_i.vol + beta*(p1.vol - p2.vol)
 
 
         sphv_f = self.sphv_iter.copy()
 
+        err = np.linalg.norm(sphv_f.vol - sphv_i.vol)
 
-        return sphv_i, sphv_f
+        return sphv_i, sphv_f, err
 
 
 
@@ -124,8 +129,9 @@ class AlgoHandlerSchemes:
 
         sphv_f = self.sphv_iter.copy()
 
+        err = np.linalg.norm(sphv_f.vol - sphv_i.vol)
 
-        return sphv_i, sphv_f
+        return sphv_i, sphv_f, err
 
 
 
@@ -139,15 +145,15 @@ class AlgoHandlerSchemes:
             self.sphv_iter = sphv_i.copy()
 
 
-        _, p1 = self.Rm(gamma_m, sphv_i)
-        _, p1 = self.Rs(gamma_s, p1)
+        _, p1, _ = self.Rm(gamma_m, sphv_i)
+        _, p1, _ = self.Rs(gamma_s, p1)
 
 
-        _, pm = self.Pm(sphv_i)
+        _, pm, _ = self.Pm(sphv_i)
 
         p2 = pm.copy()
         p2.vol *= (beta-1)
-        _, p2 = self.Rs(gamma_s, p2)
+        _, p2, _ = self.Rs(gamma_s, p2)
 
 
 
@@ -160,8 +166,9 @@ class AlgoHandlerSchemes:
 
         sphv_f = self.sphv_iter.copy()
 
+        err = np.linalg.norm(sphv_f.vol - sphv_i.vol)
 
-        return sphv_i, sphv_f
+        return sphv_i, sphv_f, err
 
 
 
@@ -179,21 +186,21 @@ class AlgoHandlerSchemes:
         else:
             self.sphv_iter = sphv_i.copy()
 
-        _, p1 = self.Rm(gamma_m, sphv_i)
-        _, p1 = self.Rs(gamma_s, sphv_i)
+        _, p1, _ = self.Rm(gamma_m, sphv_i)
+        _, p1, _ = self.Rs(gamma_s, p1)
 
         p1.vol += sphv_i.vol
         p1.vol *= beta/2
 
-        _, p2 = self.Pm(sphv_i)
+        _, p2, _ = self.Pm(sphv_i)
         p2.vol *= (1-beta)
 
         self.sphv_iter.vol = p1.vol + p2.vol
 
         sphv_f = self.sphv_iter.copy()
 
-
-        return sphv_i, sphv_f
+        err = np.linalg.norm(sphv_f.vol - sphv_i.vol)
+        return sphv_i, sphv_f, err
 
 
 

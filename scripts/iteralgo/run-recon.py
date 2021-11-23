@@ -66,22 +66,25 @@ a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, r
 
 
 
+sphv_init = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/HIO_ER_x3/sphv_iter_HIO_200_ER_200.dbin')
+a.sphv_iter = sphv_init.copy()
 
-
-
-# sphv_init = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/HIO/sphv_iter_HIO_0')
-# a.sphv_iter = sphv_init.copy()
 
 print(time.asctime())
 
-for i in range(200):
+for i in range(201, 1000):
+    stem = f'sphv_iter_HIO_200_ER_{i}'
     print(i, end='\r')
+    if i%10==0:
+        a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{stem}.dbin')
 
-    # if i%10==0:
-        # a.sphv_iter.save(f'{scorpy.DATADIR}/algo/sphv_iter_HIOb_{i}')
-    a.HIO(beta=0.7)
+    _, _, err = a.ER()
 
-# a.sphv_iter.save(f'{scorpy.DATADIR}/algo/sphv_iter_HIOb_200')
+    errs_file = open(f'{scorpy.DATADIR}/algo/errs_HIO_200_ER_1000.log', 'a')
+    errs_file.write(f'{err},\t\t#{stem}\n')
+    errs_file.close()
+
+a.sphv_iter.save(f'{scorpy.DATADIR}/algo/sphv_iter_HIO_200_ER_1000.dbin')
 
 print(time.asctime())
 

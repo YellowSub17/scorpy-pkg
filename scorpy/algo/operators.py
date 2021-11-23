@@ -16,7 +16,7 @@ class AlgoHandlerOperators:
 
 
         ##### input and output of functions
-        fn_in, fn_out = fn(self.sphv_iter)
+        fn_in, fn_out, _ = fn(self.sphv_iter)
 
         ##### initiaize reflected volume and calculate, save to iterating vol
         self.sphv_r = self.sphv_base.copy()
@@ -26,10 +26,10 @@ class AlgoHandlerOperators:
         ##### copy final output
         sphv_f = self.sphv_iter.copy()
 
+        err = np.linalg.norm(sphv_f.vol - sphv_i.vol)
 
-
-        ##### return input and output
-        return sphv_i, sphv_f
+        ##### return input, output and error
+        return sphv_i, sphv_f, err
 
 
 
@@ -109,9 +109,10 @@ class AlgoHandlerOperators:
         ##### copy final output
         sphv_f = self.sphv_iter.copy()
 
+        err = np.linalg.norm(sphv_f.vol - sphv_i.vol)
 
         ##### retrun input and output
-        return sphv_i, sphv_f
+        return sphv_i, sphv_f, err
 
 
 
@@ -143,7 +144,8 @@ class AlgoHandlerOperators:
         sphv_f = self.sphv_iter.copy()
 
 
+        err = np.linalg.norm(sphv_f.vol - sphv_i.vol)
         ##### return input and output
-        return sphv_i, sphv_f
+        return sphv_i, sphv_f, err
 
 

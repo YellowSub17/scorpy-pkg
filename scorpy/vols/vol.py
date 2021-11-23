@@ -2,17 +2,15 @@ import numpy as np
 import copy
 import scipy.signal as signal
 import scipy
-import configparser as cfp
-from pathlib import Path
 import matplotlib.pyplot as plt
 
 from .volsprops import VolProps
+from .saveload import VolSaveLoad
 from ..plot.volsplot import VolPlot
 
-from datetime import datetime
 
 
-class Vol(VolProps, VolPlot):
+class Vol(VolProps, VolPlot, VolSaveLoad):
     """
         scorpy.Vol:
             A class to describe an arbitrary volume or 3D function.
@@ -68,113 +66,6 @@ vol : numpy.ndarray
                 self._vol = np.zeros((nx, ny, nz)).astype(np.complex64)
             else:
                 self._vol = np.zeros((nx, ny, nz))
-
-    def _load(self, path):
-        '''
-	scorpy.Vol._load(path):
-            Loads a Vol object from dbin and log file.
-        Arguments:
-            path : str
-                path to files to be loaded. The filename should exclude filetype.
-        '''
-        assert type(path) == str, 'Argument "path" must be string'
-        path = Path(path)
-
-        #check if path exists
-        assert Path(f'{path}_log.txt').is_file(), f'ERROR: file {path} not found'
-
-
-        tag = path.stem
-        config = cfp.ConfigParser()
-        config.read(f'{path.parent}/{tag}_log.txt')
-
-
-        self._nx = int(config['vol']['nx'])
-        self._ny = int(config['vol']['ny'])
-        self._nz = int(config['vol']['nz'])
-
-        self._xmin = float(config['vol']['xmin'])
-        self._ymin = float(config['vol']['ymin'])
-        self._zmin = float(config['vol']['zmin'])
-
-        self._xmax = float(config['vol']['xmax'])
-        self._ymax = float(config['vol']['ymax'])
-        self._zmax = float(config['vol']['zmax'])
-
-        self._xwrap = config.getboolean('vol', 'xwrap')
-        self._ywrap = config.getboolean('vol', 'ywrap')
-        self._zwrap = config.getboolean('vol', 'zwrap')
-
-        self._comp = config.getboolean('vol', 'comp')
-        if self.comp:
-            file_vol = np.fromfile(f'{path.parent}/{tag}.dbin', dtype=np.complex64)
-        else:
-            file_vol = np.fromfile(f'{path.parent}/{tag}.dbin')
-
-        self._vol = file_vol.reshape((self.nx, self.ny, self.nz))
-
-        self._load_extra(config)
-
-    def save(self, path):
-        """
-        scorpy.Vol.save(path):
-            Save the current Vol to a dbin and log file.
-        Arguments:
-            path: path of the save location with file tag. The filename should exclude filetype.
-        """
-
-        assert type(path) == str,  'Argument "path" must be string'
-        path = Path(path)
-        tag = path.stem
-
-        # write dbin
-        flat_vol = self.vol.flatten()
-        flat_vol.tofile(f'{path.parent}/{tag}.dbin')
-
-        # write log
-        f = open(f'{path.parent}/{tag}_log.txt', 'w')
-        f.write('##Scorpy Config File\n')
-        f.write(f'## Created: {datetime.now().strftime("%Y/%m/%d %H:%M")}\n\n')
-        f.write('[vol]\n')
-        f.write(f'nx = {self.nx}\n')
-        f.write(f'ny = {self.ny}\n')
-        f.write(f'nz = {self.nz}\n')
-        f.write(f'xmin = {self.xmin}\n')
-        f.write(f'ymin = {self.ymin}\n')
-        f.write(f'zmin = {self.zmin}\n')
-        f.write(f'xmax = {self.xmax}\n')
-        f.write(f'ymax = {self.ymax}\n')
-        f.write(f'zmax = {self.zmax}\n')
-        f.write(f'xwrap = {self.xwrap}\n')
-        f.write(f'ywrap = {self.ywrap}\n')
-        f.write(f'zwrap = {self.zwrap}\n')
-        f.write(f'dx = {self.dx}\n')
-        f.write(f'dy = {self.dy}\n')
-        f.write(f'dz = {self.dz}\n')
-        f.write(f'comp = {self.comp}\n')
-        f.write('\n')
-        self._save_extra(f)
-        f.close()
-
-    def _save_extra(self, f):
-        """
-        scorpy.Vol._save_extra(f):
-            Used by children classes to save extra information to log files.
-        Arguments:
-            f : _io.TestIOWrapper
-                file object of log file, to write extra info.
-        """
-        pass
-
-    def _load_extra(self, config):
-        """
-        scorpy.Vol._load_extra(f):
-            Used by children classes to load extra information from log files.
-        Arguments:
-            config : configparser.Configparser
-                configparser object to load extra information from.
-        """
-        pass
 
     def copy(self):
         '''
