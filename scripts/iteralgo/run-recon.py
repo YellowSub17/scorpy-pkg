@@ -13,7 +13,6 @@ import os
 plt.close('all')
 
 
-np.random.seed(0)
 
 
 
@@ -22,7 +21,6 @@ nq= 200
 ntheta = 180
 nphi = 360
 nl = 90
-
 qmax = 89
 
 
@@ -37,7 +35,7 @@ sphv_supp.make_mask()
 
 
 # SET UP TARGET DATA
-cif_targ = scorpy.CifData(f'{scorpy.DATADIR}/cifs/ccc-sf.cif', qmax = qmax)
+cif_targ = scorpy.CifData(f'{scorpy.DATADIR}/cifs/fcc-sf.cif', qmax = qmax)
 sphv_targ = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_targ.fill_from_cif(cif_targ)
 
@@ -64,31 +62,41 @@ blqq_data.fill_from_iqlm(iqlm_targ)
 # # # SET UP ALGORITHM
 a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, rcond=1e-15)
 
-
-
-sphv_init = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/HIO_ER_x3/sphv_iter_HIO_200_ER_200.dbin')
-a.sphv_iter = sphv_init.copy()
+tag = "HIO_ER_fcc_a"
 
 
 print(time.asctime())
 
-for i in range(201, 1000):
-    stem = f'sphv_iter_HIO_200_ER_{i}'
-    print(i, end='\r')
-    if i%10==0:
-        a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{stem}.dbin')
 
-    _, _, err = a.ER()
 
-    errs_file = open(f'{scorpy.DATADIR}/algo/errs_HIO_200_ER_1000.log', 'a')
-    errs_file.write(f'{err},\t\t#{stem}\n')
-    errs_file.close()
+count =0
+import time
 
-a.sphv_iter.save(f'{scorpy.DATADIR}/algo/sphv_iter_HIO_200_ER_1000.dbin')
+for set_num in range(3):
+
+    for op, op_str in zip([a.HIO, a.ER], ['HIO', 'ER ']):
+
+        print(f'Set: {set_num}\tOp: {op_str}')
+        for iter_num in range(200):
+
+            stem = f'sphv_iter_HIO_ER_a_{count}'
+            print('',end='\r')
+            print(f'{iter_num}', end='\r', sep='\t\t')
+
+            if iter_num %10==0:
+                a.sphv_iter.save(f'{scorpy.DATADIR}/algo/sphv_{tag}_{count}.dbin')
+
+            _, _, err = op()
+            count +=1
+
+            errs_file = open(f'{scorpy.DATADIR}/algo/errs_{tag}.log', 'a')
+            errs_file.write(f'{err},\t\t#{tag}_{count}\n')
+            errs_file.close()
+
+
 
 print(time.asctime())
-
-
+a.sphv_iter.save(f'{scorpy.DATADIR}/algo/sphv_{tag}_{count}.dbin')
 
 
 

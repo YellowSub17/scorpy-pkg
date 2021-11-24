@@ -75,7 +75,6 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot,
         ##### initialize random spherical intensity
         self.sphv_iter = self.sphv_base.copy()
         self.sphv_iter.vol = np.random.random(self.sphv_iter.vol.shape)
-        self.sphv_iter.vol = np.abs(self.sphv_iter.vol)
 
 
         ##### find indices of support that are inside and outside S
