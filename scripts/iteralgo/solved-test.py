@@ -42,7 +42,7 @@ cif_targ = scorpy.CifData(f'{scorpy.DATADIR}/cifs/ccc-sf.cif', qmax = qmax)
 sphv_targ = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_targ.fill_from_cif(cif_targ)
 
-sphv_targ.vol *= 2
+sphv_targ.vol *= np.random.random(sphv_targ.vol.shape)
 
 loc = np.where(sphv_targ.vol>0)
 q_inds = np.unique(loc[0])
