@@ -117,7 +117,7 @@ class AlgoHandlerOperators:
 
 
 
-    def Ps(self, sphv_i=None):
+    def Ps(self, sphv_i=None, posit=True):
         '''
 
         add positivitiy constraint
@@ -135,7 +135,9 @@ class AlgoHandlerOperators:
         self.sphv_b = self.sphv_base.copy()
         self.sphv_b.vol = self.sphv_iter.vol * self.sphv_supp.vol
 
-        self.sphv_b.vol[ self.sphv_b.vol <0] =0
+
+        if posit:
+            self.sphv_b.vol[ self.sphv_b.vol <0] =0
 
         ##### replace iterating sphv
         self.sphv_iter = self.sphv_b.copy()

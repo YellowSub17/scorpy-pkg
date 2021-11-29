@@ -24,26 +24,27 @@ nl = 90
 qmax = 89
 
 
+supp_cif_fname = 'fcc-sf.cif'
+targ_cif_fname = 'fcc-rand-sf.cif'
+
+tag = "ER_rand_a"
 
 
 
 
 # SET UP MASK DATA
-cif_supp = scorpy.CifData(f'{scorpy.DATADIR}/cifs/fcc-sf.cif', qmax = qmax)
+cif_supp = scorpy.CifData(f'{scorpy.DATADIR}/cifs/{supp_cif_fname}', qmax = qmax)
 sphv_supp = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_supp.fill_from_cif(cif_supp)
 sphv_supp.make_mask()
+sphv_supp.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_supp.dbin')
 
 
 # SET UP TARGET DATA
-cif_targ = scorpy.CifData(f'{scorpy.DATADIR}/cifs/fcc-sf.cif', qmax = qmax)
+cif_targ = scorpy.CifData(f'{scorpy.DATADIR}/cifs/{targ_cif_fname}', qmax = qmax)
 sphv_targ = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_targ.fill_from_cif(cif_targ)
-sphv_targ.vol *= np.random.random(sphv_targ.vol.shape)
-
-loc = np.where(sphv_targ.vol>0)
-q_inds = np.unique(loc[0])
-qq = q_inds[-4]
+sphv_targ.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_targ.dbin')
 
 
 
@@ -63,18 +64,6 @@ blqq_data.fill_from_iqlm(iqlm_targ)
 
 # # # SET UP ALGORITHM
 a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, rcond=1e-15)
-
-tag = "ER_rand_a"
-
-
-
-# # for i in range(10):
-    # # si, so, err = a.HIO()
-    # # print('h', err)
-
-# for i in range(20):
-    # si, so, err = a.ER()
-    # print('e', err)
 
 
 
@@ -115,8 +104,6 @@ print(time.asctime())
 
 
 count =0
-
-
 
 for iter_num in range(400):
 

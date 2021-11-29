@@ -13,28 +13,6 @@ import os
 plt.close('all')
 
 
-np.random.seed(0)
-
-
-
-# Parameters
-nq= 200
-ntheta = 180
-nphi = 360
-nl = 90
-
-qmax = 89
-
-
-
-
-
-# SET UP MASK DATA
-cif_supp = scorpy.CifData(f'{scorpy.DATADIR}/cifs/fcc-sf.cif', qmax = qmax)
-sphv_supp = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
-sphv_supp.fill_from_cif(cif_supp)
-sphv_supp.make_mask()
-
 
 
 
@@ -44,10 +22,55 @@ sphv_supp.make_mask()
 
 tag = 'ER_rand_a'
 
-y = np.loadtxt(f'{scorpy.DATADIR}/algo/{tag}/errs_{tag}.log', delimiter=',', skiprows=0, usecols=0)
 
-plt.figure()
-plt.plot(y)
+sphv_targ = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_targ.dbin')
+sphv_supp = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_supp.dbin')
+
+s = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_400.dbin')
+
+
+
+loc = np.where(sphv_targ.vol>0)
+q_inds = np.unique(loc[0])
+qq = q_inds[-4]
+
+
+
+sphv_targ.plot_slice(0, qq)
+s.plot_slice(0, qq)
+
+
+# cif1 =  scorpy.CifData(path=f'{scorpy.DATADIR}/cifs/fcc-rand-sf.cif', qmax=89)
+# cif2 =  scorpy.CifData(path=f'{scorpy.DATADIR}/cifs/fcc-sf.cif', qmax=89)
+# sphv_x = scorpy.SphericalVol(200, 180, 360, 89)
+# sphv_x.fill_from_cif(cif1)
+
+# sphv_x.plot_slice(0, qq)
+
+
+
+
+
+
+
+
+
+# vals = np.unique(s.vol)
+# vals = vals[vals>0]
+# plt.figure()
+# plt.hist(vals, bins=100)
+
+
+
+
+
+
+
+
+# y = np.loadtxt(f'{scorpy.DATADIR}/algo/{tag}/errs_{tag}.log', delimiter=',', skiprows=0, usecols=0)
+
+# plt.figure()
+# plt.plot(y)
 
 
 # def sumsquarediff(s1, s2):
@@ -74,21 +97,6 @@ plt.plot(y)
 
 
 
-s = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_150.dbin')
-vals = np.unique(s.vol)
-vals = vals[vals>0]
-plt.figure()
-plt.hist(vals, bins=1000)
-
-
-
-
-
-# qq +=1
-# fig, axes = plt.subplots(1,3, sharex=True, sharey=True)
-# s.plot_slice(0, qq, fig=fig, axes=axes[0], title='iter')
-# sphv_targ.plot_slice(0, qq, fig=fig, axes=axes[1], title='target')
-# sphv_supp.plot_slice(0, qq, fig=fig, axes=axes[2], title='supp')
 
 
 
