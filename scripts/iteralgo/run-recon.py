@@ -25,9 +25,9 @@ qmax = 89
 
 
 supp_cif_fname = 'fcc-sf.cif'
-targ_cif_fname = 'fcc-rand-sf.cif'
+targ_cif_fname = 'fcc-sf.cif'
 
-tag = "ER_rand_a"
+tag = "HIO_ER_test"
 
 
 
@@ -68,62 +68,61 @@ a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, r
 
 
 
-# print(time.asctime())
-
-
-# count =0
-
-# for set_num in range(1):
-
-    # for op, op_str in zip([a.ER], ['ER ']):
-
-        # print(f'Set: {set_num}\tOp: {op_str}')
-        # for iter_num in range(200):
-
-            # print('',end='\r')
-            # print(f'{iter_num}', end='\r', sep='\t\t')
-
-            # if iter_num %25==0:
-                # a.sphv_iter.save(f'{scorpy.DATADIR}/algo/sphv_{tag}_{count}.dbin')
-
-            # _, _, err = op()
-            # count +=1
-
-            # errs_file = open(f'{scorpy.DATADIR}/algo/errs_{tag}.log', 'a')
-            # errs_file.write(f'{err},\t\t#{tag}_{count}\n')
-            # errs_file.close()
-
-
-
-# print(time.asctime())
-# a.sphv_iter.save(f'{scorpy.DATADIR}/algo/sphv_{tag}_{count}.dbin')
-
-
-
 print(time.asctime())
 
 
 count =0
+for set_num in range(1):
 
-for iter_num in range(400):
+    for op, op_str in zip([a.HIO, a.ER], ['HIO', 'ER']):
 
-    print('',end='\r')
-    print(f'{iter_num}', end='\r', sep='\t\t')
+        print(f'Set: {set_num}\tOp: {op_str}')
+        for iter_num in range(200):
 
-    if iter_num %25==0:
-        a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_{count}.dbin')
+            print('',end='\r')
+            print(f'{iter_num}', end='\r', sep='\t\t')
 
-    _, _, err = a.ER()
-    count +=1
+            if iter_num %10==0:
+                a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_{count}.dbin')
 
-    errs_file = open(f'{scorpy.DATADIR}/algo/{tag}/errs_{tag}.log', 'a')
-    errs_file.write(f'{err},\t\t#{tag}_{count}\n')
-    errs_file.close()
+            _, _, err = op()
+            count +=1
+
+            errs_file = open(f'{scorpy.DATADIR}/algo/{tag}/errs_{tag}.log', 'a')
+            errs_file.write(f'{err},\t\t#{tag}_{count}\n')
+            errs_file.close()
 
 
 
 print(time.asctime())
 a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_{count}.dbin')
+
+
+
+# print(time.asctime())
+
+
+# count =0
+
+# for iter_num in range(400):
+
+    # print('',end='\r')
+    # print(f'{iter_num}', end='\r', sep='\t\t')
+
+    # if iter_num %25==0:
+        # a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_{count}.dbin')
+
+    # _, _, err = a.ER()
+    # count +=1
+
+    # errs_file = open(f'{scorpy.DATADIR}/algo/{tag}/errs_{tag}.log', 'a')
+    # errs_file.write(f'{err},\t\t#{tag}_{count}\n')
+    # errs_file.close()
+
+
+
+# print(time.asctime())
+# a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_{count}.dbin')
 
 
 

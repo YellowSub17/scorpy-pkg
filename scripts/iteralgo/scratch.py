@@ -29,8 +29,10 @@ qmax = 89
 
 
 
+
+
 # SET UP MASK DATA
-cif_supp = scorpy.CifData(f'{scorpy.DATADIR}/cifs/fcc-sf.cif', qmax = qmax)
+cif_supp = scorpy.CifData(f'{scorpy.DATADIR}/cifs/ccc-sf.cif', qmax = qmax)
 sphv_supp = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_supp.fill_from_cif(cif_supp)
 sphv_supp.make_mask()
@@ -44,7 +46,7 @@ sphv_targ.fill_from_cif(cif_targ)
 
 loc = np.where(sphv_targ.vol>0)
 q_inds = np.unique(loc[0])
-qq = q_inds[-4]
+qq = q_inds[-34]
 
 
 
@@ -67,30 +69,15 @@ a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, r
 
 
 
-# a.sphv_iter.vol +=10
-# a.sphv_iter.vol *=2
+
+s1 = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/HIO_ER_test/sphv_HIO_ER_test_200.dbin')
+s2 = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/HIO_ER_test/sphv_HIO_ER_test_190.dbin')
+s3 = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/HIO_ER_test/sphv_HIO_ER_test_210.dbin')
 
 
-sphv_targ.plot_slice(0, qq, title='targ')
-a.sphv_iter.plot_slice(0, qq, title='0')
-
-for i in range(10):
-    a.HIO()
-
-a.sphv_iter.plot_slice(0, qq, title='2')
-a.ER()
-a.sphv_iter.plot_slice(0, qq, title='3')
-
-a.ER()
-a.sphv_iter.plot_slice(0, qq, title='3')
-
-
-
-
-
-
-
-
+s1.plot_slice(0, qq)
+s2.plot_slice(0, qq)
+s3.plot_slice(0, qq)
 
 
 plt.show()
