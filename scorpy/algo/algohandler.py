@@ -24,7 +24,7 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot,
 
 
 
-    def __init__(self, blqq, sphv_supp, lossy_sphv=True, lossy_iqlm=True,
+    def __init__(self, blqq, sphv_supp, sphv_init=None, lossy_sphv=True, lossy_iqlm=True,
                  rcond=None, inc_odds=True, sphv_targ = None):
 
 
@@ -35,6 +35,8 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot,
         self.lossy_iqlm = lossy_iqlm
         self.rcond = rcond
         self.inc_odds = inc_odds
+
+        
 
 
         ##### check input properties are consistent and save them
@@ -73,8 +75,11 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot,
 
 
         ##### initialize random spherical intensity
-        self.sphv_iter = self.sphv_base.copy()
-        self.sphv_iter.vol = np.random.random(self.sphv_iter.vol.shape)
+        if sphv_init is not None:
+            self.sphv_iter = sphv_init.copy()
+        else:
+            self.sphv_iter = self.sphv_base.copy()
+            self.sphv_iter.vol = np.random.random(self.sphv_iter.vol.shape)
 
 
         ##### find indices of support that are inside and outside S

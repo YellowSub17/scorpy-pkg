@@ -7,7 +7,9 @@ class AlgoHandlerSchemes:
 
 
 
-    def ER(self, sphv_i=None, posit=True):
+
+
+    def ER(self, sphv_i=None):
         '''Error Reduction'''
 
 
@@ -17,7 +19,7 @@ class AlgoHandlerSchemes:
             self.sphv_iter = sphv_i.copy()
 
         self.Pm()
-        self.Ps(posit=posit)
+        self.Ps()
 
         sphv_f = self.sphv_iter.copy()
 
@@ -48,7 +50,7 @@ class AlgoHandlerSchemes:
 
 
 
-    def HIO(self, beta=0.9, sphv_i=None, posit=True):
+    def HIO(self, beta=0.9, sphv_i=None):
         '''Hybrid Input Output'''
 
 
@@ -59,7 +61,7 @@ class AlgoHandlerSchemes:
             self.sphv_iter = sphv_i.copy()
 
         self.Pm()
-        pm_out, ps_out, _ = self.Ps(posit=posit)
+        pm_out, ps_out, _ = self.Ps()
 
         self.sphv_iter.vol[self.supp_notloc] = sphv_i.vol[self.supp_notloc] - beta*pm_out.vol[self.supp_notloc]
 
@@ -70,7 +72,7 @@ class AlgoHandlerSchemes:
         return sphv_i, sphv_f, err
 
 
-    def DM(self, beta=0.7, gamma_m=None, gamma_s=None, sphv_i=None, posit=True):
+    def DM(self, beta=0.7, gamma_m=None, gamma_s=None, sphv_i=None):
         '''Difference Map'''
 
 
@@ -93,7 +95,7 @@ class AlgoHandlerSchemes:
 
 
         _, p1, _ = self.Rm(gamma_m, sphv_i)
-        _, p1, _ = self.Ps(p1, posit=posit)
+        _, p1, _ = self.Ps(p1)
 
         _, p2, _ = self.Rs(gamma_m, sphv_i)
         _, p2, _ = self.Pm(p2)

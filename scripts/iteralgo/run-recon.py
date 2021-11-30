@@ -12,11 +12,11 @@ plt.close('all')
 
 
 # Parameters
-tag = 'targ_fcc_supp_ccc'
+tag = 'apple'
 sub_tag = 'a'
 recipe_fname =  'rec.txt'
-sphv_init = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo.bkup/HIO_ER_fcc_b/sphv_HIO_ER_fcc_b_0.dbin')
-# sphv_init = None
+# sphv_init = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo.bkup/HIO_ER_fcc_b/sphv_HIO_ER_fcc_b_0.dbin')
+sphv_init = None
 
 
 
@@ -45,8 +45,9 @@ a = scorpy.AlgoHandler(blqq_data, sphv_supp, sphv_init=sphv_init,
                        lossy_sphv=True, lossy_iqlm=True, rcond=1e-15)
 
 
-
-print(f'Starting Algorithm: {time.asctime()}')
+print()
+print(f'Name: {tag} {sub_tag}')
+print(f'Starting: {time.asctime()}')
 
 
 a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_init.dbin')
@@ -66,7 +67,7 @@ for line in recipe_file:
 
 
 
-    print(f'Starting: {terms[0]} {terms[1]}')
+    print(f'Running: {line[:-1]}')
     for iter_num in range(niter):
         print(f'{iter_num}', end='\r')
 
@@ -83,6 +84,7 @@ a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_fi
 
 
 print(f'Finished: {time.asctime()}')
+print()
 
 
 
