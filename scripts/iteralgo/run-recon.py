@@ -5,93 +5,85 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 import os
+import shutil
 plt.close('all')
 
 
 
 
-
 # Parameters
-nq= 100
-ntheta = 180
-nphi = 360
-nl = 90
-qmax = 89
-
-
-supp_cif_fname = 'ccc-sf.cif'
-targ_cif_fname = 'fcc-sf.cif'
-
-tag = "HIO_ER_1"
-
-
-# Make directory to save vols
-os.mkdir(f'{scorpy.DATADIR}/algo/{tag}/')
-
-# SET UP MASK DATA
-cif_supp = scorpy.CifData(f'{scorpy.DATADIR}/cifs/{supp_cif_fname}', qmax = qmax)
-sphv_supp = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
-sphv_supp.fill_from_cif(cif_supp)
-sphv_supp.make_mask()
-sphv_supp.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_supp.dbin')
-
-
-# SET UP TARGET DATA
-cif_targ = scorpy.CifData(f'{scorpy.DATADIR}/cifs/{targ_cif_fname}', qmax = qmax)
-sphv_targ = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
-sphv_targ.fill_from_cif(cif_targ)
-sphv_targ.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_targ.dbin')
+tag = 'targ_fcc_supp_ccc'
+sub_tag = 'a'
+recipe_fname =  'rec.txt'
+sphv_init = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo.bkup/HIO_ER_fcc_b/sphv_HIO_ER_fcc_b_0.dbin')
+# sphv_init = None
 
 
 
-# get harmonic coefficients
-iqlm_targ = scorpy.IqlmHandler(nq, nl, qmax)
-iqlm_targ.fill_from_sphv(sphv_targ)
 
-# get harmonic filtered bragg spots
-sphv_harmed = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
-sphv_harmed.fill_from_iqlm(iqlm_targ)
+# make sub directory for saving iters
+os.mkdir(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}')
 
-# SET UP BLQQ
-blqq_data = scorpy.BlqqVol(nq, nl, qmax)
-blqq_data.fill_from_iqlm(iqlm_targ)
+shutil.copyfile(f'{scorpy.DATADIR}/algo/RECIPES/{recipe_fname}',
+                 f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/recipe_{tag}_{sub_tag}.txt')
 
 
 
-# # # SET UP ALGORITHM
-a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, rcond=1e-15)
-a.sphv_iter = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo.bkup/HIO_ER_fcc_b/sphv_HIO_ER_fcc_b_0.dbin')
-
-
-print(time.asctime())
-
-a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_init.dbin')
-
-count =0
-for set_num in range(1):
-
-    for op, op_str in zip([a.HIO, a.ER], ['HIO', 'ER']):
-
-        print(f'Set: {set_num}\tOp: {op_str}')
-        for iter_num in range(200):
-
-            print('                      ',end='\r')
-            print(f'{iter_num}', end='\r')
-
-            if iter_num %10==0:
-                a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_{count}.dbin')
-
-            _, _, err = op()
-            count +=1
-
-            errs_file = open(f'{scorpy.DATADIR}/algo/{tag}/errs_{tag}.log', 'a')
-            errs_file.write(f'{err},\t\t#{tag}_{count}\n')
-            errs_file.close()
 
 
 
-print(time.asctime())
-a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_{count}.dbin')
+
+# Load inputs 
+blqq_data =scorpy.BlqqVol(path=f'{scorpy.DATADIR}/algo/{tag}/blqq_{tag}_data.dbin')
+sphv_supp =scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_supp.dbin')
+recipe_file = open(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/recipe_{tag}_{sub_tag}.txt')
+
+
+
+# Set up algorithm
+a = scorpy.AlgoHandler(blqq_data, sphv_supp, sphv_init=sphv_init,
+                       lossy_sphv=True, lossy_iqlm=True, rcond=1e-15)
+
+
+
+print(f'Starting Algorithm: {time.asctime()}')
+
+
+a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_init.dbin')
+
+count = 0
+for line in recipe_file:
+
+    terms = line.split()
+    if terms == [] or line[0]=='#':
+        continue
+    niter = int(terms[0])
+    scheme = eval('a.'+terms[1])
+
+    kwargs = {}
+    for kwarg in terms[2:]:
+        kwargs[kwarg.split('=')[0]] = eval(kwarg.split('=')[1])
+
+
+
+    print(f'Starting: {terms[0]} {terms[1]}')
+    for iter_num in range(niter):
+        print(f'{iter_num}', end='\r')
+
+        _,_, err = scheme(**kwargs)
+        count +=1
+
+        err_file = open(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/errs_{tag}_{sub_tag}.txt','a')
+        err_file.write(f'{err},\t\t#{tag}_{sub_tag}_{count}\n')
+        err_file.close()
+
+
+
+a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_final.dbin')
+
+
+print(f'Finished: {time.asctime()}')
+
 
 
 
