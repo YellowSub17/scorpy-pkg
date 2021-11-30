@@ -5,7 +5,7 @@ np.random.seed(0)
 import CifFile as pycif
 
 
-sym = 'fcc'
+sym = 'ccc'
 
 
 
@@ -25,7 +25,7 @@ cont = base_cif.WriteOut()
 
 
 
-file = open(f'{scorpy.DATADIR}/cifs/{sym}-rand0-sf.cif', 'w')
+file = open(f'{scorpy.DATADIR}/cifs/{sym}-rand-sf.cif', 'w')
 file.write(cont)
 file.close()
 

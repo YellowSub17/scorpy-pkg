@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
-'''
-solved-test.py
 
-replaces the initial spherical volume object with the target solution,
-and ensures the same values are returned after one iteration.
-'''
 import scorpy
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,20 +12,21 @@ plt.close('all')
 
 
 # Parameters
-nq= 200
+nq= 100
 ntheta = 180
 nphi = 360
 nl = 90
 qmax = 89
 
 
-supp_cif_fname = 'fcc-sf.cif'
+supp_cif_fname = 'ccc-sf.cif'
 targ_cif_fname = 'fcc-sf.cif'
 
-tag = "HIO_ER_test"
+tag = "HIO_ER_1"
 
 
-
+# Make directory to save vols
+os.mkdir(f'{scorpy.DATADIR}/algo/{tag}/')
 
 # SET UP MASK DATA
 cif_supp = scorpy.CifData(f'{scorpy.DATADIR}/cifs/{supp_cif_fname}', qmax = qmax)
@@ -64,12 +60,12 @@ blqq_data.fill_from_iqlm(iqlm_targ)
 
 # # # SET UP ALGORITHM
 a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, rcond=1e-15)
-
-
+a.sphv_iter = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo.bkup/HIO_ER_fcc_b/sphv_HIO_ER_fcc_b_0.dbin')
 
 
 print(time.asctime())
 
+a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_init.dbin')
 
 count =0
 for set_num in range(1):
@@ -79,8 +75,8 @@ for set_num in range(1):
         print(f'Set: {set_num}\tOp: {op_str}')
         for iter_num in range(200):
 
-            print('',end='\r')
-            print(f'{iter_num}', end='\r', sep='\t\t')
+            print('                      ',end='\r')
+            print(f'{iter_num}', end='\r')
 
             if iter_num %10==0:
                 a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_{count}.dbin')
@@ -96,38 +92,6 @@ for set_num in range(1):
 
 print(time.asctime())
 a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_{count}.dbin')
-
-
-
-# print(time.asctime())
-
-
-# count =0
-
-# for iter_num in range(400):
-
-    # print('',end='\r')
-    # print(f'{iter_num}', end='\r', sep='\t\t')
-
-    # if iter_num %25==0:
-        # a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_{count}.dbin')
-
-    # _, _, err = a.ER()
-    # count +=1
-
-    # errs_file = open(f'{scorpy.DATADIR}/algo/{tag}/errs_{tag}.log', 'a')
-    # errs_file.write(f'{err},\t\t#{tag}_{count}\n')
-    # errs_file.close()
-
-
-
-# print(time.asctime())
-# a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_{count}.dbin')
-
-
-
-
-
 
 
 

@@ -12,7 +12,6 @@ import time
 plt.close('all')
 
 
-np.random.seed(0)
 
 
 

@@ -35,7 +35,6 @@ class BlqqVol(Vol, BlqqVolProps):
         f.write(f'qmax = {self.qmax}\n')
         f.write(f'nq = {self.nq}\n')
         f.write(f'nl = {self.nl}\n')
-        f.write(f'lmax = {self.lmax}\n')
         f.write(f'dq = {self.dq}\n')
         f.write(f'inc_odds = {self.inc_odds}\n')
 

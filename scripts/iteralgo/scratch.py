@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
-'''
-solved-test.py
 
-replaces the initial spherical volume object with the target solution,
-and ensures the same values are returned after one iteration.
-'''
 import scorpy
 import numpy as np
 import matplotlib.pyplot as plt
@@ -13,9 +8,9 @@ import os
 plt.close('all')
 
 
-np.random.seed(2)
 
 
+np.random.seed(1)
 
 # Parameters
 nq= 200
@@ -24,6 +19,7 @@ nphi = 360
 nl = 90
 
 qmax = 89
+
 
 
 
@@ -68,19 +64,30 @@ blqq_data.fill_from_iqlm(iqlm_targ)
 a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, rcond=1e-15)
 
 
+# a.sphv_iter.save(f'{scorpy.DATADIR}/algo/x.dbin')
+
+a.sphv_iter = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo.bkup/HIO_ER_fcc_a/sphv_HIO_ER_fcc_a_0.dbin')
 
 
-s1 = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/HIO_ER_test/sphv_HIO_ER_test_200.dbin')
-s2 = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/HIO_ER_test/sphv_HIO_ER_test_190.dbin')
-s3 = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/HIO_ER_test/sphv_HIO_ER_test_210.dbin')
+
+for i in range(5):
+    _, _, err = a.HIO()
+    print('hio', err)
+    a.sphv_iter.plot_slice(0, qq)
+
+_, _, err = a.ER()
+print('er', err)
+a.sphv_iter.plot_slice(0, qq)
+
+_, _, err = a.ER()
+print('er', err)
+a.sphv_iter.plot_slice(0, qq)
 
 
-s1.plot_slice(0, qq)
-s2.plot_slice(0, qq)
-s3.plot_slice(0, qq)
-
-
+# s1 = scorpy.SphericalVol(path='/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/data/algo/working_hio/HIO_ER_fcc_a/sphv_HIO_ER_fcc_a_0.dbin')
+# s2 = scorpy.SphericalVol(path='/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/data/algo/working_hio/HIO_ER_fcc_b/sphv_HIO_ER_fcc_b_0.dbin')
+# s1.plot_slice(0, qq)
+# s2.plot_slice(0, qq)
 plt.show()
-
 
 
