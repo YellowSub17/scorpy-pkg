@@ -12,17 +12,17 @@ plt.close('all')
 
 
 # Parameters
-nq= 100
+nq= 200
 ntheta = 180
 nphi = 360
 nl = 90
 qmax = 89
 
 
-tag = 'apple'
+tag = 'fcc_rand_50pc0'
 
-targ_cif_fname = 'ccc-sf.cif'
-supp_cif_fname = 'ccc-sf.cif'
+targ_cif_fname = 'fcc-rand-50pc0-sf.cif'
+supp_cif_fname = 'fcc-rand-50pc0-sf.cif'
 
 
 

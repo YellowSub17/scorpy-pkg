@@ -10,36 +10,61 @@ plt.close('all')
 
 
 
-np.random.seed(1)
 
 # Parameters
-nq= 200
-ntheta = 180
-nphi = 360
-nl = 90
 
-qmax = 89
+tag = 'fcc_rand_50pc0'
+sub_tag = 'a'
 
 
 
+blqq_data =scorpy.BlqqVol(path=f'{scorpy.DATADIR}/algo/{tag}/blqq_{tag}_data.dbin')
+sphv_supp =scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_supp.dbin')
+sphv_init =scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_init.dbin')
+sphv_targ =scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_targ.dbin')
 
-blqq_data =scorpy.BlqqVol(path=f'{scorpy.DATADIR}/algo/nq100test/blqq_nq100test_data.dbin')
-sphv_supp =scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/nq100test/sphv_nq100test_supp.dbin')
-a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, rcond=1e-15)
 
-t1 = time.time()
-a.ER()
-t2 = time.time()
-print(t2-t1)
+a = scorpy.AlgoHandler(blqq_data, sphv_supp, sphv_init=sphv_init,
+                       lossy_sphv=True, lossy_iqlm=True, rcond=1e-15)
 
-blqq_data =scorpy.BlqqVol(path=f'{scorpy.DATADIR}/algo/nq200test/blqq_nq200test_data.dbin')
-sphv_supp =scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/nq200test/sphv_nq200test_supp.dbin')
-a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, rcond=1e-15)
 
-t1 = time.time()
-a.ER()
-t2 = time.time()
-print(t2-t1)
+vals_targ = sphv_targ.vol[a.supp_loc]
+plt.figure()
+plt.plot(vals_targ)
+plt.title('targ vals')
+
+a.sphv_iter.plot_slice(0, 128, title='init')
+
+
+for i in range(6):
+    _,_,err=a.HIO()
+    a.sphv_iter.plot_slice(0, 128, title=f'hio {i}')
+    print(i, err)
+
+vals_hio = a.sphv_iter.vol[a.supp_loc]
+plt.figure()
+plt.plot(vals_hio)
+plt.title('HIO vals')
+
+for i in range(4):
+    _,_,err=a.ER()
+    a.sphv_iter.plot_slice(0, 128, title=f'er {i}')
+    print(i, err)
+
+
+vals_er = a.sphv_iter.vol[a.supp_loc]
+plt.figure()
+plt.plot(vals_er)
+plt.title('ER vals')
+
+
+
+
+plt.show()
+
+
+
+
 
 
 

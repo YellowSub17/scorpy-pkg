@@ -12,10 +12,9 @@ plt.close('all')
 
 
 # Parameters
-tag = 'apple'
-sub_tag = 'a'
-recipe_fname =  'rec.txt'
-# sphv_init = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo.bkup/HIO_ER_fcc_b/sphv_HIO_ER_fcc_b_0.dbin')
+tag = 'fcc_rand_50pc0'
+sub_tag = 'b'
+recipe_fname =  'rec_short_er.txt'
 sphv_init = None
 
 
@@ -70,6 +69,9 @@ for line in recipe_file:
     print(f'Running: {line[:-1]}')
     for iter_num in range(niter):
         print(f'{iter_num}', end='\r')
+
+        if iter_num%25 ==0:
+            a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_{count}.dbin')
 
         _,_, err = scheme(**kwargs)
         count +=1
