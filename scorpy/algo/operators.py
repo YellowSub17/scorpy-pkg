@@ -133,11 +133,12 @@ class AlgoHandlerOperators:
 
         ##### only keep intenisty values at bragg positions defined by support
         self.sphv_b = self.sphv_base.copy()
+
         self.sphv_b.vol = self.sphv_iter.vol * self.sphv_supp.vol
 
 
-        if posit:
-            self.sphv_b.vol[ self.sphv_b.vol <0] =0
+        if self.sphv_b.vol.sum() <0:
+            self.sphv_b.vol *= -1
 
         ##### replace iterating sphv
         self.sphv_iter = self.sphv_b.copy()

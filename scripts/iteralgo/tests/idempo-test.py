@@ -63,7 +63,7 @@ a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, r
 
 
 
-op = a.Pm
+op = a.Ps
 
 
 
