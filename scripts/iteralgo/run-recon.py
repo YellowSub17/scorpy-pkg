@@ -12,9 +12,10 @@ plt.close('all')
 
 
 # Parameters
-tag = 'fcc_rand_50pc0'
-sub_tag = 'b'
-recipe_fname =  'rec_short_er.txt'
+
+tag = 'fcc_intenr_50pc0_tight'
+sub_tag = 'a'
+recipe_fname =  'rec.txt'
 sphv_init = None
 
 

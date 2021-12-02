@@ -21,7 +21,7 @@ class Vol(VolProps, VolPlot, VolSaveLoad):
             dx,dy,dz : float
             xpts,ypts,zpts : numpy.array
             xwrap, ywrap, zwrap : bool
-            comp : bool
+comp : bool
 vol : numpy.ndarray
         Methods:
             Vol.save()
@@ -39,10 +39,10 @@ vol : numpy.ndarray
                  xmin=0, ymin=0, zmin=0,
                  xmax=1, ymax=1, zmax=1,
                  xwrap=False, ywrap=False, zwrap=False,
-                 comp=False, path=None):
+                 comp=False, path=None, logpath=None):
 
         if path is not None:
-            self._load(path)
+            self._load(path, logpath)
         else:
             self._nx = nx
             self._ny = ny

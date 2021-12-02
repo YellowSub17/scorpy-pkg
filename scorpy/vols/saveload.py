@@ -50,7 +50,7 @@ class VolSaveLoad:
         self._comp = config.getboolean('vol', 'comp')
         self._load_extra(config)
 
-    def _load(self, fpath):
+    def _load(self, fpath, logpath=None):
 
         assert type(fpath) == str, 'Argument fpath must be string'
         path = Path(fpath)
@@ -62,7 +62,10 @@ class VolSaveLoad:
         ftype = path.suffix
 
 
-        self._read_log(fpath)
+        if logpath is None:
+            self._read_log(fpath)
+        else:
+            self._read_log(logpath)
 
         if ftype =='.dbin':
 
