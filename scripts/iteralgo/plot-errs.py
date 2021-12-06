@@ -10,8 +10,8 @@ plt.close('all')
 
 
 
-tag = 'fcc_intenr_50pc0_tight'
-sub_tag = 'a'
+tag = 'fcc_intenr_25pc0_tight'
+sub_tag = 'b_short'
 qq = 128
 
 
@@ -50,6 +50,15 @@ st.plot_slice(0, qq, title='targ', fig=fig, axes=axes[1])
 plt.figure()
 plt.plot(sf.vol[sf.vol>0])
 plt.plot(st.vol[sf.vol>0])
+
+
+
+
+
+# cif1 = scorpy.CifData(f'{scorpy.DATADIR}/cifs/fcc-rand-50pc0-sf.cif')
+
+
+
 
 
 

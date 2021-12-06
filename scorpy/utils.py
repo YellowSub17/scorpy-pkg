@@ -162,7 +162,16 @@ HM_NUMBER_DICT = {
 }
 
 
+
 def identity():
+    multiplicity = 1
+    total_sym_mat = np.zeros((multiplicity, 3, 3))
+    total_sym_mat[0, ...] = np.eye(3, 3)
+    return total_sym_mat
+
+
+
+def friedel():
     multiplicity = 2
     total_sym_mat = np.zeros((multiplicity, 3, 3))
     total_sym_mat[0, ...] = np.eye(3, 3)
@@ -396,9 +405,14 @@ def loop_generators(total_sym_mat, multiplicity, ops_ind):
 
 def apply_sym(reflections, spg_code):
     # Look up the space group number of the cell
-    HM_number = HM_NUMBER_DICT[spg_code]
+
+    if spg_code in HM_NUMBER_DICT.keys():
+        HM_number = HM_NUMBER_DICT[spg_code]
+    else:
+        HM_number = -1
+
     if HM_number == 1 or HM_number == 2:
-        total_sym_mat = identity()
+        total_sym_mat = friedel()
     elif HM_number >= 3 and HM_number <= 107:
         total_sym_mat = two_over_m()
     elif HM_number >= 108 and HM_number <= 348:

@@ -136,9 +136,13 @@ class AlgoHandlerOperators:
 
         self.sphv_b.vol = self.sphv_iter.vol * self.sphv_supp.vol
 
-
+        #turn off and flip at the end
         if self.sphv_b.vol.sum() <0:
             self.sphv_b.vol *= -1
+
+        ## symetry constraint? average intensity on symetric partners
+        ## start triclinic (abc alpha beta gamma all different)
+        #mirrorhedry
 
         ##### replace iterating sphv
         self.sphv_iter = self.sphv_b.copy()

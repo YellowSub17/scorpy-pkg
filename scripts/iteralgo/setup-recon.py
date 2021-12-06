@@ -19,10 +19,10 @@ nl = 90
 qmax = 89
 
 
-tag = 'fcc_intenr_50pc0_tight'
+tag = 'fcc_intenr_25pc0_tight'
 
-targ_cif_fname = 'fcc-rand-50pc0-sf.cif'
-supp_cif_fname = 'fcc-rand-50pc0-sf.cif'
+targ_cif_fname = 'fcc-rand-25pc0-sf.cif'
+supp_cif_fname = 'fcc-rand-25pc0-sf.cif'
 
 
 

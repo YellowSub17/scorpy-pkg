@@ -13,9 +13,9 @@ plt.close('all')
 
 # Parameters
 
-tag = 'fcc_intenr_50pc0_tight'
-sub_tag = 'a'
-recipe_fname =  'rec.txt'
+tag = 'fcc_intenr_25pc0_tight'
+sub_tag = 'b_short'
+recipe_fname =  'rec_short.txt'
 sphv_init = None
 
 
@@ -71,7 +71,7 @@ for line in recipe_file:
     for iter_num in range(niter):
         print(f'{iter_num}', end='\r')
 
-        if iter_num%25 ==0:
+        if count%100 ==0:
             a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_{count}.dbin')
 
         _,_, err = scheme(**kwargs)
