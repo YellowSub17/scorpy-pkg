@@ -1,14 +1,11 @@
 import scorpy
 import numpy as np
-np.random.seed(0)
+np.random.seed(1)
 
 import CifFile as pycif
 
 
 sym = 'fcc'
-
-
-
 
 
 
@@ -18,9 +15,11 @@ nref = len(base_cif[vk]['_refln.intensity_meas'])
 
 inten = np.array(base_cif[vk]['_refln.intensity_meas']).astype(np.float32)
 
-rand_mask = np.random.random(nref)
-rand_mask[rand_mask > 0.25] = 1
-rand_mask[rand_mask <= 0.25] = 0
+
+rand_mask = np.ones(nref)
+# rand_mask = np.random.random(nref)
+# rand_mask[rand_mask > 0.25] = 1
+# rand_mask[rand_mask <= 0.25] = 0
 
 
 new_inten = list(inten*np.random.random(nref)*rand_mask)
@@ -31,7 +30,7 @@ cont = base_cif.WriteOut()
 
 
 
-file = open(f'{scorpy.DATADIR}/cifs/{sym}-rand-25pc0-sf.cif', 'w')
+file = open(f'{scorpy.DATADIR}/cifs/{sym}-rand1.cif', 'w')
 file.write(cont)
 file.close()
 

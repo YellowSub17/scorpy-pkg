@@ -144,6 +144,10 @@ vol : numpy.ndarray
         blur = blur[kern_n_half:-kern_n_half, kern_n_half:-kern_n_half, kern_n_half:-kern_n_half]
         self.vol = blur
 
+    def normalize(self):
+        self.vol -=self.vol.min()
+        self.vol *=1/self.vol.max()
+
     def get_xy(self):
         '''
 	scorpy.Vol.get_xy():

@@ -34,7 +34,7 @@ class BasePlot:
                 Upper and lower bounds of colour limits. Use None on either
                 bound to specify min or max value of image.
         '''
-        kwargs = {  'extent':None,
+        kwargs ={   'extent':None,
                     'fig':None,
                     'axes':None,
                     'log':False,
@@ -46,7 +46,8 @@ class BasePlot:
                     'title':'',
                     'origin':'lower',
                     'ticks':True,
-                 }
+                    'norm':False,
+                }
 
         kwargs.update(new_kwargs)
 
@@ -59,6 +60,11 @@ class BasePlot:
         #Preprocessing: log intensity scale
         if kwargs['log']:
             im = np.log10(np.abs(im)+1)
+
+        if kwargs['norm']:
+            im -= im.min()
+            im *= 1/im.max()
+
 
 
         kwargs['axes'].imshow(im, origin=kwargs['origin'], extent=kwargs['extent'], aspect='auto', cmap=kwargs['cmap'])

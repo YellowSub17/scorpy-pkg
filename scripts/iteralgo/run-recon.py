@@ -13,9 +13,9 @@ plt.close('all')
 
 # Parameters
 
-tag = 'fcc_intenr_25pc0_tight'
-sub_tag = 'b_short'
-recipe_fname =  'rec_short.txt'
+tag = 'fcc_inten_r1_supp_t'
+sub_tag = 'c'
+recipe_fname =  'rec.txt'
 sphv_init = None
 
 
@@ -46,7 +46,7 @@ a = scorpy.AlgoHandler(blqq_data, sphv_supp, sphv_init=sphv_init,
 
 
 print()
-print(f'Name: {tag} {sub_tag}')
+print(f'Name: {tag}_{sub_tag}')
 print(f'Starting: {time.asctime()}')
 
 
