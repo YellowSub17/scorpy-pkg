@@ -74,6 +74,7 @@ class VolSaveLoad:
             else:
                 file_vol = np.fromfile(f'{parent}/{stem}.dbin')
 
+
             self._vol = file_vol.reshape((self.nx, self.ny, self.nz))
         elif ftype =='.npy':
             self._vol = np.load(f'{parent}/{stem}.npy')

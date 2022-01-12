@@ -47,6 +47,7 @@ class BasePlot:
                     'origin':'lower',
                     'ticks':True,
                     'norm':False,
+                    'subtmean':False
                 }
 
         kwargs.update(new_kwargs)
@@ -64,6 +65,13 @@ class BasePlot:
         if kwargs['norm']:
             im -= im.min()
             im *= 1/im.max()
+
+        if kwargs['subtmean']:
+            means = im.mean(axis=1)
+            xx, yy = np.meshgrid(np.ones(self.nz), means)
+            im -= yy
+
+      
 
 
 

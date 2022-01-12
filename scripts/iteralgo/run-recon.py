@@ -13,7 +13,7 @@ plt.close('all')
 
 # Parameters
 
-tag = 'fcc_inten_r1_supp_t'
+tag = 'ccc_inten_r1_supp_t'
 sub_tag = 'c'
 recipe_fname =  'rec.txt'
 sphv_init = None
@@ -26,8 +26,6 @@ os.mkdir(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}')
 
 shutil.copyfile(f'{scorpy.DATADIR}/algo/RECIPES/{recipe_fname}',
                  f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/recipe_{tag}_{sub_tag}.txt')
-
-
 
 
 
@@ -71,8 +69,8 @@ for line in recipe_file:
     for iter_num in range(niter):
         print(f'{iter_num}', end='\r')
 
-        if count%100 ==0:
-            a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_{count}.dbin')
+#         if count%100 ==0:
+            # a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_{count}.dbin')
 
         _,_, err = scheme(**kwargs)
         count +=1

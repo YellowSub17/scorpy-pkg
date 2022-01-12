@@ -16,13 +16,14 @@ nq= 200
 ntheta = 180
 nphi = 360
 nl = 90
-qmax = 89
+qmax = 109
 
 
-tag = 'fcc_inten_r1_supp_t'
 
-targ_cif_fname = 'fcc-rand1-sf.cif'
-supp_cif_fname = 'fcc-rand1-sf.cif'
+tag = 'ccc_inten_r1_supp_t'
+
+targ_cif_fname = 'ccc-rand1-sf.cif'
+supp_cif_fname = 'ccc-rand1-sf.cif'
 
 
 

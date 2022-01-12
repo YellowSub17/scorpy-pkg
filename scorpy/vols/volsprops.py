@@ -167,14 +167,14 @@ class VolProps:
     @property
     def vol(self):
         '''
-	scorpy.Vol.vol:
+        scorpy.Vol.vol:
             Array holding values of the function.
         '''
         return self._vol
 
     @vol.setter
     def vol(self, new_vol):
-        assert new_vol.shape == self.vol.shape, 'Cannot replace vols with different shapes'
+        assert new_vol.shape == self.vol.shape, f'Cannot replace vols with different shapes\n{new_vol.shape}, {self.vol.shape}'
         self._vol = new_vol
 
 
@@ -449,7 +449,7 @@ class PadfVolProps:
     @property
     def wavelength(self):
         '''
-	scorpy.PadfVol.wavelength:
+        scorpy.PadfVol.wavelength:
             wavelength of experiment, used in PADF calculation.
         '''
         return self._wavelength

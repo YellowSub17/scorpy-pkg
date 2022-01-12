@@ -78,6 +78,33 @@ vol : numpy.ndarray
         v = copy.deepcopy(self)
         return v
 
+    def crop(self, xi, yi, zi, xf, yf, zf):
+
+        cropped_arr = self.vol[xi:xf, yi:yf, zi:zf]
+
+        new_xmin, new_xmax = self.xpts[xi], self.xpts[xf]
+        new_ymin, new_ymax = self.ypts[yi], self.ypts[yf]
+        new_zmin, new_zmax = self.zpts[zi], self.zpts[zf]
+
+        new_nx = xf-xi
+        new_ny = yf-yi
+        new_nz = zf-zi
+
+        new_vol = Vol(new_nx, new_ny, new_nz, 
+                        new_xmin-self.dx/2, new_ymin-self.dx/2, new_zmin-self.dx/2,
+                        new_xmax-self.dx/2, new_ymax-self.dx/2, new_zmax-self.dx/2,
+
+                        False, False, False, self.comp)
+
+        
+        new_vol.vol = cropped_arr
+
+        return new_vol
+
+
+
+
+
     def get_eig(self, herm=False, inc_odds=True):
         '''
 	scorpy.Vol.get_eig():

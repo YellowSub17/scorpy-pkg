@@ -15,10 +15,9 @@ plt.close('all')
 
 
 
-cif1 = scorpy.CifData(f'{scorpy.DATADIR}/cifs/test.cif')
+cif1 = scorpy.CifData(f'{scorpy.DATADIR}/cifs/ccc-rand1-sf.cif')
+print(cif1.qmax)
 
-cif2a = scorpy.CifData(f'{scorpy.DATADIR}/cifs/fcc-sf.cif')
-cif2b = scorpy.CifData(f'{scorpy.DATADIR}/cifs/fcc-rand-sf.cif')
 
 
 
