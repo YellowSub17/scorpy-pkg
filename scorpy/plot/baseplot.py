@@ -10,6 +10,8 @@ from matplotlib.colors import Normalize
 
 
 
+from scipy.ndimage.filters import gaussian_filter
+
 class BasePlot:
 
     def _plot_2D(self, im, **new_kwargs):
@@ -47,7 +49,8 @@ class BasePlot:
                     'origin':'lower',
                     'ticks':True,
                     'norm':False,
-                    'subtmean':False
+                    'subtmean':False,
+                    'blur':False
                 }
 
         kwargs.update(new_kwargs)
@@ -70,6 +73,10 @@ class BasePlot:
             means = im.mean(axis=1)
             xx, yy = np.meshgrid(np.ones(self.nz), means)
             im -= yy
+
+        if kwargs['blur']:
+            im = gaussian_filter(im,  sigma=kwargs['blur'])
+
 
       
 

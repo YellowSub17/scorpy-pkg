@@ -62,29 +62,34 @@ a = scorpy.AlgoHandler(blqq_data, sphv_supp, lossy_sphv=True, lossy_iqlm=True, r
 
 
 
-a.Ps()
+# a.Ps()
 
-op = a.Pm
-
-
+op = a.Ps
 
 
-# fig, axes = plt.subplots(2,3, sharex=True, sharey=True)
+
+
+
+fig, axes = plt.subplots(1,2, sharex=True, sharey=True)
+
+plot_args = {'fig':fig,
+             'xlabel': '$\\phi$ [rad]',
+             'ylabel': '$\\theta$ [rad]',}
 
 sphv1 = a.sphv_iter.copy()
 # sphv1.plot_slice(0,qq, title='initial', fig=fig, axes=axes[0,0])
-sphv1.plot_slice(0,qq)
+sphv1.plot_slice(0,qq, axes=axes[0], title='$S_n(q=0.1, \\theta, \\phi)$', **plot_args)
 
 
 
 op()
 sphv2 = a.sphv_iter.copy()
-sphv2.plot_slice(0,qq)
+sphv2.plot_slice(0,qq, axes=axes[1],title='$P_K[S_n(q=0.1, \\theta, \\phi)]$',  **plot_args)
 # sphv2.plot_slice(0,qq, title='iter1', fig=fig, axes=axes[0,1])
 
-op()
-sphv2 = a.sphv_iter.copy()
-sphv2.plot_slice(0,qq)
+# op()
+# sphv2 = a.sphv_iter.copy()
+# sphv2.plot_slice(0,qq)
 
 
 
