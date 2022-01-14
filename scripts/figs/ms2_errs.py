@@ -33,8 +33,7 @@ tag = 'fcc_inten_r_5pc0_supp_t'
 # tag = 'fcc_inten_r1_supp_t'
 ### Error Plot
 plt.figure()
-plt.tight_layout()
-plt.title('FCC Random Intensity')
+plt.title('FCC 95% Random Intensity')
 
 y = np.loadtxt(f'{scorpy.DATADIR}/algo/{tag}/a/errs_{tag}_a.txt', delimiter=',', usecols=0)
 plt.plot(np.log10(y[1:]), label='Run A', color='r')
@@ -48,6 +47,7 @@ plt.plot(np.log10(y[1:]), label='Run C', color='b')
 plt.xlabel('Iteration Number')
 plt.ylabel('$\\log_{10}(\\epsilon)$')
 plt.legend()
+plt.tight_layout()
 
 
 figsize = (6,6)
