@@ -20,10 +20,11 @@ class PeakData(PeakDataProperties):
         self._geo = geo  # ExpGeom object
         # self._cxi_flag = cxi_flag
 
-        self.read_df(df, cxi_flag)
+        if type(df)==str:
+            self._df = self.read_file(df, cxi_flag)
+        else:
+            self._df = df
 
-        # multiple frames can be in a single peak file, so list the unique frames
-        #todo: fix bug when only one peak in df
         self._frame_numbers = np.unique(self.df[:, 0])
 
         self._scat_rect, self._scat_pol, self._scat_sph = self.get_scat(qmax=qmax)
@@ -34,48 +35,30 @@ class PeakData(PeakDataProperties):
         else:
             self._qmax = self.scat_pol.max(axis=0)[0]
 
-    def read_df(self, df, cxi_flag):
-        # if df is str, read dataframe from file, else, assume df is array
-        if type(df) == str:
-            if df[-3:] =='txt':
-                if cxi_flag:
-                    # 0: frameNumber, 6: peak_x_raw, 7: peak_y_raw, 12: total intens
-                    self._df = np.genfromtxt(
-                        df, delimiter=', ', skip_header=1, usecols=(0, 6, 7, 12))
-                else:
-                    self._df = np.genfromtxt(
-                        df, delimiter=' ', skip_header=1, usecols=(0, 2, 1, 3))
-            elif df[-2:] == 'h5':
-                h5f = h5py.File(df, 'r')
-                data = h5f['entry_1/instrument_1/detector_1/data'][:]
-                # assert np.all(data !=0), 'Loaded 5 file has no intensity'
-                h5f.close()
-
-                loc = np.where(data >0)
-                df = np.zeros( (len(loc[0]), 4))
-                df[:,1] = loc[1]
-                df[:,2] = loc[0]
-                df[:,3] = data[loc[0], loc[1]]
-                self._df = df
-
-                # assert False, 'ERROR: h5 to pk not implemented'
+    def read_file(self, fname, cxi_flag):
+        if cxi_flag:
+            # 0: frameNumber, 6: peak_x_raw, 7: peak_y_raw, 12: total intens
+            delim, cols = ', ', (0,6,7,12)
         else:
-            self._df = df
+            delim, cols = ' ', (0,2,1,3)
+
+        if fname[-3:] == 'txt':
+            df = np.genfromtxt(fname, delimiter=delim, skip_header=1, usecols=cols)
+
+        elif fname[-2:] == 'h5':
+            h5f = h5py.File(fname, 'r')
+            data = h5f['entry_1/instrument_1/detector_1/data'][:]
+            h5f.close()
+
+            loc = np.where(data >0)
+            df = np.zeros( (len(loc[0]), 4))
+            df[:,1] = loc[1]
+            df[:,2] = loc[0]
+            df[:,3] = data[loc[0], loc[1]]
+        
+        return df
 
 
-    def split_frames(self):
-        '''
-        return a list of PeakData objects, where each PeakData object on has a
-        single frame of data
-        '''
-
-        frames = []  # init list of frames
-        for fn in self.frame_numbers:  # for each frame number
-            # get the peaks from this frame number
-            frame_df = self.df[np.where(self.df[:, 0] == fn)]
-            # make the Peak data object and append
-            frames.append(PeakData(frame_df, self.geo))
-        return frames  # return the list of appended peak datas
 
     def get_scat(self, qmax=None):
         '''
@@ -134,12 +117,67 @@ class PeakData(PeakDataProperties):
 
         return scat_rect, scat_pol, scat_sph
 
+    def split_frames(self, npeakmax=-1):
+        '''
+        return a list of PeakData objects, where each PeakData object on has a
+        single frame of data
+        '''
 
-    def plot_peaks(self, cmap=None, new_fig=False, s=100):
-        if new_fig:
-            plt.figure()
-        if cmap is not None:
-            plt.scatter(self.scat_rect[:, 0], self.scat_rect[:, 1], \
-                        c=self.scat_rect[:, -1], s=s*self.scat_rect[:,-1,]/self.scat_rect[:,-1].max(), cmap=cmap)
+        frames = []  # init list of frames
+        for fn in self.frame_numbers:  # for each frame number
+            # get the peaks from this frame number
+            frame_df = self.df[np.where(self.df[:, 0] == fn)]
+            if npeakmax==-1 or frame_df.shape[0] <=npeakmax:
+                # make the Peak data object and append
+                frames.append(PeakData(frame_df, self.geo))
+        return frames  # return the list of appended peak datas
+
+
+    def plot_peaks(self, scatter=False, cmap='viridis', s=100):
+
+        self.geo.plot_panels()
+
+        x = self.scat_rect[:,0]
+        y = self.scat_rect[:,1]
+
+        if scatter:
+            colors = self.scat_rect[:,-1]
+            sizes = s*self.scat_rect[:,-1]/self.scat_rect[:,-1].max()
+            plt.scatter(x, y, c=colors, s=sizes, cmap=cmap)
+            plt.colorbar()
         else:
-            plt.plot(self.scat_rect[:, 0], self.scat_rect[:, 1], '.')
+            plt.plot(x, y, '.')
+
+
+
+
+
+    # def read_df(self, df, cxi_flag):
+        # # if df is str, read dataframe from file, else, assume df is array
+        # if type(df) == str:
+            # if df[-3:] =='txt':
+                # if cxi_flag:
+                    # # 0: frameNumber, 6: peak_x_raw, 7: peak_y_raw, 12: total intens
+                    # self._df = np.genfromtxt(
+                        # df, delimiter=', ', skip_header=1, usecols=(0, 6, 7, 12))
+                # else:
+                    # self._df = np.genfromtxt(
+                        # df, delimiter=' ', skip_header=1, usecols=(0, 2, 1, 3))
+            # elif df[-2:] == 'h5':
+                # h5f = h5py.File(df, 'r')
+                # data = h5f['entry_1/instrument_1/detector_1/data'][:]
+                # # assert np.all(data !=0), 'Loaded 5 file has no intensity'
+                # h5f.close()
+
+                # loc = np.where(data >0)
+                # df = np.zeros( (len(loc[0]), 4))
+                # df[:,1] = loc[1]
+                # df[:,2] = loc[0]
+                # df[:,3] = data[loc[0], loc[1]]
+                # self._df = df
+
+                # # assert False, 'ERROR: h5 to pk not implemented'
+        # else:
+            # self._df = df
+
+

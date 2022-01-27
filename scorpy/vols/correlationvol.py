@@ -75,7 +75,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
 
-    def fill_from_peakdata(self, pk, method='scat_sph', verbose=True):
+    def fill_from_peakdata(self, pk, method='scat_sph', verbose=True, npeakmax=-1):
         '''
         scorpy.CorrelationVol.fill_from_peakdata():
             Fill the CorrelationVol from a PeakData object.
@@ -93,24 +93,24 @@ class CorrelationVol(Vol, CorrelationVolProps):
         assert method in ['scat_pol', 'scat_sph'], 'Invalid correlation method.'
 
 
-        nframes = len(pk.split_frames())
-        nscats = pk.scat_rect.shape[0]
+        frames = pk.split_frames(npeakmax=npeakmax)
+        nframes = len(frames)
 
         if verbose:
             print('')
             print('############')
             print(f'Filling CorrelationVol from Peakdata via {method}.')
-            print(f'Correlating {nscats} vectors over {nframes} frames. (Approx. {int(nscats/nframes)} vectors per frame.)')
+            print(f'Correlating {nframes} frames.')
             print(f'Correlation started: {time.asctime()}\n')
 
         if method=='scat_pol':
-            for i, frame in enumerate(pk.split_frames()):
+            for i, frame in enumerate(frames):
                 print(f'Frame: {i+1}/{nframes}', end='\r')
                 self.correlate_scat_pol(frame.scat_pol)
                 print('', end='')
 
         if method=='scat_sph':
-            for i, frame in enumerate(pk.split_frames()):
+            for i, frame in enumerate(frames):
                 print(f'Frame: {i+1}/{nframes}', end='\r')
                 self.correlate_scat_sph(frame.scat_sph)
                 print('', end='')
@@ -413,7 +413,14 @@ class CorrelationVol(Vol, CorrelationVolProps):
                 psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=self.zwrap)
 
                 # fill the volume
-                self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
+                try:
+                    self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
+                except IndexError:
+                    print(q1_ind, q2_ind, psi_ind)
+                    print(q1[0])
+                    print(q2[0])
+                    exit()
+
                 if j > 0:  # if not on diagonal
                     self.vol[q2_ind, q1_ind, psi_ind] += q1[-1] * q2[-1]
 

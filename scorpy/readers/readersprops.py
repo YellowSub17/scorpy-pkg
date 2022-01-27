@@ -118,7 +118,7 @@ class PeakDataProperties:
     @property
     def geo(self):
         '''
-        ExpoGeom object that handles experiement geometry.
+        ExpoGeom object that handles experiment geometry.
         '''
         return self._geo
 
@@ -167,3 +167,8 @@ class PeakDataProperties:
     @property
     def qmax(self):
         return self._qmax
+
+
+
+
+

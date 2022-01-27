@@ -116,7 +116,7 @@ class ExpGeom:
         Returns:
             None.
         '''
-        # plt.axis('equal')
+        plt.axis('equal')
         plt.vlines(0, -0.005, 0.005)
         plt.hlines(0, -0.005, 0.005)
     
