@@ -240,6 +240,11 @@ class CorrelationVolProps:
     def cos_sample(self):
         return self._cos_sample
 
+    @property
+    def inc_self_corr(self):
+        return self._inc_self_corr
+
+
 
 class BlqqVolProps:
 

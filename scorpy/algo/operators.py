@@ -136,9 +136,13 @@ class AlgoHandlerOperators:
 
         self.sphv_b.vol = self.sphv_iter.vol * self.sphv_supp.vol
 
-        #turn off and flip at the end
+        #global positiivity 
         if self.sphv_b.vol.sum() <0:
             self.sphv_b.vol *= -1
+
+        #singular positivitiy
+        ##todo
+        # self.sphv_b.vol[<0] =0
 
         ## symetry constraint? average intensity on symetric partners
         ## start triclinic (abc alpha beta gamma all different)

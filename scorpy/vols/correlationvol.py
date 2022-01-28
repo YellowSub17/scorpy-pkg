@@ -25,7 +25,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
         CorrelationVol.plot_q1q2()
     """
 
-    def __init__(self, nq=100, npsi=180, qmax=1, cos_sample=True, path=None):
+    def __init__(self, nq=100, npsi=180, qmax=1, cos_sample=True, inc_self_corr=True, path=None):
 
         if cos_sample:
             Vol.__init__(self, nq, nq, npsi, 0, 0, -1, qmax, qmax, 1, False, False, False, comp=False, path=path)
@@ -33,6 +33,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
             Vol.__init__(self, nq, nq, npsi, 0, 0, 0, qmax, qmax, np.pi, False, False, False, comp=False, path=path)
 
         self._cos_sample = cos_sample
+        self._inc_self_corr = inc_self_corr
         self.plot_q1q2 = self.plot_xy
 
     def _save_extra(self, f):
@@ -43,9 +44,11 @@ class CorrelationVol(Vol, CorrelationVolProps):
         f.write(f'dq = {self.dq}\n')
         f.write(f'dpsi = {self.dpsi}\n')
         f.write(f'cos_sample = {self.cos_sample}\n')
+        f.write(f'inc_self_corr = {self.inc_self_corr}\n')
 
     def _load_extra(self, config):
         self._cos_sample = config.getboolean('corr', 'cos_sample')
+        self._inc_self_corr = config.getboolean('corr', 'inc_self_corr')
 
 
 
@@ -75,7 +78,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
 
-    def fill_from_peakdata(self, pk, method='scat_sph', verbose=True, npeakmax=-1):
+    def fill_from_peakdata(self, pk, method='scat_pol', verbose=True, npeakmax=-1):
         '''
         scorpy.CorrelationVol.fill_from_peakdata():
             Fill the CorrelationVol from a PeakData object.
@@ -190,6 +193,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
         assert self.nq == sphv.nq, 'SphericalVol and CorrelationVol have different nq'
         assert self.qmax == sphv.qmax, 'SphericalVol and CorrelationVol have different qmax'
+        assert self.inc_self_corr, 'self correlation must be included to fill from sphv'
 
         pp, tt = np.meshgrid(sphv.phipts, sphv.thetapts)
         zero_slice = np.zeros( (sphv.ntheta, sphv.nphi))
@@ -304,11 +308,18 @@ class CorrelationVol(Vol, CorrelationVolProps):
         q_inds = list(map(index_x, qti[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
 
 
+        # calc start and end positions if inlcuding self correlation
+        if self.inc_self_corr:
+            q2start_term, q2end_term = 0, None
+        else:
+            q2start_term, q2end_term = 1, -1
+
+
         for i, q1 in enumerate(qti):
             # get q index
             q1_ind = q_inds[i]
 
-            for j, q2 in enumerate(qti[i:]):
+            for j, q2 in enumerate(qti[i+q2start_term:q2end_term]):
                 # get q index
                 q2_ind = q_inds[i + j]
 
@@ -349,12 +360,19 @@ class CorrelationVol(Vol, CorrelationVolProps):
         ite = np.ones(qxyzi.shape[0])
         q_inds = list(map(index_x, qmags, 0 * ite, self.qmax * ite, self.nq * ite))
 
+        # calc start and end positions if inlcuding self correlation
+        if self.inc_self_corr:
+            q2start_term, q2end_term = 0, None
+        else:
+            q2start_term, q2end_term = 1, -1
+
+
         for i, q1 in enumerate(qxyzi):
 
             # get q index
             q1_ind = q_inds[i]
 
-            for j, q2 in enumerate(qxyzi[i:]):
+            for j, q2 in enumerate(qxyzi[i+q2start_term:q2end_term]):
                 # get q index
                 q2_ind = q_inds[i + j]
 
@@ -392,13 +410,21 @@ class CorrelationVol(Vol, CorrelationVolProps):
         ite = np.ones(qtpi.shape[0])
         q_inds = list(map(index_x, qtpi[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
 
+        # calc start and end positions if inlcuding self correlation
+        if self.inc_self_corr:
+            q2start_term, q2end_term = 0, None
+        else:
+            q2start_term, q2end_term = 1, -1
+
+
+
         for i, q1 in enumerate(qtpi):
             # get q index, theta and phi
             q1_ind = q_inds[i]
             theta1 = q1[1]
             phi1 = q1[2]
 
-            for j, q2 in enumerate(qtpi[i:]):
+            for j, q2 in enumerate(qtpi[i+q2start_term:q2end_term]):
                 # get q index, theta and phi
                 q2_ind = q_inds[i + j]
                 theta2 = q2[1]

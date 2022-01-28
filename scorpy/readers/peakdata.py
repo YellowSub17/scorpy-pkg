@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import h5py
 from .expgeom import ExpGeom
 from ..env import DATADIR
+from ..utils import index_x
 
 from .readersprops import PeakDataProperties
 
@@ -10,7 +11,7 @@ DEFAULT_GEO = ExpGeom(f'{DATADIR}/geoms/agipd_2304_vj_opt_v3.geom')
 
 class PeakData(PeakDataProperties):
 
-    def __init__(self, df, geo=DEFAULT_GEO, cxi_flag=True, qmax=None):
+    def __init__(self, df, geo=DEFAULT_GEO, cxi_flag=True, qmax=None, mask_flag=False):
         '''
         handler for a peaks.txt file
         df: dataframe of the peak data, or str file path to txt
@@ -19,6 +20,7 @@ class PeakData(PeakDataProperties):
 
         self._geo = geo  # ExpGeom object
         # self._cxi_flag = cxi_flag
+        self._mask_flag = mask_flag
 
         if type(df)==str:
             self._df = self.read_file(df, cxi_flag)
@@ -47,7 +49,10 @@ class PeakData(PeakDataProperties):
 
         elif fname[-2:] == 'h5':
             h5f = h5py.File(fname, 'r')
-            data = h5f['entry_1/instrument_1/detector_1/data'][:]
+            if self.mask_flag:
+                data = h5f['data/data'][:]
+            else:
+                data = h5f['entry_1/instrument_1/detector_1/data'][:]
             h5f.close()
 
             loc = np.where(data >0)
@@ -55,7 +60,6 @@ class PeakData(PeakDataProperties):
             df[:,1] = loc[1]
             df[:,2] = loc[0]
             df[:,3] = data[loc[0], loc[1]]
-        
         return df
 
 
@@ -133,6 +137,29 @@ class PeakData(PeakDataProperties):
         return frames  # return the list of appended peak datas
 
 
+
+    def make_im(self):
+
+        npix = 500
+
+        im = np.zeros( (npix,npix) )
+
+        ite = np.ones( self.scat_rect.shape[0])
+
+        xinds = map(index_x, self.scat_rect[:,0], -0.055*ite, 0.055*ite, ite*npix)
+        yinds = map(index_x, self.scat_rect[:,1], -0.055*ite, 0.055*ite, ite*npix)
+
+        for xind, yind in zip(xinds, yinds):
+            im[xind, yind] += 1
+
+        return im
+
+
+
+
+
+
+
     def plot_peaks(self, scatter=False, cmap='viridis', s=100):
 
         self.geo.plot_panels()
@@ -149,35 +176,5 @@ class PeakData(PeakDataProperties):
             plt.plot(x, y, '.')
 
 
-
-
-
-    # def read_df(self, df, cxi_flag):
-        # # if df is str, read dataframe from file, else, assume df is array
-        # if type(df) == str:
-            # if df[-3:] =='txt':
-                # if cxi_flag:
-                    # # 0: frameNumber, 6: peak_x_raw, 7: peak_y_raw, 12: total intens
-                    # self._df = np.genfromtxt(
-                        # df, delimiter=', ', skip_header=1, usecols=(0, 6, 7, 12))
-                # else:
-                    # self._df = np.genfromtxt(
-                        # df, delimiter=' ', skip_header=1, usecols=(0, 2, 1, 3))
-            # elif df[-2:] == 'h5':
-                # h5f = h5py.File(df, 'r')
-                # data = h5f['entry_1/instrument_1/detector_1/data'][:]
-                # # assert np.all(data !=0), 'Loaded 5 file has no intensity'
-                # h5f.close()
-
-                # loc = np.where(data >0)
-                # df = np.zeros( (len(loc[0]), 4))
-                # df[:,1] = loc[1]
-                # df[:,2] = loc[0]
-                # df[:,3] = data[loc[0], loc[1]]
-                # self._df = df
-
-                # # assert False, 'ERROR: h5 to pk not implemented'
-        # else:
-            # self._df = df
 
 

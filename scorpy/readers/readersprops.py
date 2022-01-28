@@ -168,6 +168,9 @@ class PeakDataProperties:
     def qmax(self):
         return self._qmax
 
+    @property
+    def mask_flag(self):
+        return self._mask_flag
 
 
 
