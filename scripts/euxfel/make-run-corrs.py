@@ -90,7 +90,7 @@ for run in runs:
 
         run_corr.vol += tmppadfcorrvol[:,:, :npsi]
 
-        run_corr.save(f'{scorpy.DATADIR}/dbins/cxi/run{run}_padfcorr_qcor.dbin')
+        # run_corr.save(f'{scorpy.DATADIR}/dbins/cxi/run{run}_padfcorr_qcor.dbin')
 
         print('', end='')
     print(f'Correlation finished: {time.asctime()}')
