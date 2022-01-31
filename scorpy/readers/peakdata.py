@@ -33,9 +33,11 @@ class PeakData(PeakDataProperties):
 
 
         if qmax is not None:
-            self._qmax = qmax
+            self._qmax = round(qmax, 14)
         else:
-            self._qmax = self.scat_pol.max(axis=0)[0]
+            self._qmax = round(self.scat_pol.max(axis=0)[0],14)
+
+
 
     def read_file(self, fname, cxi_flag):
         if cxi_flag:
@@ -138,19 +140,25 @@ class PeakData(PeakDataProperties):
 
 
 
-    def make_im(self):
-
-        npix = 500
+    def make_im(self, npix=500, r=0.055, bool_iten=False, fname=None):
 
         im = np.zeros( (npix,npix) )
 
         ite = np.ones( self.scat_rect.shape[0])
 
-        xinds = map(index_x, self.scat_rect[:,0], -0.055*ite, 0.055*ite, ite*npix)
-        yinds = map(index_x, self.scat_rect[:,1], -0.055*ite, 0.055*ite, ite*npix)
+        xinds = map(index_x, self.scat_rect[:,0], -r*ite, r*ite, ite*npix)
+        yinds = map(index_x, self.scat_rect[:,1], -r*ite, r*ite, ite*npix)
 
-        for xind, yind in zip(xinds, yinds):
-            im[xind, yind] += 1
+        for xind, yind, inten in zip(xinds, yinds, self.scat_rect[:,-1]):
+            im[xind, yind] += inten
+
+        if bool_iten:
+            im[im>0] = 1
+            im[im<0] = 0
+
+        if fname is not None:
+            flat_im = im.flatten()
+            flat_im.tofile(fname)
 
         return im
 
@@ -160,8 +168,14 @@ class PeakData(PeakDataProperties):
 
 
 
-    def plot_peaks(self, scatter=False, cmap='viridis', s=100):
 
+
+
+
+    def plot_peaks(self, scatter=False, cmap='viridis', s=100, newfig=True):
+
+        if newfig:
+            plt.figure()
         self.geo.plot_panels()
 
         x = self.scat_rect[:,0]

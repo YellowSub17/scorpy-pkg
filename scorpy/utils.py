@@ -23,6 +23,16 @@ def harmonic_list(nl, lmin=0,  inc_odds=True):
     return harms
 
 
+def convert_r2q(r, z, lam):
+    k = np.pi*2/lam
+    theta = np.arctan2(r, z)
+    return 2*k*np.sin(theta/2)
+
+def convert_q2r(q, z, lam):
+    k = np.pi*2/lam
+    arcs = np.arcsin(q/(2*k))
+    return np.tan(2*arcs)*z
+
 
 def index_x(x_val, x_min, x_max, nx, wrap=False):
     '''Find the index of a value in an array between a maximum and minimum value.

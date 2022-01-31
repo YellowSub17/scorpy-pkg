@@ -1,6 +1,6 @@
 import scorpy
 import numpy as np
-np.random.seed(1)
+np.random.seed(0)
 
 import CifFile as pycif
 
@@ -30,7 +30,7 @@ cont = base_cif.WriteOut()
 
 
 
-file = open(f'{scorpy.DATADIR}/cifs/{sym}-rand1-sf.cif', 'w')
+file = open(f'{scorpy.DATADIR}/cifs/p1-rand-sf.cif', 'w')
 file.write(cont)
 file.close()
 

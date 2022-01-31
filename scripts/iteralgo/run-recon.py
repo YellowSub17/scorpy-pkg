@@ -13,7 +13,7 @@ plt.close('all')
 
 # Parameters
 
-tag = 'ccc_inten_r1_supp_t'
+tag = 'p1_inten_r0_supp_t'
 sub_tag = 'c'
 recipe_fname =  'rec.txt'
 sphv_init = None

@@ -16,14 +16,14 @@ nq= 200
 ntheta = 180
 nphi = 360
 nl = 90
-qmax = 109
+qmax = 3.8
 
 
 
-tag = 'ccc_inten_r1_supp_t'
+tag = 'p1_inten_r0_supp_t'
 
-targ_cif_fname = 'ccc-rand1-sf.cif'
-supp_cif_fname = 'ccc-rand1-sf.cif'
+targ_cif_fname = 'p1-rand0-sf.cif'
+supp_cif_fname = 'p1-rand0-sf.cif'
 
 
 
