@@ -21,6 +21,30 @@ class CifDataProperties:
         Direct lattice vector c
         '''
         return self._c
+    
+    @property
+    def a_mag(self):
+        return self._a_mag
+
+    @property
+    def b_mag(self):
+        return self._b_mag
+
+    @property
+    def c_mag(self):
+        return self._c_mag
+
+    @property
+    def ast_mag(self):
+        return self._ast_mag
+
+    @property
+    def bst_mag(self):
+        return self._bst_mag
+
+    @property
+    def cst_mag(self):
+        return self._cst_mag
 
     @property
     def alpha(self):

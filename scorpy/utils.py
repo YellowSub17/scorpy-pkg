@@ -49,7 +49,7 @@ def index_x(x_val, x_min, x_max, nx, wrap=False):
     '''
 
     dx = (x_max - x_min) / nx
-    x_val = round(x_val, 15)
+    x_val = round(x_val, 14)
 
     if not wrap:
         x_out = (x_val - x_min) / dx

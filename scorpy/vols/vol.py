@@ -8,6 +8,8 @@ from .volsprops import VolProps
 from .saveload import VolSaveLoad
 from ..plot.volsplot import VolPlot
 
+from ..utils import index_x
+
 
 
 class Vol(VolProps, VolPlot, VolSaveLoad):
@@ -37,7 +39,7 @@ vol : numpy.ndarray
 
     def __init__(self, nx=10, ny=10, nz=10,
                  xmin=0, ymin=0, zmin=0,
-                 xmax=1, ymax=1, zmax=1,
+xmax=1, ymax=1, zmax=1,
                  xwrap=False, ywrap=False, zwrap=False,
                  comp=False, path=None, logpath=None):
 
@@ -194,6 +196,17 @@ vol : numpy.ndarray
         return xy
 
 
+    def evaluate(self, xval, yval, zval):
+
+        xind = index_x(xval, self.xmin, self.xmax, self.nq, self.xwrap)
+        yind = index_x(yval, self.ymin, self.ymax, self.nq, self.ywrap)
+        zind = index_x(zval, self.zmin, self.zmax, self.nq, self.zwrap)
+
+        return self.vol[xind, yind, zind]
+
+
+
+
     def ls_pts(self, thresh=0):
         '''
 	scorpy.Vol.ls_pts():
@@ -217,9 +230,9 @@ vol : numpy.ndarray
         pts[:,1] = self.ypts[loc[1]]
         pts[:,2] = self.zpts[loc[2]]
 
-        pts = pts[pts[:, 2].argsort()]
-        pts = pts[pts[:, 1].argsort(kind='mergesort')]
-        pts = pts[pts[:, 0].argsort(kind='mergesort')]
+        # pts = pts[pts[:, 2].argsort()]
+        # pts = pts[pts[:, 1].argsort(kind='mergesort')]
+        # pts = pts[pts[:, 0].argsort(kind='mergesort')]
         return pts
 
 

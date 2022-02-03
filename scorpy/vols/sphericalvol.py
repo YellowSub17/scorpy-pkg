@@ -58,7 +58,20 @@ class SphericalVol(Vol, SphericalVolProps):
                 The CifData object to to fill the SphericalVol
         '''
         assert cif.qmax == self.qmax, 'CifData and SphericalVol have different qmax'
-        self.fill_from_scat_sph(cif.scat_sph)
+        scat_sph = cif.scat_sph
+        ite = np.ones(scat_sph[:, 0].shape)
+
+        q_inds = list(map(index_x, scat_sph[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
+        theta_inds = list(map(index_x, scat_sph[:, 1], self.ymin * ite, self.ymax * ite, self.ny * ite))
+        phi_inds = list(map(index_x, scat_sph[:, 2], self.zmin * ite, self.zmax * ite, self.nz * ite, ite))
+
+        intens = scat_sph[:, -1]
+        for q_ind, theta_ind, phi_ind, I in zip(q_inds, theta_inds, phi_inds, intens):
+            self.vol[q_ind, theta_ind, phi_ind] += I
+
+
+
+
 
     def fill_from_iqlm(self, iqlm):
         '''scorpy.SphericalVol.fill_from_iqlm():
@@ -83,53 +96,4 @@ class SphericalVol(Vol, SphericalVolProps):
 
 
 
-
-    def fill_from_scat_sph(self, scat_sph):
-        '''scorpy.SphericalVol.fill_from_scat_sph():
-        Fill the SphericalVol from a list of peaks in spherical coordinates.
-        Arguments:
-            scat_sph : numpy.ndarray
-                n by 4 array of n peaks to fill from. Columns of the array should
-                be the spherical radius of the peak (A-1), polar angle of the peak
-                (theta, radians), and the azimuthial angle of the peak (phi, radians).
-        '''
-
-        ite = np.ones(scat_sph[:, 0].shape)
-
-        q_inds = list(map(index_x, scat_sph[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
-        theta_inds = list(map(index_x, scat_sph[:, 1], self.ymin * ite, self.ymax * ite, self.ny * ite))
-        phi_inds = list(map(index_x, scat_sph[:, 2], self.zmin * ite, self.zmax * ite, self.nz * ite, ite))
-
-        intens = scat_sph[:, -1]#*np.sin(scat_sph[:,1])
-        for q_ind, theta_ind, phi_ind, I in zip(q_inds, theta_inds, phi_inds, intens):
-            self.vol[q_ind, theta_ind, phi_ind] += I
-
-
-
-
-
-
-
-
-    # def get_all_q_coeffs(self):
-        # all_coeffs = []
-        # for q_slice in self.vol:
-            # pysh_grid = pysh.shclasses.DHRealGrid(q_slice)
-            # coeffs = pysh_grid.expand().coeffs
-            # all_coeffs.append(coeffs)
-        # return all_coeffs
-
-
-
-    # def get_q_coeffs(self, q_ind):
-        # q_slice = self.vol[q_ind, ...]
-        # pysh_grid = pysh.shclasses.DHRealGrid(q_slice)
-        # c = pysh_grid.expand().coeffs
-        # return c
-
-
-    # def set_q_coeffs(self, q_ind, coeffs):
-        # pysh_coeffs = pysh.shclasses.SHCoeffs.from_array(coeffs)
-        # pysh_grid = pysh_coeffs.expand()
-        # self.vol[q_ind, ...] = pysh_grid.to_array()[:-1, :-1]
 

@@ -1,56 +1,67 @@
 import scorpy
 import numpy as np
 import matplotlib.pyplot as plt
-
-
-
-tag = 'p1_inten_r0_supp_t'
-sub_tag = 'c'
-
-
-
-sphv_targ = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_targ.dbin')
-sphv_supp = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_supp.dbin')
-
-sphv_a = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_final.dbin')
-sphv_a_init = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_init.dbin')
-
-qq = np.unique(np.where(sphv_targ.vol>0)[0])
+plt.close('all')
 
 
 
 
-print('CSS of target vs initial (all positions)')
-x = scorpy.utils.cosinesim(sphv_targ.vol, sphv_a_init.vol)
-print(x)
-print()
 
-print('CSS of target vs initial (just peaks)')
-x = scorpy.utils.cosinesim(sphv_targ.vol[sphv_supp.vol>0], sphv_a_init.vol[sphv_supp.vol>0])
-print(x)
-print()
+a_mag = 20
+b_mag = 24.6
+c_mag = 21.8
+alpha = 90
+beta = 90
+gamma = 90
 
-print('CSS of target vs final (all positions)')
-x = scorpy.utils.cosinesim(sphv_targ.vol, sphv_a.vol)
-print(x)
-print()
-
-print('CSS of target vs final (just peaks)')
-x = scorpy.utils.cosinesim(sphv_targ.vol[sphv_supp.vol>0], sphv_a.vol[sphv_supp.vol>0])
-print(x)
-print()
-
-print('CSS of target vs initial (just peaks, scaled 0.75 to 1)')
-x = scorpy.utils.cosinesim(sphv_targ.vol[sphv_supp.vol>0], sphv_a_init.vol[sphv_supp.vol>0])
-print( (x-0.75)/(1-0.75))
-print()
-
-print('CSS of target vs final (just peaks, scaled 0.75 to 1)')
-x = scorpy.utils.cosinesim(sphv_targ.vol[sphv_supp.vol>0], sphv_a.vol[sphv_supp.vol>0])
-print( (x-0.75)/(1-0.75))
-print()
+qmax = 1
 
 
+
+
+c1= scorpy.CifData(a_mag=a_mag, b_mag=b_mag, c_mag=c_mag, alpha=alpha, beta=beta, gamma=gamma)
+
+sphv_rand = scorpy.SphericalVol(qmax=qmax)
+sphv_rand.vol = np.ones( sphv_rand.vol.shape)
+
+c1.fill_from_sphv(sphv_rand)
+
+
+c1.save(f'{scorpy.DATADIR}/cifs/x.cif')
+
+# fig = plt.figure()
+# ax = fig.add_subplot(projection='3d')
+# ax.scatter( c1.scat_bragg[:,0], c1.scat_bragg[:,1], c1.scat_bragg[:,2])
+
+# sphv_bragg = scorpy.SphericalVol(qmax=qmax)
+# sphv_bragg.fill_from_cif(c1)
+
+
+# c2 = scorpy.CifData(a_mag=a_mag, b_mag=b_mag, c_mag=c_mag, alpha=alpha, beta=beta, gamma=gamma)
+# c2.fill_from_sphv(sphv_bragg)
+
+
+# loc = np.where(c1.scat_bragg != c2.scat_bragg)
+
+
+
+
+
+
+# c1 = scorpy.CifData(path=f'{scorpy.DATADIR}/cifs/p1-rand0-sf.cif')
+
+# sphv_x = scorpy.SphericalVol(qmax= c1.qmax)
+
+# sphv_x.fill_from_cif(c1)
+
+# c2 = scorpy.CifData(a_mag=c1.a_mag, b_mag=c1.b_mag, c_mag=c1.c_mag, 
+                    # alpha=np.degrees(c1.alpha), beta=np.degrees(c1.beta), gamma=np.degrees(c1.gamma))
+
+# c2.fill_from_sphv(sphv_x)
+
+
+
+# loc = np.where(c1.scat_bragg != c2.scat_bragg)
 
 
 
@@ -58,3 +69,14 @@ print()
 
 
 plt.show()
+
+
+
+
+
+
+
+
+
+
+
