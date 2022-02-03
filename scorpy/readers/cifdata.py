@@ -9,9 +9,11 @@ from .readersprops import CifDataProperties
 
 class CifData(CifDataProperties):
 
-    def __init__(self, a_mag=1, b_mag=1, c_mag=1,
+    def __init__(self,path=None, a_mag=1, b_mag=1, c_mag=1,
                     alpha=90, beta=90, gamma=90, spg='P 1',
-                 qmax=None, path=None ):
+                 qmax=None  ):
+
+
 
 
         if path is not None:
@@ -107,9 +109,14 @@ class CifData(CifDataProperties):
         '''
 
         # Read h,k,l indices
-        h = np.array(cif_dict['_refln.index_h']).astype(np.int32)
-        k = np.array(cif_dict['_refln.index_k']).astype(np.int32)
-        l = np.array(cif_dict['_refln.index_l']).astype(np.int32)
+
+        h = np.array(cif_dict['_refln.index_h']).astype(np.float)
+        k = np.array(cif_dict['_refln.index_k']).astype(np.float)
+        l = np.array(cif_dict['_refln.index_l']).astype(np.float)
+
+        h = h.astype(np.int32)
+        k = k.astype(np.int32)
+        l = l.astype(np.int32)
 
         # Read intensities
         if '_refln.intensity_meas' in cif_dict.keys():

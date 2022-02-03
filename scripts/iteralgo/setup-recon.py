@@ -12,19 +12,19 @@ plt.close('all')
 
 
 # Parameters
-nq= 200
-ntheta = 180
-nphi = 360
-nl = 90
-qmax = 3.8
+nq= 50
+ntheta = 90
+nphi = 180
+nl = 45
+npsi = 180
+qmax = 0.5
 
 
 
-tag = 'p1_inten_r0_supp_t'
+tag = 'p1-inten-r0-supp-t-from-sphv'
 
-targ_cif_fname = 'p1-rand0-sf.cif'
-supp_cif_fname = 'p1-rand0-sf.cif'
-
+targ_cif_fname = 'p1-inten-r0-sf.cif'
+supp_cif_fname = 'p1-inten-r0-sf.cif'
 
 
 # Make directory to save vols
@@ -32,7 +32,7 @@ os.mkdir(f'{scorpy.DATADIR}/algo/{tag}')
 
 
 # Generate Target
-cif_targ = scorpy.CifData(f'{scorpy.DATADIR}/cifs/{targ_cif_fname}', qmax = qmax)
+cif_targ = scorpy.CifData(path=f'{scorpy.DATADIR}/cifs/{targ_cif_fname}', qmax = qmax)
 sphv_targ = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_targ.fill_from_cif(cif_targ)
 sphv_targ.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_targ.dbin')
@@ -46,14 +46,25 @@ sphv_supp.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_supp.dbin')
 
 
 
+
 # Generate Data
 iqlm_targ = scorpy.IqlmHandler(nq, nl, qmax)
 iqlm_targ.fill_from_sphv(sphv_targ)
 sphv_harmed = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_harmed.fill_from_iqlm(iqlm_targ)
+
 blqq_data = scorpy.BlqqVol(nq, nl, qmax)
 blqq_data.fill_from_iqlm(iqlm_targ)
 blqq_data.save(f'{scorpy.DATADIR}/algo/{tag}/blqq_{tag}_data.dbin')
+
+# corr_data = scorpy.CorrelationVol(nq, npsi, qmax)
+# corr_data.fill_from_cif(cif_targ)
+
+# blqq_data = scorpy.BlqqVol(nq, nl, qmax)
+# blqq_data.fill_from_corr(corr_data)
+# blqq_data.save(f'{scorpy.DATADIR}/algo/{tag}/blqq_{tag}_data.dbin')
+
+
 
 
 

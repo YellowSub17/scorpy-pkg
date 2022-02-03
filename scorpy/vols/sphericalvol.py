@@ -57,7 +57,7 @@ class SphericalVol(Vol, SphericalVolProps):
             cif : scorpy.CifData
                 The CifData object to to fill the SphericalVol
         '''
-        assert cif.qmax == self.qmax, 'CifData and SphericalVol have different qmax'
+        assert self.qmax >= cif.qmax, 'cif.qmax > sphv.qmax'
         scat_sph = cif.scat_sph
         ite = np.ones(scat_sph[:, 0].shape)
 

@@ -55,7 +55,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
 
-    def fill_from_cif(self, cif, method='scat_sph'):
+    def fill_from_cif(self, cif, method='scat_rect', verbose=True):
         '''
         scorpy.CorrelationVol.fill_from_cif():
             Fill the CorrelationVol from a CifData object
@@ -67,13 +67,23 @@ class CorrelationVol(Vol, CorrelationVolProps):
                 to use the spherical or rectilinear coordinates of the CifData.
         '''
 
-        assert cif.qmax==self.qmax, 'CifData and CorrelationVol hae different qmax values.'
+        assert self.qmax >= cif.qmax, 'cif.qmax > corr.qmax'
         assert method in ['scat_sph', 'scat_rect'], 'Invalid correlation method.'
+
+        if verbose:
+            print('############')
+            print(f'Filling CorrelationVol from CifData via {method}.')
+            print(f'Correlating {cif.scat_rect.shape[0]} vectors.')
+            print(f'Correlation started: {time.asctime()}\n')
 
         if method == 'scat_sph':
             self.correlate_scat_sph(cif.scat_sph)
         elif method == 'scat_rect':
             self.correlate_scat_rect(cif.scat_rect)
+
+        if verbose:
+            print(f'Correlation finished: {time.asctime()}')
+            print('############')
 
 
 
@@ -92,7 +102,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
                 Flag for printing extra information to the screen while correlating.
         '''
 
-        assert self.qmax == pk.qmax, 'Peakdata and CorrelationVol have different qmax values.'
+        assert self.qmax >= pk.qmax, 'pk.qmax > corr.qmax'
         assert method in ['scat_pol', 'scat_sph'], 'Invalid correlation method.'
 
 
@@ -356,8 +366,10 @@ class CorrelationVol(Vol, CorrelationVolProps):
         qxyzi = qxyzi[le_qmax]
         qmags = qmags[le_qmax]
 
+        nscats = qxyzi.shape[0]
+
         # calculate q indices of every scattering vector outside of loop
-        ite = np.ones(qxyzi.shape[0])
+        ite = np.ones(nscats)
         q_inds = list(map(index_x, qmags, 0 * ite, self.qmax * ite, self.nq * ite))
 
         # calc start and end positions if inlcuding self correlation
@@ -371,6 +383,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
             # get q index
             q1_ind = q_inds[i]
+            # print(f'{i}/{nscats}', end='\r')
 
             for j, q2 in enumerate(qxyzi[i+q2start_term:q2end_term]):
                 # get q index
