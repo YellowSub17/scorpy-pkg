@@ -22,7 +22,7 @@ npsi = 180
 # print(ind)
 
 
-# run = 118
+run = 118
 # frame_i = 0
 
 
@@ -42,12 +42,12 @@ npsi = 180
 
 
 
-# # pk = scorpy.PeakData(f'{scorpy.DATADIR}/cxi/run{run}_peaks.txt')
-# # qmax = pk.qmax
-# # r = scorpy.utils.convert_q2r(qmax, clen, wavelength*1e10)
-# im = pk.make_im(r=r, fname=f'/tmp/tmp_frame_im.dbin')
-# plt.figure()
-# plt.imshow(im)
+pk = scorpy.PeakData(f'{scorpy.DATADIR}/cxi/run{run}_peaks.txt')
+qmax = pk.qmax
+r = scorpy.utils.convert_q2r(qmax, clen, wavelength*1e10)
+im = pk.make_im(r=r, fname=f'/tmp/tmp_frame_im.dbin', bool_inten=True)
+plt.figure()
+plt.imshow(im)
 
 # corr_config = open(f'/tmp/padfcorr_tmp_config.txt', 'w')
 # corr_config.write(f'input = /tmp/tmp_frame_im.dbin\n')

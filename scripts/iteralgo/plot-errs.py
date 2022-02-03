@@ -11,12 +11,12 @@ plt.close('all')
 
 
 # tag = 'fcc_inten_r1_supp_t'
-tag = 'fcc_inten_r_5pc0_supp_t'
+# tag = 'fcc_inten_r_5pc0_supp_t'
 # # tag = '4lzt_supp_t'
 # # tag = 'ccc_inten_r1_supp_t'
 
 
-# tag = 'p1_inten_r0_supp_t'
+tag = 'p1_inten_r0_supp_t'
 
 
 cmap = 'viridis'
@@ -28,8 +28,8 @@ ss = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_supp.dbin
 
 
 qloc = np.unique(np.where(ss.vol>0)[0])
-# qq = qloc[-22*5]
-qq = qloc[-5]
+qq = qloc[-22*5]
+# qq = qloc[-5]
 
 
 

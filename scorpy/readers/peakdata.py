@@ -140,7 +140,7 @@ class PeakData(PeakDataProperties):
 
 
 
-    def make_im(self, npix=500, r=0.055, bool_iten=False, fname=None):
+    def make_im(self, npix=500, r=0.055, bool_inten=False, fname=None):
 
         im = np.zeros( (npix,npix) )
 
@@ -152,7 +152,7 @@ class PeakData(PeakDataProperties):
         for xind, yind, inten in zip(xinds, yinds, self.scat_rect[:,-1]):
             im[xind, yind] += inten
 
-        if bool_iten:
+        if bool_inten:
             im[im>0] = 1
             im[im<0] = 0
 
