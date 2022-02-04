@@ -11,43 +11,40 @@ plt.close('all')
 
 
 
-# Parameters
-nq= 50
+# # # Parameters
+nq= 100
 ntheta = 90
 nphi = 180
 nl = 45
-npsi = 180
+npsi = 360
 qmax = 0.5
 
 
 
-tag = 'p1-inten-r0-supp-t-from-sphv'
+tag = 'p1-inten-r0-from-corr'
 
 targ_cif_fname = 'p1-inten-r0-sf.cif'
 supp_cif_fname = 'p1-inten-r0-sf.cif'
 
 
-# Make directory to save vols
-os.mkdir(f'{scorpy.DATADIR}/algo/{tag}')
 
 
-# Generate Target
+# # # Generate Target
 cif_targ = scorpy.CifData(path=f'{scorpy.DATADIR}/cifs/{targ_cif_fname}', qmax = qmax)
 sphv_targ = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_targ.fill_from_cif(cif_targ)
-sphv_targ.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_targ.dbin')
 
-# Generate Support 
+
+# # # Generate Support 
 cif_supp = scorpy.CifData(f'{scorpy.DATADIR}/cifs/{supp_cif_fname}', qmax = qmax)
 sphv_supp = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_supp.fill_from_cif(cif_supp)
 sphv_supp.make_mask()
-sphv_supp.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_supp.dbin')
 
 
 
 
-# Generate Data
+# # # Generate Data
 iqlm_targ = scorpy.IqlmHandler(nq, nl, qmax)
 iqlm_targ.fill_from_sphv(sphv_targ)
 sphv_harmed = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
@@ -55,18 +52,26 @@ sphv_harmed.fill_from_iqlm(iqlm_targ)
 
 blqq_data = scorpy.BlqqVol(nq, nl, qmax)
 blqq_data.fill_from_iqlm(iqlm_targ)
+
+
+# # # Generate Data
+corr_data = scorpy.CorrelationVol(nq, npsi, qmax)
+corr_data.fill_from_cif(cif_targ)
+
+blqq_data = scorpy.BlqqVol(nq, nl, qmax)
+blqq_data.fill_from_corr(corr_data, rcond=0.2)
+
+
+
+
+# Make directory to save vols
+os.mkdir(f'{scorpy.DATADIR}/algo/{tag}')
+
+sphv_targ.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_targ.dbin')
+cif_targ.save(f'{scorpy.DATADIR}/algo/{tag}/{tag}_targ-sf.cif')
+sphv_supp.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_supp.dbin')
+
 blqq_data.save(f'{scorpy.DATADIR}/algo/{tag}/blqq_{tag}_data.dbin')
-
-# corr_data = scorpy.CorrelationVol(nq, npsi, qmax)
-# corr_data.fill_from_cif(cif_targ)
-
-# blqq_data = scorpy.BlqqVol(nq, nl, qmax)
-# blqq_data.fill_from_corr(corr_data)
-# blqq_data.save(f'{scorpy.DATADIR}/algo/{tag}/blqq_{tag}_data.dbin')
-
-
-
-
 
 
 

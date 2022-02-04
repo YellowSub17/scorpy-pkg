@@ -56,7 +56,7 @@ class VolPlot(BasePlot):
             extent=[self.xmin,self.xmax,self.zmin,self.zmax]
         if axis%3==2:
             im = self.vol[:,:,index]
-            extent=[self.xmin,self.zmax,self.ymin,self.ymax]
+            extent=[self.xmin,self.xmax,self.ymin,self.ymax]
 
         if 'extent' not in new_kwargs.keys():
             new_kwargs.update({'extent':extent})

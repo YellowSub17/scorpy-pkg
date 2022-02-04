@@ -13,7 +13,7 @@ plt.close('all')
 
 # Parameters
 
-tag = 'p1-inten-r0-supp-t-from-sphv'
+tag = 'p1-inten-r0-from-corr'
 
 sub_tag = 'c'
 recipe_fname =  'rec.txt'
@@ -83,9 +83,18 @@ for line in recipe_file:
 a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_final.dbin')
 
 
+
 print(f'Finished: {time.asctime()}')
 print()
 
+
+cif_targ = scorpy.CifData(path=f'{scorpy.DATADIR}/algo/{tag}/{tag}_targ-sf.cif')
+cif_final = scorpy.CifData(a_mag = cif_targ.a_mag, b_mag = cif_targ.b_mag, c_mag=cif_targ.c_mag,
+                           alpha = np.degrees(cif_targ.alpha), beta = np.degrees(cif_targ.beta), gamma=np.degrees(cif_targ.gamma),
+                           qmax = cif_targ.qmax)
+cif_final.fill_from_sphv(a.sphv_iter)
+
+cif_final.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/{tag}_{sub_tag}_final-sf.cif')
 
 
 

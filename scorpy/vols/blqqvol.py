@@ -77,7 +77,6 @@ class BlqqVol(Vol, BlqqVolProps):
         # for every even spherical harmonic
         for l in range(0, self.nl, lskip):
             leg_vals = special.eval_legendre(l, args)
-            # leg_vals = 4*np.pi * special.eval_legendre(l, args)
             fmat[:, l] = leg_vals
 
         #if rcond is given, use it, else, use default

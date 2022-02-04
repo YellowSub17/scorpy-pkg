@@ -10,15 +10,10 @@ plt.close('all')
 
 
 
-# tag = 'fcc_inten_r1_supp_t'
-# tag = 'fcc_inten_r_5pc0_supp_t'
-# # tag = '4lzt_supp_t'
-# # tag = 'ccc_inten_r1_supp_t'
 
 
+tag = 'p1-inten-r0-from-corr'
 
-
-tag = 'p1-inten-r0-supp-t-from-sphv'
 
 cmap = 'viridis'
 
@@ -27,7 +22,7 @@ cmap = 'viridis'
 st = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_targ.dbin')
 ss = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_supp.dbin')
 
-qq = 35
+qq = -1
 
 
 
