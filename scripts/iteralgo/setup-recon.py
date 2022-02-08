@@ -12,16 +12,20 @@ plt.close('all')
 
 
 # # # Parameters
-nq= 100
+nq= 50
 ntheta = 90
 nphi = 180
 nl = 45
-npsi = 360
+npsi = 360*32
 qmax = 0.5
 
+rcond = 0.1
+
+from_corr = False
 
 
-tag = 'p1-inten-r0-from-corr'
+
+tag = 'p1-inten-r0-from-blqq-d100'
 
 targ_cif_fname = 'p1-inten-r0-sf.cif'
 supp_cif_fname = 'p1-inten-r0-sf.cif'
@@ -44,22 +48,38 @@ sphv_supp.make_mask()
 
 
 
-# # # Generate Data
-iqlm_targ = scorpy.IqlmHandler(nq, nl, qmax)
-iqlm_targ.fill_from_sphv(sphv_targ)
-sphv_harmed = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
-sphv_harmed.fill_from_iqlm(iqlm_targ)
+# # # Generate Data (from corr)
+if from_corr:
+    corr_data = scorpy.CorrelationVol(nq, npsi, qmax)
+    corr_data.fill_from_cif(cif_targ)
 
-blqq_data = scorpy.BlqqVol(nq, nl, qmax)
-blqq_data.fill_from_iqlm(iqlm_targ)
+    blqq_data = scorpy.BlqqVol(nq, nl, qmax)
+    blqq_data.fill_from_corr(corr_data, rcond=0.1)
 
 
-# # # Generate Data
-corr_data = scorpy.CorrelationVol(nq, npsi, qmax)
-corr_data.fill_from_cif(cif_targ)
 
-blqq_data = scorpy.BlqqVol(nq, nl, qmax)
-blqq_data.fill_from_corr(corr_data, rcond=0.2)
+    corr_calc = scorpy.CorrelationVol(nq, npsi, qmax)
+    corr_calc.fill_from_blqq(blqq_data)
+
+
+# # # Generate Data (from harm)
+else:
+    iqlm_targ = scorpy.IqlmHandler(nq, nl, qmax)
+    iqlm_targ.fill_from_sphv(sphv_targ)
+    sphv_harmed = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
+    sphv_harmed.fill_from_iqlm(iqlm_targ)
+
+    blqq_data = scorpy.BlqqVol(nq, nl, qmax)
+    blqq_data.fill_from_iqlm(iqlm_targ)
+
+    blqq_data.vol[:,:,41:] *=0
+
+    blqq_data.vol *=1/100
+
+
+    corr_calc = scorpy.CorrelationVol(nq, npsi, qmax)
+    corr_calc.fill_from_blqq(blqq_data)
+
 
 
 
@@ -72,6 +92,10 @@ cif_targ.save(f'{scorpy.DATADIR}/algo/{tag}/{tag}_targ-sf.cif')
 sphv_supp.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_supp.dbin')
 
 blqq_data.save(f'{scorpy.DATADIR}/algo/{tag}/blqq_{tag}_data.dbin')
+
+# corr_calc.save(f'{scorpy.DATADIR}/algo/{tag}/qcor_{tag}_calc.dbin')
+# if from_corr:
+    # corr_data.save(f'{scorpy.DATADIR}/algo/{tag}/qcor_{tag}_data.dbin')
 
 
 

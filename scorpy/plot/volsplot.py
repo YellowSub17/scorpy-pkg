@@ -64,4 +64,7 @@ class VolPlot(BasePlot):
         self._plot_2D(im, extent_axis=axis, **new_kwargs)
 
 
+    # def plot_line(self, x=None, y=None
+
+
 

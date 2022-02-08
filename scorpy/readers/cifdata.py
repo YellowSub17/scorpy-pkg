@@ -11,7 +11,7 @@ class CifData(CifDataProperties):
 
     def __init__(self,path=None, a_mag=1, b_mag=1, c_mag=1,
                     alpha=90, beta=90, gamma=90, spg='x',
-                 qmax=None  ):
+                 qmax=None, crop_poles=False  ):
 
 
 
@@ -34,7 +34,7 @@ class CifData(CifDataProperties):
             self._c_mag = float(cif_dict['_cell.length_c'])
 
             self.get_vec()
-            self.get_scat_from_cif(cif_dict, qmax)
+            self.get_scat_from_cif(cif_dict, qmax, crop_poles)
 
         else:
             self._spg = spg
@@ -93,7 +93,7 @@ class CifData(CifDataProperties):
 
 
 
-    def get_scat_from_cif(self, cif_dict, qmax):
+    def get_scat_from_cif(self, cif_dict, qmax, crop_poles):
         '''
         Parse cif data to generate scattering infomation, in Bragg indices,
         rectilinear reciprocal units, and spherical reciprocal units
@@ -168,6 +168,16 @@ class CifData(CifDataProperties):
             scat_rect = scat_rect[loc]
             scat_bragg = scat_bragg[loc]
             scat_sph = scat_sph[loc]
+
+        if crop_poles:
+            loc1 =scat_sph[:,1] == np.pi
+            scat_rect = scat_rect[~loc1]
+            scat_bragg = scat_bragg[~loc1]
+            scat_sph = scat_sph[~loc1]
+            loc2 =scat_sph[:,1] == 0
+            scat_rect = scat_rect[~loc2]
+            scat_bragg = scat_bragg[~loc2]
+            scat_sph = scat_sph[~loc2]
 
         self._qmax = np.round(np.max(scat_sph[:,0]), 14)
 
