@@ -55,8 +55,21 @@ class CifData(CifDataProperties):
             self._qmax = np.max(self._scat_sph[:, 0])
 
 
+    def multi_inten(self, sf=1):
+        self.scat_bragg[:,-1] *= sf
+        self.scat_sph[:,-1] *= sf
+        self.scat_rect[:,-1] *= sf
 
 
+    def unit_inten(self):
+        self.scat_bragg[:,-1] = 1
+        self.scat_sph[:,-1] = 1
+        self.scat_rect[:,-1] = 1
+
+    def sin_theta_correction(self):
+        self.scat_bragg[:,-1] *=  np.sin(self.scat_sph[:,1])
+        self.scat_sph[:,-1] *=  np.sin(self.scat_sph[:,1])
+        self.scat_rect[:,-1] *=  np.sin(self.scat_sph[:,1])
 
 
     def get_vec(self):
