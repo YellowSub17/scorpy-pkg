@@ -162,7 +162,10 @@ xmax=1, ymax=1, zmax=1,
         x_space = np.linspace(-kern_L, kern_L, kern_n)
         y_space = np.linspace(-kern_L, kern_L, kern_n)
         z_space = np.linspace(-kern_L, kern_L, kern_n)
+
+
         x_mesh, y_mesh, z_mesh = np.meshgrid(x_space, y_space, z_space)
+
 
         # calculates the guassian kernel and convolve
         kern = np.exp(- (x_mesh**2 / (2 * std_x**2) + y_mesh ** 2 / (2 * std_y**2) + z_mesh**2 / (2 * std_z**2)))
@@ -172,6 +175,27 @@ xmax=1, ymax=1, zmax=1,
         kern_n_half = int((kern_n - 1) / 2)
         blur = blur[kern_n_half:-kern_n_half, kern_n_half:-kern_n_half, kern_n_half:-kern_n_half]
         self.vol = blur
+
+
+    def convolve2D(self,  kern_L=2, kern_n=5, std_y=1, std_z=1):
+
+        y_space = np.linspace(-kern_L, kern_L, kern_n)
+        z_space = np.linspace(-kern_L, kern_L, kern_n)
+
+        y_mesh, z_mesh = np.meshgrid( y_space, z_space)
+
+        kern = np.exp(- ( y_mesh ** 2 / (2 * std_y**2) + z_mesh**2 / (2 * std_z**2)))
+        kern_n_half = int((kern_n - 1) / 2)
+        blur = np.zeros(self.vol.shape)
+        for i, yz in enumerate(self.vol):
+            blur2D = signal.fftconvolve(yz, kern)
+            blur[i] = blur2D[kern_n_half:-kern_n_half, kern_n_half:-kern_n_half]
+
+        self.vol = blur
+
+
+
+
 
     def normalize(self):
         self.vol -=self.vol.min()

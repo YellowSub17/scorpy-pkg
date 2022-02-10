@@ -13,7 +13,8 @@ plt.close('all')
 
 # Parameters
 
-tag = 'p1-inten-r0-from-blqq-d100'
+
+tag = 'p1-inten-r0-from-corr-qloose-supp'
 
 recipe_fname =  'rec.txt'
 sphv_init = None

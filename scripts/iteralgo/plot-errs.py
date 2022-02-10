@@ -9,26 +9,27 @@ plt.close('all')
 
 
 
+# tags = ['p1-inten-r0-from-corr-lcrop40',
+        # 'p1-inten-r0-from-corr-nolcrop',
+        # 'p1-inten-r0-from-blqq-lcrop40']
+
+# tags = ['p1-inten-r0-from-corr-lcrop40-small',
+        # 'p1-inten-r0-from-blqq-lcrop40-small']
 
 
+# tags = ['p1-inten-r0-from-blqq-x100',
+        # 'p1-inten-r0-from-blqq-x1',
+        # 'p1-inten-r0-from-blqq-d100']
 
-
-tags = ['p1-inten-r0-from-corr-lcrop40',
-        'p1-inten-r0-from-corr-nolcrop',
-        'p1-inten-r0-from-blqq-lcrop40']
-
-tags = ['p1-inten-r0-from-corr-lcrop40-small',
-        'p1-inten-r0-from-blqq-lcrop40-small']
-
-
-tags = ['p1-inten-r0-from-blqq-x100',
-        'p1-inten-r0-from-blqq-x1',
-        'p1-inten-r0-from-blqq-d100']
+tags = ['p1-inten-r0-from-blqq-qloose-supp',
+        'p1-inten-r0-from-corr-qloose-supp']
 
 
 sub_tag = 'a'
 
 cmap = 'viridis'
+
+
 
 
 plt.figure()
@@ -45,18 +46,20 @@ plt.legend()
 
 
 
+ss = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_supp.dbin')
+qloc = np.unique(np.where(ss.vol !=0)[0])
+qq=qloc[10]
 
 st = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_targ.dbin')
-qloc = np.unique(np.where(st.vol!=0)[0])
-qq = qloc[-4]
 
 
-fig, axes = plt.subplots(1,4, sharex=True, sharey=True)
-st.plot_slice(0, qq, title='targ', cmap=cmap, fig=fig, axes=axes[0])
+fig, axes = plt.subplots(2,2, sharex=True, sharey=True)
+st.plot_slice(0, qq, title='targ', cmap=cmap, fig=fig, axes=axes.flatten()[0])
+ss.plot_slice(0, qq, title='supp', cmap=cmap, fig=fig, axes=axes.flatten()[1])
 for i, tag in enumerate(tags):
     sf = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_final.dbin')
 
-    sf.plot_slice(0,qq, title=f'{tag}', cmap=cmap, fig=fig, axes=axes.flatten()[i+1])
+    sf.plot_slice(0,qq, title=f'{tag}', cmap=cmap, fig=fig, axes=axes.flatten()[i+2])
 
 
 

@@ -23,9 +23,11 @@ rcond = 0.1
 
 from_corr = False
 
+loose_supp = True
 
 
-tag = 'p1-inten-r0-from-blqq-d100'
+
+tag = 'p1-inten-r0-from-blqq-qloose-supp'
 
 targ_cif_fname = 'p1-inten-r0-sf.cif'
 supp_cif_fname = 'p1-inten-r0-sf.cif'
@@ -38,12 +40,31 @@ cif_targ = scorpy.CifData(path=f'{scorpy.DATADIR}/cifs/{targ_cif_fname}', qmax =
 sphv_targ = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_targ.fill_from_cif(cif_targ)
 
+qloc = np.unique(np.where(sphv_targ.vol !=0)[0])
+
 
 # # # Generate Support 
 cif_supp = scorpy.CifData(f'{scorpy.DATADIR}/cifs/{supp_cif_fname}', qmax = qmax)
 sphv_supp = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_supp.fill_from_cif(cif_supp)
 sphv_supp.make_mask()
+
+
+
+if loose_supp:
+    # sphv_supp.plot_slice(0, qloc[-7])
+    sphv_supp.convolve()
+    # sphv_supp.plot_slice(0, qloc[-7])
+    loc = sphv_supp.vol > 0.2
+    sphv_supp.vol[loc] = 1
+    sphv_supp.vol[~loc] = 0
+    # sphv_supp.plot_slice(0, qloc[-7])
+
+# plt.show()
+
+
+
+
 
 
 
@@ -56,7 +77,7 @@ if from_corr:
     blqq_data = scorpy.BlqqVol(nq, nl, qmax)
     blqq_data.fill_from_corr(corr_data, rcond=0.1)
 
-
+    blqq_data.vol[:,:,41:] *=0
 
     corr_calc = scorpy.CorrelationVol(nq, npsi, qmax)
     corr_calc.fill_from_blqq(blqq_data)
@@ -72,9 +93,8 @@ else:
     blqq_data = scorpy.BlqqVol(nq, nl, qmax)
     blqq_data.fill_from_iqlm(iqlm_targ)
 
-    blqq_data.vol[:,:,41:] *=0
 
-    blqq_data.vol *=1/100
+    blqq_data.vol[:,:,41:] *=0
 
 
     corr_calc = scorpy.CorrelationVol(nq, npsi, qmax)
