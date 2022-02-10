@@ -14,14 +14,14 @@ plt.close('all')
 # Parameters
 
 
-tag = 'p1-inten-r0-from-corr-qloose-supp'
+tag = 'p1-inten-r0-from-blqq-qloose-supp'
 
 recipe_fname =  'rec.txt'
 sphv_init = None
 
 
 
-for sub_tag in ['a']:
+for sub_tag in ['b', 'c']:
 
 # make sub directory for saving iters
     os.mkdir(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}')

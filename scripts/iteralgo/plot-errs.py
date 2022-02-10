@@ -25,7 +25,7 @@ tags = ['p1-inten-r0-from-blqq-qloose-supp',
         'p1-inten-r0-from-corr-qloose-supp']
 
 
-sub_tag = 'a'
+sub_tag = 'c'
 
 cmap = 'viridis'
 
@@ -48,7 +48,11 @@ plt.legend()
 
 ss = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_supp.dbin')
 qloc = np.unique(np.where(ss.vol !=0)[0])
-qq=qloc[10]
+qq=qloc[-8]
+##-8
+##10
+##5
+##25
 
 st = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_targ.dbin')
 
