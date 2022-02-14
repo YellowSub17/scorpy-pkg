@@ -5,26 +5,29 @@ import scorpy
 import os
 
 
+## parameters
 gpu = True
 randomor = True
 rrandom = True
 nofringe = True
 nonoise = True
 flat = True
-ncrystrals = 10
+ncrystrals = 1
 background = 0
-maxsize = 10
-minsize = 10
-beamr = 1e-6
+maxsize = 1000
+minsize = 1000
+beamr = 1e-9
 nphotons = 1e12
 beamband = 0.001
 photonenergy = 9300
 spectrum= 'tophat'
 specsample = 1
 gradient = 'mosaic'
-geom = f'{scorpy.DATADIR}/geoms/agipd_2304_vj_opt_v3.geom'
+geom = f'{scorpy.DATADIR}/geoms/single_square.geom'
+# geom = f'{scorpy.DATADIR}/geoms/agipd_2304_vj_opt_v3.geom'
+
 pdb = f'{scorpy.DATADIR}/pdb/1vds.pdb'
-outpath = f'{scorpy.DATADIR}/patternsim/test'
+outpath = f'{scorpy.DATADIR}/patternsim/test.h5'
 
 
 
@@ -44,7 +47,7 @@ if nonoise:
 if flat:
     cmd+='--flat '
 
-cmd+=f'--n {ncrystrals} '
+cmd+=f'-n {ncrystrals} '
 cmd+=f'--background={background} '
 
 cmd+=f'--max-size={maxsize} '

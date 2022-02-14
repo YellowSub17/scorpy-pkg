@@ -6,7 +6,7 @@ import configparser as cfp
 
 class ExpGeom:
 
-    def __init__(self, filename):
+    def __init__(self, filename, nfs = 128, nss = 64):
         '''
         Handler for .geom parameter files
         filename: str of the path to the .geom file
@@ -18,6 +18,9 @@ class ExpGeom:
         self.res = float(self.file_args['res'])
         self.clen = float(self.file_args['clen'])  # camera length
         self.photon_energy = float(self.file_args['photon_energy'])  # eV
+
+        self.nfs = nfs
+        self.nss = nss
         
         #props
         self.wavelength = (4.135667e-15 * 2.99792e8 *1e10) / self.photon_energy  # A
@@ -43,19 +46,19 @@ class ExpGeom:
 
         pix_pos = np.zeros((len(pix_sss), 3))
 
-        panel_mods = np.floor(pix_sss / 64)
+        panel_mods = np.floor(pix_sss / self.nss)
 
         for i_p, panel in enumerate(self.panels):
-            if np.floor(panel['min_ss'] / 64) not in panel_mods:
+            if np.floor(panel['min_ss'] / self.nss) not in panel_mods:
                 continue
             else:
-                loc = np.where(int(panel['min_ss'] / 64) == panel_mods)
+                loc = np.where(int(panel['min_ss'] / self.nss) == panel_mods)
 
-                pix_posx[loc] = panel['fs_xy'][0] * (pix_fss[loc] % 128) \
-                    + panel['ss_xy'][0] * (pix_sss[loc] % 64)
+                pix_posx[loc] = panel['fs_xy'][0] * (pix_fss[loc] % self.nfs) \
+                    + panel['ss_xy'][0] * (pix_sss[loc] % self.nss)
 
-                pix_posy[loc] = panel['fs_xy'][1] * (pix_fss[loc] % 128) \
-                    + panel['ss_xy'][1] * (pix_sss[loc] % 64)
+                pix_posy[loc] = panel['fs_xy'][1] * (pix_fss[loc] % self.nfs) \
+                    + panel['ss_xy'][1] * (pix_sss[loc] % self.nss)
 
                 pix_posz[loc] = panel['coffset']
 
@@ -129,12 +132,22 @@ class ExpGeom:
                 (panel['max_fs'] - panel['min_fs']) / self.res
             rect_height = panel['ss_xy'][0] * \
                 (panel['max_ss'] - panel['min_ss']) / self.res
+            
+            # print(rect_width, rect_height)
+
 
             # rotation of the panel, trig from fs directions
             # should be close to 90 or 270 degrees
-            rect_rot = (panel['fs_xy'][0]**2 + panel['fs_xy']
-                        [1]**2)**(1 / 2) / (panel['fs_xy'][0])
-            rect_rot = np.degrees(np.arccos(np.clip(1 / rect_rot, -1, 1)))
+            # print('WARNING: PANEL ROTATION NOT CALCULATED (expgeom.py)')
+            # print('assuming 0 rotation')
+            # rect_rot = 90
+
+          #   rect_rot = (panel['fs_xy'][0]**2 + panel['fs_xy']
+                        # [1]**2)**(1 / 2) / (panel['fs_xy'][0])
+            # rect_rot = np.degrees(np.arccos(np.clip(1 / rect_rot, -1, 1)))
+
+
+            rect_rot = np.degrees(np.arctan2( np.abs(panel['fs_xy'][1]), panel['fs_xy'][0]))
 
             # corner of the panel
             rect_x = panel['corner_xy'][0] / self.res

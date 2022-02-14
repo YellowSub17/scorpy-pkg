@@ -2,6 +2,13 @@ import numpy as np
 from scipy import special
 from skimage.transform import warp_polar
 
+import sys, os
+
+def blockPrint():
+    sys.stdout = open(os.devnull, 'w')
+
+def enablePrint():
+    sys.stdout = sys.__stdout__
 
 def to_polar(im, rmax, cenx, ceny):
     x = warp_polar( im, center=(cenx,ceny), radius=rmax)

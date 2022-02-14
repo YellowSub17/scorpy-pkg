@@ -8,6 +8,7 @@ from ..utils import index_x
 from .readersprops import PeakDataProperties
 
 DEFAULT_GEO = ExpGeom(f'{DATADIR}/geoms/agipd_2304_vj_opt_v3.geom')
+# DEFAULT_GEO = ExpGeom(f'{DATADIR}/geoms/xx.geom')
 
 class PeakData(PeakDataProperties):
 
