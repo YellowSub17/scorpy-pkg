@@ -193,6 +193,10 @@ class PeakDataProperties:
         return self._qmax
 
     @property
+    def qmin(self):
+        return self._qmin
+
+    @property
     def mask_flag(self):
         return self._mask_flag
 

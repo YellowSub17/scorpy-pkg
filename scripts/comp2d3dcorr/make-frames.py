@@ -8,38 +8,45 @@ import os
 ## parameters
 gpu = True
 randomor = True
-rrandom = True
 nofringe = True
 nonoise = True
 flat = True
-ncrystrals = 1
+ncrystals = 1000
 background = 0
 maxsize = 1000
 minsize = 1000
-beamr = 1e-9
+
+# maxsize = 100
+# minsize = 100
+beamr = 1e-12
 nphotons = 1e12
 beamband = 0.001
-photonenergy = 9300
+photonenergy = 9000
 spectrum= 'tophat'
 specsample = 1
 gradient = 'mosaic'
 geom = f'{scorpy.DATADIR}/geoms/single_square.geom'
-# geom = f'{scorpy.DATADIR}/geoms/agipd_2304_vj_opt_v3.geom'
-
 pdb = f'{scorpy.DATADIR}/pdb/1vds.pdb'
-outpath = f'{scorpy.DATADIR}/patternsim/test.h5'
+outpath = f'{scorpy.DATADIR}/patternsim/plot-test'
+outpath = f'{scorpy.DATADIR}/patternsim/1vds/1vds'
 
 
+
+
+if ncrystals>1 and outpath[-3:]=='.h5':
+    outpath = outpath[:-3]
+elif ncrystals==1 and outpath[-3:] != '.h5':
+    outpath += '.h5'
 
 
 cmd = 'pattern_sim '
 
-if gpu:
-    cmd+='--gpu '
 if randomor:
     cmd+='--random-orientation '
-if rrandom:
     cmd+='--really-random '
+
+if gpu:
+    cmd+='--gpu '
 if nofringe:
     cmd+='--no-fringes '
 if nonoise:
@@ -47,7 +54,7 @@ if nonoise:
 if flat:
     cmd+='--flat '
 
-cmd+=f'-n {ncrystrals} '
+cmd+=f'-n {ncrystals} '
 cmd+=f'--background={background} '
 
 cmd+=f'--max-size={maxsize} '
@@ -56,6 +63,8 @@ cmd+=f'--beam-radius={beamr} '
 cmd+=f'--nphotons={nphotons} '
 cmd+=f'--beam-bandwidth={beamband} '
 cmd+=f'--photon-energy={photonenergy} '
+
+
 
 cmd+=f'--spectrum={spectrum} '
 cmd+=f'--sample-spectrum={specsample} '
@@ -67,6 +76,10 @@ cmd+=f'-o {outpath} '
 print(cmd)
 
 
+# ori = '0.685 0.591 0.098 0.414'
+# print(ori)
+# ori = '0.717 0.514 -0.039 0.470'
+# print(ori)
 
-####py make-frames.py | bash 
-
+# if not randomor:
+    # print(ori)

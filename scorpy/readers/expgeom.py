@@ -2,11 +2,12 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
 import configparser as cfp
+from ..utils import convert_q2r
 
 
 class ExpGeom:
 
-    def __init__(self, filename, nfs = 128, nss = 64):
+    def __init__(self, filename):
         '''
         Handler for .geom parameter files
         filename: str of the path to the .geom file
@@ -19,8 +20,12 @@ class ExpGeom:
         self.clen = float(self.file_args['clen'])  # camera length
         self.photon_energy = float(self.file_args['photon_energy'])  # eV
 
-        self.nfs = nfs
-        self.nss = nss
+        if 'nfs' and 'nss' in self.file_args.keys():
+            self.nfs = int(self.file_args['nfs'])
+            self.nss = int(self.file_args['nss'])
+        else:
+            self.nfs = 128
+            self.nss = 64
         
         #props
         self.wavelength = (4.135667e-15 * 2.99792e8 *1e10) / self.photon_energy  # A
@@ -167,6 +172,19 @@ class ExpGeom:
                      [1] / self.res, panel['name'], fontsize=6)
         plt.xlabel('x [m]')
         plt.ylabel('y [m]')
+
+
+    def plot_qring(self, q=1):
+        r = convert_q2r(q, self.clen, self.wavelength)
+        circ = patches.Circle( (0,0), radius=r, fill=False, ec='purple', alpha=1, lw=1, ls=':')
+        plt.gca().add_patch(circ)
+
+
+
+
+
+
+
 
     def make_panels(self, file_panels):
         '''

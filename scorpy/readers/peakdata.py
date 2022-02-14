@@ -12,7 +12,7 @@ DEFAULT_GEO = ExpGeom(f'{DATADIR}/geoms/agipd_2304_vj_opt_v3.geom')
 
 class PeakData(PeakDataProperties):
 
-    def __init__(self, df, geo=DEFAULT_GEO, cxi_flag=True, qmax=None, mask_flag=False):
+    def __init__(self, df, geo=DEFAULT_GEO, cxi_flag=True, qmax=None, qmin=0, mask_flag=False):
         '''
         handler for a peaks.txt file
         df: dataframe of the peak data, or str file path to txt
@@ -30,6 +30,8 @@ class PeakData(PeakDataProperties):
 
         self._frame_numbers = np.unique(self.df[:, 0])
 
+        self._qmin = qmin
+
         self._scat_rect, self._scat_pol, self._scat_sph = self.get_scat(qmax=qmax)
 
 
@@ -37,6 +39,7 @@ class PeakData(PeakDataProperties):
             self._qmax = round(qmax, 14)
         else:
             self._qmax = round(self.scat_pol.max(axis=0)[0],14)
+
 
 
 
@@ -116,10 +119,19 @@ class PeakData(PeakDataProperties):
         scat_sph[:,-1] = inten_df
 
         if qmax is not None:
-            loc = np.where(q_mag <= qmax)
+            loc = np.where(scat_pol[:, 0] <= qmax)
             scat_sph = scat_sph[loc]
             scat_rect = scat_rect[loc]
             scat_pol = scat_pol[loc]
+
+        loc = np.where(scat_pol[:, 0] >self.qmin)
+        scat_sph = scat_sph[loc]
+        scat_rect = scat_rect[loc]
+        scat_pol = scat_pol[loc]
+
+
+
+
 
 
         return scat_rect, scat_pol, scat_sph
@@ -189,7 +201,6 @@ class PeakData(PeakDataProperties):
             plt.colorbar()
         else:
             plt.plot(x, y, '.')
-
 
 
 

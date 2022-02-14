@@ -2,7 +2,7 @@ from scipy import special
 import numpy as np
 import time
 
-from ..utils import angle_between_pol, angle_between_sph, angle_between_rect, index_x
+from ..utils import angle_between_pol, angle_between_sph, angle_between_rect, index_x, verbose_dec
 from .vol import Vol
 from .volsprops import CorrelationVolProps
 
@@ -55,7 +55,8 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
 
-    def fill_from_cif(self, cif, method='scat_rect', verbose=True):
+    @verbose_dec
+    def fill_from_cif(self, cif, method='scat_rect', verbose=0):
         '''
         scorpy.CorrelationVol.fill_from_cif():
             Fill the CorrelationVol from a CifData object
@@ -70,25 +71,31 @@ class CorrelationVol(Vol, CorrelationVolProps):
         assert self.qmax >= cif.qmax, 'cif.qmax > corr.qmax'
         assert method in ['scat_sph', 'scat_rect'], 'Invalid correlation method.'
 
-        if verbose:
-            print('############')
-            print(f'Filling CorrelationVol from CifData via {method}.')
-            print(f'Correlating {cif.scat_rect.shape[0]} vectors.')
-            print(f'Correlation started: {time.asctime()}\n')
+        print('############')
+        print(f'Filling CorrelationVol from CifData via {method}.')
+        print(f'Correlating {cif.scat_rect.shape[0]} vectors.')
+        print(f'Correlation started: {time.asctime()}\n')
 
         if method == 'scat_sph':
-            self.correlate_scat_sph(cif.scat_sph)
+
+            print('', end='\n')
+            self.correlate_scat_sph(cif.scat_sph, verbose=verbose-1)
+            print('', end='')
+            print('\x1b[2A\x1b[2K', end='\n')
         elif method == 'scat_rect':
-            self.correlate_scat_rect(cif.scat_rect)
+            print('', end='\n')
+            self.correlate_scat_rect(cif.scat_rect, verbose=verbose-1)
+            print('', end='')
+            print('\x1b[2A\x1b[2K', end='\n')
 
-        if verbose:
-            print(f'Correlation finished: {time.asctime()}')
-            print('############')
+        print(f'Correlation finished: {time.asctime()}')
+        print('############')
 
 
 
 
-    def fill_from_peakdata(self, pk, method='scat_pol', verbose=True, npeakmax=-1):
+    @verbose_dec
+    def fill_from_peakdata(self, pk, method='scat_pol', npeakmax=-1, verbose=0):
         '''
         scorpy.CorrelationVol.fill_from_peakdata():
             Fill the CorrelationVol from a PeakData object.
@@ -109,18 +116,21 @@ class CorrelationVol(Vol, CorrelationVolProps):
         frames = pk.split_frames(npeakmax=npeakmax)
         nframes = len(frames)
 
-        if verbose:
-            print('')
-            print('############')
-            print(f'Filling CorrelationVol from Peakdata via {method}.')
-            print(f'Correlating {nframes} frames.')
-            print(f'Correlation started: {time.asctime()}\n')
+        # print('\x1b[2J\x1b[H')
+        print('############')
+        print(f'Filling CorrelationVol from Peakdata via {method}.')
+        print(f'Correlation started: {time.asctime()}\n')
 
         if method=='scat_pol':
             for i, frame in enumerate(frames):
-                print(f'Frame: {i+1}/{nframes}', end='\r')
-                self.correlate_scat_pol(frame.scat_pol)
+                # time.sleep(1)
+                print(f'Frame: {i+1}/{nframes}', end='\n')
+                self.correlate_scat_pol(frame.scat_pol, verbose=verbose-1)
                 print('', end='')
+                print('\x1b[2A\x1b[2K', end='\n')
+                # print('\x1b[2K\x1b[2K', end='')
+                # print('\x1b[2K', end='')
+                # print('', end='\n')
 
         if method=='scat_sph':
             for i, frame in enumerate(frames):
@@ -128,10 +138,9 @@ class CorrelationVol(Vol, CorrelationVolProps):
                 self.correlate_scat_sph(frame.scat_sph)
                 print('', end='')
 
-        if verbose:
-            print(f'Correlation finished: {time.asctime()}')
-            print('############')
-            print('')
+        print(f'Correlation started: {time.asctime()}\n')
+
+
 
 
 
@@ -276,8 +285,6 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
 
-    def fill_from_xfmh5(self, xfmh5):
-        pass
 
 
 
@@ -297,7 +304,8 @@ class CorrelationVol(Vol, CorrelationVolProps):
         return out
 
 
-    def correlate_scat_pol(self, qti):
+    @verbose_dec
+    def correlate_scat_pol(self, qti, verbose=0):
         '''
         scorpy.CorrelationVol.correlate_scat_pol():
             Correlate diffraction peaks in 2D polar coordinates.
@@ -313,8 +321,9 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
         qti[:,1] = np.degrees(qti[:,1])
 
+        nscats = qti.shape[0]
         # calculate q indices of every scattering vector outside of loop
-        ite = np.ones(qti.shape[0])
+        ite = np.ones(nscats)
         q_inds = list(map(index_x, qti[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
 
 
@@ -326,8 +335,10 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
         for i, q1 in enumerate(qti):
+            print(f'Peak: {i+1}/{nscats}', end='\r')
             # get q index
             q1_ind = q_inds[i]
+
 
             for j, q2 in enumerate(qti[i+q2start_term:q2end_term]):
                 # get q index
@@ -345,12 +356,11 @@ class CorrelationVol(Vol, CorrelationVolProps):
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
                 if j > 0:  # if not on diagonal
                     self.vol[q2_ind, q1_ind, psi_ind] += q1[-1] * q2[-1]
+        print('\x1b[2K', end='\r')
 
 
-
-
-
-    def correlate_scat_rect(self, qxyzi):
+    @verbose_dec
+    def correlate_scat_rect(self, qxyzi, verbose=0):
         '''
         scorpy.CorrelationVol.correlate_scat_pol():
             Correlate diffraction peaks in 3D rectilinear coordinates.
@@ -380,10 +390,10 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
         for i, q1 in enumerate(qxyzi):
+            print(f'Peak: {i+1}/{nscats}', end='\r')
 
             # get q index
             q1_ind = q_inds[i]
-            # print(f'{i}/{nscats}', end='\r')
 
             for j, q2 in enumerate(qxyzi[i+q2start_term:q2end_term]):
                 # get q index
@@ -402,10 +412,12 @@ class CorrelationVol(Vol, CorrelationVolProps):
                 if j > 0:  # if not on diagonal
                     self.vol[q2_ind, q1_ind, psi_ind] += q1[-1] * q2[-1]
 
+        print('\x1b[2K', end='\r')
 
 
 
-    def correlate_scat_sph(self, qtpi):
+
+    def correlate_scat_sph(self, qtpi, verbose=False):
         '''
         scorpy.CorrelationVol.correlate_scat_sph():
             Correlate diffraction peaks in 3D spherical coordinates.
@@ -419,8 +431,10 @@ class CorrelationVol(Vol, CorrelationVolProps):
         le_qmax = np.where(qtpi[:, 0] <= self.qmax)[0]
         qtpi = qtpi[le_qmax]
 
+
+        nscats = qtpi.shape[0]
         # calculate q indices of every scattering vector outside of loop
-        ite = np.ones(qtpi.shape[0])
+        ite = np.ones(nscats)
         q_inds = list(map(index_x, qtpi[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
 
         # calc start and end positions if inlcuding self correlation
@@ -432,6 +446,8 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
         for i, q1 in enumerate(qtpi):
+
+            print(f'Peak: {i+1}/{nscats}', end='\r')
             # get q index, theta and phi
             q1_ind = q_inds[i]
             theta1 = q1[1]
@@ -452,13 +468,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
                 psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=self.zwrap)
 
                 # fill the volume
-                try:
-                    self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
-                except IndexError:
-                    print(q1_ind, q2_ind, psi_ind)
-                    print(q1[0])
-                    print(q2[0])
-                    exit()
+                self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
 
                 if j > 0:  # if not on diagonal
                     self.vol[q2_ind, q1_ind, psi_ind] += q1[-1] * q2[-1]
@@ -466,6 +476,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
 
+        print('\x1b[2K', end='\r')
 
 
 

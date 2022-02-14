@@ -2,13 +2,31 @@ import numpy as np
 from scipy import special
 from skimage.transform import warp_polar
 
-import sys, os
+# import sys, os
 
-def blockPrint():
-    sys.stdout = open(os.devnull, 'w')
+# def block_print():
+    # sys.stdout = open(os.devnull, 'w')
 
-def enablePrint():
-    sys.stdout = sys.__stdout__
+# def enable_print():
+    # sys.stdout = sys.__stdout__
+
+
+import os
+import contextlib
+
+
+def verbose_dec(fn):
+
+    def wrapper(*args, **kwargs):
+        if kwargs['verbose']>0:
+            fn(*args, **kwargs)
+        else:
+            with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
+                fn(*args, **kwargs)
+
+    return wrapper
+
+
 
 def to_polar(im, rmax, cenx, ceny):
     x = warp_polar( im, center=(cenx,ceny), radius=rmax)
