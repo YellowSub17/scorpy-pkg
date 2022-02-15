@@ -1,10 +1,9 @@
 
 
-
-
+import scorpy
 
 import os
-import scorpy
+import sys
 import matplotlib.pyplot as plt
 
 
@@ -18,19 +17,9 @@ npix = 500
 pixsize = 800e-6
 geomfname = 'single_square.geom'
 
-nframes = 1000
-nbatches = 10
-geomfname = 'batch.geom'
-pdbfname = '1vds.pdb'
-corrfname = '1vds-2d-batch-qcor.dbin'
 
 
-
-corr_total = scorpy.CorrelationVol(nq=100, npsi=180, cos_sample=False, inc_self_corr=False)
-corr_total.save(f'{scorpy.DATADIR}/dbins/{corrfname}')
-
-
-#write geom
+geomfname = 'plot-test.geom'
 geomf = open(f'{scorpy.DATADIR}/geoms/{geomfname}', 'w')
 geomf.write('data = /entry_1/instrument_1/detector_1/data\n')
 geomf.write(f'mask = /entry_1/instrument_1/detector_1/mask\n')
@@ -54,9 +43,10 @@ geomf.write(f'nfs = {npix}\n')
 geomf.write(f'nss = {npix}\n')
 geomf.close()
 
-geo = scorpy.ExpGeom(f'{scorpy.DATADIR}/geoms/{geomfname}')
 
 
+geompath = f'{scorpy.DATADIR}/geoms/{geomfname}'
+pdbpath = f'{scorpy.DATADIR}/pdb/1vds.pdb'
 
 
 
@@ -64,7 +54,7 @@ cmd = 'pattern_sim '
 cmd+='--random-orientation '
 cmd+='--really-random '
 cmd+='--gpu '
-cmd+=f'-n {nframes} '
+cmd+=f'-n 1 '
 cmd+=f'--max-size={size} '
 cmd+=f'--min-size={size} '
 cmd+=f'--nphotons=1e12 '
@@ -75,51 +65,23 @@ cmd+=f'--photon-energy={photonenergy} '
 cmd+=f'--spectrum=tophat '
 cmd+=f'--sample-spectrum=1 '
 cmd+=f'--gradients=mosaic '
-cmd+=f'-g {scorpy.DATADIR}/geoms/{geomfname} '
-cmd+=f'-p {scorpy.DATADIR}/pdb/{pdbfname} '
-
-if nframes>1:
-    cmd+=f'-o /tmp/corrbatch'
-else:
-    cmd+=f'-o /tmp/corrbatch-1.h5'
+cmd+=f'-g {geompath} '
+cmd+=f'-p {pdbpath} '
+cmd+=f'-o {scorpy.DATADIR}/patternsim/plot-test.h5'
 
 
 
+# os.system(f'echo "-0.335 -0.004 -0.091 0.938" | {cmd}')
+os.system(f'{cmd}')
 
 
+geo = scorpy.ExpGeom(f'{geompath}')
+print(geo.k)
+pk = scorpy.PeakData(f'{scorpy.DATADIR}/patternsim/plot-test.h5', geo=geo)
 
-for batch in range(nbatches):
-
-    print('batch:', batch)
-    for file in os.listdir('/tmp/'):
-        if 'corrbatch' in file:
-            os.remove(f'/tmp/{file}')
-
-    os.system(f'{cmd} >/dev/null 2>&1')
-
-    for frame in range(1, nframes+1):
-        print('frame:', frame, end='\r')
-
-        pk = scorpy.PeakData(f'/tmp/corrbatch-{frame}.h5', geo=geo, qmax=qmax, qmin=qmin)
-        corr_total.fill_from_peakdata(pk)
-    print()
+pk.plot_peaks()
+pk.geo.plot_qring(qmax)
+pk.geo.plot_qring(qmin)
 
 
-corr_total.save(f'{scorpy.DATADIR}/dbins/{corrfname}')
-
-
-
-
-
-# pk.plot_peaks()
-# pk.geo.plot_qring(qmin)
-# pk.geo.plot_qring(qmax)
-# corr_total.plot_q1q2()
-# corr_total.plot_q1q2(log=True)
-# plt.show()
-
-
-
-
-
-
+plt.show()
