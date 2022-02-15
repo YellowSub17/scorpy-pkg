@@ -176,6 +176,7 @@ class CifData(CifDataProperties):
         phi[np.where(phi < 0)] = phi[np.where(phi < 0)] + 2 * np.pi  # 0 -> 2pi
         scat_sph = np.array([q_mag, theta, phi, I]).T
 
+
         if qmax is not None:
             loc = np.where(scat_sph[:, 0] <= qmax)
             scat_rect = scat_rect[loc]
@@ -198,6 +199,16 @@ class CifData(CifDataProperties):
         self._scat_sph = np.round(scat_sph, 14)
         self._scat_rect = np.round(scat_rect, 14)
 
+
+        scat_pol = np.zeros( (scat_sph.shape[0], 3))
+        scat_pol[:,0] = scat_sph[:,0]
+        scat_pol[:,1] =  scat_sph[:,2]
+        scat_pol[:,2] =  scat_sph[:,3]
+
+        self._scat_pol = scat_sph
+
+    def make_saldin(self, k):
+        self.scat_sph[:,1] = np.pi/2 - np.arcsin(self.scat_sph[:,0]/(2*k))
 
 
 

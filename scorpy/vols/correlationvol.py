@@ -27,15 +27,22 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
     def __init__(self, nq=100, npsi=180, qmax=1, cos_sample=True, inc_self_corr=True, path=None):
 
-        if cos_sample:
-            Vol.__init__(self, nq, nq, npsi, 0, 0, -1, qmax, qmax, 1, False, False, False, comp=False, path=path)
-        else:
-            Vol.__init__(self, nq, nq, npsi, 0, 0, 0, qmax, qmax, np.pi, False, False, False, comp=False, path=path)
 
-        self._cos_sample = cos_sample
-        self._inc_self_corr = inc_self_corr
+
+
+        if path is not None:
+            Vol.__init__(self, path=path)
+        else:
+
+            if cos_sample:
+                Vol.__init__(self, nq, nq, npsi, 0, 0, -1, qmax, qmax, 1, False, False, False, comp=False, path=path)
+            else:
+                Vol.__init__(self, nq, nq, npsi, 0, 0, 0, qmax, qmax, np.pi, False, False, False, comp=False, path=path)
+
+            self._cos_sample = cos_sample
+            self._inc_self_corr = inc_self_corr
+
         self.plot_q1q2 = self.plot_xy
-        print('loaded init')
 
     def _save_extra(self, f):
         f.write('[corr]\n')
@@ -50,7 +57,6 @@ class CorrelationVol(Vol, CorrelationVolProps):
     def _load_extra(self, config):
         self._cos_sample = config.getboolean('corr', 'cos_sample')
         self._inc_self_corr = config.getboolean('corr', 'inc_self_corr')
-        print('loaded extra')
 
 
 
@@ -71,7 +77,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
         '''
 
         assert self.qmax >= cif.qmax, 'cif.qmax > corr.qmax'
-        assert method in ['scat_sph', 'scat_rect'], 'Invalid correlation method.'
+        assert method in ['scat_sph', 'scat_rect', 'scat_pol'], 'Invalid correlation method.'
 
         print('############')
         print(f'Filling CorrelationVol from CifData via {method}.')
@@ -79,16 +85,18 @@ class CorrelationVol(Vol, CorrelationVolProps):
         print(f'Correlation started: {time.asctime()}\n')
 
         if method == 'scat_sph':
-
             print('', end='\n')
             self.correlate_scat_sph(cif.scat_sph, verbose=verbose-1)
-            print('', end='')
             print('\x1b[2A\x1b[2K', end='\n')
         elif method == 'scat_rect':
             print('', end='\n')
             self.correlate_scat_rect(cif.scat_rect, verbose=verbose-1)
-            print('', end='')
             print('\x1b[2A\x1b[2K', end='\n')
+        elif method == 'scat_pol':
+            print('', end='\n')
+            self.correlate_scat_pol(cif.scat_pol, verbose=verbose-1)
+            print('\x1b[2A\x1b[2K', end='\n')
+
 
         print(f'Correlation finished: {time.asctime()}')
         print('############')
@@ -127,8 +135,8 @@ class CorrelationVol(Vol, CorrelationVolProps):
             for i, frame in enumerate(frames):
                 print(f'Frame: {i+1}/{nframes}', end='\n')
                 self.correlate_scat_pol(frame.scat_pol, verbose=verbose-1)
-                print('', end='')
-                print('\x1b[2A\x1b[2K', end='\n')
+                # print('', end='')
+                # print('\x1b[2A\x1b[2K', end='\n')
 
         if method=='scat_sph':
             for i, frame in enumerate(frames):
@@ -236,39 +244,35 @@ class CorrelationVol(Vol, CorrelationVolProps):
         q_inds = list(map(index_x, qti[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
 
 
+
         # calc start and end positions if inlcuding self correlation
         if self.inc_self_corr:
             q2start_term, q2end_term = 0, None
         else:
-            q2start_term, q2end_term = 1, -1
+            q2start_term, q2end_term = 1, None
 
 
         for i, q1 in enumerate(qti):
             print(f'Peak: {i+1}/{nscats}', end='\r')
+      
             # get q index
             q1_ind = q_inds[i]
 
 
             for j, q2 in enumerate(qti[i+q2start_term:q2end_term]):
                 # get q index
-                q2_ind = q_inds[i + j]
+                q2_ind = q_inds[i + j+q2start_term]
 
                 # get the angle between vectors, and index it
                 psi = angle_between_pol(q1[1], q2[1])
                 
 
                 if self.cos_sample:
-                    print('cos_sample!!')
                     psi = np.cos(np.radians(psi))
                 else:
-                    print('not cos_sample!!')
                     psi = np.radians(psi)
 
                 psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=self.zwrap)
-                print()
-                print(q1,q2)
-                print(psi, psi_ind)
-                # print(self.zmin, self.zmax, self.npsi, self.zwrap)
 
                 # fill the volume
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]

@@ -174,9 +174,9 @@ class ExpGeom:
         plt.ylabel('y [m]')
 
 
-    def plot_qring(self, q=1):
+    def plot_qring(self, q=1, ec='purple', ls=":"):
         r = convert_q2r(q, self.clen, self.wavelength)
-        circ = patches.Circle( (0,0), radius=r, fill=False, ec='purple', alpha=1, lw=1, ls=':')
+        circ = patches.Circle( (0,0), radius=r, fill=False, ec=ec, alpha=1, lw=1, ls=ls)
         plt.gca().add_patch(circ)
 
 

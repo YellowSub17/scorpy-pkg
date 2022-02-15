@@ -128,6 +128,11 @@ class CifDataProperties:
         '''
         return self._scat_sph
 
+
+    @property
+    def scat_pol(self):
+        return self._scat_pol
+
     @property
     def qmax(self):
         '''

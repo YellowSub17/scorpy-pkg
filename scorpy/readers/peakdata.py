@@ -12,7 +12,7 @@ DEFAULT_GEO = ExpGeom(f'{DATADIR}/geoms/agipd_2304_vj_opt_v4.geom')
 
 class PeakData(PeakDataProperties):
 
-    def __init__(self, df, geo=DEFAULT_GEO, cxi_flag=True, qmax=None, qmin=0, mask_flag=False):
+    def __init__(self, df, geo=DEFAULT_GEO, cxi_flag=True, qmax=None, qmin=None, mask_flag=False):
         '''
         handler for a peaks.txt file
         df: dataframe of the peak data, or str file path to txt
@@ -30,15 +30,21 @@ class PeakData(PeakDataProperties):
 
         self._frame_numbers = np.unique(self.df[:, 0])
 
-        self._qmin = qmin
 
-        self._scat_rect, self._scat_pol, self._scat_sph = self.get_scat(qmax=qmax)
+        self._scat_rect, self._scat_pol, self._scat_sph = self.get_scat(qmax=qmax, qmin=qmin)
 
 
         if qmax is not None:
             self._qmax = round(qmax, 14)
         else:
             self._qmax = round(self.scat_pol.max(axis=0)[0],14)
+
+        if qmin is not None:
+            self._qmin = round(qmin, 14)
+        else:
+            self._qmin = round(self.scat_pol.min(axis=0)[0],14)
+
+
 
 
 
@@ -70,7 +76,7 @@ class PeakData(PeakDataProperties):
 
 
 
-    def get_scat(self, qmax=None):
+    def get_scat(self, qmax=None, qmin=None):
         '''
         generate a list of important values to calculate from
         it's easier to work with arrays the panda dataframes
@@ -108,13 +114,12 @@ class PeakData(PeakDataProperties):
         # scat_pol = np.array([q_mag, pol_phi, inten_df]).T
 
 
-        # saldin_sph_theta = np.pi/2 - np.arcsin((q_mag)/(2*self.geo.k))
+        saldin_sph_theta = np.pi/2 - np.arcsin((q_mag)/(2*self.geo.k))
+        my_sph_theta = 0.5*(np.pi + theta1)
 
-
-        sph_theta = 0.5*(np.pi + theta1)
         scat_sph = np.zeros( ( nscats, 4))
         scat_sph[:,0] = q_mag
-        scat_sph[:,1] = sph_theta
+        scat_sph[:,1] = saldin_sph_theta
         scat_sph[:,2] = pol_phi
         scat_sph[:,-1] = inten_df
 
@@ -124,14 +129,11 @@ class PeakData(PeakDataProperties):
             scat_rect = scat_rect[loc]
             scat_pol = scat_pol[loc]
 
-        loc = np.where(scat_pol[:, 0] >self.qmin)
-        scat_sph = scat_sph[loc]
-        scat_rect = scat_rect[loc]
-        scat_pol = scat_pol[loc]
-
-
-
-
+        if qmin is not None:
+            loc = np.where(scat_pol[:, 0] > qmin)
+            scat_sph = scat_sph[loc]
+            scat_rect = scat_rect[loc]
+            scat_pol = scat_pol[loc]
 
 
         return scat_rect, scat_pol, scat_sph
@@ -148,7 +150,7 @@ class PeakData(PeakDataProperties):
             frame_df = self.df[np.where(self.df[:, 0] == fn)]
             if npeakmax==-1 or frame_df.shape[0] <=npeakmax:
                 # make the Peak data object and append
-                frames.append(PeakData(frame_df, self.geo))
+                frames.append(PeakData(frame_df, geo=self.geo, qmax=self.qmax, qmin=self.qmin))
         return frames  # return the list of appended peak datas
 
 

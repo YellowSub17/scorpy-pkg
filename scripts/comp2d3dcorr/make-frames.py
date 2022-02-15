@@ -11,10 +11,10 @@ randomor = True
 nofringe = True
 nonoise = True
 flat = True
-ncrystals = 1000
+ncrystals = 1
 background = 0
-maxsize = 1000
-minsize = 1000
+maxsize = 100
+minsize = 100
 
 # maxsize = 100
 # minsize = 100
@@ -28,8 +28,8 @@ gradient = 'mosaic'
 geom = f'{scorpy.DATADIR}/geoms/single_square.geom'
 pdb = f'{scorpy.DATADIR}/pdb/1vds.pdb'
 # outpath = f'{scorpy.DATADIR}/patternsim/plot-test'
-# outpath = f'{scorpy.DATADIR}/patternsim/1vds/1vds'
-outpath = f'/tmp/1vds'
+outpath = f'{scorpy.DATADIR}/patternsim/1vds'
+# outpath = f'/tmp/1vds'
 
 
 
