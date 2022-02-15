@@ -18,7 +18,7 @@ import contextlib
 def verbose_dec(fn):
 
     def wrapper(*args, **kwargs):
-        if kwargs['verbose']>0:
+        if 'verbose' in kwargs.keys() and kwargs['verbose']>0:
             fn(*args, **kwargs)
         else:
             with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
@@ -102,10 +102,10 @@ def angle_between_pol(t1, t2):
         psi (): Difference between t1 and t2, in degrees between 0 and 180
     '''
     psi = np.abs((t1 - t2 + 180) % 360 - 180)
-    # return psi
+    return psi
 
-    dot = np.cos(np.radians(psi))
-    return dot
+    # dot = np.cos(np.radians(psi))
+    # return dot
 
 
 def angle_between_rect(q1, q2):

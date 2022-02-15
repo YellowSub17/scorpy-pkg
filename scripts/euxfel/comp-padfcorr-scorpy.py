@@ -22,7 +22,7 @@ npsi = 180
 # print(ind)
 
 
-run = 118
+run = 108
 # frame_i = 0
 
 
@@ -43,9 +43,13 @@ run = 118
 
 
 pk = scorpy.PeakData(f'{scorpy.DATADIR}/cxi/run{run}_peaks.txt')
+
 qmax = pk.qmax
 r = scorpy.utils.convert_q2r(qmax, clen, wavelength*1e10)
 im = pk.make_im(r=r, fname=f'/tmp/tmp_frame_im.dbin', bool_inten=True)
+
+pk.plot_peaks()
+pk.geo.plot_qring(qmax)
 plt.figure()
 plt.imshow(im)
 

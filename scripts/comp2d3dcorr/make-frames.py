@@ -27,8 +27,9 @@ specsample = 1
 gradient = 'mosaic'
 geom = f'{scorpy.DATADIR}/geoms/single_square.geom'
 pdb = f'{scorpy.DATADIR}/pdb/1vds.pdb'
-outpath = f'{scorpy.DATADIR}/patternsim/plot-test'
-outpath = f'{scorpy.DATADIR}/patternsim/1vds/1vds'
+# outpath = f'{scorpy.DATADIR}/patternsim/plot-test'
+# outpath = f'{scorpy.DATADIR}/patternsim/1vds/1vds'
+outpath = f'/tmp/1vds'
 
 
 

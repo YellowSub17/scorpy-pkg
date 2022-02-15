@@ -35,6 +35,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
         self._cos_sample = cos_sample
         self._inc_self_corr = inc_self_corr
         self.plot_q1q2 = self.plot_xy
+        print('loaded init')
 
     def _save_extra(self, f):
         f.write('[corr]\n')
@@ -49,6 +50,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
     def _load_extra(self, config):
         self._cos_sample = config.getboolean('corr', 'cos_sample')
         self._inc_self_corr = config.getboolean('corr', 'inc_self_corr')
+        print('loaded extra')
 
 
 
@@ -123,22 +125,19 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
         if method=='scat_pol':
             for i, frame in enumerate(frames):
-                # time.sleep(1)
                 print(f'Frame: {i+1}/{nframes}', end='\n')
                 self.correlate_scat_pol(frame.scat_pol, verbose=verbose-1)
                 print('', end='')
                 print('\x1b[2A\x1b[2K', end='\n')
-                # print('\x1b[2K\x1b[2K', end='')
-                # print('\x1b[2K', end='')
-                # print('', end='\n')
 
         if method=='scat_sph':
             for i, frame in enumerate(frames):
-                print(f'Frame: {i+1}/{nframes}', end='\r')
+                print(f'Frame: {i+1}/{nframes}', end='\n')
                 self.correlate_scat_sph(frame.scat_sph)
                 print('', end='')
+                print('\x1b[2A\x1b[2K', end='\n')
 
-        print(f'Correlation started: {time.asctime()}\n')
+        print(f'Correlation ended: {time.asctime()}\n')
 
 
 
@@ -195,96 +194,6 @@ class CorrelationVol(Vol, CorrelationVolProps):
                     self.vol[q1_ind, q2_ind, psi_ind] = x # fill the volume
                     if q1_ind != q2_ind:  # if not on diagonal
                         self.vol[q2_ind, q1_ind, psi_ind] = x
-
-
-    def fill_from_sphv(self, sphv):
-        '''
-        scorpy.CorrelationVol.fill_from_sphv):
-            Fill the CorrelationVol from a SphericalVol object.
-        Arguments:
-            sphv : SphericalVol
-                The SphericalVol object to to fill the CorrelationVol.
-            inc_odds : bool
-                Flag for including odd order harmonics in the calculation.
-        '''
-        # mesh grid of phi and theta
-
-
-        assert self.nq == sphv.nq, 'SphericalVol and CorrelationVol have different nq'
-        assert self.qmax == sphv.qmax, 'SphericalVol and CorrelationVol have different qmax'
-        assert self.inc_self_corr, 'self correlation must be included to fill from sphv'
-
-        pp, tt = np.meshgrid(sphv.phipts, sphv.thetapts)
-        zero_slice = np.zeros( (sphv.ntheta, sphv.nphi))
-
-        print('Started: ', time.asctime())
-        # for every pair of q1 and q2 shells...
-        for q1_ind in range(0, sphv.nq):
-            q1_slice = sphv.vol[q1_ind, ...]
-            #if the slice is 0, the correlation is 0
-            if np.all(q1_slice == zero_slice):
-                continue
-            for q2_ind in range(q1_ind, sphv.nq):
-                q2_slice = sphv.vol[q2_ind, ...]
-                #if the slice is 0, the correlation is 0
-                if np.all(q2_slice == zero_slice):
-                    continue
-
-                print('q1_ind:', q1_ind, 'q2ind:', q2_ind, end='\r')
-                # for every orientation of shell
-                for theta_ind in range(0, sphv.ntheta):
-                    for phi_ind in range(0, sphv.nphi):
-
-                        # change the orienation of shell
-                        pp_rolled = np.roll(pp, (theta_ind, phi_ind), (0, 1))
-                        tt_rolled = np.roll(tt, (theta_ind, phi_ind), (0, 1))
-
-                        # correlate the intensities, where q2 is oritented
-                        II1 = q1_slice * np.roll(q2_slice, (theta_ind, phi_ind), (0, 1))
-                        II1 *=  np.sin(tt_rolled) * np.sin(tt)
-
-                        II2 = q2_slice * np.roll(q1_slice, (theta_ind, phi_ind), (0, 1))
-                        II2 *=  np.sin(tt_rolled) * np.sin(tt)
-
-                        if II1.max()==0 and II2.max()==0:
-                            continue
-
-                        # find the angle between unorientated and new orientation
-                        angle_between_flat = list(map(angle_between_sph,
-                                                      tt.flatten(), tt_rolled.flatten(),
-                                                      pp.flatten(), pp_rolled.flatten()))
-
-                        if not self.cos_sample:
-                            angle_between_flat = np.arccos(angle_between_flat)
-
-                        ite = np.ones(len(angle_between_flat))
-
-                        # find the index of psi, the angle between orientated shells
-                        angle_between_ind = list(map(index_x, angle_between_flat, -1 * ite, ite, sphv.nphi * ite, ite))
-
-                        # reshape the flattens array (flat arrays work well with map() )
-                        angle_between_rolled = np.array(angle_between_ind).reshape(sphv.ntheta, sphv.nphi)
-
-
-                        # cut positions where I=0
-                        locII1 = np.where(II1.flatten()!=0)
-                        locII2 = np.where(II2.flatten()!=0)
-
-
-                        # for every pair of psi index and inntensity values, add them to the correlation volume
-                        if q1_ind == q2_ind:
-                            for angle_ind, II_val in zip(angle_between_rolled.flatten()[locII1], II1.flatten()[locII2]):
-                                self.vol[q1_ind, q2_ind, angle_ind] += II_val
-
-                        else:
-                            for angle_ind, II_val in zip(angle_between_rolled.flatten(), II1.flatten()):
-                                self.vol[q1_ind, q2_ind, angle_ind] += II_val
-
-                            for angle_ind, II_val in zip(angle_between_rolled.flatten(), II2.flatten()):
-                                self.vol[q2_ind, q1_ind, angle_ind] += II_val
-
-
-
 
 
 
@@ -346,11 +255,20 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
                 # get the angle between vectors, and index it
                 psi = angle_between_pol(q1[1], q2[1])
+                
 
-                if not self.cos_sample:
-                    psi = np.arccos(psi)
+                if self.cos_sample:
+                    print('cos_sample!!')
+                    psi = np.cos(np.radians(psi))
+                else:
+                    print('not cos_sample!!')
+                    psi = np.radians(psi)
 
                 psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=self.zwrap)
+                print()
+                print(q1,q2)
+                print(psi, psi_ind)
+                # print(self.zmin, self.zmax, self.npsi, self.zwrap)
 
                 # fill the volume
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
