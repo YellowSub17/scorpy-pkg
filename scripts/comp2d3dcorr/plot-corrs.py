@@ -45,16 +45,6 @@ plt.close('all')
 
 
 
-geo = scorpy.ExpGeom(f'{scorpy.DATADIR}/geoms/single_square.geom')
-pk = scorpy.PeakData(f'{scorpy.DATADIR}/patternsim/plot-test.h5', geo=geo, qmin=0.01 )
-
-
-
-pk.plot_peaks()
-
-qs = [0.01, 0.25, 0.5, 0.75, 1]
-for q in qs:
-    pk.geo.plot_qring(q=q)
 
 
 
@@ -67,24 +57,26 @@ for q in qs:
 
 
 
+corr2d = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/1vds-2d-batch-qcor.dbin')
+
+corr3d = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/1vds-3d-qcor.dbin')
 
 
 
-# corr2d = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/1vds-2d.dbin')
-# corr2d.plot_q1q2(log=True)
+x = corr2d.psipts
+y = 0.16/(2*np.sin(x/2))
 
 
-# corr2d.vol[:,:,0:2]=0
-# corr2d.plot_q1q2()
 
 
-# corr3d = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/1vds-3d-qcor.dbin')
-# corr3d.plot_q1q2(log=True)
 
+corr2d.plot_q1q2(log=True)
+plt.plot(x,y, 'r:')
+plt.ylim([0,1])
 
-# corr3d.vol[:,:,0:2]=0
-# corr3d.plot_q1q2()
-
+corr3d.plot_q1q2(log=True)
+plt.plot(x,y, 'r:')
+plt.ylim([0,1])
 
 
 

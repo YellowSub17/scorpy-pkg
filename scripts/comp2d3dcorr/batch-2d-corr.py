@@ -16,9 +16,8 @@ qmin=0.01
 clen = 0.9
 npix = 500
 pixsize = 800e-6
-geomfname = 'single_square.geom'
 
-nframes = 1000
+nframes = 500
 nbatches = 10
 geomfname = 'batch.geom'
 pdbfname = '1vds.pdb'
@@ -109,14 +108,6 @@ corr_total.save(f'{scorpy.DATADIR}/dbins/{corrfname}')
 
 
 
-
-
-# pk.plot_peaks()
-# pk.geo.plot_qring(qmin)
-# pk.geo.plot_qring(qmax)
-# corr_total.plot_q1q2()
-# corr_total.plot_q1q2(log=True)
-# plt.show()
 
 
 
