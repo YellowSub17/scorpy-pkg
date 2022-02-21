@@ -71,7 +71,10 @@ class ExpGeom:
                 pix_posx[loc] += panel['corner_xy'][0]
                 pix_posy[loc] += panel['corner_xy'][1]
 
-        return np.array([pix_posx / self.res, pix_posy / self.res, pix_posz + self.clen]).T
+        rect_pos = np.array([pix_posx / self.res, pix_posy / self.res, pix_posz + self.clen]).T
+
+
+        return rect_pos
 
     def parse_file(self):
         '''

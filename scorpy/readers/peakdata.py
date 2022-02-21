@@ -12,7 +12,7 @@ DEFAULT_GEO = ExpGeom(f'{DATADIR}/geoms/agipd_2304_vj_opt_v4.geom')
 
 class PeakData(PeakDataProperties):
 
-    def __init__(self, df, geo=DEFAULT_GEO, cxi_flag=True, qmax=None, qmin=None, mask_flag=False):
+    def __init__(self, df, geo=DEFAULT_GEO, cxi_flag=True, qmax=None, qmin=0, mask_flag=False):
         '''
         handler for a peaks.txt file
         df: dataframe of the peak data, or str file path to txt
@@ -65,9 +65,10 @@ class PeakData(PeakDataProperties):
                 data = h5f['data/data'][:]
             else:
                 data = h5f['entry_1/instrument_1/detector_1/data'][:]
+                # self.datah5 = data
             h5f.close()
 
-            loc = np.where(data >0)
+            loc = np.where(data > 0)
             df = np.zeros( (len(loc[0]), 4))
             df[:,1] = loc[1]
             df[:,2] = loc[0]
@@ -92,9 +93,13 @@ class PeakData(PeakDataProperties):
             sss_df, fss_df)  # x,y,z position [m]
 
 
+
+
+
         scat_rect = np.zeros( (nscats, 4) )
         scat_rect[:,:3] = pix_pos
         scat_rect[:,-1] = inten_df
+
 
         pol_r_mag = np.hypot(pix_pos[:, 0], pix_pos[:, 1]) #distance in meters from detector center to pixel
         pol_phi = np.arctan2(pix_pos[:, 1], pix_pos[:, 0]) # angular polar coordinate of pixel
@@ -106,6 +111,7 @@ class PeakData(PeakDataProperties):
         # q_mag = (self.geo.k) * np.sin(theta1)  # 1/A
         q_mag = 2*self.geo.k*np.sin(0.5*theta1)
 
+        #flat ewald sphere approx
         scat_pol = np.zeros( (nscats, 3) )
         scat_pol[:,0] = q_mag
         scat_pol[:,1] = pol_phi

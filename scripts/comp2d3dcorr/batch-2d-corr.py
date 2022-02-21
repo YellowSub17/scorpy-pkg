@@ -18,9 +18,10 @@ npix = 500
 pixsize = 800e-6
 
 nframes = 500
-nbatches = 10
+nbatches = 100
 geomfname = 'batch.geom'
 pdbfname = '1vds.pdb'
+intenpath = f'{scorpy.DATADIR}/cifs/1vds-qmax1-sf.hkl'
 corrfname = '1vds-2d-batch-qcor.dbin'
 
 
@@ -68,6 +69,8 @@ cmd+=f'--max-size={size} '
 cmd+=f'--min-size={size} '
 cmd+=f'--nphotons=1e12 '
 cmd+=f'--photon-energy={photonenergy} '
+cmd+=f'--no-fringes '
+cmd+=f'--intensities={intenpath} '
 
 
 
@@ -85,8 +88,6 @@ else:
 
 
 
-
-
 for batch in range(nbatches):
 
     print('batch:', batch)
@@ -100,11 +101,17 @@ for batch in range(nbatches):
         print('frame:', frame, end='\r')
 
         pk = scorpy.PeakData(f'/tmp/corrbatch-{frame}.h5', geo=geo, qmax=qmax, qmin=qmin)
-        corr_total.fill_from_peakdata(pk)
+        corr_total.fill_from_peakdata(pk, method='scat_pol')
     print()
 
 
 corr_total.save(f'{scorpy.DATADIR}/dbins/{corrfname}')
+
+
+corr_total.plot_q1q2()
+corr_total.plot_q1q2(log=True)
+plt.show()
+
 
 
 

@@ -92,6 +92,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
             print('', end='\n')
             self.correlate_scat_rect(cif.scat_rect, verbose=verbose-1)
             print('\x1b[2A\x1b[2K', end='\n')
+            
         elif method == 'scat_pol':
             print('', end='\n')
             self.correlate_scat_pol(cif.scat_pol, verbose=verbose-1)

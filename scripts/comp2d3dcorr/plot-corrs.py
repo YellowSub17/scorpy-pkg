@@ -41,42 +41,30 @@ plt.close('all')
 
 
 
+corr2d = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/1vds-2d-batch50k-pol-qcor.dbin')
+
+corr3d = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/1vds-3d-sph-qcor.dbin')
+
+
+
+cif = scorpy.CifData(path=f'{scorpy.DATADIR}/cifs/1vds-qmax1-sf.cif')
+fig = plt.figure()
+ax = fig.add_subplot(projection='3d')
+ax.scatter(cif.scat_bragg[:,0], cif.scat_bragg[:,1], cif.scat_bragg[:,2])
+
+
+# x = corr2d.psipts
+# y = 0.16/(2*np.sin(x/2))
 
 
 
 
 
+# corr2d.plot_q1q2(log=False, title='2d')
+# corr3d.plot_q1q2(log=False, title='3d')
 
-
-
-
-
-
-
-
-
-
-
-corr2d = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/1vds-2d-batch-qcor.dbin')
-
-corr3d = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/1vds-3d-qcor.dbin')
-
-
-
-x = corr2d.psipts
-y = 0.16/(2*np.sin(x/2))
-
-
-
-
-
-corr2d.plot_q1q2(log=True)
-plt.plot(x,y, 'r:')
-plt.ylim([0,1])
-
-corr3d.plot_q1q2(log=True)
-plt.plot(x,y, 'r:')
-plt.ylim([0,1])
+corr2d.plot_q1q2(log=True, title='2d')
+corr3d.plot_q1q2(log=True, title='3d')
 
 
 

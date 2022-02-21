@@ -15,12 +15,17 @@ qmin=0.01
 clen = 0.9
 npix = 500
 pixsize = 800e-6
-geomfname = 'single_square.geom'
+
+geompath = f'{scorpy.DATADIR}/geoms/single_square.geom'
+pdbpath = f'{scorpy.DATADIR}/pdb/1vds.pdb'
+intenpath = f'{scorpy.DATADIR}/cifs/1vds-qmax1-sf.hkl'
+
+
 
 
 
 geomfname = 'plot-test.geom'
-geomf = open(f'{scorpy.DATADIR}/geoms/{geomfname}', 'w')
+geomf = open(f'{geompath}', 'w')
 geomf.write('data = /entry_1/instrument_1/detector_1/data\n')
 geomf.write(f'mask = /entry_1/instrument_1/detector_1/mask\n')
 geomf.write(f'adu_per_eV = 0.0075\n')
@@ -45,10 +50,6 @@ geomf.close()
 
 
 
-geompath = f'{scorpy.DATADIR}/geoms/{geomfname}'
-pdbpath = f'{scorpy.DATADIR}/pdb/1vds.pdb'
-
-
 
 cmd = 'pattern_sim '
 cmd+='--random-orientation '
@@ -59,6 +60,7 @@ cmd+=f'--max-size={size} '
 cmd+=f'--min-size={size} '
 cmd+=f'--nphotons=1e12 '
 cmd+=f'--photon-energy={photonenergy} '
+cmd+=f'--intensities={intenpath} '
 
 
 
@@ -76,8 +78,14 @@ os.system(f'{cmd}')
 
 
 geo = scorpy.ExpGeom(f'{geompath}')
-print(geo.k)
 pk = scorpy.PeakData(f'{scorpy.DATADIR}/patternsim/plot-test.h5', geo=geo)
+print(pk.scat_pol.shape[0])
+
+im = pk.make_im(npix=npix, r=0.2, bool_inten=True )
+
+plt.figure()
+plt.imshow(im)
+
 
 pk.plot_peaks()
 pk.geo.plot_qring(qmax)
