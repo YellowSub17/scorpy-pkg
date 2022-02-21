@@ -12,12 +12,12 @@ size = 1000
 photonenergy = 9300
 qmax=1
 qmin=0.01
-clen = 0.9
-npix = 500
+clen = 0.19
+npix = 1000
 pixsize = 800e-6
 
 geompath = f'{scorpy.DATADIR}/geoms/single_square.geom'
-pdbpath = f'{scorpy.DATADIR}/pdb/1vds.pdb'
+pdbpath = f'{scorpy.DATADIR}/pdb/dummy.pdb'
 intenpath = f'{scorpy.DATADIR}/cifs/1vds-qmax1-sf.hkl'
 
 
@@ -81,7 +81,7 @@ geo = scorpy.ExpGeom(f'{geompath}')
 pk = scorpy.PeakData(f'{scorpy.DATADIR}/patternsim/plot-test.h5', geo=geo)
 print(pk.scat_pol.shape[0])
 
-im = pk.make_im(npix=npix, r=0.2, bool_inten=True )
+im = pk.make_im(npix=npix, r=npix*pixsize/2, bool_inten=True )
 
 plt.figure()
 plt.imshow(im)

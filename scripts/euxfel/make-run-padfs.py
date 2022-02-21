@@ -9,9 +9,9 @@ plt.close('all')
 
 
 
-nr =100
+nr =150
 npsi = 180
-nl = 10
+nl = 100
 rmax = 40
 wavelength = 1.33
 
@@ -33,6 +33,10 @@ padf = scorpy.PadfVol(nr, npsi, rmax, nl, wavelength)
 
 corr = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/cxi/run{run}-qcor.dbin')
 padf.fill_from_corr(f'{scorpy.DATADIR}/dbins/cxi/run{run}-qcor.dbin')
+
+padf.save(f'{scorpy.DATADIR}/dbins/cxi/run{run}-padf.dbin')
+padf.plot_r1r2()
+plt.show()
 
 
 

@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 
 
-qmax = 1.44
+qmax = 1.45
 wavelength = 1.333e-10
 clen = 0.1697469375
 res = 5000
@@ -24,7 +24,6 @@ r = scorpy.utils.convert_q2r(qmax, clen, wavelength*1e10)
 
 runs = [108, 109, 110, 113, 118, 123, 125]
 
-# runs = [118]
 
 
 
@@ -35,9 +34,9 @@ for run in runs:
     print(f'####### Run {run}')
     pk = scorpy.PeakData(f'{scorpy.DATADIR}/cxi/run{run}_peaks.txt', qmax=qmax)
 
-    # corr = scorpy.CorrelationVol(nq=nq, npsi=npsi, qmax=qmax, cos_sample=False)
-    # corr.fill_from_peakdata(pk, npeakmax=npeakmax, method=method)
-    # corr.save(f'../../data/dbins/cxi/run{run}-qcor.dbin')
+    corr = scorpy.CorrelationVol(nq=nq, npsi=npsi, qmax=qmax, cos_sample=False)
+    corr.fill_from_peakdata(pk, npeakmax=npeakmax, method=method)
+    corr.save(f'../../data/dbins/cxi/run{run}-qcor.dbin')
 
 
     ### Seeded Half runs

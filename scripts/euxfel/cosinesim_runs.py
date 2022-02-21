@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 
 
-qmax = 1.8
+qmax = 1.45
 wavelength = 1.333e-10
 clen = 0.1697469375
 res = 5000
