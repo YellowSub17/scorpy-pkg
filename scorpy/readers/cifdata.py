@@ -11,7 +11,7 @@ class CifData(CifDataProperties):
 
     def __init__(self,path=None, a_mag=1, b_mag=1, c_mag=1,
                     alpha=90, beta=90, gamma=90, spg='x',
-                 qmax=None, crop_poles=False  ):
+qmax=None, crop_poles=False  ):
 
 
 
@@ -217,7 +217,14 @@ class CifData(CifDataProperties):
         self._qmax = sphv.qmax
 
         max_bragg_ind = np.floor(self.qmax/min(self.ast_mag, self.bst_mag, self.cst_mag))
-        # max_bragg_ind = 10
+
+        if max_bragg_ind > 20:
+            print(f'Max Bragg Index: {max_bragg_ind}')
+            ans = input('Continue? (y/n)')
+            if ans != 'y':
+                return None
+
+
 
         ite = np.arange(-max_bragg_ind, max_bragg_ind+1)
 
@@ -306,7 +313,6 @@ class CifData(CifDataProperties):
         cif['block']['_refln.index_k'] = self.scat_bragg[:,1]
         cif['block']['_refln.index_l'] = self.scat_bragg[:,2]
         cif['block']['_refln.intensity_meas'] = self.scat_bragg[:,3]
-        
         cif['block'].CreateLoop( ['_refln.index_h', '_refln.index_k', '_refln.index_l', '_refln.intensity_meas'] )
 
 

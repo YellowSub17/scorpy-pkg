@@ -27,13 +27,13 @@ for run in runs:
     # # plt.figure()
     # # im = pk.make_im()
     # # plt.imshow(im)
-    corr = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/cxi/run{run}-qcor.dbin')
+    corr = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/cxi/{run}/run{run}-qcor.dbin')
     corr.plot_q1q2(title=f'{run}', log=True)
 
     css_scores = []
     for seed in range(20):
-        corra = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/cxi/seeds/run{run}-seed{seed}a-qcor.dbin')
-        corrb = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/cxi/seeds/run{run}-seed{seed}b-qcor.dbin')
+        corra = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/cxi/{run}/run{run}-seed{seed}a-qcor.dbin')
+        corrb = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/cxi/{run}/run{run}-seed{seed}b-qcor.dbin')
 
 
         css_scores.append(scorpy.utils.cosinesim(corra.vol, corrb.vol))

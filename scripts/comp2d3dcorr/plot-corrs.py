@@ -41,16 +41,21 @@ plt.close('all')
 
 
 
-corr2d = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/1vds-2d-batch50k-pol-qcor.dbin')
-
-corr3d = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/1vds-3d-sph-qcor.dbin')
-
+corr2d = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/inten1-qmax1-2d-ssph-batch50k-qcor.dbin')
+corr3d = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/inten1-qmax021-3d-sph-qcor.dbin')
 
 
-cif = scorpy.CifData(path=f'{scorpy.DATADIR}/cifs/1vds-qmax1-sf.cif')
+
+corr2d.vol[:,:,:10] = 0
+corr2d.vol[:,:,-10:] = 0
+
+
+cif = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/inten1-qmax1-sf.cif')
 fig = plt.figure()
 ax = fig.add_subplot(projection='3d')
-ax.scatter(cif.scat_bragg[:,0], cif.scat_bragg[:,1], cif.scat_bragg[:,2])
+ax.scatter(cif.scat_rect[:,0], cif.scat_rect[:,1], cif.scat_rect[:,2])
+plt.xlabel('H')
+plt.ylabel('K')
 
 
 # x = corr2d.psipts
@@ -60,11 +65,13 @@ ax.scatter(cif.scat_bragg[:,0], cif.scat_bragg[:,1], cif.scat_bragg[:,2])
 
 
 
-# corr2d.plot_q1q2(log=False, title='2d')
-# corr3d.plot_q1q2(log=False, title='3d')
+fig, axes = plt.subplots(1,2, sharex=True, sharey=True)
+corr2d.plot_q1q2(log=True, title='2d', fig=fig, axes=axes[0])
+corr3d.plot_q1q2(log=True, title='3d', fig=fig, axes=axes[1])
 
-corr2d.plot_q1q2(log=True, title='2d')
-corr3d.plot_q1q2(log=True, title='3d')
+fig, axes = plt.subplots(1,2, sharex=True, sharey=True)
+corr2d.plot_q1q2(log=False, title='2d', fig=fig, axes=axes[0])
+corr3d.plot_q1q2(log=False, title='3d', fig=fig, axes=axes[1])
 
 
 

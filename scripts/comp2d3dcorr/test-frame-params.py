@@ -5,26 +5,30 @@ import scorpy
 import os
 import sys
 import matplotlib.pyplot as plt
+plt.close('all')
+import numpy as np
 
 
 ## parameters
-size = 1000
+
+size = 75
 photonenergy = 9300
 qmax=1
 qmin=0.01
-clen = 0.19
-npix = 1000
+clen = 0.45
+npix = 250
 pixsize = 800e-6
+nphotons=1e24
+nofringes=True
 
-geompath = f'{scorpy.DATADIR}/geoms/single_square.geom'
-pdbpath = f'{scorpy.DATADIR}/pdb/dummy.pdb'
-intenpath = f'{scorpy.DATADIR}/cifs/1vds-qmax1-sf.hkl'
+geompath = f'{scorpy.DATADIR}/geoms/plot-test.geom'
+pdbpath = f'{scorpy.DATADIR}/xtal/inten1-qmax1.pdb'
+intenpath = f'{scorpy.DATADIR}/xtal/inten1-qmax1-sf.hkl'
 
 
 
 
 
-geomfname = 'plot-test.geom'
 geomf = open(f'{geompath}', 'w')
 geomf.write('data = /entry_1/instrument_1/detector_1/data\n')
 geomf.write(f'mask = /entry_1/instrument_1/detector_1/mask\n')
@@ -58,12 +62,11 @@ cmd+='--gpu '
 cmd+=f'-n 1 '
 cmd+=f'--max-size={size} '
 cmd+=f'--min-size={size} '
-cmd+=f'--nphotons=1e12 '
+cmd+=f'--nphotons={nphotons} '
 cmd+=f'--photon-energy={photonenergy} '
 cmd+=f'--intensities={intenpath} '
-
-
-
+if nofringes:
+    cmd+=f'--no-fringes '
 cmd+=f'--spectrum=tophat '
 cmd+=f'--sample-spectrum=1 '
 cmd+=f'--gradients=mosaic '
@@ -73,23 +76,47 @@ cmd+=f'-o {scorpy.DATADIR}/patternsim/plot-test.h5'
 
 
 
+
 # os.system(f'echo "-0.335 -0.004 -0.091 0.938" | {cmd}')
 os.system(f'{cmd}')
 
 
 geo = scorpy.ExpGeom(f'{geompath}')
 pk = scorpy.PeakData(f'{scorpy.DATADIR}/patternsim/plot-test.h5', geo=geo)
-print(pk.scat_pol.shape[0])
-
-im = pk.make_im(npix=npix, r=npix*pixsize/2, bool_inten=True )
-
-plt.figure()
-plt.imshow(im)
 
 
-pk.plot_peaks()
+
+# im = pk.make_im(npix=npix, r=npix*pixsize/2, bool_inten=False )
+
+# plt.figure()
+# plt.imshow(im)
+
+
+pk.plot_peaks(scatter=True, cmap='spring')
+ax = plt.gca()
+ax.set_facecolor("black")
 pk.geo.plot_qring(qmax)
 pk.geo.plot_qring(qmin)
+
+
+for q in [0.095, 0.125, 0.155, 0.185, 0.205]:
+    pk.geo.plot_qring(q, ec='red')
+
+print('npeaks:', pk.scat_rect.shape[0])
+
+
+
+# loc = np.where(pk.scat_rect[:,-1] < 0.125* pk.scat_rect[:,-1].max())
+# pk.scat_rect[loc] *= 0
+# pk.plot_peaks(scatter=True, cmap='spring')
+# ax = plt.gca()
+# ax.set_facecolor("black")
+# pk.geo.plot_qring(qmax)
+# pk.geo.plot_qring(qmin)
+# for q in [0.095, 0.125, 0.155, 0.185, 0.205]:
+    # pk.geo.plot_qring(q, ec='red')
+
+
 
 
 plt.show()

@@ -193,7 +193,7 @@ class PeakData(PeakDataProperties):
 
 
 
-    def plot_peaks(self, scatter=False, cmap='viridis', s=100, newfig=True):
+    def plot_peaks(self, scatter=False, cmap='viridis', smin=0.5, smax=10, newfig=True):
 
         if newfig:
             plt.figure()
@@ -204,11 +204,20 @@ class PeakData(PeakDataProperties):
 
         if scatter:
             colors = self.scat_rect[:,-1]
-            sizes = s*self.scat_rect[:,-1]/self.scat_rect[:,-1].max()
+            # sizes = s*self.scat_rect[:,-1]/self.scat_rect[:,-1].max()
+            sizes = (smax-smin)*(colors-colors.min())/(colors.max()-colors.min()) +smin
+            # sizes = 1
             plt.scatter(x, y, c=colors, s=sizes, cmap=cmap)
+            # plt.scatter(x, y, c=colors, cmap=cmap)
             plt.colorbar()
         else:
             plt.plot(x, y, '.')
 
+    def plot_inten_hist(self, bins=100, log=False):
+        plt.figure()
+        if log:
+            plt.hist(np.log10(np.abs(self.scat_rect[:,-1])+1),bins=bins)
+        else:
+            plt.hist(self.scat_rect[:,-1],bins=bins)
 
 

@@ -6,27 +6,33 @@
 import os
 import scorpy
 import matplotlib.pyplot as plt
+plt.close('all')
+import time
 
 
 ## parameters
-size = 1000
+size = 75
 photonenergy = 9300
-qmax=1
+qmax=0.21
 qmin=0.01
-clen = 0.9
-npix = 500
+clen = 0.45
+npix = 250
 pixsize = 800e-6
+nphotons=1e24
+nofringes=True
 
 nframes = 500
 nbatches = 100
 geomfname = 'batch.geom'
-pdbfname = '1vds.pdb'
-intenpath = f'{scorpy.DATADIR}/cifs/1vds-qmax1-sf.hkl'
-corrfname = '1vds-2d-batch-qcor.dbin'
+pdbfname = 'inten1-qmax1.pdb'
+intenfname = 'inten1-qmax1-sf.hkl'
+method = 'scat_sph'
+
+corrfname = 'inten1-qmax1-2d-ssph-batch50k-qcor.dbin'
 
 
 
-corr_total = scorpy.CorrelationVol(nq=100, npsi=180, cos_sample=False, inc_self_corr=False)
+corr_total = scorpy.CorrelationVol(nq=100, npsi=180, qmax=qmax, cos_sample=False, inc_self_corr=False)
 corr_total.save(f'{scorpy.DATADIR}/dbins/{corrfname}')
 
 
@@ -67,18 +73,16 @@ cmd+='--gpu '
 cmd+=f'-n {nframes} '
 cmd+=f'--max-size={size} '
 cmd+=f'--min-size={size} '
-cmd+=f'--nphotons=1e12 '
+cmd+=f'--nphotons={nphotons} '
 cmd+=f'--photon-energy={photonenergy} '
-cmd+=f'--no-fringes '
-cmd+=f'--intensities={intenpath} '
-
-
-
+if nofringes:
+    cmd+=f'--no-fringes '
+cmd+=f'--intensities={scorpy.DATADIR}/xtal/{intenfname} '
 cmd+=f'--spectrum=tophat '
 cmd+=f'--sample-spectrum=1 '
 cmd+=f'--gradients=mosaic '
 cmd+=f'-g {scorpy.DATADIR}/geoms/{geomfname} '
-cmd+=f'-p {scorpy.DATADIR}/pdb/{pdbfname} '
+cmd+=f'-p {scorpy.DATADIR}/xtal/{pdbfname} '
 
 if nframes>1:
     cmd+=f'-o /tmp/corrbatch'
@@ -88,9 +92,11 @@ else:
 
 
 
+print('############')
+print(f'Correlation started: {time.asctime()}\n')
 for batch in range(nbatches):
 
-    print('batch:', batch)
+    print('batch:', batch, end='\n')
     for file in os.listdir('/tmp/'):
         if 'corrbatch' in file:
             os.remove(f'/tmp/{file}')
@@ -101,10 +107,12 @@ for batch in range(nbatches):
         print('frame:', frame, end='\r')
 
         pk = scorpy.PeakData(f'/tmp/corrbatch-{frame}.h5', geo=geo, qmax=qmax, qmin=qmin)
-        corr_total.fill_from_peakdata(pk, method='scat_pol')
+        corr_total.fill_from_peakdata(pk, method=method, verbose=0)
     print()
 
 
+print(f'Correlation finished: {time.asctime()}\n')
+print('############')
 corr_total.save(f'{scorpy.DATADIR}/dbins/{corrfname}')
 
 

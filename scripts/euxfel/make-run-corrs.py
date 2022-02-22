@@ -22,7 +22,10 @@ r = scorpy.utils.convert_q2r(qmax, clen, wavelength*1e10)
 
 
 
-runs = [108, 109, 110, 113, 118, 123, 125]
+runs = [108, 109, 110, 113, 118, 123, 125,
+        102, 103, 104, 105, 112, 119, 120, 121, 124, 126]
+
+
 
 
 
@@ -36,7 +39,7 @@ for run in runs:
 
     corr = scorpy.CorrelationVol(nq=nq, npsi=npsi, qmax=qmax, cos_sample=False)
     corr.fill_from_peakdata(pk, npeakmax=npeakmax, method=method)
-    corr.save(f'../../data/dbins/cxi/run{run}-qcor.dbin')
+    corr.save(f'{scorpy.DATADIR}/dbins/cxi/{run}/run{run}-qcor.dbin')
 
 
     ### Seeded Half runs
@@ -54,13 +57,13 @@ for run in runs:
         for i, frame in enumerate(frames_a):
             print(f'a Frame {i}', end='\r')
             corra.fill_from_peakdata(frame, method=method, npeakmax=npeakmax)
-        corra.save(f'../../data/dbins/cxi/seeds/run{run}-seed{seed}a-qcor.dbin')
+        corra.save(f'../../data/dbins/cxi/{run}/run{run}-seed{seed}a-qcor.dbin')
 
         corrb = scorpy.CorrelationVol(nq, npsi, qmax, cos_sample=False)
         for i, frame in enumerate(frames_b):
             print(f'b Frame {i}', end='\r')
             corrb.fill_from_peakdata(frame, method=method, npeakmax=npeakmax)
-        corrb.save(f'../../data/dbins/cxi/seeds/run{run}-seed{seed}b-qcor.dbin')
+        corrb.save(f'../../data/dbins/cxi/{run}/run{run}-seed{seed}b-qcor.dbin')
 
 
 
