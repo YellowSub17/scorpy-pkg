@@ -188,32 +188,97 @@ class PeakData(PeakDataProperties):
 
 
     def integrate_peaks(self, r):
-        pass
+
+        # print(self.scat_rect[:25])
+        # print()
+        pixels = self.scat_rect[self.scat_rect[:, -1].argsort()]
+        # print(pixels)
+        # print()
+
+        pixel_averaged_bool = np.zeros(pixels.shape[0])
+
+        # peaks = peaks[::-1]
+
+        integrated_peaks_list = []
+
+        for i, pixel in enumerate(pixels):
+
+            # print(pixel_averaged_bool)
+            # print()
+            if pixel_averaged_bool[i] ==1:
+                print('skipping', i)
+                continue
+
+            dxypixels = pixels - pixel
+            # print('dxy', dxypixels)
+
+            dr = np.linalg.norm(dxypixels[:,:2], axis=1)
+            # print('dr', dr)
+            loc = np.where(dr<r)
+            # print(loc)
+            pixel_averaged_bool[loc] = 1
+
+            if loc[0].shape[0] ==1:
+                integrated_peaks_list.append(pixel)
+                continue
+            else:
+
+         
+
+                peak = np.average(pixels[loc], axis=0, weights=pixels[loc,-1].flatten())
+                integrated_peaks_list.append(peak)
 
 
 
 
 
 
-    def plot_peaks(self, scatter=False, cmap='viridis', smin=0.5, smax=10, newfig=True):
+
+        self.scat_recti = np.array(integrated_peaks_list)
+
+        # return dr, loc
+
+
+
+
+
+
+    def plot_peaks(self, scatter=False, cmap=None, sizes=None, integrated=False,  newfig=True):
 
         if newfig:
             plt.figure()
         self.geo.plot_panels()
 
-        x = self.scat_rect[:,0]
-        y = self.scat_rect[:,1]
 
-        if scatter:
-            colors = self.scat_rect[:,-1]
-            # sizes = s*self.scat_rect[:,-1]/self.scat_rect[:,-1].max()
-            sizes = (smax-smin)*(colors-colors.min())/(colors.max()-colors.min()) +smin
-            # sizes = 1
-            plt.scatter(x, y, c=colors, s=sizes, cmap=cmap)
-            # plt.scatter(x, y, c=colors, cmap=cmap)
-            plt.colorbar()
+
+        if integrated:
+            x = self.scat_recti[:,0]
+            y = self.scat_recti[:,1]
+            colors = self.scat_recti[:,-1]
+            marker = 'x'
         else:
-            plt.plot(x, y, '.')
+            x = self.scat_rect[:,0]
+            y = self.scat_rect[:,1]
+            colors = self.scat_rect[:,-1]
+            marker = 'o'
+
+
+        if sizes is not None:
+            sizes = (np.max(sizes)-np.min(sizes))*(colors-colors.min())/(colors.max()-colors.min()) + np.min(sizes)
+        else:
+            sizes = 15
+
+        plt.scatter(x, y, c=colors, s=sizes, cmap=cmap, marker=marker)
+        plt.colorbar()
+
+
+
+
+
+
+
+
+
 
     def plot_inten_hist(self, bins=100, log=False):
         plt.figure()

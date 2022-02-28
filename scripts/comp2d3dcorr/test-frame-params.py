@@ -21,6 +21,19 @@ pixsize = 800e-6
 nphotons=1e24
 nofringes=True
 
+
+
+
+# size = 75
+# photonenergy = 9300
+# qmax=0.21
+# qmin=0.01
+# clen = 0.95
+# npix = 250
+# pixsize = 800e-6
+# nphotons=1e19
+# nofringes=True
+
 geompath = f'{scorpy.DATADIR}/geoms/plot-test.geom'
 pdbpath = f'{scorpy.DATADIR}/xtal/inten1-qmax1.pdb'
 intenpath = f'{scorpy.DATADIR}/xtal/inten1-qmax1-sf.hkl'
@@ -87,13 +100,7 @@ pk = scorpy.PeakData(f'{scorpy.DATADIR}/patternsim/plot-test.h5', geo=geo)
 
 
 
-# im = pk.make_im(npix=npix, r=npix*pixsize/2, bool_inten=False )
-
-# plt.figure()
-# plt.imshow(im)
-
-
-pk.plot_peaks(scatter=True, cmap='spring')
+pk.plot_peaks(cmap='spring')
 ax = plt.gca()
 ax.set_facecolor("black")
 pk.geo.plot_qring(qmax)
@@ -107,16 +114,13 @@ for q in [0.089, 0.1275, 0.1555, 0.17975, 0.21]:
 print('npeaks:', pk.scat_rect.shape[0])
 
 
+inte_r = 0.004
+pk.integrate_peaks(inte_r)
 
-# loc = np.where(pk.scat_rect[:,-1] < 0.125* pk.scat_rect[:,-1].max())
-# pk.scat_rect[loc] *= 0
-# pk.plot_peaks(scatter=True, cmap='spring')
-# ax = plt.gca()
-# ax.set_facecolor("black")
-# pk.geo.plot_qring(qmax)
-# pk.geo.plot_qring(qmin)
-# for q in [0.095, 0.125, 0.155, 0.185, 0.205]:
-    # pk.geo.plot_qring(q, ec='red')
+pk.geo.plot_qring(scorpy.utils.convert_r2q(inte_r, pk.geo.clen, pk.geo.wavelength), ec='green')
+pk.plot_peaks(integrated=True, newfig=False)
+print(pk.scat_recti)
+print(pk.scat_rect)
 
 
 
