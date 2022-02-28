@@ -50,12 +50,12 @@ corr2d.vol[:,:,:10] = 0
 corr2d.vol[:,:,-10:] = 0
 
 
-cif = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/inten1-qmax1-sf.cif')
-fig = plt.figure()
-ax = fig.add_subplot(projection='3d')
-ax.scatter(cif.scat_rect[:,0], cif.scat_rect[:,1], cif.scat_rect[:,2])
-plt.xlabel('H')
-plt.ylabel('K')
+# cif = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/inten1-qmax1-sf.cif')
+# fig = plt.figure()
+# ax = fig.add_subplot(projection='3d')
+# ax.scatter(cif.scat_rect[:,0], cif.scat_rect[:,1], cif.scat_rect[:,2])
+# plt.xlabel('H')
+# plt.ylabel('K')
 
 
 # x = corr2d.psipts

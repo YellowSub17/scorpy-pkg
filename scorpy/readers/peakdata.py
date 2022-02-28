@@ -187,6 +187,8 @@ class PeakData(PeakDataProperties):
 
 
 
+    def integrate_peaks(self, r):
+        pass
 
 
 

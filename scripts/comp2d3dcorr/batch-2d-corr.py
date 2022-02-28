@@ -33,7 +33,7 @@ corrfname = 'inten1-qmax1-2d-ssph-batch50k-qcor.dbin'
 
 
 corr_total = scorpy.CorrelationVol(nq=100, npsi=180, qmax=qmax, cos_sample=False, inc_self_corr=False)
-corr_total.save(f'{scorpy.DATADIR}/dbins/{corrfname}')
+# corr_total.save(f'{scorpy.DATADIR}/dbins/{corrfname}')
 
 
 #write geom

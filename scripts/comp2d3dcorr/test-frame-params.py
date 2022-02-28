@@ -13,7 +13,7 @@ import numpy as np
 
 size = 75
 photonenergy = 9300
-qmax=1
+qmax=0.21
 qmin=0.01
 clen = 0.45
 npix = 250
@@ -56,8 +56,6 @@ geomf.close()
 
 
 cmd = 'pattern_sim '
-cmd+='--random-orientation '
-cmd+='--really-random '
 cmd+='--gpu '
 cmd+=f'-n 1 '
 cmd+=f'--max-size={size} '
@@ -72,13 +70,16 @@ cmd+=f'--sample-spectrum=1 '
 cmd+=f'--gradients=mosaic '
 cmd+=f'-g {geompath} '
 cmd+=f'-p {pdbpath} '
-cmd+=f'-o {scorpy.DATADIR}/patternsim/plot-test.h5'
+cmd+=f'-o {scorpy.DATADIR}/patternsim/plot-test.h5 '
 
 
 
 
-# os.system(f'echo "-0.335 -0.004 -0.091 0.938" | {cmd}')
-os.system(f'{cmd}')
+os.system(f'echo "0.803 -0.469 0.343 -0.131" | {cmd}')
+
+# cmd+='--random-orientation '
+# cmd+='--really-random '
+# os.system(f'{cmd}')
 
 
 geo = scorpy.ExpGeom(f'{geompath}')
@@ -99,7 +100,8 @@ pk.geo.plot_qring(qmax)
 pk.geo.plot_qring(qmin)
 
 
-for q in [0.095, 0.125, 0.155, 0.185, 0.205]:
+# for q in [0.095, 0.125, 0.155, 0.185, 0.205]:
+for q in [0.089, 0.1275, 0.1555, 0.17975, 0.21]:
     pk.geo.plot_qring(q, ec='red')
 
 print('npeaks:', pk.scat_rect.shape[0])
