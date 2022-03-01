@@ -8,7 +8,6 @@ from ..utils import index_x
 from .readersprops import PeakDataProperties
 
 DEFAULT_GEO = ExpGeom(f'{DATADIR}/geoms/agipd_2304_vj_opt_v4.geom')
-# DEFAULT_GEO = ExpGeom(f'{DATADIR}/geoms/xx.geom')
 
 class PeakData(PeakDataProperties):
 
@@ -230,13 +229,8 @@ class PeakData(PeakDataProperties):
 
 
 
-
-
-
-
         self.scat_recti = np.array(integrated_peaks_list)
 
-        # return dr, loc
 
 
 
@@ -270,9 +264,6 @@ class PeakData(PeakDataProperties):
 
         plt.scatter(x, y, c=colors, s=sizes, cmap=cmap, marker=marker)
         plt.colorbar()
-
-
-
 
 
 
