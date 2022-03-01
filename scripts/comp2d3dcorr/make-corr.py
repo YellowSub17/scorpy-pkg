@@ -14,8 +14,8 @@ plt.close('all')
 
 ######3D CORR
 
-geo = scorpy.ExpGeom(f'{scorpy.DATADIR}/geoms/batch.geom')
 cif = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/inten1-qmax1-sf.cif', qmax=0.264)
+# geo = scorpy.ExpGeom(f'{scorpy.DATADIR}/geoms/batch.geom')
 # cif.make_saldin(k=geo.k)
 
 corr = scorpy.CorrelationVol(qmax=0.264, nq=100, npsi=180, cos_sample=False, inc_self_corr=False)

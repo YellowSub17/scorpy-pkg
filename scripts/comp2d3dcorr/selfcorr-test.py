@@ -9,7 +9,7 @@ plt.close('all')
 
 
 
-method = 'scat_sph'
+method = 'scat_rect'
 
 cif = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/inten1-qmax1-sf.cif', qmax=0.264)
 

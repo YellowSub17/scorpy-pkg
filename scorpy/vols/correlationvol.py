@@ -315,7 +315,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
             for j, q2 in enumerate(qxyzi[i+q2start_term:q2end_term]):
                 # get q index
-                q2_ind = q_inds[i + j]
+                q2_ind = q_inds[i + j+q2start_term]
 
                 # get the angle between vectors, and index it
                 psi = angle_between_rect(q1[:3], q2[:3])
@@ -372,11 +372,10 @@ class CorrelationVol(Vol, CorrelationVolProps):
             theta1 = q1[1]
             phi1 = q1[2]
 
-            print(qtpi[i+q2start_term:q2end_term].shape)
             for j, q2 in enumerate(qtpi[i+q2start_term:q2end_term]):
 
                 # get q index, theta and phi
-                q2_ind = q_inds[i + j]
+                q2_ind = q_inds[i + j+q2start_term]
                 theta2 = q2[1]
                 phi2 = q2[2]
 
