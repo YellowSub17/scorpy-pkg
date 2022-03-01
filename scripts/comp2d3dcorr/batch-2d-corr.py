@@ -11,24 +11,29 @@ import time
 
 
 ## parameters
+
 size = 75
 photonenergy = 9300
-qmax=0.21
+qmax=0.264
 qmin=0.01
 clen = 0.45
 npix = 250
 pixsize = 800e-6
 nphotons=1e24
 nofringes=True
-
-nframes = 500
-nbatches = 100
-geomfname = 'batch.geom'
+integration_r = 0.005
 pdbfname = 'inten1-qmax1.pdb'
 intenfname = 'inten1-qmax1-sf.hkl'
+
+
+
+
+geomfname = 'batch.geom'
+nbatches = 100
+nframes = 100
 method = 'scat_sph'
 
-corrfname = 'inten1-qmax1-2d-ssph-batch50k-qcor.dbin'
+corrfname = 'inten1-qmax0264-2d-ssph-batch-int-noselfcorr-qcor.dbin'
 
 
 
@@ -60,24 +65,20 @@ geomf.write(f'nfs = {npix}\n')
 geomf.write(f'nss = {npix}\n')
 geomf.close()
 
+
 geo = scorpy.ExpGeom(f'{scorpy.DATADIR}/geoms/{geomfname}')
 
 
-
-
-
 cmd = 'pattern_sim '
-cmd+='--random-orientation '
-cmd+='--really-random '
 cmd+='--gpu '
 cmd+=f'-n {nframes} '
 cmd+=f'--max-size={size} '
 cmd+=f'--min-size={size} '
 cmd+=f'--nphotons={nphotons} '
 cmd+=f'--photon-energy={photonenergy} '
+cmd+=f'--intensities={scorpy.DATADIR}/xtal/{intenfname} '
 if nofringes:
     cmd+=f'--no-fringes '
-cmd+=f'--intensities={scorpy.DATADIR}/xtal/{intenfname} '
 cmd+=f'--spectrum=tophat '
 cmd+=f'--sample-spectrum=1 '
 cmd+=f'--gradients=mosaic '
@@ -85,9 +86,13 @@ cmd+=f'-g {scorpy.DATADIR}/geoms/{geomfname} '
 cmd+=f'-p {scorpy.DATADIR}/xtal/{pdbfname} '
 
 if nframes>1:
-    cmd+=f'-o /tmp/corrbatch'
+    cmd+=f'-o /tmp/corrbatch '
 else:
-    cmd+=f'-o /tmp/corrbatch-1.h5'
+    cmd+=f'-o /tmp/corrbatch-1.h5 '
+
+cmd+='--random-orientation '
+cmd+='--really-random '
+
 
 
 
@@ -96,7 +101,7 @@ print('############')
 print(f'Correlation started: {time.asctime()}\n')
 for batch in range(nbatches):
 
-    print('batch:', batch, end='\n')
+    print('batch:', batch+1, end='\r')
     for file in os.listdir('/tmp/'):
         if 'corrbatch' in file:
             os.remove(f'/tmp/{file}')
@@ -104,11 +109,18 @@ for batch in range(nbatches):
     os.system(f'{cmd} >/dev/null 2>&1')
 
     for frame in range(1, nframes+1):
-        print('frame:', frame, end='\r')
+
+        # print('frame:', frame, end='\r')
 
         pk = scorpy.PeakData(f'/tmp/corrbatch-{frame}.h5', geo=geo, qmax=qmax, qmin=qmin)
+        pk = pk.integrate_peaks(integration_r)
         corr_total.fill_from_peakdata(pk, method=method, verbose=0)
-    print()
+
+    # print(99*' ', end='')
+
+
+
+    corr_total.save(f'{scorpy.DATADIR}/dbins/{corrfname}')
 
 
 print(f'Correlation finished: {time.asctime()}\n')

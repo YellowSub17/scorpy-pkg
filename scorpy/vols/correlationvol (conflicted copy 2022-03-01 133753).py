@@ -105,7 +105,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
     @verbose_dec
-    def fill_from_peakdata(self, pk, method='scat_pol', npeakmax=-1, verbose=0):
+    def fill_from_peakdata(self, pk, method='scat_sph', npeakmax=-1, verbose=0):
         '''
         scorpy.CorrelationVol.fill_from_peakdata():
             Fill the CorrelationVol from a PeakData object.
@@ -126,7 +126,6 @@ class CorrelationVol(Vol, CorrelationVolProps):
         frames = pk.split_frames(npeakmax=npeakmax)
         nframes = len(frames)
 
-        # print('\x1b[2J\x1b[H')
         print('############')
         print(f'Filling CorrelationVol from Peakdata via {method}.')
         print(f'Correlation started: {time.asctime()}\n')
@@ -304,7 +303,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
         if self.inc_self_corr:
             q2start_term, q2end_term = 0, None
         else:
-            q2start_term, q2end_term = 1, None
+            q2start_term, q2end_term = 1, -1
 
 
         for i, q1 in enumerate(qxyzi):
@@ -363,7 +362,6 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
 
-
         for i, q1 in enumerate(qtpi):
 
             print(f'Peak: {i+1}/{nscats}', end='\r')
@@ -372,9 +370,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
             theta1 = q1[1]
             phi1 = q1[2]
 
-            print(qtpi[i+q2start_term:q2end_term].shape)
             for j, q2 in enumerate(qtpi[i+q2start_term:q2end_term]):
-
                 # get q index, theta and phi
                 q2_ind = q_inds[i + j]
                 theta2 = q2[1]

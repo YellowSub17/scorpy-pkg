@@ -13,32 +13,25 @@ import numpy as np
 
 size = 75
 photonenergy = 9300
-qmax=0.21
+qmax=0.264
 qmin=0.01
 clen = 0.45
 npix = 250
 pixsize = 800e-6
 nphotons=1e24
 nofringes=True
+integration_r = 0.005
+pdbfname = 'inten1-qmax1.pdb'
+intenfname = 'inten1-qmax1-sf.hkl'
+
+geomfname = 'plot-test.geom'
 
 
 
 
-# size = 75
-# photonenergy = 9300
-# qmax=0.21
-# qmin=0.01
-# clen = 0.95
-# npix = 250
-# pixsize = 800e-6
-# nphotons=1e19
-# nofringes=True
-
-geompath = f'{scorpy.DATADIR}/geoms/plot-test.geom'
-pdbpath = f'{scorpy.DATADIR}/xtal/inten1-qmax1.pdb'
-intenpath = f'{scorpy.DATADIR}/xtal/inten1-qmax1-sf.hkl'
 
 
+geompath = f'{scorpy.DATADIR}/geoms/{geomfname}'
 
 
 
@@ -75,30 +68,29 @@ cmd+=f'--max-size={size} '
 cmd+=f'--min-size={size} '
 cmd+=f'--nphotons={nphotons} '
 cmd+=f'--photon-energy={photonenergy} '
-cmd+=f'--intensities={intenpath} '
+cmd+=f'--intensities={scorpy.DATADIR}/xtal/{intenfname} '
 if nofringes:
     cmd+=f'--no-fringes '
 cmd+=f'--spectrum=tophat '
 cmd+=f'--sample-spectrum=1 '
 cmd+=f'--gradients=mosaic '
-cmd+=f'-g {geompath} '
-cmd+=f'-p {pdbpath} '
+cmd+=f'-g {scorpy.DATADIR}/geoms/{geomfname} '
+cmd+=f'-p {scorpy.DATADIR}/xtal/{pdbfname} '
 cmd+=f'-o {scorpy.DATADIR}/patternsim/plot-test.h5 '
 
 
 
 
-os.system(f'echo "0.803 -0.469 0.343 -0.131" | {cmd}')
 
-# cmd+='--random-orientation '
-# cmd+='--really-random '
-# os.system(f'{cmd}')
+# os.system(f'echo "0.803 -0.469 0.343 -0.131" | {cmd}')
+
+cmd+='--random-orientation '
+cmd+='--really-random '
+os.system(f'{cmd}')
 
 
 geo = scorpy.ExpGeom(f'{geompath}')
-pk = scorpy.PeakData(f'{scorpy.DATADIR}/patternsim/plot-test.h5', geo=geo)
-
-
+pk = scorpy.PeakData(f'{scorpy.DATADIR}/patternsim/plot-test.h5', geo=geo)#, qmax=qmax, qmin=qmin)
 
 pk.plot_peaks(cmap='spring')
 ax = plt.gca()
@@ -107,20 +99,22 @@ pk.geo.plot_qring(qmax)
 pk.geo.plot_qring(qmin)
 
 
-# for q in [0.095, 0.125, 0.155, 0.185, 0.205]:
-for q in [0.089, 0.1275, 0.1555, 0.17975, 0.21]:
-    pk.geo.plot_qring(q, ec='red')
-
-print('npeaks:', pk.scat_rect.shape[0])
+# # for q in [0.095, 0.125, 0.155, 0.185, 0.205]:
+# for q in [0.089, 0.1275, 0.1555, 0.17975, 0.21]:
+    # pk.geo.plot_qring(q, ec='red')
 
 
-inte_r = 0.004
-pk.integrate_peaks(inte_r)
 
-pk.geo.plot_qring(scorpy.utils.convert_r2q(inte_r, pk.geo.clen, pk.geo.wavelength), ec='green')
-pk.plot_peaks(integrated=True, newfig=False)
-print(pk.scat_recti)
 print(pk.scat_rect)
+pk_int = pk.integrate_peaks(integration_r)
+print(pk_int.scat_rect)
+
+pk_int.plot_peaks(cmap='spring')
+ax = plt.gca()
+ax.set_facecolor("black")
+pk.geo.plot_qring(qmax)
+pk.geo.plot_qring(qmin)
+pk_int.geo.plot_qring(scorpy.utils.convert_r2q(integration_r, pk.geo.clen, pk.geo.wavelength), ec='green')
 
 
 
