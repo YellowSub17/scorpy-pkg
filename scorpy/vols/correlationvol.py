@@ -335,6 +335,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
 
+    @verbose_dec
     def correlate_scat_sph(self, qtpi, verbose=False):
         '''
         scorpy.CorrelationVol.correlate_scat_sph():

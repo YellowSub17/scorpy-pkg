@@ -21,18 +21,18 @@ plt.close('all')
 # corr1.plot_q1q2()
 # corr2.plot_q1q2()
 
-method= 'scat_pol'
+method= 'scat_sph'
 
 geom = scorpy.ExpGeom(f'{scorpy.DATADIR}/geoms/plot-test.geom')
-pk = scorpy.PeakData(f'{scorpy.DATADIR}/patternsim/plot-test.h5', geo=geom)
+pk = scorpy.PeakData(f'{scorpy.DATADIR}/patternsim/plot-test.h5', geo=geom, qmax=1)
 pk.plot_peaks()
 
 
 
-corr1 = scorpy.CorrelationVol(100, 180, 1.48, cos_sample=False, inc_self_corr=True)
+corr1 = scorpy.CorrelationVol(100, 180, 1, cos_sample=False, inc_self_corr=True)
 corr1.fill_from_peakdata(pk, method=method)
 
-corr2 = scorpy.CorrelationVol(100, 180, 1.48, cos_sample=False, inc_self_corr=False)
+corr2 = scorpy.CorrelationVol(100, 180, 1, cos_sample=False, inc_self_corr=False)
 corr2.fill_from_peakdata(pk, method=method)
 
 

@@ -9,11 +9,10 @@ plt.close('all')
 
 
 
-fnames = [
-    'inten1-qmax0264-2d-ssph-batch-noint-noselfcorr-qcor',
+fnames = ['inten1-qmax0264-2d-ssph-batch-noint-noselfcorr-qcor',
     'inten1-qmax0264-2d-ssph-batch-noint-selfcorr-qcor',
     'inten1-qmax0264-2d-ssph-batch-int-noselfcorr-qcor',
-    'inten1-qmax0264-2d-ssph-batch-int-selfcorr-qcor',]
+    'inten1-qmax0264-2d-ssph-batch-int-selfcorr-qcor']
 
 
 
@@ -37,15 +36,15 @@ for i, fname in enumerate(fnames):
 
     corr = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/{fname}.dbin')
 
-    corr.vol[:,:,:20] = 0
-    corr.vol[:,:,-20:] = 0
+    # corr.vol[:,:,:20] = 0
+    # corr.vol[:,:,-20:] = 0
 
     corr.plot_q1q2(title=f'{fname[30:]}', fig=fig, axes=axes.flatten()[i])
 
 
 
 
-corr3d = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/inten1-qmax0264-3d-sph-qcor.dbin')
+corr3d = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/inten1-qmax0264-3d-sph-selfcorr-qcor.dbin')
 corr3d.plot_q1q2(title=f'3D')
 
 
