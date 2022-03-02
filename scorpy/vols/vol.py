@@ -310,7 +310,7 @@ xmax=1, ymax=1, zmax=1,
         xx, yy, zz = np.meshgrid(self.xpts, self.ypts, self.zpts)
 
 
-        rxx, ryy, rzz = xx-ptx, yy-ptx, np.abs(zz-ptz)
+        rxx, ryy, rzz = xx-ptx, yy-pty, np.abs(zz-ptz)
 
         rxy = np.sqrt(rxx**2 + ryy**2)
 

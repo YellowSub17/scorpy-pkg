@@ -8,7 +8,7 @@ import time
 
 
 
-run_3d = True
+run_3d = False
 run_2d = True
 
 
@@ -22,30 +22,30 @@ ciffname = 'inten1-qmax1-sf.cif'
 nq = 100
 npsi = 180
 cos_sample = False
-inc_self_corr = False
+inc_self_corr = True
 
-corr3dfname = 'inten1-qmax0264-3d-sph-noselfcorr-qcor.dbin'
+corr3dfname = 'inten1-qmax0264-3d-sph-selfcorr-qcor.dbin'
 
 
 ######2D CORR Parameters
 size = 75
 photonenergy = 9300
 clen = 0.45
-npix = 250
-pixsize = 800e-6
+npix = 1000
+pixsize = 200e-6
 nphotons=1e24
 nofringes=True
 integration_r = 0.005
 pdbfname = 'inten1-qmax1.pdb'
 intenfname = 'inten1-qmax1-sf.hkl'
-
 geomfname = 'batch.geom'
-nbatches = 100
+nbatches = 100   #approx 40 mins for 100x100, 20 mins for 50x100
 nframes = 100
+
 method = 'scat_sph'
 integrated = True
 
-corr2dfname = 'inten1-qmax0264-2d-ssph-batch-int-noselfcorr-qcor.dbin'
+corr2dfname = 'inten1-qmax0264-2d-ssph-batch-int-selfcorr-qcor.dbin'
 
 
 
@@ -134,6 +134,7 @@ if run_2d:
     print(f'Correlation started: {time.asctime()}\n')
     for batch in range(nbatches):
 
+
         print('batch:', batch+1, end='\r')
         for file in os.listdir('/tmp/'):
             if 'corrbatch' in file:
@@ -150,8 +151,7 @@ if run_2d:
             corr2d.fill_from_peakdata(pk, method=method, verbose=0)
 
 
-
-
+        # corr2d.save(f'{scorpy.DATADIR}/dbins/batch{batch}.dbin')
         corr2d.save(f'{scorpy.DATADIR}/dbins/{corr2dfname}')
 
 
