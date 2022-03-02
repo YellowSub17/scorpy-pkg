@@ -231,13 +231,16 @@ xmax=1, ymax=1, zmax=1,
 
 
 
-    def ls_pts(self, thresh=0):
+    def ls_pts(self, thresh=0, inds=False):
         '''
 	scorpy.Vol.ls_pts():
             List the points of intensity in the volume above a treshold.
         Arguments:
             thresh : float
                 Threshold value
+            inds : bool
+                flag for providing array indices or point values
+
         Returns:
             pts : numpy.ndarray
                 n by 4 array of n points in the volume that are above the threshold.
@@ -250,20 +253,99 @@ xmax=1, ymax=1, zmax=1,
         pts = np.zeros( ( npts, 4))
         pts[:,-1] = self.vol[loc]
 
-        pts[:,0] = self.xpts[loc[0]]
-        pts[:,1] = self.ypts[loc[1]]
-        pts[:,2] = self.zpts[loc[2]]
+        if not inds:
+            pts[:,0] = self.xpts[loc[0]]
+            pts[:,1] = self.ypts[loc[1]]
+            pts[:,2] = self.zpts[loc[2]]
+        else:
+            pts[:,0] = loc[0].astype(int)
+            pts[:,1] = loc[1].astype(int)
+            pts[:,2] = loc[2].astype(int)
 
-        # pts = pts[pts[:, 2].argsort()]
-        # pts = pts[pts[:, 1].argsort(kind='mergesort')]
-        # pts = pts[pts[:, 0].argsort(kind='mergesort')]
         return pts
+
 
 
     def make_mask(self):
 
         loc = np.where(self.vol != 0)
         self.vol[loc] *= 1/self.vol[loc]
+
+
+
+#     def integrate_peaks(self, dnx=0, dny=0, dnz=0):
+
+        # peaks = self.ls_pts(inds=True)
+        # integ_peaks = self.ls_pts(inds=True)
+
+
+        # for i, peak in enumerate(peaks):
+            # xind, yind, zind = int(peak[0]), int(peak[1]), int(peak[2])
+            # integ_peaks[i, -1] = self.vol[xind-dnx:xind+dnx+1, yind-dny:yind+dny+1, zind-dnz:yind+dnz+1].sum()
+
+        # return integ_peaks
+
+
+
+    def integrate_region(self, ptx, pty, ptz, dx, dy, dz, disc_sphere='disk'):
+
+
+
+#         xx, yy = np.meshgrid(self.xpts, self.ypts)
+        # zz = self.zpts
+
+
+        # dxx, dyy, dzz = xx-ptx, yy-ptx, zz-ptz
+
+        # dxy = np.sqrt(dxx**2 + dyy**2)
+
+        # xloc, yloc = np.where( dxy <= dx )
+
+        # zloc = np.where( np.abs(dzz) <= dz)[0]
+
+        # return xloc, yloc, zloc
+
+
+
+        xx, yy, zz = np.meshgrid(self.xpts, self.ypts, self.zpts)
+
+
+        rxx, ryy, rzz = xx-ptx, yy-ptx, np.abs(zz-ptz)
+
+        rxy = np.sqrt(rxx**2 + ryy**2)
+
+        loc = np.where( np.logical_and(rxy <= dx,rzz <=dz) )
+
+
+        return self.vol[loc].sum(), loc
+
+
+
+
+
+
+
+
+
+        
+        # if disc_sphere=='disk':
+
+
+     #    elif disc_sphere=='sphere':
+
+            # xx, yy, zz = np.meshgrid(self.xpts, self.ypts, self.zpts)
+
+        # else:
+            # xx, yy, zz = self.xpts, self.ypts, self.zpts
+
+
+
+
+
+
+
+
+
 
 
 

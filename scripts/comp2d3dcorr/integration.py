@@ -8,46 +8,76 @@ plt.close('all')
 
 
 
-# pk_cxi = scorpy.PeakData(f'{scorpy.DATADIR}/cxi/run118_peaks.txt')
-# pk_cxi.plot_peaks()
-
-# frames = pk_cxi.split_frames()
-# frames[0].plot_peaks()
+# corr = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/inten1-qmax0264-3d-sph-selfcorr-qcor.dbin')
 
 
-# # corr = scorpy.CorrelationVol(qmax= pk_cxi.qmax)
-# # corr.fill_from_peakdata(pk_cxi, verbose=2)
-
-# # corr.plot_sumax(2)
-# # corr.plot_q1q2()
 
 
-# geompath = f'{scorpy.DATADIR}/geoms/plot-test.geom'
-# geo = scorpy.ExpGeom(f'{geompath}')
-# pk_h5 = scorpy.PeakData(f'{scorpy.DATADIR}/patternsim/plot-test.h5', geo=geo)
+# corr = scorpy.CorrelationVol(100, 100, 100, cos_sample=True)
 
 
-# pk_h5.plot_peaks()
-# pk_h5_int = pk_h5.integrate_peaks(0.005)
-# pk_h5_int.plot_peaks()
+nx = 100
+xmax = 100
 
 
-geompath = f'{scorpy.DATADIR}/geoms/batch.geom'
-geo = scorpy.ExpGeom(f'{geompath}')
+corr = scorpy.Vol(nx,nx,nx, 0, 0,0, xmax,xmax,xmax)
 
-qmax = 1
-qmin = 0.01
 
-frame = 1
-pk = scorpy.PeakData(f'/tmp/corrbatch-{frame}.h5', geo=geo, qmax=qmax, qmin=qmin)
-print(pk.df)
-print(pk.scat_pol)
-pk.plot_peaks()
-pk.geo.plot_qring(qmax)
-pk.geo.plot_qring(qmin)
-pk_int = pk.integrate_peaks(0.005)
+corr.vol[0,0,0] = 1
+corr.vol[-1,-1,-1] = 1
 
-pk_int.plot_peaks()
+
+
+corr.vol[10, 5, 60] = 1
+corr.vol[12, 7, 62] = 1
+corr.vol[8, 3, 58] = 1
+
+
+
+
+fig = plt.figure()
+ax = plt.axes(projection ='3d')
+xyzi = corr.ls_pts()
+ax.scatter( xyzi[:,0], xyzi[:,1], xyzi[:,2])
+plt.xlabel('x')
+plt.ylabel('y')
+
+
+
+out, loc = corr.integrate_region( 10, 5, 60, 10, 10, 10)
+
+
+corr.vol[loc] +=1
+
+
+
+
+fig = plt.figure()
+ax = plt.axes(projection ='3d')
+xyzi = corr.ls_pts()
+ax.scatter( xyzi[:,0], xyzi[:,1], xyzi[:,2], c=xyzi[:,-1])
+plt.xlabel('x')
+plt.ylabel('y')
+
+
+
+
+
+
+
+
+
+# out = corr.integrate_peaks()
+
+
+
+
+
+
+
+
+
+
 
 
 

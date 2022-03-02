@@ -30,15 +30,18 @@ fnames = ['inten1-qmax0264-2d-ssph-batch-noint-noselfcorr-qcor',
 
 
 fig, axes = plt.subplots(2,2, sharex=True, sharey=True)
-plt.suptitle('2D')
+plt.suptitle('2D (crop highlow theta)')
 for i, fname in enumerate(fnames):
-
-
     corr = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/{fname}.dbin')
+    corr.vol[:,:,:20] = 0
+    corr.vol[:,:,-20:] = 0
+    corr.plot_q1q2(title=f'{fname[30:]}', fig=fig, axes=axes.flatten()[i])
 
-    # corr.vol[:,:,:20] = 0
-    # corr.vol[:,:,-20:] = 0
 
+fig, axes = plt.subplots(2,2, sharex=True, sharey=True)
+plt.suptitle('2D (no crop)')
+for i, fname in enumerate(fnames):
+    corr = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/{fname}.dbin')
     corr.plot_q1q2(title=f'{fname[30:]}', fig=fig, axes=axes.flatten()[i])
 
 
