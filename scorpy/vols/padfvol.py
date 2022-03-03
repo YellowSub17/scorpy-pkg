@@ -45,15 +45,20 @@ class PadfVol(Vol, PadfVolProps):
         self._nl = float(config['padf']['nl'])
         self._wavelength = float(config['padf']['wavelength'])
 
-    def fill_from_corr(self, corr_path, log='/tmp/padf.log'):
+    def fill_from_corr(self, corr, log='/tmp/padf.log', theta0=True):
 
-        corr = CorrelationVol(path=corr_path)
-
-        padf_config = open(f'{PADF_PADF}config.txt', 'w')
-        padf_config.write(f'correlationfile = {corr_path}\n\n')
 
         os.system('rm -rf /tmp/padf')
         os.system('mkdir /tmp/padf')
+
+        if not theta0:
+            corr.vol[:,:,0] = 0
+        corr.save('/tmp/padf/corr.dbin')
+
+
+        padf_config = open(f'{PADF_PADF}config.txt', 'w')
+        padf_config.write(f'correlationfile = /tmp/padf/corr.dbin\n\n')
+
         padf_config.write('outpath = /tmp/padf\n\n')
         padf_config.write(f'wavelength = {self.wavelength*1e-10}\n\n')
         padf_config.write(f'nl = {self.nl}\n\n')

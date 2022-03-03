@@ -34,28 +34,34 @@ runs = [108,113,109,125,110,123,118,112,119,120,102,104,105,103,121,126]
 
 
 #### plot padf
+# fig, axes = plt.subplots(2,2)
+# for i, run in enumerate(runs):
+    # padf = scorpy.PadfVol(path=f'{scorpy.DATADIR}/dbins/cxi/padfs/{run}/run{run}-padf.dbin')
+    # padf._zmax=180
+
+    # padf.plot_xy(vminmax=(-1e70, 2.5e71), title=f'{run}', fig=fig, axes=axes.flatten()[i])
+
+
 fig, axes = plt.subplots(4,4)
-
-
 for i, run in enumerate(runs):
     padf = scorpy.PadfVol(path=f'{scorpy.DATADIR}/dbins/cxi/padfs/{run}/run{run}-padf.dbin')
     padf._zmax=180
 
-    # padf = padf.crop(40,40,0,149,149,89)
-    padf.plot_xy(vminmax=(-1e70, 2.5e71), title=f'{run}', fig=fig, axes=axes.flatten()[i])
+    padf = padf.crop(40,40,0,149,149,89)
+    padf.plot_xy(vminmax=(-1e70, 2.5e70), title=f'{run}', fig=fig, axes=axes.flatten()[i])
+    # padf.plot_xy(title=f'{run}', fig=fig, axes=axes.flatten()[i])
+
+    # axes.flatten()[i].plot(47.9, 1.835, 'r.')
+    # axes.flatten()[i].plot(46.8, 1.384, 'r.')
 
 
 
-    axes.flatten()[i].plot( 49.2, 1.3, 'r.')
-    axes.flatten()[i].plot( 27.1, 2.37, 'r.')
-    axes.flatten()[i].plot( 46.4, 2.29, 'r.')
-    axes.flatten()[i].plot( 53.8, 1.8, 'r.')
-    axes.flatten()[i].plot( 28.5, 2, 'r.')
 
-# fig, axes = plt.subplots(2,2)
-# for i, run in enumerate(runs):
-    # padf = scorpy.PadfVol(path=f'{scorpy.DATADIR}/dbins/cxi/padfs/{run}/run{run}-padf.dbin')
-    # padf.plot_r1r2( title=f'{run}', fig=fig, axes=axes.flatten()[i])
+
+fig, axes = plt.subplots(2,2)
+for i, run in enumerate(runs):
+    padf = scorpy.PadfVol(path=f'{scorpy.DATADIR}/dbins/cxi/padfs/{run}/run{run}-padf.dbin')
+    padf.plot_r1r2( title=f'{run}', fig=fig, axes=axes.flatten()[i])
 
 
 

@@ -24,7 +24,7 @@ wavelength = 1.33
 runs = [108,113,109,125,110,123,118,112,119,120,102,104,105,103,121,126]
 
 
-# runs = runs[:4]
+runs = runs[:1]
 
 
 
@@ -33,8 +33,9 @@ runs = [108,113,109,125,110,123,118,112,119,120,102,104,105,103,121,126]
 
 for run in runs:
     print(run)
+    corr = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/cxi/qcors/{run}/run{run}-qcor.dbin')
     padf = scorpy.PadfVol(nr, npsi, rmax, nl, wavelength)
-    padf.fill_from_corr(f'{scorpy.DATADIR}/dbins/cxi/qcors/{run}/run{run}-qcor.dbin', log=None)
+    padf.fill_from_corr(corr, log=None, theta0=False)
     padf.save(f'{scorpy.DATADIR}/dbins/cxi/padfs/{run}/run{run}-padf.dbin')
 
 
