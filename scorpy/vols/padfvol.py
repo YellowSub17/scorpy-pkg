@@ -23,7 +23,7 @@ class PadfVol(Vol, PadfVolProps):
 
         Vol.__init__(self, nr, nr, npsi,
                      0, 0, 0,
-                     rmax, rmax, 180,
+                     rmax, rmax, np.pi,
                      False, False, True,
                      comp=False, path=path)
 
@@ -32,7 +32,7 @@ class PadfVol(Vol, PadfVolProps):
     def _save_extra(self, f):
         f.write('[padf]\n')
         f.write(f'rmax = {self.rmax}\n')
-        f.write(f'psimax = {180}\n')
+        f.write(f'psimax = {np.pi}\n')
         f.write(f'nr = {self.nr}\n')
         f.write(f'npsi = {self.npsi}\n')
         f.write(f'dr = {self.dr}\n')
@@ -45,7 +45,7 @@ class PadfVol(Vol, PadfVolProps):
         self._nl = float(config['padf']['nl'])
         self._wavelength = float(config['padf']['wavelength'])
 
-    def fill_from_corr(self, corr_path):
+    def fill_from_corr(self, corr_path, log='/tmp/padf.log'):
 
         corr = CorrelationVol(path=corr_path)
 
@@ -65,13 +65,17 @@ class PadfVol(Vol, PadfVolProps):
 
         padf_config.write(f'rmax = {self.rmax*1e-10}\n\n')
         padf_config.write(f'nr = {self.nr}\n\n')
-        # padf_config.write(f'nthr = {2*self.ntheta}\n\n')
+        # padf_config.write(f'nthr = {2*self.npsi}\n\n')
 
         padf_config.close()
 
         cmd = f'{PADF_PADF}padf {PADF_PADF}config.txt'
 
-        os.system(cmd)
+        if log is None:
+            os.system(cmd)
+        else:
+            print('Running padfcorr')
+            os.system(f'{cmd} >{log} 2>&1')
 
         os.system('rm /tmp/padf/*r_vs_l*')
         os.system('rm /tmp/padf/*bl*')
