@@ -91,6 +91,7 @@ corr3d_inte.plot_q1q2(title='3d integrated')
 
 
 qq = 76
+print(corr2d_inte.qpts)
 
 plt.figure()
 plt.plot(corr3d.psipts, corr3d.vol[qq, qq,:])
@@ -108,6 +109,10 @@ plt.title('corr2d')
 plt.figure()
 plt.plot(corr2d_inte.psipts, corr2d_inte.vol[qq, qq,:])
 plt.title('corr2d_inte')
+
+plt.figure()
+plt.plot(corr2d_inte.psipts, corr2d_inte.vol[qq, qq,:]*np.sin(corr2d_inte.psipts))
+plt.title('corr2d_inte sintheta')
 
 
 

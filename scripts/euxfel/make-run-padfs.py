@@ -11,8 +11,9 @@ plt.close('all')
 
 nr =250
 npsi = 90
-nl = 31
-rmax = 6
+
+nl = 9
+rmax = 6 #A
 wavelength = 1.33
 
 
@@ -24,7 +25,7 @@ wavelength = 1.33
 runs = [108,113,109,125,110,123,118,112,119,120,102,104,105,103,121,126]
 
 
-runs = runs[:1]
+runs = runs[:4]
 
 
 

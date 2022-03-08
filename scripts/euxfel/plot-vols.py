@@ -17,9 +17,10 @@ wavelength = 1.333e-10
 runs = [108,113,109,125,110,123,118,112,119,120,102,104,105,103,121,126]
 
 
+runs = runs[:4]
 
+pk = scorpy.PeakData(f'{scorpy.DATADIR}/cxi/run108_peaks.txt', qmax=qmax)
 
-# runs = runs[:4]
 
 # ### plot corrs
 # for run in runs:
@@ -42,7 +43,7 @@ runs = [108,113,109,125,110,123,118,112,119,120,102,104,105,103,121,126]
     # padf.plot_xy(vminmax=(-1e70, 2.5e71), title=f'{run}', fig=fig, axes=axes.flatten()[i])
 
 
-fig, axes = plt.subplots(4,4)
+fig, axes = plt.subplots(2,2)
 for i, run in enumerate(runs):
     padf = scorpy.PadfVol(path=f'{scorpy.DATADIR}/dbins/cxi/padfs/{run}/run{run}-padf.dbin')
     padf._zmax=180
