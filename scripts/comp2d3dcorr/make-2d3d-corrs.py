@@ -9,7 +9,7 @@ import time
 
 
 run_3d = True
-run_2d = False
+run_2d = True
 
 
 
@@ -36,7 +36,7 @@ pixsize = 200e-6
 nphotons=1e24
 nofringes=True
 integration_r = 0.005
-pdbfname = 'intenr-qmax1.pdb'
+pdbfname = 'intenr-qmax1-sf.pdb'
 intenfname = 'intenr-qmax1-sf.hkl'
 geomfname = 'batch.geom'
 #approx 40 mins for 100x100, 20 mins for 50x100, 7hrs for 2000x50

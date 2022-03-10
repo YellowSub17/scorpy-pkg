@@ -11,11 +11,11 @@ import numpy as np
 
 ## parameters
 
-size = 1450
+size = 75
 photonenergy = 9300
-qmax=1
-clen =0.901
-npix = 2000
+qmax=0.264
+clen =0.45
+npix = 1000
 pixsize = 200e-6
 
 # npix = 100
@@ -27,8 +27,8 @@ pixsize = 200e-6
 nphotons=1e24
 nofringes=True
 integration_r = 0.005
-pdbfname = 'p1-intenr.pdb'
-intenfname = 'p1-intenr-sf.hkl'
+pdbfname = 'intenr-qmax1-sf.pdb'
+intenfname = 'intenr-qmax1-sf.hkl'
 
 geomfname = 'plot-test.geom'
 

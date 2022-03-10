@@ -353,6 +353,15 @@ qmax=None, crop_poles=False  ):
         file.close()
 
 
+    def save_pdb(self, path):
+
+        file = open(path, 'w')
+
+        cont = f'CRYST1   {self.a_mag}   {self.b_mag}   {self.c_mag}   {np.degrees(self.alpha)}   {np.degrees(self.beta)}   {np.degrees(self.gamma)} P -1     8\nEND'
+        file.write(cont)
+
+        file.close()
+
 
 
 

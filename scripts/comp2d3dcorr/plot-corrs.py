@@ -68,7 +68,7 @@ plt.close('all')
 
 
 # for b in [0, 10, 50, 100, 200, 500, 1000, 2000]:
-for b in [0, 10, 50, 70]:
+for b in [0 ]:
     corr3d = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/intenr-qmax0264-3d-qcor.dbin')
     corr2d =  scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/intenr-qmax0264-2d-qcor.dbin-batch{b}.dbin')
 
