@@ -29,6 +29,7 @@ hklpath = f'{scorpy.DATADIR}/xtal/1vds.hkl'
 
 nframes = [2**i for i in range(9, 12)]
 nframes = [2, 4, 8, 16, 512, 1024, 2048]
+nframes = [2048]
 
 
 

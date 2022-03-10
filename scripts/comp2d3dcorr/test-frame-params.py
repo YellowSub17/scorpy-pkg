@@ -11,11 +11,11 @@ import numpy as np
 
 ## parameters
 
-size = 75
+size = 1450
 photonenergy = 9300
-qmax=0.264
-clen = 0.45
-npix = 1000
+qmax=1
+clen =0.901
+npix = 2000
 pixsize = 200e-6
 
 # npix = 100
@@ -27,8 +27,8 @@ pixsize = 200e-6
 nphotons=1e24
 nofringes=True
 integration_r = 0.005
-pdbfname = 'inten1-qmax1.pdb'
-intenfname = 'inten1-qmax1-sf.hkl'
+pdbfname = 'p1-intenr.pdb'
+intenfname = 'p1-intenr-sf.hkl'
 
 geomfname = 'plot-test.geom'
 
@@ -90,17 +90,27 @@ cmd+=f'-o {scorpy.DATADIR}/patternsim/plot-test.h5 '
 
 # os.system(f'echo "0.803 -0.469 0.343 -0.131" | {cmd}')
 
-os.system(f'echo "1.000 0.000 0.000 0.000" | {cmd}')
+# os.system(f'echo "1.000 0.000 0.000 0.000" | {cmd}')
 # os.system(f'echo "0.000 0.000 1.000 0.000" | {cmd}')
 
 # os.system(f'echo "0.854 0.146 0.354 0.354" | {cmd}')
 
-# cmd+='--random-orientation '
-# cmd+='--really-random '
-# os.system(f'{cmd}')
+cmd+='--random-orientation '
+cmd+='--really-random '
+os.system(f'{cmd}')
 
 
 geo = scorpy.ExpGeom(f'{geompath}')
+
+# plt.figure()
+# geo.plot_panels()
+# geo.plot_qring(qmax, ec='white')
+# ax = plt.gca()
+# ax.set_facecolor("black")
+# plt.show()
+
+
+
 pk = scorpy.PeakData(f'{scorpy.DATADIR}/patternsim/plot-test.h5', geo=geo)
 
 pk.plot_peaks(cmap='spring')
@@ -110,33 +120,33 @@ pk.geo.plot_qring(qmax, ec='white')
 
 
 
-qs = [0.0885,0.1280, 0.1545, 0.1785, 0.2020, 0.2205, 0.2550]
+# qs = [0.0885,0.1280, 0.1545, 0.1785, 0.2020, 0.2205, 0.2550]
 
-qs2 = [0.0857, 0.0937, 0.1227, 0.1307, 0.1517,0.1597,0.1757,0.1835,0.1967,0.2047,0.2152,0.2230,0.2495,0.2575]
+# qs2 = [0.0857, 0.0937, 0.1227, 0.1307, 0.1517,0.1597,0.1757,0.1835,0.1967,0.2047,0.2152,0.2230,0.2495,0.2575]
 
-for q in qs:
-    pk.geo.plot_qring(q, ec='red')
-for q in qs2:
-    pk.geo.plot_qring(q, ec='blue')
+# for q in qs:
+    # pk.geo.plot_qring(q, ec='red')
+# # for q in qs2:
+    # # pk.geo.plot_qring(q, ec='blue')
 
-corrpts = scorpy.CorrelationVol(qmax=0.264).qpts
+# # corrpts = scorpy.CorrelationVol(qmax=0.264).qpts
 
 
 
-print(pk.scat_rect)
-pk_int = pk.integrate_peaks(integration_r)
-print(pk_int.scat_rect)
+# print(pk.scat_rect)
+# pk_int = pk.integrate_peaks(integration_r)
+# print(pk_int.scat_rect)
 
-pk_int.plot_peaks(cmap='spring')
-ax = plt.gca()
-ax.set_facecolor("black")
-pk.geo.plot_qring(qmax, ec='white')
-pk_int.geo.plot_qring(scorpy.utils.convert_r2q(integration_r, pk.geo.clen, pk.geo.wavelength), ec='green')
+# pk_int.plot_peaks(cmap='spring')
+# ax = plt.gca()
+# ax.set_facecolor("black")
+# # pk.geo.plot_qring(qmax, ec='white')
+# pk_int.geo.plot_qring(scorpy.utils.convert_r2q(integration_r, pk.geo.clen, pk.geo.wavelength), ec='green')
 
-for q in qs:
-    pk.geo.plot_qring(q, ec='red')
-for q in qs2:
-    pk.geo.plot_qring(q, ec='blue')
+# for q in qs:
+    # pk.geo.plot_qring(q, ec='red')
+# for q in qs2:
+    # pk.geo.plot_qring(q, ec='blue')
 
 # for q in qs:
     # pk.geo.plot_qring(q, ec='red')

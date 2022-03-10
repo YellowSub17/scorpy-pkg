@@ -61,6 +61,12 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
 
+    def qpsi_correction(self):
+
+        q1q1, q2q2, psipsi = np.meshgrid(self.qpts, self.qpts, self.psipts)
+
+        self.vol *= np.sin(psipsi)
+        self.vol *= (q1q1*q2q2)
 
 
     @verbose_dec
