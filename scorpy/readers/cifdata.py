@@ -207,8 +207,20 @@ qmax=None, crop_poles=False  ):
 
         self._scat_pol = scat_sph
 
-    def make_saldin(self, k):
-        self.scat_sph[:,1] = np.pi/2 - np.arcsin(self.scat_sph[:,0]/(2*k))
+
+
+    def fill_from_vesta_hkl(self, path):
+        f = open(path, 'r')
+
+    
+        cont = f.read()
+        lines = cont.split('\n')
+
+        for line in lines:
+
+            cols = line.split()
+
+            print(cols)
 
 
 

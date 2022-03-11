@@ -9,7 +9,7 @@ import time
 
 
 run_3d = True
-run_2d = True
+run_2d = False
 
 
 
@@ -17,27 +17,27 @@ run_2d = True
 
 
 ######3D CORR Parameters
-qmax = 0.264
-ciffname = 'intenr-qmax1-sf.cif'
+qmax = 1.5
+ciffname = 'ortho-intenr-qmax15'
 nq = 100
 npsi = 180
 cos_sample = False
 inc_self_corr = True
 
-corr3dfname = 'intenr-qmax0264-3d-qcor.dbin'
+corr3dfname = 'ortho-intenr-qmax15-3d-qcor.dbin'
 
 
 ######2D CORR Parameters
 size = 75
 photonenergy = 9300
-clen = 0.45
+clen = 0.30
 npix = 1000
 pixsize = 200e-6
 nphotons=1e24
 nofringes=True
 integration_r = 0.005
-pdbfname = 'intenr-qmax1-sf.pdb'
-intenfname = 'intenr-qmax1-sf.hkl'
+pdbfname = 'ortho-intenr-qmax15-sf.pdb'
+intenfname = 'ortho-intenr-qmax15-sf.hkl'
 geomfname = 'batch.geom'
 #approx 40 mins for 100x100, 20 mins for 50x100, 7hrs for 2000x50
 nbatches = 2000
@@ -46,7 +46,7 @@ nframes = 50
 method = 'scat_sph'
 integrated = True
 
-corr2dfname = 'intenr-qmax0264-2d-qcor.dbin'
+corr2dfname = 'ortho-intenr-qmax15-2d-qcor.dbin'
 
 
 
@@ -152,7 +152,7 @@ if run_2d:
             corr2d.fill_from_peakdata(pk, method=method, verbose=0)
 
 
-        if batch % 10==0:
+        if batch % 50==0:
             corr2d.save(f'{scorpy.DATADIR}/dbins/{corr2dfname}-batch{batch}.dbin')
 
         corr2d.save(f'{scorpy.DATADIR}/dbins/{corr2dfname}')

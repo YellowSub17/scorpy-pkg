@@ -13,8 +13,8 @@ import numpy as np
 
 size = 75
 photonenergy = 9300
-qmax=0.264
-clen =0.45
+qmax=1.5
+clen =0.30
 npix = 1000
 pixsize = 200e-6
 
@@ -27,8 +27,8 @@ pixsize = 200e-6
 nphotons=1e24
 nofringes=True
 integration_r = 0.005
-pdbfname = 'intenr-qmax1-sf.pdb'
-intenfname = 'intenr-qmax1-sf.hkl'
+pdbfname = 'ortho-intenr-qmax15-sf.pdb'
+intenfname = 'ortho-intenr-qmax15-sf.hkl'
 
 geomfname = 'plot-test.geom'
 
@@ -133,13 +133,11 @@ pk.geo.plot_qring(qmax, ec='white')
 
 
 
-# print(pk.scat_rect)
-# pk_int = pk.integrate_peaks(integration_r)
-# print(pk_int.scat_rect)
+pk_int = pk.integrate_peaks(integration_r)
 
-# pk_int.plot_peaks(cmap='spring')
-# ax = plt.gca()
-# ax.set_facecolor("black")
+pk_int.plot_peaks(cmap='spring')
+ax = plt.gca()
+ax.set_facecolor("black")
 # # pk.geo.plot_qring(qmax, ec='white')
 # pk_int.geo.plot_qring(scorpy.utils.convert_r2q(integration_r, pk.geo.clen, pk.geo.wavelength), ec='green')
 
