@@ -11,7 +11,7 @@ class CifData(CifDataProperties):
 
     def __init__(self,path=None, a_mag=1, b_mag=1, c_mag=1,
                     alpha=90, beta=90, gamma=90, spg='x',
-qmax=None, crop_poles=False  ):
+                    qmax=None, crop_poles=False  ):
 
 
 
