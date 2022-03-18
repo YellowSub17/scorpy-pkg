@@ -161,7 +161,7 @@ class CifData(CifDataProperties):
     def _calc_scat_sph(self):
 
         # convert rect reciprocal units to spherical coords
-        q_mag = np.linalg.norm(self.scat_rect, axis=1)
+        q_mag = np.linalg.norm(self.scat_rect[:,:-1], axis=1)
         # up and down
         theta = np.arctan2(np.linalg.norm(self.scat_rect[:, :2], axis=1), self.scat_rect[:, 2])  # 0 -> pi
 
@@ -302,7 +302,7 @@ class CifData(CifDataProperties):
         cif = pycif.CifFile()
         block = pycif.CifBlock()
         cif['block'] = block
-        cif['block']['_symmetry.space_group_name_h-m'] = f'xxx{self.spg}'
+        cif['block']['_symmetry.space_group_name_h-m'] = f'{self.spg}'
         cif['block']['_cell.angle_alpha'] = np.degrees(self.alpha)
         cif['block']['_cell.angle_beta'] = np.degrees(self.beta)
         cif['block']['_cell.angle_gamma'] = np.degrees(self.gamma)

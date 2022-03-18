@@ -36,7 +36,6 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot,
         self.rcond = rcond
         self.inc_odds = inc_odds
 
-        
 
 
         ##### check input properties are consistent and save them
@@ -46,7 +45,6 @@ class AlgoHandler(AlgoHandlerProps, AlgoHandlerPlot,
         assert self.blqq.nq == self.sphv_supp.nq
         self.nq = self.blqq.nq
 
-        assert self.blqq.nl == self.sphv_supp.nl
         self.nl = self.blqq.nl
 
 

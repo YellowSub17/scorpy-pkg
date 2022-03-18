@@ -171,6 +171,7 @@ def cosinesim(v1, v2):
 HM_NUMBER_DICT = {
     'I 2 2 2': 123,
     'P 1': 1,
+    'P -1': 1,
     'P 21 21 21': 115,
     'P 21 21 2': 112,
     'P 21 3': 492,
@@ -195,6 +196,7 @@ HM_NUMBER_DICT = {
     "F D 3 M": 499,
     "P -4 3 n": 514,
     "P 63": 467,
+    "P a -3":501,
 }
 
 
@@ -470,8 +472,12 @@ def apply_sym(reflections, spg_code):
     elif HM_number >= 503 and HM_number <= 530:
         total_sym_mat = m_three_m()
     else:
-        print('WARNING: NO SYMETERY APPLIED')
-        print(f'spg: {spg_code}, pg: {HM_number}')
+        print('##############')
+        print('##############')
+        print('WARNING: NO SYMETERY APPLIED TO CIF')
+        print('##############')
+        print('##############')
+        # print(f'spg: {spg_code}, pg: {HM_number}')
         total_sym_mat = identity()
 
     new_reflections = np.zeros((len(total_sym_mat) * len(reflections), 4))

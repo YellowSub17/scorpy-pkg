@@ -26,6 +26,9 @@ class AlgoHandlerSchemes:
 
         err = np.linalg.norm(sphv_f.vol - sphv_i.vol)
 
+        #how much outside of support
+        #how close are the eigen values before/after update
+
         return sphv_i, sphv_f, err
 
 
