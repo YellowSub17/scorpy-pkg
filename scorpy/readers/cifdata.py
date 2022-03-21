@@ -7,9 +7,13 @@ import itertools
 from .readersprops import CifDataProperties
 
 
+
+
+
+
 class CifData(CifDataProperties):
 
-    def __init__(self,path, qmax=None, crop_poles=False):
+    def __init__(self,path, qmax=None, rotk=None, rottheta=None):
 
 
 
@@ -20,7 +24,7 @@ class CifData(CifDataProperties):
 
 
         self._get_cell_params(cif_dict)
-        self._get_cell_vecs()
+        self._get_cell_vecs(rotk = rotk, rottheta = rottheta)
 
 
 
@@ -28,7 +32,7 @@ class CifData(CifDataProperties):
             self._calc_scat_bragg(cif_dict)
             self._calc_scat_rect()
             self._calc_scat_sph()
-            self._qcrop(qmax, crop_poles)
+            self._qcrop(qmax)
 
 
         else:
@@ -70,7 +74,7 @@ class CifData(CifDataProperties):
 
 
 
-    def _get_cell_vecs(self):
+    def _get_cell_vecs(self, rotk=None, rottheta=np.pi/6):
         '''
         Calculate vectors for direct and reciprocal crystal lattices
         '''
@@ -81,6 +85,12 @@ class CifData(CifDataProperties):
             (np.cos(self.alpha) - np.cos(self.beta) * np.cos(self.gamma)) / np.sin(self.gamma),
             np.sqrt(1 - np.cos(self.beta)**2 - ((np.cos(self.alpha) - np.cos(self.beta) * np.cos(self.gamma)) / np.sin(self.gamma))**2)
         ])
+
+        if rotk is not None:
+            rotk = rotk/np.linalg.norm(rotk)
+            a_unit =  np.cos(rottheta)*a_unit + (1-np.cos(rottheta))*np.dot(a_unit, rotk)*rotk + np.sin(rottheta)*(np.cross(rotk, a_unit))
+            b_unit =  np.cos(rottheta)*b_unit + (1-np.cos(rottheta))*np.dot(b_unit, rotk)*rotk + np.sin(rottheta)*(np.cross(rotk, b_unit))
+            c_unit =  np.cos(rottheta)*c_unit + (1-np.cos(rottheta))*np.dot(c_unit, rotk)*rotk + np.sin(rottheta)*(np.cross(rotk, c_unit))
 
         self._a = self.a_mag * np.round(a_unit, 14)
         self._b = self.b_mag * np.round(b_unit, 14)

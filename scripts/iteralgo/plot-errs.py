@@ -122,49 +122,49 @@ for i, sub_tag in enumerate(sub_tags):
 
 
 
-tag = 'p1-inten-r0-from-corr-qloose-supp'
+# tag = 'p1-inten-r0-from-corr-qloose-supp'
 
 
-sub_tags = ['a', 'b', 'c']
+# sub_tags = ['a', 'b', 'c']
 
-cmap = 'viridis'
-
-
-
-
-plt.figure()
-for sub_tag, color in zip(sub_tags, 'rgb'):
-    y = np.loadtxt(f'{scorpy.DATADIR}/algo/old_algo/{tag}/{sub_tag}/errs_{tag}_{sub_tag}.txt', delimiter=',', usecols=0)
-    plt.plot(np.log10(y[1:]), label=f'{tag}', color=color)
-plt.legend()
-
-plt.figure()
-for sub_tag, color in zip(sub_tags, 'rgb'):
-    y = np.loadtxt(f'{scorpy.DATADIR}/algo/old_algo/{tag}/{sub_tag}/errs_{tag}_{sub_tag}.txt', delimiter=',', usecols=0)
-    plt.plot(y[1:], label=f'{tag}', color=color)
-plt.legend()
+# cmap = 'viridis'
 
 
 
-ss = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/old_algo/{tag}/sphv_{tag}_supp.dbin')
-qloc = np.unique(np.where(ss.vol !=0)[0])
 
-print(qloc)
+# plt.figure()
+# for sub_tag, color in zip(sub_tags, 'rgb'):
+    # y = np.loadtxt(f'{scorpy.DATADIR}/algo/old_algo/{tag}/{sub_tag}/errs_{tag}_{sub_tag}.txt', delimiter=',', usecols=0)
+    # plt.plot(np.log10(y[1:]), label=f'{tag}', color=color)
+# plt.legend()
 
-qq = 44
+# plt.figure()
+# for sub_tag, color in zip(sub_tags, 'rgb'):
+    # y = np.loadtxt(f'{scorpy.DATADIR}/algo/old_algo/{tag}/{sub_tag}/errs_{tag}_{sub_tag}.txt', delimiter=',', usecols=0)
+    # plt.plot(y[1:], label=f'{tag}', color=color)
+# plt.legend()
 
 
 
-st = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/old_algo/{tag}/sphv_{tag}_targ.dbin')
+# ss = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/old_algo/{tag}/sphv_{tag}_supp.dbin')
+# qloc = np.unique(np.where(ss.vol !=0)[0])
+
+# print(qloc)
+
+# qq = 44
 
 
-ss.plot_slice(0, qq, title='supp', cmap=cmap)
-fig, axes = plt.subplots(2,2, sharex=True, sharey=True)
-st.plot_slice(0, qq, title='targ', cmap=cmap, fig=fig, axes=axes.flatten()[0])
-for i, sub_tag in enumerate(sub_tags):
-    sf = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/old_algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_final.dbin')
 
-    sf.plot_slice(0,qq, title=f'{tag}', cmap=cmap, fig=fig, axes=axes.flatten()[i+1])
+# st = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/old_algo/{tag}/sphv_{tag}_targ.dbin')
+
+
+# ss.plot_slice(0, qq, title='supp', cmap=cmap)
+# fig, axes = plt.subplots(2,2, sharex=True, sharey=True)
+# st.plot_slice(0, qq, title='targ', cmap=cmap, fig=fig, axes=axes.flatten()[0])
+# for i, sub_tag in enumerate(sub_tags):
+    # sf = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/old_algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_final.dbin')
+
+    # sf.plot_slice(0,qq, title=f'{tag}', cmap=cmap, fig=fig, axes=axes.flatten()[i+1])
 
 
 

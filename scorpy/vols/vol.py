@@ -287,7 +287,7 @@ xmax=1, ymax=1, zmax=1,
 
 
 
-    def integrate_region(self, ptx, pty, ptz, dx, dy, dz, disc_sphere='disk'):
+    def integrate_region(self, ptx, pty, ptz, dx, dy, dz, shape='disk'):
 
 
 
@@ -307,14 +307,27 @@ xmax=1, ymax=1, zmax=1,
 
 
 
-        xx, yy, zz = np.meshgrid(self.xpts, self.ypts, self.zpts)
+        if shape=='disk':
+            xx, yy, zz = np.meshgrid(self.xpts, self.ypts, self.zpts)
 
 
-        rxx, ryy, rzz = xx-ptx, yy-pty, np.abs(zz-ptz)
+            rxx, ryy, rzz = xx-ptx, yy-pty, np.abs(zz-ptz)
 
-        rxy = np.sqrt(rxx**2 + ryy**2)
+            rxy = np.sqrt(rxx**2 + ryy**2)
 
-        loc = np.where( np.logical_and(rxy <= dx,rzz <=dz) )
+            loc = np.where( np.logical_and(rxy <= dx,rzz <=dz) )
+
+        if shape=='rect':
+
+            xx, yy, zz = np.meshgrid(self.xpts, self.ypts, self.zpts)
+            rxx, ryy, rzz = np.abs(xx-ptx), np.abs(yy-pty), np.abs(zz-ptz)
+
+            xandy = np.logical_and( rxx <= dx, ryy <=dy)
+
+            loc = np.where(np.logical_and( xandy, rxx <= dz))
+
+    
+
 
 
         return self.vol[loc].sum(), loc
