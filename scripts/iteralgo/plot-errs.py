@@ -15,6 +15,7 @@ plt.close('all')
 
 
 tag = 'nicotineamide-dres1-loose-supp-bigpsi-crop-poles'
+tag = 'anilinomethylphenol'
 
 sub_tags = ['a', 'b', 'c']
 # sub_tags = ['er10']
@@ -44,7 +45,7 @@ qloc = np.unique(np.where(ss.vol !=0)[0])
 
 print(qloc)
 
-qq = 131
+qq = 17
 
 st = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_targ.dbin')
 
@@ -56,8 +57,18 @@ plt.tight_layout()
 st.plot_slice(0, qq, title='targ', cmap=cmap, fig=fig, axes=axes.flatten()[0], log=False)
 for i, sub_tag in enumerate(sub_tags):
     sf = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_final.dbin')
+    si = st.copy()
 
-    sf.plot_slice(0,qq, title=f'{tag}', cmap=cmap, fig=fig, axes=axes.flatten()[i+1], log=False)
+    for pti in st.ls_pts(inds=True):
+        xul = int(pti[0]-1), int(pti[0]+2)
+        yul = int(pti[1]-1), int(pti[1]+2)
+        zul = int(pti[2]-1), int(pti[2]+2)
+
+        intenI = sf.vol[ xul[0]:xul[1], yul[0]:yul[1], zul[0]:zul[1] ].sum()
+
+        si.vol[int(pti[0]), int(pti[1]), int(pti[2])] += intenI
+
+    si.plot_slice(0,qq, title=f'{tag}_{sub_tag}', cmap=cmap, fig=fig, axes=axes.flatten()[i+1], log=False)
 
 
 

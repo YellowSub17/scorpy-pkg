@@ -3,6 +3,8 @@ from scipy import special
 import matplotlib.pyplot as plt
 from .vol import Vol
 from .volsprops import BlqqVolProps
+from ..utils import verbose_dec
+import time
 
 
 class BlqqVol(Vol, BlqqVolProps):
@@ -45,7 +47,8 @@ class BlqqVol(Vol, BlqqVolProps):
 
 
 
-    def fill_from_corr(self, corr, rcond=None):
+    @verbose_dec
+    def fill_from_corr(self, corr, rcond=None, verbose=0):
         '''
         scorpy.BlqqVol.fill_from_corr():
             Fill the Blqq from a CorrelationVol object
@@ -60,6 +63,11 @@ class BlqqVol(Vol, BlqqVolProps):
 
         assert corr.nq == self.nq, 'CorrelationVol and BlqqVol have different nq'
         assert corr.qmax == self.qmax, 'CorrelationVol and BlqqVol have different qmax'
+
+        print('')
+        print('############')
+        print(f'Filling BlqqVol from CorrelationVol via Pseudo Matrix Inversion.')
+        print(f'Started: {time.asctime()}')
 
         if self.inc_odds:
             lskip = 1
@@ -93,11 +101,17 @@ class BlqqVol(Vol, BlqqVolProps):
         # in iteralgo, tweak algo type/inputs + rcond
 
         for iq1 in range(self.nq):
+            
+            print(f'q index: {iq1+1}/{self.nq}', end='\r')
             for iq2 in range(iq1, self.nq):
                 dot = np.dot(fmat_inv, corr.vol[iq1, iq2, :])
                 self.vol[iq1, iq2, :] = dot
                 if iq2 > iq1:
                     self.vol[iq2, iq1, :] = dot
+
+        print('\x1b[2K', end='\r')
+        print(f'Ended: {time.asctime()}')
+        print('############')
 
 
 

@@ -39,12 +39,9 @@ sf.plot_slice(0, qq, fig=fig, axes=axes[1])
 si = st.copy()
 
 for pti in st.ls_pts(inds=True):
-
-
     xul = int(pti[0]-1), int(pti[0]+2)
     yul = int(pti[1]-1), int(pti[1]+2)
     zul = int(pti[2]-1), int(pti[2]+2)
-
 
     intenI = sf.vol[ xul[0]:xul[1], yul[0]:yul[1], zul[0]:zul[1] ].sum()
 

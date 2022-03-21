@@ -186,22 +186,12 @@ class CifData(CifDataProperties):
 
 
 
-    def _qcrop(self, qmax, crop_poles=False):
+    def _qcrop(self, qmax):
         if qmax is not None:
             loc = np.where(self.scat_sph[:, 0] <= qmax)
             self._scat_rect = self._scat_rect[loc]
             self._scat_bragg = self._scat_bragg[loc]
             self._scat_sph = self._scat_sph[loc]
-
-        if crop_poles:
-            loc1 =self.scat_sph[:,1] == np.pi
-            self._scat_rect = self.scat_rect[~loc1]
-            self._scat_bragg = self.scat_bragg[~loc1]
-            self._scat_sph = self.scat_sph[~loc1]
-            loc2 = self.scat_sph[:,1] == 0
-            self._scat_rect = self.scat_rect[~loc2]
-            self._scat_bragg = self.scat_bragg[~loc2]
-            self._scat_sph = self.scat_sph[~loc2]
 
         self._qmax = np.round(np.max(self.scat_sph[:,0]), 14)
 
@@ -216,7 +206,7 @@ class CifData(CifDataProperties):
 
 
 
-    def fill_from_vhkl(self, path, qmax=None, crop_poles=False):
+    def fill_from_vhkl(self, path, qmax=None):
 
         hklI = np.genfromtxt(path, skip_header=1, usecols=(0,1,2,6))
 
@@ -230,12 +220,12 @@ class CifData(CifDataProperties):
 
         self._calc_scat_rect()
         self._calc_scat_sph()
-        self._qcrop(qmax, crop_poles)
+        self._qcrop(qmax)
 
 
 
 
-    def fill_from_sphv(self, sphv, crop_poles=False):
+    def fill_from_sphv(self, sphv):
 
         assert self.scat_bragg is None, "This CifData has already been filled."
 
@@ -304,7 +294,12 @@ class CifData(CifDataProperties):
         scat_sph = scat_sph[~inten0_loc]
         scat_rect = scat_rect[~inten0_loc]
 
-        self._qcrop(sphv.qmax, crop_poles)
+
+        self._scat_bragg = scat_bragg
+        self._scat_sph = scat_sph
+        self._scat_rect = scat_rect
+
+        self._qcrop(sphv.qmax)
 
 
     def save(self, path):

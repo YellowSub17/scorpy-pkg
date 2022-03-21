@@ -17,11 +17,10 @@ import sys
 
 
 
-tag = 'nicotineamide-dres1-loose-supp-bigpsi-crop-poles'
+tag = 'anilinomethylphenol'
 
 
-# sub_tag=sys.argv[1]
-sub_tag='er10'
+sub_tag='c'
 
 
 recipe_fname =  'rec.txt'
@@ -89,8 +88,8 @@ for line in recipe_file:
         a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_final.dbin')
 
         # if count in [1, 2, 4, 8, 16, 32, 59, 60, 61, 62, 64, 68, 76]:
-        if count in [1,2,3,4,5,6,7,8,9,10]:
-            a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_c{count}.dbin')
+        # if count in [1,2,3,4,5,6,7,8,9,10]:
+            # a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_c{count}.dbin')
 
 
 
