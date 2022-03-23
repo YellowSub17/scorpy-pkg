@@ -7,18 +7,18 @@ from ..utils import index_x
 
 from .readersprops import PeakDataProperties
 
-DEFAULT_GEO = ExpGeom(f'{DATADIR}/geoms/agipd_2304_vj_opt_v4.geom')
+DEFAULT_GEOM = ExpGeom(f'{DATADIR}/geoms/agipd_2304_vj_opt_v4.geom')
 
 class PeakData(PeakDataProperties):
 
-    def __init__(self, df, geo=DEFAULT_GEO, cxi_flag=True, qmax=None, qmin=None, mask_flag=False):
+    def __init__(self, df, geom=DEFAULT_GEOM, cxi_flag=True, qmax=None, qmin=None, mask_flag=False):
         '''
         handler for a peaks.txt file
         df: dataframe of the peak data, or str file path to txt
         geo: ExpGeom object associated to experiement geomtery
         '''
 
-        self._geo = geo  # ExpGeom object
+        self._geom = geom  # ExpGeom object
         # self._cxi_flag = cxi_flag
         self._mask_flag = mask_flag
 
@@ -88,7 +88,7 @@ class PeakData(PeakDataProperties):
             inten_df = self.df[:, 3]  # intensity
 
 
-            pix_pos = self.geo.translate_pixels(
+            pix_pos = self.geom.translate_pixels(
                 sss_df, fss_df)  # x,y,z position [m]
 
         elif self.df.shape[1]==5:
@@ -112,9 +112,9 @@ class PeakData(PeakDataProperties):
 
         theta_scatter_angle = np.arctan2(pol_r_mag, pix_pos[:, 2])
 
-        q_mag = 2*self.geo.k*np.sin(0.5*theta_scatter_angle)
+        q_mag = 2*self.geom.k*np.sin(0.5*theta_scatter_angle)
 
-        saldin_sph_theta = np.pi/2 - np.arcsin((q_mag)/(2*self.geo.k))
+        saldin_sph_theta = np.pi/2 - np.arcsin((q_mag)/(2*self.geom.k))
         # my_sph_theta = 0.5*(np.pi + theta1)
 
 
@@ -160,9 +160,10 @@ class PeakData(PeakDataProperties):
         for fn in self.frame_numbers:  # for each frame number
             # get the peaks from this frame number
             frame_df = self.df[np.where(self.df[:, 0] == fn)]
+            print('fdf', frame_df)
             if npeakmax==-1 or frame_df.shape[0] <=npeakmax:
                 # make the Peak data object and append
-                frames.append(PeakData(frame_df, geo=self.geo, qmax=self.qmax, qmin=self.qmin))
+                frames.append(PeakData(frame_df, geom=self.geom, qmax=self.qmax, qmin=self.qmin))
         return frames  # return the list of appended peak datas
 
 
@@ -229,7 +230,7 @@ class PeakData(PeakDataProperties):
         df = np.array(integrated_peaks_list)
 
 
-        return PeakData(df, geo=self.geo, qmax=self.qmax, qmin=self.qmin)
+        return PeakData(df, geom=self.geom, qmax=self.qmax, qmin=self.qmin)
 
 
 
@@ -243,7 +244,7 @@ class PeakData(PeakDataProperties):
 
         if newfig:
             plt.figure()
-        self.geo.plot_panels()
+        self.geom.plot_panels()
 
 
         x = self.scat_rect[:,1]

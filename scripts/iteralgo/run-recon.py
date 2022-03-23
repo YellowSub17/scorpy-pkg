@@ -17,14 +17,15 @@ import sys
 
 
 
-tag = 'anilinomethylphenol'
+tag = 'agno3'
 
 
-sub_tag='c'
+sub_tag = 'hio10_glopos'
 
 
 recipe_fname =  'rec.txt'
-sphv_init = None
+# sphv_init = None
+sphv_init = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/hio10/sphv_{tag}_hio10_init.dbin')
 
 
 
@@ -87,11 +88,8 @@ for line in recipe_file:
 
         a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_final.dbin')
 
-        # if count in [1, 2, 4, 8, 16, 32, 59, 60, 61, 62, 64, 68, 76]:
-        # if count in [1,2,3,4,5,6,7,8,9,10]:
-            # a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_c{count}.dbin')
-
-
+        # if count in [1,2,3,4,5,10,15,29,30,31,32,34,38, 54, 70, 102, 134, 198, 262, 390, 518, 519, 520, 550, 590, 620]:
+        a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_count{count}.dbin')
 
 
 a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_final.dbin')

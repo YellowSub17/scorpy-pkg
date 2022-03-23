@@ -25,6 +25,7 @@ tag = 'ausb2'
 tag = 'cuso45h2o'
 tag = 'nicotineamide'
 tag = 'anilinomethylphenol'
+tag = 'agno3'
 
 cif = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/{tag}.cif')
 cif.fill_from_vhkl( f'{scorpy.DATADIR}/xtal/{tag}.vhkl')

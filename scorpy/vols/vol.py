@@ -291,21 +291,6 @@ xmax=1, ymax=1, zmax=1,
 
 
 
-#         xx, yy = np.meshgrid(self.xpts, self.ypts)
-        # zz = self.zpts
-
-
-        # dxx, dyy, dzz = xx-ptx, yy-ptx, zz-ptz
-
-        # dxy = np.sqrt(dxx**2 + dyy**2)
-
-        # xloc, yloc = np.where( dxy <= dx )
-
-        # zloc = np.where( np.abs(dzz) <= dz)[0]
-
-        # return xloc, yloc, zloc
-
-
 
         if shape=='disk':
             xx, yy, zz = np.meshgrid(self.xpts, self.ypts, self.zpts)
@@ -326,13 +311,27 @@ xmax=1, ymax=1, zmax=1,
 
             loc = np.where(np.logical_and( xandy, rxx <= dz))
 
-    
 
 
 
         return self.vol[loc].sum(), loc
 
 
+
+    def integrate_peaks(self, mask_vol, dpix = 1):
+
+        new_vol = np.zeros(self.vol.shape)
+        for xi, yi, zi, I in mask_vol.ls_pts(inds=True):
+            xul = int(xi-dpix), int(xi+dpix+1)
+            yul = int(yi-dpix), int(yi+dpix+1)
+            zul = int(zi-dpix), int(zi+dpix+1)
+
+            intenI = self.vol[ xul[0]:xul[1], yul[0]:yul[1], zul[0]:zul[1] ].sum()
+
+            new_vol[int(xi), int(yi), int(zi)] += intenI
+
+
+        self.vol = new_vol
 
 
 

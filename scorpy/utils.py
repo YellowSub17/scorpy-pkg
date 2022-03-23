@@ -156,10 +156,49 @@ def angle_between_sph(theta1, theta2, phi1, phi2):
 
 
 def cosinesim(v1, v2):
-    # TODO docstring
     v1f, v2f = v1.flatten(), v2.flatten()
     sim = np.dot(np.conj(v1f / np.linalg.norm(v1f)), v2f / np.linalg.norm(v2f))
     return sim
+
+
+def rfactor(v_exp,v_targ):
+    ned = np.sum(np.abs( v_exp[v_exp!=0] - v_targ[v_exp!=0]))
+    donk = np.sum(np.abs( v_exp[v_exp!=0]))
+    return ned/donk
+
+
+
+
+def fsc(v1,v2):
+
+    ned =  np.sum(v1 * v2, axis = -1).sum(axis=-1)
+    donk = np.sqrt( np.sum(v1**2, axis= -1).sum(axis=-1) *  np.sum(v2**2, axis= -1).sum(axis=-1)   )
+
+    fsc = ned/donk
+    fsc = np.nan_to_num(fsc, copy=True, nan=0.0, posinf=None, neginf=None)
+
+    return fsc
+
+
+
+
+# # # print(f'R factors of target vs final ({sub_tag}) (just peaks)')
+# # # ned = np.sum(np.abs(np.sqrt(sf.vol[ss.vol>0]) - np.sqrt(st.vol[ss.vol>0])))
+# # # donk = np.sum(np.abs(np.sqrt(st.vol[ss.vol>0])))
+
+# # # ned = np.sum(np.abs(sf.vol[ss.vol>0]- st.vol[ss.vol>0]))
+# # # donk = np.sum(np.abs(st.vol[ss.vol>0]))
+
+# # # r = ned/donk
+# # # print(r)
+# # # print()
+
+
+
+
+
+
+
 
 
 

@@ -145,11 +145,11 @@ class CifDataProperties:
 class PeakDataProperties:
 
     @property
-    def geo(self):
+    def geom(self):
         '''
         ExpoGeom object that handles experiment geometry.
         '''
-        return self._geo
+        return self._geom
 
     @property
     def cxi_flag(self):

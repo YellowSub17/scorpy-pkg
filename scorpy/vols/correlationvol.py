@@ -69,6 +69,11 @@ class CorrelationVol(Vol, CorrelationVolProps):
         self.vol *= (q1q1*q2q2)
 
 
+
+
+
+######## FILL FROM
+
     @verbose_dec
     def fill_from_cif(self, cif, method='scat_rect', verbose=0):
         '''
@@ -107,6 +112,49 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
 
+
+    @verbose_dec
+    def fill_from_peakdata(self, pk, method='scat_pol', npeakmax=-1, verbose=0):
+        '''
+        scorpy.CorrelationVol.fill_from_peakdata():
+            Fill the CorrelationVol from a PeakData object.
+        Arguments:
+            pk : scorpy.PeakData
+                The PeakData object to to fill the CorrelationVol
+            method : str
+                Method to fill the correlation volume. Either "scat_sph" or "scat_pol"
+                to use the spherical or polar coordinates of the PeakData.
+            verbose : bool
+                Flag for printing extra information to the screen while correlating.
+        '''
+
+        assert self.qmax >= pk.qmax, 'pk.qmax > corr.qmax'
+        assert method in ['scat_pol', 'scat_sph'], 'Invalid correlation method.'
+
+
+        frames = pk.split_frames(npeakmax=npeakmax)
+        nframes = len(frames)
+
+        print('############')
+        print(f'Filling CorrelationVol from Peakdata via {method}.')
+        print(f'Correlation started: {time.asctime()}\n')
+
+        print('s1', pk.scat_pol.shape)
+        if method=='scat_pol':
+            for i, frame in enumerate(frames):
+                # print(f'Frame: {i+1}/{nframes}', end='\n')
+                print('s2', frame.scat_pol.shape)
+                self.correlate_scat_pol(frame.scat_pol[:,1:], verbose=verbose-1)
+                # print('\x1b[2A\x1b[2K', end='\n')
+
+        if method=='scat_sph':
+            for i, frame in enumerate(frames):
+                print(f'Frame: {i+1}/{nframes}', end='\n')
+                self.correlate_scat_sph(frame.scat_sph[:,1:])
+                print('\x1b[2A\x1b[2K', end='\n')
+
+        print(f'Correlation ended: {time.asctime()}\n')
+        print('############')
 
 
 
@@ -178,6 +226,9 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
 
+######## CORRELATE
+
+
 
     @verbose_dec
     def correlate_scat_pol(self, qti, verbose=0):
@@ -191,6 +242,8 @@ class CorrelationVol(Vol, CorrelationVolProps):
                 intensity of the peak.
         '''
         # only correlate less than qmax
+
+        print(qti)
         le_qmax = np.where(qti[:, 0] <= self.qmax)[0]
         qti = qti[le_qmax]
 
@@ -209,9 +262,10 @@ class CorrelationVol(Vol, CorrelationVolProps):
         else:
             q2start_term, q2end_term = 1, None
 
+        print(qti)
 
         for i, q1 in enumerate(qti):
-            print(f'Peak: {i+1}/{nscats}', end='\r')
+            # print(f'Peak: {i+1}/{nscats}', end='\r')
             # get q index
             q1_ind = q_inds[i]
 
@@ -234,7 +288,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
                 if j > 0:  # if not on diagonal
                     self.vol[q2_ind, q1_ind, psi_ind] += q1[-1] * q2[-1]
-        print('\x1b[2K', end='\r')
+        # print('\x1b[2K', end='\r')
 
 
 
@@ -357,47 +411,6 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
         print('\x1b[2K', end='\r')
-
-    @verbose_dec
-    def fill_from_peakdata(self, pk, method='scat_pol', npeakmax=-1, verbose=0):
-        '''
-        scorpy.CorrelationVol.fill_from_peakdata():
-            Fill the CorrelationVol from a PeakData object.
-        Arguments:
-            pk : scorpy.PeakData
-                The PeakData object to to fill the CorrelationVol
-            method : str
-                Method to fill the correlation volume. Either "scat_sph" or "scat_pol"
-                to use the spherical or polar coordinates of the PeakData.
-            verbose : bool
-                Flag for printing extra information to the screen while correlating.
-        '''
-
-        assert self.qmax >= pk.qmax, 'pk.qmax > corr.qmax'
-        assert method in ['scat_pol', 'scat_sph'], 'Invalid correlation method.'
-
-
-        frames = pk.split_frames(npeakmax=npeakmax)
-        nframes = len(frames)
-
-        print('############')
-        print(f'Filling CorrelationVol from Peakdata via {method}.')
-        print(f'Correlation started: {time.asctime()}\n')
-
-        if method=='scat_pol':
-            for i, frame in enumerate(frames):
-                print(f'Frame: {i+1}/{nframes}', end='\n')
-                self.correlate_scat_pol(frame.scat_pol[:,1:], verbose=verbose-1)
-                print('\x1b[2A\x1b[2K', end='\n')
-
-        if method=='scat_sph':
-            for i, frame in enumerate(frames):
-                print(f'Frame: {i+1}/{nframes}', end='\n')
-                self.correlate_scat_sph(frame.scat_sph[:,1:])
-                print('\x1b[2A\x1b[2K', end='\n')
-
-        print(f'Correlation ended: {time.asctime()}\n')
-        print('############')
 
 
 
