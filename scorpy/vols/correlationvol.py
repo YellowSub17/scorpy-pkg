@@ -114,7 +114,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
 
     @verbose_dec
-    def fill_from_peakdata(self, pk, method='scat_pol', npeakmax=-1, verbose=0):
+    def fill_from_peakdata(self, pk, method='scat_pol', verbose=0):
         '''
         scorpy.CorrelationVol.fill_from_peakdata():
             Fill the CorrelationVol from a PeakData object.
@@ -132,18 +132,16 @@ class CorrelationVol(Vol, CorrelationVolProps):
         assert method in ['scat_pol', 'scat_sph'], 'Invalid correlation method.'
 
 
-        frames = pk.split_frames(npeakmax=npeakmax)
+        frames = pk.split_frames()
         nframes = len(frames)
 
         print('############')
         print(f'Filling CorrelationVol from Peakdata via {method}.')
         print(f'Correlation started: {time.asctime()}\n')
 
-        print('s1', pk.scat_pol.shape)
         if method=='scat_pol':
             for i, frame in enumerate(frames):
                 # print(f'Frame: {i+1}/{nframes}', end='\n')
-                print('s2', frame.scat_pol.shape)
                 self.correlate_scat_pol(frame.scat_pol[:,1:], verbose=verbose-1)
                 # print('\x1b[2A\x1b[2K', end='\n')
 

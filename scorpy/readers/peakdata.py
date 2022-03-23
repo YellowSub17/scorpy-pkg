@@ -27,12 +27,18 @@ class PeakData(PeakDataProperties):
 
         self._df = df
 
+        print('x', self.df.shape)
+
 
 
         self._frame_numbers = np.unique(self.df[:, 0])
+        print('fn', self.frame_numbers)
 
 
         self._scat_rect, self._scat_pol, self._scat_sph = self.get_scat(qmax=qmax, qmin=qmin)
+
+
+        print('sp', self.scat_pol)
 
 
         if qmax is not None:
@@ -74,6 +80,7 @@ class PeakData(PeakDataProperties):
             df[:,1] = loc[1]
             df[:,2] = loc[0]
             df[:,3] = data[loc[0], loc[1]]
+
         return df
 
 
@@ -92,7 +99,7 @@ class PeakData(PeakDataProperties):
                 sss_df, fss_df)  # x,y,z position [m]
 
         elif self.df.shape[1]==5:
-            #if the df is an array of framenumber, x,y, z intensity
+            #if the df is an array of framenumber, x,y, z, intensity
             framenumber_df = self.df[:, 0]
             pix_pos = self.df[:,1:4]
             inten_df = self.df[:, 4]  # intensity
@@ -140,6 +147,7 @@ class PeakData(PeakDataProperties):
             scat_sph = scat_sph[loc]
             scat_rect = scat_rect[loc]
             scat_pol = scat_pol[loc]
+            print('loc', loc)
 
         if qmin is not None:
             loc = np.where(scat_pol[:, 1] >= qmin)
@@ -150,7 +158,7 @@ class PeakData(PeakDataProperties):
 
         return scat_rect, scat_pol, scat_sph
 
-    def split_frames(self, npeakmax=-1):
+    def split_frames(self):
         '''
         return a list of PeakData objects, where each PeakData object on has a
         single frame of data
@@ -160,10 +168,8 @@ class PeakData(PeakDataProperties):
         for fn in self.frame_numbers:  # for each frame number
             # get the peaks from this frame number
             frame_df = self.df[np.where(self.df[:, 0] == fn)]
-            print('fdf', frame_df)
-            if npeakmax==-1 or frame_df.shape[0] <=npeakmax:
-                # make the Peak data object and append
-                frames.append(PeakData(frame_df, geom=self.geom, qmax=self.qmax, qmin=self.qmin))
+            # make the Peak data object and append
+            frames.append(PeakData(frame_df, geom=self.geom, qmax=self.qmax, qmin=self.qmin))
         return frames  # return the list of appended peak datas
 
 
