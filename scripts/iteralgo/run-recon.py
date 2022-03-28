@@ -20,18 +20,18 @@ import sys
 tag = 'agno3'
 
 
-sub_tag = 'hio10_glopos'
+sub_tag = 'a'
 
 
 recipe_fname =  'rec.txt'
-# sphv_init = None
-sphv_init = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/hio10/sphv_{tag}_hio10_init.dbin')
+sphv_init = None
 
 
 
 
 # make sub directory for saving iters
 os.mkdir(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}')
+os.mkdir(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/plots')
 
 shutil.copyfile(f'{scorpy.DATADIR}/algo/RECIPES/{recipe_fname}',
                  f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/recipe_{tag}_{sub_tag}.txt')
@@ -43,6 +43,7 @@ shutil.copyfile(f'{scorpy.DATADIR}/algo/RECIPES/{recipe_fname}',
 # Load inputs 
 blqq_data =scorpy.BlqqVol(path=f'{scorpy.DATADIR}/algo/{tag}/blqq_{tag}_data.dbin')
 sphv_supp =scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_supp.dbin')
+sphv_targ =scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_targ.dbin')
 recipe_file = open(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/recipe_{tag}_{sub_tag}.txt')
 
 
@@ -79,17 +80,46 @@ for line in recipe_file:
         print(f'{iter_num}', end='\r')
 
 
-        _,_, err = scheme(**kwargs)
+        _,_, step = scheme(**kwargs)
         count +=1
 
-        err_file = open(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/errs_{tag}_{sub_tag}.txt','a')
-        err_file.write(f'{err},\t\t#{tag}_{sub_tag}_{count}\n')
-        err_file.close()
+
+
+        sphv_integrated = a.sphv_iter.copy()
+        sphv_integrated.integrate_peaks(mask_vol=sphv_targ)
+
+        plt.figure()
+        plt.scatter(sphv_targ.vol[sphv_targ.vol>0]/sphv_targ.vol.sum(),
+                    sphv_integrated.vol[sphv_targ.vol>0]/sphv_integrated.vol.sum(), c=np.where(sphv_targ.vol>0)[1], cmap='seismic')
+        plt.plot([0, sphv_targ.vol.max()/sphv_targ.vol.sum()], [0, sphv_targ.vol.max()/sphv_targ.vol.sum()])
+
+        plt.title(f'Itarg vs Icalc (Coloured by Theta) count:{count}')
+        plt.xlabel('Itarg')
+        plt.ylabel('Icalc')
+        plt.colorbar()
+        plt.savefig(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/plots/ItargIcalc_{tag}_{sub_tag}_count{count}.png')
+        a.sphv_iter.plot_slice(0, 75, title=f'q shell=75, count={count}', xlabel='phi', ylabel='theta')
+        plt.savefig(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/plots/aiter75_{tag}_{sub_tag}_count{count}.png')
+
+
+        plt.close('all')
+
+        step_file = open(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/steps_{tag}_{sub_tag}.txt','a')
+        step_file.write(f'{step},\t\t#{tag}_{sub_tag}_{count}\n')
+        step_file.close()
+
+        rfactor_file = open(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/rfactor_{tag}_{sub_tag}.txt','a')
+        rf = scorpy.utils.rfactor(sphv_integrated.vol/sphv_integrated.vol.sum(), sphv_targ.vol/sphv_targ.vol.sum())
+        rfactor_file.write(f'{rf},\t\t#{tag}_{sub_tag}_{count}\n')
+        rfactor_file.close()
+
+        dist_file = open(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/dist_{tag}_{sub_tag}.txt','a')
+        dist = np.linalg.norm( np.abs( sphv_targ.vol - sphv_integrated.vol))
+        dist_file.write(f'{dist},\t\t#{tag}_{sub_tag}_{count}\n')
+        dist_file.close()
 
         a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_final.dbin')
 
-        # if count in [1,2,3,4,5,10,15,29,30,31,32,34,38, 54, 70, 102, 134, 198, 262, 390, 518, 519, 520, 550, 590, 620]:
-        a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_count{count}.dbin')
 
 
 a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_final.dbin')

@@ -141,9 +141,9 @@ class CorrelationVol(Vol, CorrelationVolProps):
 
         if method=='scat_pol':
             for i, frame in enumerate(frames):
-                # print(f'Frame: {i+1}/{nframes}', end='\n')
+                print(f'Frame: {i+1}/{nframes}', end='\n')
                 self.correlate_scat_pol(frame.scat_pol[:,1:], verbose=verbose-1)
-                # print('\x1b[2A\x1b[2K', end='\n')
+                print('\x1b[2A\x1b[2K', end='\n')
 
         if method=='scat_sph':
             for i, frame in enumerate(frames):
@@ -241,7 +241,6 @@ class CorrelationVol(Vol, CorrelationVolProps):
         '''
         # only correlate less than qmax
 
-        print(qti)
         le_qmax = np.where(qti[:, 0] <= self.qmax)[0]
         qti = qti[le_qmax]
 
@@ -260,10 +259,9 @@ class CorrelationVol(Vol, CorrelationVolProps):
         else:
             q2start_term, q2end_term = 1, None
 
-        print(qti)
 
         for i, q1 in enumerate(qti):
-            # print(f'Peak: {i+1}/{nscats}', end='\r')
+            print(f'Peak: {i+1}/{nscats}', end='\r')
             # get q index
             q1_ind = q_inds[i]
 
@@ -286,7 +284,7 @@ class CorrelationVol(Vol, CorrelationVolProps):
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
                 if j > 0:  # if not on diagonal
                     self.vol[q2_ind, q1_ind, psi_ind] += q1[-1] * q2[-1]
-        # print('\x1b[2K', end='\r')
+        print('\x1b[2K', end='\r')
 
 
 

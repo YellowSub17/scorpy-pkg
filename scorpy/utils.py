@@ -167,6 +167,12 @@ def rfactor(v_exp,v_targ):
     return ned/donk
 
 
+###calc rfactor from list
+
+# def rfactor(v_exp,v_targ):
+    # ned = np.sum(np.abs( np.sqrt(v_exp[v_exp!=0]) - np.sqrt(v_targ[v_exp!=0])))
+    # donk = np.sum(np.abs( np.sqrt(v_exp[v_exp!=0])))
+    # return ned/donk
 
 
 def fsc(v1,v2):

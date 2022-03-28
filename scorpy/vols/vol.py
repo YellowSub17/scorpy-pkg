@@ -318,7 +318,7 @@ xmax=1, ymax=1, zmax=1,
 
 
 
-    def integrate_peaks(self, mask_vol, dpix = 1):
+    def integrate_peaks(self, mask_vol, dpix = 2):
 
         new_vol = np.zeros(self.vol.shape)
         for xi, yi, zi, I in mask_vol.ls_pts(inds=True):

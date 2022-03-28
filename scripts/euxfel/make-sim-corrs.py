@@ -27,16 +27,14 @@ hklpath = f'{scorpy.DATADIR}/xtal/1vds.hkl'
 
 
 
-nframes = [2**i for i in range(9, 12)]
-nframes = [2, 4, 8, 16, 512, 1024, 2048]
-nframes = [2048]
+nframes = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]
 
 
 
 
 
 
-geo = scorpy.ExpGeom(f'{geompath}')
+geom = scorpy.ExpGeom(f'{geompath}')
 
 
 
@@ -59,7 +57,7 @@ for n in nframes:
     print(f'Correlating frames. {time.asctime()}')
     corr = scorpy.CorrelationVol(nq=nq, npsi=npsi, qmax=qmax, cos_sample=False)
     for frame in range(n):
-        pk = scorpy.PeakData(f'/tmp/euxfel-simcorr-{n}-{frame+1}.h5', qmax=qmax, geo = geo)
+        pk = scorpy.PeakData(f'/tmp/euxfel-simcorr-{n}-{frame+1}.h5', qmax=qmax, geom = geom)
 
 
 
@@ -86,7 +84,7 @@ for n in nframes:
 
         for i, seed_i in enumerate(frames_shuffled[:int(n/2)]):
 
-            pk = scorpy.PeakData(f'/tmp/euxfel-simcorr-{n}-{seed_i}.h5', qmax=qmax, geo=geo )
+            pk = scorpy.PeakData(f'/tmp/euxfel-simcorr-{n}-{seed_i}.h5', qmax=qmax, geom=geom )
 
             print(f'\x1b[2Ka Frame {i+1}', end='\r')
             corra.fill_from_peakdata(pk)
@@ -96,7 +94,7 @@ for n in nframes:
 
         for i, seed_i in enumerate(frames_shuffled[int(n/2):]):
 
-            pk = scorpy.PeakData(f'/tmp/euxfel-simcorr-{n}-{seed_i}.h5', qmax=qmax, geo=geo )
+            pk = scorpy.PeakData(f'/tmp/euxfel-simcorr-{n}-{seed_i}.h5', qmax=qmax, geom=geom )
 
             print(f'\x1b[2Kb Frame {i+1}', end='\r')
             corrb.fill_from_peakdata(pk)

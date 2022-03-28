@@ -11,7 +11,7 @@ DEFAULT_GEOM = ExpGeom(f'{DATADIR}/geoms/agipd_2304_vj_opt_v4.geom')
 
 class PeakData(PeakDataProperties):
 
-    def __init__(self, df, geom=DEFAULT_GEOM, cxi_flag=True, qmax=None, qmin=None, mask_flag=False):
+    def __init__(self, df, geom=DEFAULT_GEOM, cxi_flag=True, qmax=None, qmin=1e-14, mask_flag=False):
         '''
         handler for a peaks.txt file
         df: dataframe of the peak data, or str file path to txt
@@ -19,7 +19,6 @@ class PeakData(PeakDataProperties):
         '''
 
         self._geom = geom  # ExpGeom object
-        # self._cxi_flag = cxi_flag
         self._mask_flag = mask_flag
 
         if type(df)==str:
@@ -27,18 +26,15 @@ class PeakData(PeakDataProperties):
 
         self._df = df
 
-        print('x', self.df.shape)
 
 
 
         self._frame_numbers = np.unique(self.df[:, 0])
-        print('fn', self.frame_numbers)
 
 
         self._scat_rect, self._scat_pol, self._scat_sph = self.get_scat(qmax=qmax, qmin=qmin)
 
 
-        print('sp', self.scat_pol)
 
 
         if qmax is not None:
@@ -147,7 +143,6 @@ class PeakData(PeakDataProperties):
             scat_sph = scat_sph[loc]
             scat_rect = scat_rect[loc]
             scat_pol = scat_pol[loc]
-            print('loc', loc)
 
         if qmin is not None:
             loc = np.where(scat_pol[:, 1] >= qmin)
