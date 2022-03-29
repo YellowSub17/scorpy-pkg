@@ -139,6 +139,8 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
                     ned = 1
                     donk = 1
+                # print('ned', ned)
+                # print('donk', donk)
                 self.vals[q_ind, :, l, :] *= np.sqrt(np.abs(ned/donk))
 
 

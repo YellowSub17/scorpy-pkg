@@ -269,7 +269,7 @@ xmax=1, ymax=1, zmax=1,
     def make_mask(self):
 
         loc = np.where(self.vol != 0)
-        self.vol[loc] *= 1/self.vol[loc]
+        self.vol[loc] = 1
 
 
 
@@ -318,7 +318,7 @@ xmax=1, ymax=1, zmax=1,
 
 
 
-    def integrate_peaks(self, mask_vol, dpix = 2):
+    def integrate_peaks(self, mask_vol, dpix, sin_correction=True):
 
         new_vol = np.zeros(self.vol.shape)
         for xi, yi, zi, I in mask_vol.ls_pts(inds=True):
@@ -326,9 +326,27 @@ xmax=1, ymax=1, zmax=1,
             yul = int(yi-dpix), int(yi+dpix+1)
             zul = int(zi-dpix), int(zi+dpix+1)
 
-            intenI = self.vol[ xul[0]:xul[1], yul[0]:yul[1], zul[0]:zul[1] ].sum()
+            if sin_correction:
+                sf = np.sin(self.zpts[int(yi)])
+            else:
+                sf = 1
+
+            # intenI = self.vol[ xul[0]:xul[1], yul[0]:yul[1], zul[0]:zul[1] ].sum()*sf
+
+            intenI = 0
+            if zul[1]>self.nz:
+                intenI +=self.vol[ xul[0]:xul[1], yul[0]:yul[1], zul[0]:zul[1] ].sum()*sf
+                intenI +=self.vol[ xul[0]:xul[1], yul[0]:yul[1], 0:zul[1]-self.nz].sum()*sf
+
+            elif zul[0] < 0:
+                intenI +=self.vol[xul[0]:xul[1], yul[0]:yul[1], zul[0]].sum()*sf
+                intenI +=self.vol[ xul[0]:xul[1], yul[0]:yul[1], 0:zul[1]].sum()*sf
+            else:
+                intenI = self.vol[ xul[0]:xul[1], yul[0]:yul[1], zul[0]:zul[1] ].sum()*sf
+
 
             new_vol[int(xi), int(yi), int(zi)] += intenI
+
 
 
         self.vol = new_vol

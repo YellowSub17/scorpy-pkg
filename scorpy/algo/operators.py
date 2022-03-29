@@ -136,15 +136,18 @@ class AlgoHandlerOperators:
 
         self.sphv_b.vol = self.sphv_iter.vol * self.sphv_supp.vol
 
-#         #semi positiivity: if most the intenisty is negative, force is positive 
+        # # # # #semi positiivity: if most the intenisty is negative, force is positive 
         # if self.sphv_b.vol.sum() <0:
             # self.sphv_b.vol *= -1
 
-        # #global positivitiy: if the intensity is still negative, set to 0
-        # self.sphv_b.vol[self.sphv_b.vol<0] = 0
+        # # # # #global positivitiy: if the intensity is still negative, set to 0
+        self.sphv_b.vol[self.sphv_b.vol<0] = 0
 
-        ## another global positivity
-        self.sphv_b.vol = np.abs(self.sphv_b.vol)
+
+
+        ### absolute positivitiy:
+        # self.sphv_b.vol = np.abs(self.sphv_b.vol)
+
 
         ## symetry constraint? average intensity on symetric partners
         ## start triclinic (abc alpha beta gamma all different)

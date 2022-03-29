@@ -17,13 +17,13 @@ import sys
 
 
 
-tag = 'agno3'
+tag = 'agno3-largerqmax'
 
 
-sub_tag = 'a'
+sub_tag = 'testing'
 
 
-recipe_fname =  'rec.txt'
+recipe_fname =  'testing.txt'
 sphv_init = None
 
 
@@ -86,7 +86,7 @@ for line in recipe_file:
 
 
         sphv_integrated = a.sphv_iter.copy()
-        sphv_integrated.integrate_peaks(mask_vol=sphv_targ)
+        sphv_integrated.integrate_peaks(mask_vol=sphv_targ, dpix=2)
 
         plt.figure()
         plt.scatter(sphv_targ.vol[sphv_targ.vol>0]/sphv_targ.vol.sum(),
@@ -98,8 +98,18 @@ for line in recipe_file:
         plt.ylabel('Icalc')
         plt.colorbar()
         plt.savefig(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/plots/ItargIcalc_{tag}_{sub_tag}_count{count}.png')
-        a.sphv_iter.plot_slice(0, 75, title=f'q shell=75, count={count}', xlabel='phi', ylabel='theta')
-        plt.savefig(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/plots/aiter75_{tag}_{sub_tag}_count{count}.png')
+        a.sphv_iter.plot_slice(0, 140, title=f'q shell=140, count={count}', xlabel='phi', ylabel='theta')
+        plt.savefig(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/plots/aiter140_{tag}_{sub_tag}_count{count}.png')
+
+        a.sphv_iter.plot_slice(0, 63, title=f'q shell=63, count={count}', xlabel='phi', ylabel='theta')
+        plt.savefig(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/plots/aiter63_{tag}_{sub_tag}_count{count}.png')
+
+
+  #       iqlm_x = a.iqlm_iter.copy()
+        # iqlm_x.set_val(140,0,0,0)
+        # iqlm_x.plot_q(140)
+        # plt.savefig(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/plots/iqlm_q140_{tag}_{sub_tag}_count{count}.png')
+
 
 
         plt.close('all')
