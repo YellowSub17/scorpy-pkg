@@ -10,9 +10,10 @@ plt.close('all')
 # # # Parameters
 nq= 256
 npsi = 360*32
-qmax = 6
+qmax = 9
 
-nl = 45
+nl = 180
+lcrop = 45
 rcond = 0.1
 
 
@@ -25,7 +26,7 @@ nphi = ntheta*2
 
 
 
-tag = 'agno3-largerqmax'
+tag = 'agno3-largerqmax-lcrop'
 cif_fname = 'agno3-sf.cif'
 
 
@@ -61,10 +62,10 @@ print(qloc)
 
 
 # sphv_supp.plot_slice(0, 237)
-sphv_supp.plot_slice(0, 140)
-sphv_supp.plot_slice(0, 63)
+# sphv_supp.plot_slice(0, 140)
+# sphv_supp.plot_slice(0, 63)
 
-dxsupp = 1
+dxsupp = 2
 for pti in sphv_supp.ls_pts(inds=True):
     xul = int(pti[0]-dxsupp), int(pti[0]+dxsupp+1)
     yul = int(pti[1]-dxsupp), int(pti[1]+dxsupp+1)
@@ -81,7 +82,7 @@ for pti in sphv_supp.ls_pts(inds=True):
         sphv_supp.vol[xul[0]:xul[1], yul[0]:yul[1], 0:zul[1]] = 1
 
 
-# sphv_supp.plot_slice(0, 237)
+
 
 
 
@@ -99,6 +100,9 @@ for pti in sphv_supp.ls_pts(inds=True):
 
 # blqq_data = scorpy.BlqqVol(nq, nl, qmax)
 # blqq_data.fill_from_corr(corr_data, rcond=rcond, verbose=1)
+# blqq_data.plot_q1q2()
+# blqq_data.vol[:,:,lcrop:] = 0
+# blqq_data.plot_q1q2()
 
 # # corr_calc = scorpy.CorrelationVol(nq, npsi, qmax)
 # # corr_calc.fill_from_blqq(blqq_data, verbose=1)

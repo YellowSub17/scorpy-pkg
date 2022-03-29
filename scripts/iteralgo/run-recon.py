@@ -17,7 +17,7 @@ import sys
 
 
 
-tag = 'agno3-largerqmax'
+tag = 'agno3-largerqmax-lcrop'
 
 
 sub_tag = 'testing'
@@ -98,17 +98,13 @@ for line in recipe_file:
         plt.ylabel('Icalc')
         plt.colorbar()
         plt.savefig(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/plots/ItargIcalc_{tag}_{sub_tag}_count{count}.png')
-        a.sphv_iter.plot_slice(0, 140, title=f'q shell=140, count={count}', xlabel='phi', ylabel='theta')
-        plt.savefig(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/plots/aiter140_{tag}_{sub_tag}_count{count}.png')
+        
+        # a.sphv_iter.plot_slice(0, 245, title=f'q shell=245, count={count}', xlabel='phi', ylabel='theta')
+        # plt.savefig(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/plots/aiter245_{tag}_{sub_tag}_count{count}.png')
 
-        a.sphv_iter.plot_slice(0, 63, title=f'q shell=63, count={count}', xlabel='phi', ylabel='theta')
-        plt.savefig(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/plots/aiter63_{tag}_{sub_tag}_count{count}.png')
+        # a.sphv_iter.plot_slice(0, 115, title=f'q shell=115, count={count}', xlabel='phi', ylabel='theta')
+        # plt.savefig(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/plots/aiter115{tag}_{sub_tag}_count{count}.png')
 
-
-  #       iqlm_x = a.iqlm_iter.copy()
-        # iqlm_x.set_val(140,0,0,0)
-        # iqlm_x.plot_q(140)
-        # plt.savefig(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/plots/iqlm_q140_{tag}_{sub_tag}_count{count}.png')
 
 
 

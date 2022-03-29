@@ -13,7 +13,7 @@ plt.close('all')
 
 
 
-tag = 'agno3-largerqmax'
+tag = 'agno3-largerqmax-lcrop'
 sub_tags = ['testing']
 
 # tag = 'p1-inten-r0-from-corr-qloose-supp'
@@ -30,24 +30,24 @@ cmap = 'viridis'
 
 
 
-for plotval in ['steps', 'rfactor', 'dist']:
-# for plotval in ['steps']:
-    plt.figure()
-    for sub_tag, color in zip(sub_tags, 'rgb'):
-        y = np.loadtxt(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/{plotval}_{tag}_{sub_tag}.txt', delimiter=',', usecols=0)
-        plt.plot(np.log10(y[1:]), label=f'{sub_tag}', color=color)
-    plt.legend()
-    plt.title(f'{tag} {plotval} (log)')
+# for plotval in ['steps', 'rfactor', 'dist']:
+# # for plotval in ['steps']:
+    # plt.figure()
+    # for sub_tag, color in zip(sub_tags, 'rgb'):
+        # y = np.loadtxt(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/{plotval}_{tag}_{sub_tag}.txt', delimiter=',', usecols=0)
+        # plt.plot(np.log10(y[1:]), label=f'{sub_tag}', color=color)
+    # plt.legend()
+    # plt.title(f'{tag} {plotval} (log)')
 
-    plt.figure()
-    for sub_tag, color in zip(sub_tags, 'rgb'):
-        y = np.loadtxt(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/{plotval}_{tag}_{sub_tag}.txt', delimiter=',', usecols=0)
-        plt.plot(y[1:], label=f'{sub_tag}', color=color)
-    plt.legend()
-    plt.title(f'{tag} {plotval}')
+    # plt.figure()
+    # for sub_tag, color in zip(sub_tags, 'rgb'):
+        # y = np.loadtxt(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/{plotval}_{tag}_{sub_tag}.txt', delimiter=',', usecols=0)
+        # plt.plot(y[1:], label=f'{sub_tag}', color=color)
+    # plt.legend()
+    # plt.title(f'{tag} {plotval}')
 
 
-plt.show()
+# plt.show()
 
 
 
@@ -61,7 +61,7 @@ st = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_targ.dbin
 qloc = np.unique(np.where(st.vol !=0)[0])
 print(qloc)
 
-qq = 237
+qq = 115
 # qq = 140
 
 
@@ -74,7 +74,7 @@ for i, sub_tag in enumerate(sub_tags):
 
     sf = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_final.dbin')
     si = sf.copy()
-    si.integrate_peaks(mask_vol=st , dpix=1)
+    si.integrate_peaks(mask_vol=st , dpix=2)
 
     si.plot_slice(0,qq, title=f'{tag}_{sub_tag}', cmap=cmap, fig=fig, axes=axes.flatten()[i+1], log=False)
 
@@ -87,7 +87,7 @@ plt.title('fsc')
 for i, sub_tag in enumerate(sub_tags):
     sf = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_final.dbin')
     si = sf.copy()
-    si.integrate_peaks(mask_vol=st, dpix=1)
+    si.integrate_peaks(mask_vol=st, dpix=2)
     fsc = scorpy.utils.fsc(si.vol, st.vol)
     plt.plot(fsc, label=f'{sub_tag}')
 plt.legend()
@@ -99,7 +99,7 @@ plt.title(f'fo vs fcalc (colored by theta)')
 for i, sub_tag in enumerate(sub_tags):
     sf = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_final.dbin')
     si = sf.copy()
-    si.integrate_peaks(mask_vol=st, dpix=1)
+    si.integrate_peaks(mask_vol=st, dpix=2)
 
 
     loc = np.where(st.vol>0)
