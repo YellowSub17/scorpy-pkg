@@ -62,11 +62,14 @@ qloc = np.unique(np.where(st.vol !=0)[0])
 print(qloc)
 
 qq = 115
-# qq = 140
+# qq = 96
+qq= 248
 
 
 ss.plot_slice(0, qq, title='supp', cmap=cmap)
+
 fig, axes = plt.subplots(1,2, sharex=True, sharey=True)
+plt.suptitle('integrated peaks')
 plt.tight_layout()
 st.plot_slice(0, qq, title='targ', cmap=cmap, fig=fig, axes=axes.flatten()[0], log=False)
 # st.plot_slice(0, qq, title='targ', cmap=cmap, log=False)
@@ -78,19 +81,38 @@ for i, sub_tag in enumerate(sub_tags):
 
     si.plot_slice(0,qq, title=f'{tag}_{sub_tag}', cmap=cmap, fig=fig, axes=axes.flatten()[i+1], log=False)
 
+    # sf.vol[:,:30,:] = 0
+    # sf.vol[:,-30:,:] = 0
+    # si.vol[:,:30,:] = 0
+    # si.vol[:,-30:,:] = 0
+
     rf = scorpy.utils.rfactor(si.vol/si.vol.sum(), st.vol/st.vol.sum())
     print(rf)
 
 
-plt.figure()
-plt.title('fsc')
+
+fig, axes = plt.subplots(1,2, sharex=True, sharey=True)
+plt.suptitle('current iteration')
+plt.tight_layout()
+st.plot_slice(0, qq, title='targ', cmap=cmap, fig=fig, axes=axes.flatten()[0], log=False)
+# st.plot_slice(0, qq, title='targ', cmap=cmap, log=False)
 for i, sub_tag in enumerate(sub_tags):
+
     sf = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_final.dbin')
-    si = sf.copy()
-    si.integrate_peaks(mask_vol=st, dpix=2)
-    fsc = scorpy.utils.fsc(si.vol, st.vol)
-    plt.plot(fsc, label=f'{sub_tag}')
-plt.legend()
+    sf.plot_slice(0,qq, title=f'{tag}_{sub_tag}', cmap=cmap, fig=fig, axes=axes.flatten()[i+1], log=False)
+
+
+ 
+
+# plt.figure()
+# plt.title('fsc')
+# for i, sub_tag in enumerate(sub_tags):
+    # sf = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_final.dbin')
+    # si = sf.copy()
+    # si.integrate_peaks(mask_vol=st, dpix=2)
+    # fsc = scorpy.utils.fsc(si.vol, st.vol)
+    # plt.plot(fsc, label=f'{sub_tag}')
+# plt.legend()
 
 
 
@@ -101,12 +123,15 @@ for i, sub_tag in enumerate(sub_tags):
     si = sf.copy()
     si.integrate_peaks(mask_vol=st, dpix=2)
 
-
+    # sf.vol[:,:30,:] = 0
+    # sf.vol[:,-30:,:] = 0
+    # si.vol[:,:30,:] = 0
+    # si.vol[:,-30:,:] = 0
     loc = np.where(st.vol>0)
 
 
 
-    plt.scatter(st.vol[loc]/st.vol.sum(), si.vol[loc]/si.vol.sum(),c=loc[1], label=f'{sub_tag}', cmap='seismic')
+    plt.scatter(st.vol[loc]/st.vol.sum(), si.vol[loc]/si.vol.sum(),c=loc[1], label=f'{sub_tag}', cmap=cmap)
     plt.title(f'Itarg vs Icalc (Coloured by Theta)')
     plt.xlabel('Itarg')
     plt.ylabel('Icalc')
