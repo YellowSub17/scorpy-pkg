@@ -45,6 +45,26 @@ class CifData(CifDataProperties):
 
 
 
+    def rfactor(self, cif_targ, sqrt=False):
+        assert np.all(cif_targ.scat_bragg[:,:3] == self.scat_bragg[:,:3]), 'Cannot calcuate Rfactor, bragg indices are different'
+
+        Fo = cif_targ.scat_bragg[:,-1]
+        Fc = self.scat_bragg[:,-1]
+
+
+        if sqrt:
+            Fo = np.sqrt(Fo)
+            Fc = np.sqrt(Fc)
+
+        Fo /= np.sum(Fo)
+        Fc /= np.sum(Fc)
+
+
+
+        R = np.sum( np.abs( np.abs(Fo) - np.abs(Fc)))/np.sum(np.abs(Fo))
+        return R
+
+
 
 
 
@@ -71,9 +91,6 @@ class CifData(CifDataProperties):
 
 
 
-
-
-
     def _get_cell_vecs(self, rotk=None, rottheta=np.pi/6):
         '''
         Calculate vectors for direct and reciprocal crystal lattices
@@ -86,6 +103,7 @@ class CifData(CifDataProperties):
             np.sqrt(1 - np.cos(self.beta)**2 - ((np.cos(self.alpha) - np.cos(self.beta) * np.cos(self.gamma)) / np.sin(self.gamma))**2)
         ])
 
+        #Rodriguiz formula
         if rotk is not None:
             rotk = rotk/np.linalg.norm(rotk)
             a_unit =  np.cos(rottheta)*a_unit + (1-np.cos(rottheta))*np.dot(a_unit, rotk)*rotk + np.sin(rottheta)*(np.cross(rotk, a_unit))
@@ -155,6 +173,8 @@ class CifData(CifDataProperties):
 
     def _calc_scat_rect(self):
 
+        assert self.scat_bragg is not None, "Cannot fill calc_scat_rect, scat_bragg is None"
+
 
         # update intensity vector to include reflections
         I = self.scat_bragg[:,-1]
@@ -169,6 +189,8 @@ class CifData(CifDataProperties):
         self._scat_rect = scat_rect
 
     def _calc_scat_sph(self):
+
+        assert self.scat_bragg is not None, "Cannot fill calc_scat_sph, scat_bragg is None"
 
         # convert rect reciprocal units to spherical coords
         q_mag = np.linalg.norm(self.scat_rect[:,:-1], axis=1)
@@ -216,8 +238,6 @@ class CifData(CifDataProperties):
         hklI = hklI[loc]
         self._scat_bragg = apply_sym(hklI, self.spg)
 
-
-
         self._calc_scat_rect()
         self._calc_scat_sph()
         self._qcrop(qmax)
@@ -225,29 +245,28 @@ class CifData(CifDataProperties):
 
 
 
-    def fill_from_sphv(self, sphv):
+    def fill_from_sphv(self, sphv, bragg_xyz=None):
 
         assert self.scat_bragg is None, "This CifData has already been filled."
 
-        self._qmax = sphv.qmax
+        if bragg_xyz is None:
 
-        max_bragg_ind = np.floor(self.qmax/min(self.ast_mag, self.bst_mag, self.cst_mag))
-
-        if max_bragg_ind > 35:
-            print(f'Max Bragg Index: {max_bragg_ind}')
-            ans = input('Continue? (y/n)')
-            if ans != 'y':
-                return None
+            ast_max_bragg_ind = np.floor(sphv.qmax/self.ast_mag)
+            bst_max_bragg_ind = np.floor(sphv.qmax/self.bst_mag)
+            cst_max_bragg_ind = np.floor(sphv.qmax/self.cst_mag)
 
 
+            ast_ite = np.arange(-ast_max_bragg_ind, ast_max_bragg_ind+1)
+            bst_ite = np.arange(-bst_max_bragg_ind, bst_max_bragg_ind+1)
+            cst_ite = np.arange(-cst_max_bragg_ind, cst_max_bragg_ind+1)
 
-        ite = np.arange(-max_bragg_ind, max_bragg_ind+1)
 
-        bragg_xyz = np.array(list(itertools.product( ite, ite, ite)))
+            bragg_xyz = np.array(list(itertools.product( ast_ite, bst_ite, cst_ite)))
+            # remove 000 reflection
+            loc_000 = np.all(bragg_xyz == 0, axis=1)
+            bragg_xyz = bragg_xyz[~loc_000]
 
-        # remove 000 reflection
-        loc_000 = np.all(bragg_xyz == 0, axis=1)
-        bragg_xyz = bragg_xyz[~loc_000]
+
 
         rect_xyz = np.matmul(
             bragg_xyz, np.array([self.ast, self.bst, self.cst]))
@@ -258,7 +277,7 @@ class CifData(CifDataProperties):
         phi[np.where(phi < 0)] = phi[np.where(phi < 0)] + 2 * np.pi  # 0 -> 2pi
         sph_qtp = np.array([q_mag, theta, phi]).T
 
-        loc = np.where(sph_qtp[:, 0] <= self.qmax)
+        loc = np.where(sph_qtp[:, 0] <= sphv.qmax)
         rect_xyz = rect_xyz[loc]
         bragg_xyz = bragg_xyz[loc]
         sph_qtp = sph_qtp[loc]
@@ -288,11 +307,11 @@ class CifData(CifDataProperties):
             scat_rect[i, -1] += sphv.vol[q_ind, theta_ind, phi_ind]
 
 
-        #rm zeros peaks
-        inten0_loc = scat_bragg[:,-1]==0
-        scat_bragg = scat_bragg[~inten0_loc]
-        scat_sph = scat_sph[~inten0_loc]
-        scat_rect = scat_rect[~inten0_loc]
+#         #rm zeros peaks
+        # inten0_loc = scat_bragg[:,-1]==0
+        # scat_bragg = scat_bragg[~inten0_loc]
+        # scat_sph = scat_sph[~inten0_loc]
+        # scat_rect = scat_rect[~inten0_loc]
 
 
         self._scat_bragg = scat_bragg
@@ -311,11 +330,10 @@ class CifData(CifDataProperties):
         cif['block']['_cell.angle_alpha'] = np.degrees(self.alpha)
         cif['block']['_cell.angle_beta'] = np.degrees(self.beta)
         cif['block']['_cell.angle_gamma'] = np.degrees(self.gamma)
-
-
         cif['block']['_cell.length_a'] = self.a_mag
         cif['block']['_cell.length_b'] = self.b_mag
         cif['block']['_cell.length_c'] = self.c_mag
+
         cif['block']['_refln.index_h'] = self.scat_bragg[:,0]
         cif['block']['_refln.index_k'] = self.scat_bragg[:,1]
         cif['block']['_refln.index_l'] = self.scat_bragg[:,2]
@@ -354,16 +372,6 @@ class CifData(CifDataProperties):
         file.write(postscript)
 
         file.close()
-
-
-    # def save_pdb(self, path):
-
-        # file = open(path, 'w')
-
-        # cont = f'CRYST1   {self.a_mag}   {self.b_mag}   {self.c_mag}   {np.degrees(self.alpha)}   {np.degrees(self.beta)}   {np.degrees(self.gamma)} P -1     8\nEND'
-        # file.write(cont)
-
-        # file.close()
 
 
 

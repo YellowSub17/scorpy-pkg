@@ -37,7 +37,6 @@ print(f'qmax: {cif.qmax}')
 
 
 
-
 plt.show()
 
 

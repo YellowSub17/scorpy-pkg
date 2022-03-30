@@ -161,44 +161,17 @@ def cosinesim(v1, v2):
     return sim
 
 
-def rfactor(v_exp,v_targ):
-    ned = np.sum(np.abs( v_exp[v_exp!=0] - v_targ[v_exp!=0]))
-    donk = np.sum(np.abs( v_exp[v_exp!=0]))
-    return ned/donk
 
 
-###calc rfactor from list
+# def fsc(v1,v2):
 
-# def rfactor(v_exp,v_targ):
-    # ned = np.sum(np.abs( np.sqrt(v_exp[v_exp!=0]) - np.sqrt(v_targ[v_exp!=0])))
-    # donk = np.sum(np.abs( np.sqrt(v_exp[v_exp!=0])))
-    # return ned/donk
+    # ned =  np.sum(v1 * v2, axis = -1).sum(axis=-1)
+    # donk = np.sqrt( np.sum(v1**2, axis= -1).sum(axis=-1) *  np.sum(v2**2, axis= -1).sum(axis=-1)   )
 
+    # fsc = ned/donk
+    # fsc = np.nan_to_num(fsc, copy=True, nan=0.0, posinf=None, neginf=None)
 
-def fsc(v1,v2):
-
-    ned =  np.sum(v1 * v2, axis = -1).sum(axis=-1)
-    donk = np.sqrt( np.sum(v1**2, axis= -1).sum(axis=-1) *  np.sum(v2**2, axis= -1).sum(axis=-1)   )
-
-    fsc = ned/donk
-    fsc = np.nan_to_num(fsc, copy=True, nan=0.0, posinf=None, neginf=None)
-
-    return fsc
-
-
-
-
-# # # print(f'R factors of target vs final ({sub_tag}) (just peaks)')
-# # # ned = np.sum(np.abs(np.sqrt(sf.vol[ss.vol>0]) - np.sqrt(st.vol[ss.vol>0])))
-# # # donk = np.sum(np.abs(np.sqrt(st.vol[ss.vol>0])))
-
-# # # ned = np.sum(np.abs(sf.vol[ss.vol>0]- st.vol[ss.vol>0]))
-# # # donk = np.sum(np.abs(st.vol[ss.vol>0]))
-
-# # # r = ned/donk
-# # # print(r)
-# # # print()
-
+    # return fsc
 
 
 

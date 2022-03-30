@@ -119,10 +119,6 @@ for line in recipe_file:
         rfactor_file.write(f'{rf},\t\t#{tag}_{sub_tag}_{count}\n')
         rfactor_file.close()
 
-        dist_file = open(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/dist_{tag}_{sub_tag}.txt','a')
-        dist = np.linalg.norm( np.abs( sphv_targ.vol - sphv_integrated.vol))
-        dist_file.write(f'{dist},\t\t#{tag}_{sub_tag}_{count}\n')
-        dist_file.close()
 
         a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_final.dbin')
 
