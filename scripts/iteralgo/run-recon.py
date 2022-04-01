@@ -17,7 +17,7 @@ import sys
 
 
 
-tag = 'agno3-largerqmax-lcrop'
+tag = 'nacl'
 
 
 sub_tag = 'testing'
@@ -45,6 +45,8 @@ blqq_data =scorpy.BlqqVol(path=f'{scorpy.DATADIR}/algo/{tag}/blqq_{tag}_data.dbi
 sphv_supp =scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_supp.dbin')
 sphv_targ =scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_targ.dbin')
 recipe_file = open(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/recipe_{tag}_{sub_tag}.txt')
+
+cif_targ = scorpy.CifData(path=f'{scorpy.DATADIR}/algo/{tag}/{tag}_targ-sf.cif')
 
 
 
@@ -88,25 +90,21 @@ for line in recipe_file:
         sphv_integrated = a.sphv_iter.copy()
         sphv_integrated.integrate_peaks(mask_vol=sphv_targ, dpix=2)
 
+        cif_f = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/nacl.cif', rotk=[1,1,1], rottheta=np.radians(30))
+        cif_f.fill_from_sphv(sphv_integrated, bragg_xyz=cif_targ.scat_bragg[:,:3])
+
+
         plt.figure()
-        plt.scatter(sphv_targ.vol[sphv_targ.vol>0]/sphv_targ.vol.sum(),
-                    sphv_integrated.vol[sphv_targ.vol>0]/sphv_integrated.vol.sum(), c=np.where(sphv_targ.vol>0)[1], cmap='seismic')
-        plt.plot([0, sphv_targ.vol.max()/sphv_targ.vol.sum()], [0, sphv_targ.vol.max()/sphv_targ.vol.sum()])
-
-        plt.title(f'Itarg vs Icalc (Coloured by Theta) count:{count}')
+        plt.scatter(cif_targ.scat_bragg[:,-1]/cif_targ.scat_bragg[:,-1].sum(),
+                    cif_f.scat_bragg[:,-1]/cif_f.scat_bragg[:,-1].sum(), c=cif_targ.scat_sph[:,1])
         plt.xlabel('Itarg')
-        plt.ylabel('Icalc')
-        plt.colorbar()
+        plt.ylabel('Ialgo')
+        plt.plot( [0,cif_targ.scat_bragg[:,-1].max()/cif_targ.scat_bragg[:,-1].sum() ],
+                  [0,cif_targ.scat_bragg[:,-1].max()/cif_targ.scat_bragg[:,-1].sum()])
+        cb = plt.colorbar()
+        cb.set_label('theta')
+
         plt.savefig(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/plots/ItargIcalc_{tag}_{sub_tag}_count{count}.png')
-        
-        # a.sphv_iter.plot_slice(0, 245, title=f'q shell=245, count={count}', xlabel='phi', ylabel='theta')
-        # plt.savefig(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/plots/aiter245_{tag}_{sub_tag}_count{count}.png')
-
-        # a.sphv_iter.plot_slice(0, 115, title=f'q shell=115, count={count}', xlabel='phi', ylabel='theta')
-        # plt.savefig(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/plots/aiter115{tag}_{sub_tag}_count{count}.png')
-
-
-
 
         plt.close('all')
 
@@ -115,7 +113,7 @@ for line in recipe_file:
         step_file.close()
 
         rfactor_file = open(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/rfactor_{tag}_{sub_tag}.txt','a')
-        rf = scorpy.utils.rfactor(sphv_integrated.vol/sphv_integrated.vol.sum(), sphv_targ.vol/sphv_targ.vol.sum())
+        rf = cif_f.rfactor(cif_targ)
         rfactor_file.write(f'{rf},\t\t#{tag}_{sub_tag}_{count}\n')
         rfactor_file.close()
 
@@ -125,6 +123,11 @@ for line in recipe_file:
 
 
 a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_final.dbin')
+
+# sphv_integrated = a.sphv_iter.copy()
+# sphv_integrated.integrate_peaks(mask_vol=sphv_targ, dpix=2)
+# cif_f = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/nacl.cif', rotk=[1,1,1], rottheta=np.radians(30))
+# cif_f.fill_from_sphv(sphv_integrated, bragg_xyz=cif_targ.scat_bragg[:,:3])
 
 
 

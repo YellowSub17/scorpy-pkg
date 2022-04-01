@@ -20,6 +20,7 @@ import CifFile as pycif
 # tag = 'nicotineamide'
 # tag = 'anilinomethylphenol'
 tag = 'agno3'
+tag = 'nacl'
 
 cif = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/{tag}.cif')
 cif.fill_from_vhkl( f'{scorpy.DATADIR}/xtal/{tag}.vhkl')
