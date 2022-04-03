@@ -1,18 +1,19 @@
 
 import CifFile as pycif
 import numpy as np
-from ...utils.utils import index_x
+from ...utils.utils import index_x, convert_rect2sph
 from ...utils.symmetry import apply_sym
 import itertools
 
 from .cifdata_props import CifDataProperties
+from .cifdata_saveload import CifDataSaveLoad
 
 
 
 
 
 
-class CifData(CifDataProperties):
+class CifData(CifDataProperties, CifDataSaveLoad):
 
     def __init__(self,path, qmax=None, rotk=None, rottheta=None):
 
@@ -30,40 +31,29 @@ class CifData(CifDataProperties):
 
 
         if '_refln.index_h' in cif_dict.keys():
-            self._calc_scat_bragg(cif_dict)
-            self._calc_scat_rect()
-            self._calc_scat_sph()
-            self._qcrop(qmax)
-
-
-        else:
-            self._scat_bragg = None
-            self._scat_rect = None
-            self._scat_sph = None
-            self._qmax = None
+            self._calc_scat(cif_dict, qmax=qmax)
 
 
 
 
+    # def rfactor(self, cif_targ, sqrt=False):
+        # assert np.all(cif_targ.scat_bragg[:,:3] == self.scat_bragg[:,:3]), 'Cannot calcuate Rfactor, bragg indices are different'
 
-    def rfactor(self, cif_targ, sqrt=False):
-        assert np.all(cif_targ.scat_bragg[:,:3] == self.scat_bragg[:,:3]), 'Cannot calcuate Rfactor, bragg indices are different'
-
-        Fo = cif_targ.scat_bragg[:,-1]
-        Fc = self.scat_bragg[:,-1]
-
-
-        if sqrt:
-            Fo = np.sqrt(Fo)
-            Fc = np.sqrt(Fc)
-
-        Fo /= np.sum(Fo)
-        Fc /= np.sum(Fc)
+        # Fo = cif_targ.scat_bragg[:,-1]
+        # Fc = self.scat_bragg[:,-1]
 
 
+        # if sqrt:
+            # Fo = np.sqrt(Fo)
+            # Fc = np.sqrt(Fc)
 
-        R = np.sum( np.abs( np.abs(Fo) - np.abs(Fc)))/np.sum(np.abs(Fo))
-        return R
+        # Fo /= np.sum(Fo)
+        # Fc /= np.sum(Fc)
+
+
+
+        # R = np.sum( np.abs( np.abs(Fo) - np.abs(Fc)))/np.sum(np.abs(Fo))
+        # return R
 
 
 
@@ -87,12 +77,12 @@ class CifData(CifDataProperties):
 
         for key in ['_symmetry.space_group_name_h-m', '_space_group_name_h-m_alt', '_symmetry_space_group_name_h-m']:
             if key in cif_dict.keys():
-                self._spg = cif_dict[key]
+                self._spg = cif_dict[key].upper()
 
 
 
 
-    def _get_cell_vecs(self, rotk=None, rottheta=np.pi/6):
+    def _get_cell_vecs(self, rotk=None, rottheta=0):
         '''
         Calculate vectors for direct and reciprocal crystal lattices
         '''
@@ -133,83 +123,91 @@ class CifData(CifDataProperties):
 
 
 
-    def _calc_scat_bragg(self, cif_dict):
+
+
+    def _calc_scat(self, cif_dict, qmax=None, fill=True):
         '''
         Parse cif data to generate scattering infomation, in Bragg indices,
         rectilinear reciprocal units, and spherical reciprocal units
-
         '''
 
-        # Read h,k,l indices
-
+        ##### Bragg Indices
         h = np.array(cif_dict['_refln.index_h']).astype(np.float).astype(np.int32)
         k = np.array(cif_dict['_refln.index_k']).astype(np.float).astype(np.int32)
         l = np.array(cif_dict['_refln.index_l']).astype(np.float).astype(np.int32)
 
 
-        # Read intensities
-        if '_refln.intensity_meas' in cif_dict.keys():
-            I = np.array(cif_dict['_refln.intensity_meas'])
-            I = np.where(I == '?', '0', I)
-            I = I.astype(np.float64)
-        elif '_refln.f_meas_au' in cif_dict.keys():
-            I = np.array(cif_dict['_refln.f_meas_au'])
-            I = np.where(I == '?', '0', I)
-            I = I.astype(np.float64)**2
-        elif '_refln.f_squared_meas' in cif_dict.keys():
-            I = np.array(cif_dict['_refln.f_squared_meas'])
-            I = np.where(I == '?', '0', I)
-            I = I.astype(np.float64)
-        else:
-            print('WARNING: No intensity found when reading cif.')
-            print('Requires: intensity_meas, f_meas_au, f_squared_meas')
-            return None
+        inten_keys = ['_refln.intensity_meas' ,'_refln.f_squared_meas','_refln.f_meas_au' ]
+
+        I=None
+        for inten_key, inten_pw in zip(inten_keys, [1,1,2]):
+            if inten_key in cif_dict.keys():
+                I = np.array(cif_dict[inten_key])
+                I = I.astype(np.float64)**inten_pw
+        assert I is not None, 'WARNING: No intensity found when reading cif.'
+
 
         # apply symmetry to generate all bragg points
         asym_refl = np.array([h, k, l, I]).T
         loc = np.where(asym_refl[:, -1] >= 0)
         asym_refl = asym_refl[loc]
-        self._scat_bragg = apply_sym(asym_refl, self.spg)
+        sym_refl = apply_sym(asym_refl, self.spg)
 
 
-    def _calc_scat_rect(self):
+        if fill:
+            # Fill missing bragg indices 
+            ast_max_bragg_ind = np.max(np.abs(sym_refl[:,0]))
+            bst_max_bragg_ind = np.max(np.abs(sym_refl[:,1]))
+            cst_max_bragg_ind = np.max(np.abs(sym_refl[:,2]))
 
-        assert self.scat_bragg is not None, "Cannot fill calc_scat_rect, scat_bragg is None"
+            ast_ite = np.arange(-ast_max_bragg_ind, ast_max_bragg_ind+1)
+            bst_ite = np.arange(-bst_max_bragg_ind, bst_max_bragg_ind+1)
+            cst_ite = np.arange(-cst_max_bragg_ind, cst_max_bragg_ind+1)
+
+            all_bragg_xyz = np.array(list(itertools.product( ast_ite, bst_ite, cst_ite)))
+            loc_000 = np.all(all_bragg_xyz == 0, axis=1)  # remove 000 reflection
+            all_bragg_xyz = all_bragg_xyz[~loc_000]
 
 
-        # update intensity vector to include reflections
-        I = self.scat_bragg[:,-1]
+            self._scat_bragg = np.zeros( (all_bragg_xyz.shape[0], 4))
+            for i, bragg_pt in enumerate(all_bragg_xyz):
+                self._scat_bragg[i,:-1] = bragg_pt
+                loc = np.where( (sym_refl[:,:-1]==bragg_pt).all(axis=1))[0]
+                if len(loc)==1:
+                    self._scat_bragg[i,-1] = sym_refl[loc,-1]
+        else:
+            self._scat_bragg = sym_refl
+                    
 
-        # convert bragg indices to rect reciprocal units
-        rect_xyz = np.matmul(
-            self.scat_bragg[:, :-1], np.array([self.ast, self.bst, self.cst]))
-        scat_rect = np.zeros(self.scat_bragg.shape)
-        scat_rect[:, :-1] = rect_xyz
-        scat_rect[:, -1] = I
-
-        self._scat_rect = scat_rect
-
-    def _calc_scat_sph(self):
-
-        assert self.scat_bragg is not None, "Cannot fill calc_scat_sph, scat_bragg is None"
-
-        # convert rect reciprocal units to spherical coords
-        q_mag = np.linalg.norm(self.scat_rect[:,:-1], axis=1)
-        # up and down
-        theta = np.arctan2(np.linalg.norm(self.scat_rect[:, :2], axis=1), self.scat_rect[:, 2])  # 0 -> pi
-
-        # around
-        phi = np.arctan2(self.scat_rect[:, 1], self.scat_rect[:, 0])  # -pi -> pi
-        phi[np.where(phi < 0)] = phi[np.where(phi < 0)] + 2 * np.pi  # 0 -> 2pi
-        scat_sph = np.array([q_mag, theta, phi, self.scat_bragg[:,-1]]).T
-        self._scat_sph = scat_sph
+            
 
 
 
 
 
 
-    def _qcrop(self, qmax):
+        # self._scat_bragg = sym_refl
+
+
+
+
+
+
+
+
+        ##### Reciprocal Space Units
+        self._scat_rect = np.zeros(self.scat_bragg.shape)
+        self._scat_rect[:, :-1] = np.matmul(self.scat_bragg[:, :-1], np.array([self.ast, self.bst, self.cst]))
+        self._scat_rect[:, -1] = self.scat_bragg[:,-1]
+
+
+        ##### Spherical Coordinates
+        self._scat_sph = np.zeros(self.scat_rect.shape)
+        self._scat_sph[:, :-1] = convert_rect2sph(self.scat_rect[:,:3])
+        self._scat_sph[:, -1] = self.scat_bragg[:,-1]
+
+
+
         if qmax is not None:
             loc = np.where(self.scat_sph[:, 0] <= qmax)
             self._scat_rect = self._scat_rect[loc]
@@ -246,211 +244,96 @@ class CifData(CifDataProperties):
 
 
 
-    def fill_from_sphv(self, sphv, bragg_xyz=None):
 
-        assert self.scat_bragg is None, "This CifData has already been filled."
+    def fill_from_sphv(self, sphv):
 
-        if bragg_xyz is None:
-
-            ast_max_bragg_ind = np.floor(sphv.qmax/self.ast_mag)
-            bst_max_bragg_ind = np.floor(sphv.qmax/self.bst_mag)
-            cst_max_bragg_ind = np.floor(sphv.qmax/self.cst_mag)
+        ast_max_bragg_ind = int(sphv.qmax/self.ast_mag)
+        bst_max_bragg_ind = int(sphv.qmax/self.bst_mag)
+        cst_max_bragg_ind = int(sphv.qmax/self.cst_mag)
 
 
-            ast_ite = np.arange(-ast_max_bragg_ind, ast_max_bragg_ind+1)
-            bst_ite = np.arange(-bst_max_bragg_ind, bst_max_bragg_ind+1)
-            cst_ite = np.arange(-cst_max_bragg_ind, cst_max_bragg_ind+1)
+        ast_ite = np.arange(-ast_max_bragg_ind, ast_max_bragg_ind+1)
+        bst_ite = np.arange(-bst_max_bragg_ind, bst_max_bragg_ind+1)
+        cst_ite = np.arange(-cst_max_bragg_ind, cst_max_bragg_ind+1)
 
-
-            bragg_xyz = np.array(list(itertools.product( ast_ite, bst_ite, cst_ite)))
-            # remove 000 reflection
-            loc_000 = np.all(bragg_xyz == 0, axis=1)
-            bragg_xyz = bragg_xyz[~loc_000]
-
+        bragg_xyz = np.array(list(itertools.product( ast_ite, bst_ite, cst_ite)))
+        loc_000 = np.all(bragg_xyz == 0, axis=1)  # remove 000 reflection
+        bragg_xyz = bragg_xyz[~loc_000]
 
 
         rect_xyz = np.matmul(
             bragg_xyz, np.array([self.ast, self.bst, self.cst]))
 
-        q_mag = np.linalg.norm(rect_xyz, axis=1)
-        theta = np.arctan2(np.linalg.norm(rect_xyz[:, :2], axis=1), rect_xyz[:, 2])  # 0 -> pi
-        phi = np.arctan2(rect_xyz[:, 1], rect_xyz[:, 0])  # -pi -> pi
-        phi[np.where(phi < 0)] = phi[np.where(phi < 0)] + 2 * np.pi  # 0 -> 2pi
-        sph_qtp = np.array([q_mag, theta, phi]).T
+        sph_qtp = convert_rect2sph(rect_xyz)
 
-        loc = np.where(sph_qtp[:, 0] <= sphv.qmax)
-        rect_xyz = rect_xyz[loc]
-        bragg_xyz = bragg_xyz[loc]
-        sph_qtp = sph_qtp[loc]
+
+        qloc = np.where(sph_qtp[:,0] <= sphv.qmax)
+
+        bragg_xyz = bragg_xyz[qloc]
+        rect_xyz = rect_xyz[qloc]
+        sph_qtp = sph_qtp[qloc]
 
         ite = np.ones( sph_qtp.shape[0])
-
         q_inds = list(map(index_x, sph_qtp[:, 0], 0 * ite, sphv.qmax * ite, sphv.nq * ite))
         theta_inds = list(map(index_x, sph_qtp[:, 1], sphv.ymin * ite, sphv.ymax * ite, sphv.ny * ite))
         phi_inds = list(map(index_x, sph_qtp[:, 2], sphv.zmin * ite, sphv.zmax * ite, sphv.nz * ite, ite))
 
 
-
-        scat_bragg = np.zeros( (sph_qtp.shape[0], 4))
-        scat_bragg[:,:-1] = bragg_xyz
-
-        scat_sph = np.zeros( (sph_qtp.shape[0], 4))
-        scat_sph[:,:-1] = sph_qtp
-
-        scat_rect = np.zeros( (sph_qtp.shape[0], 4))
-        scat_rect[:,:-1] = rect_xyz
-
-
+        I = np.zeros(sph_qtp.shape[0])
         for i, (q_ind, theta_ind, phi_ind ) in enumerate(zip(q_inds, theta_inds, phi_inds )):
+            I[i] += sphv.vol[q_ind, theta_ind, phi_ind]
 
-            scat_bragg[i, -1] += sphv.vol[q_ind, theta_ind, phi_ind]
-            scat_sph[i, -1] += sphv.vol[q_ind, theta_ind, phi_ind]
-            scat_rect[i, -1] += sphv.vol[q_ind, theta_ind, phi_ind]
 
+        cif_dict = {}
+        cif_dict['_refln.index_h'] =  bragg_xyz[:,0]
+        cif_dict['_refln.index_k'] =  bragg_xyz[:,1]
+        cif_dict['_refln.index_l'] =  bragg_xyz[:,2]
+        cif_dict['_refln.intensity_meas'] = I
 
-#         #rm zeros peaks
-        # inten0_loc = scat_bragg[:,-1]==0
-        # scat_bragg = scat_bragg[~inten0_loc]
-        # scat_sph = scat_sph[~inten0_loc]
-        # scat_rect = scat_rect[~inten0_loc]
+        self._calc_scat(cif_dict, qmax=sphv.qmax)
 
 
-        self._scat_bragg = scat_bragg
-        self._scat_sph = scat_sph
-        self._scat_rect = scat_rect
 
-        self._qcrop(sphv.qmax)
 
 
-    def save(self, path):
 
-        cif = pycif.CifFile()
-        block = pycif.CifBlock()
-        cif['block'] = block
-        cif['block']['_symmetry.space_group_name_h-m'] = f'{self.spg}'
-        cif['block']['_cell.angle_alpha'] = np.degrees(self.alpha)
-        cif['block']['_cell.angle_beta'] = np.degrees(self.beta)
-        cif['block']['_cell.angle_gamma'] = np.degrees(self.gamma)
-        cif['block']['_cell.length_a'] = self.a_mag
-        cif['block']['_cell.length_b'] = self.b_mag
-        cif['block']['_cell.length_c'] = self.c_mag
 
-        cif['block']['_refln.index_h'] = self.scat_bragg[:,0]
-        cif['block']['_refln.index_k'] = self.scat_bragg[:,1]
-        cif['block']['_refln.index_l'] = self.scat_bragg[:,2]
-        cif['block']['_refln.intensity_meas'] = self.scat_bragg[:,3]
-        cif['block'].CreateLoop( ['_refln.index_h', '_refln.index_k', '_refln.index_l', '_refln.intensity_meas'] )
 
-        outfile = open(path, 'w')
-        outfile.write(cif.WriteOut())
-        outfile.close()
 
 
-    def save_hkl(self, path):
 
-        file = open(path, 'w')
 
-        preamble = ''
-        preamble += 'CrystFEL reflection list version 2.0\n'
-        preamble += 'Symmetry: 1\n'
-        preamble += '\th\tk\tl\tI\tphase\tsigma(I)\tnmeas\n'
 
-        file.write(preamble)
 
-        for scat in self.scat_bragg:
-            line = f'\t{int(scat[0])}\t{int(scat[1])}\t{int(scat[2])}\t{scat[3]}\t-\t0.0\t1\n'
-            file.write(line)
+    # def make_2D(self, lam):
 
-        postscript = ''
-        postscript += 'End of reflections\n'
-        postscript += 'Generated by CrystFEL 0.9.0\n'
-        postscript += 'partialator -i cxi_io108_it1.stream -o ./it1_merging/108_it1_par.hkl -y 4/mmm --model=unity --iterations=1\n'
-        postscript += 'Audit information from stream:\n'
-        postscript += 'Generated by CrystFEL 0.9.0\n'
-        postscript += 'indexamajig -i files.lst -o cxi_io108_it1.stream -g agipd_2304_opt_102020.geom -p 1vds.pdb --peaks=cxi -j 6 --multi --int-radius=2,3,5.\n'
-        postscript += 'Indexing methods selected: dirax,asdf,xgandalf\n'
+        # if lam is None:
+            # self._scat_sph[:,1] = np.pi/2
+        # else:
+            # self._scat_sph[:,1] = np.arccos( self._scat_sph[:,0]*lam/2)
 
-        file.write(postscript)
 
-        file.close()
+    # def bin_sph(self, nq, ntheta, nphi):
 
+        # qs = self.scat_sph[:, 0]
+        # ts = self.scat_sph[:, 1]
+        # ps = self.scat_sph[:, 2]
 
+        # ite = np.ones(np.shape(qs))
 
+        # qinds = list(map(index_x, qs, 0 * ite, self.qmax * ite, nq * ite))
+        # tinds = list(map(index_x, ts * ite, -np.pi * ite,
+                         # 2, np.pi * ite / 2, ntheta * ite))
+        # pinds = list(map(index_x, ps * ite, 0 * ite,
+                         # 2 * np.pi * ite, nphi * ite))
 
+        # qspace = np.linspace(0, self.qmax, nq)
+        # tspace = np.linspace(-np.pi / 2, np.pi / 2, ntheta)
+        # pspace = np.linspace(0, 2 * np.pi, nphi)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    def make_2D(self, lam):
-
-        if lam is None:
-            self._scat_sph[:,1] = np.pi/2
-        else:
-            self._scat_sph[:,1] = np.arccos( self._scat_sph[:,0]*lam/2)
-
-
-    def bin_sph(self, nq, ntheta, nphi):
-
-        qs = self.scat_sph[:, 0]
-        ts = self.scat_sph[:, 1]
-        ps = self.scat_sph[:, 2]
-
-        ite = np.ones(np.shape(qs))
-
-        qinds = list(map(index_x, qs, 0 * ite, self.qmax * ite, nq * ite))
-        tinds = list(map(index_x, ts * ite, -np.pi * ite,
-                         2, np.pi * ite / 2, ntheta * ite))
-        pinds = list(map(index_x, ps * ite, 0 * ite,
-                         2 * np.pi * ite, nphi * ite))
-
-        qspace = np.linspace(0, self.qmax, nq)
-        tspace = np.linspace(-np.pi / 2, np.pi / 2, ntheta)
-        pspace = np.linspace(0, 2 * np.pi, nphi)
-
-        self.scat_sph[:, 0] = qspace[qinds]
-        self.scat_sph[:, 1] = tspace[tinds]
-        self.scat_sph[:, 2] = pspace[pinds]
+        # self.scat_sph[:, 0] = qspace[qinds]
+        # self.scat_sph[:, 1] = tspace[tinds]
+        # self.scat_sph[:, 2] = pspace[pinds]
 
 
 

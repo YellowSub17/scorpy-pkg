@@ -33,20 +33,6 @@ def to_polar(im, rmax, cenx, ceny):
     return np.rot90(x, k=3)
 
 
-# def harmonic_list(nl, lmin=0,  inc_odds=True):
-
-    # if inc_odds:
-        # lskip = 1
-    # else:
-        # lskip = 2
-
-    # harms = []
-    # for l in range(lmin, nl, lskip):
-        # for _, m in zip(range(2*l +1), range(-l, l+1)):
-            # harms.append((l, m))
-
-    # return harms
-
 
 
 def index_x(x_val, x_min, x_max, nx, wrap=False):
@@ -149,6 +135,15 @@ def cosinesim(v1, v2):
     v1f, v2f = v1.flatten(), v2.flatten()
     sim = np.dot(np.conj(v1f / np.linalg.norm(v1f)), v2f / np.linalg.norm(v2f))
     return sim
+
+
+
+def convert_rect2sph(xyz):
+    r = np.linalg.norm(xyz, axis=1)
+    theta = np.arctan2(np.linalg.norm(xyz[:, :2], axis=1), xyz[:, 2])  # 0 -> pi (NS)
+    phi = np.arctan2(xyz[:,1], xyz[:,0])
+    phi[np.where(phi < 0)] = phi[np.where(phi < 0)] + 2 * np.pi  # 0 -> 2pi (EW)
+    return np.array([r, theta, phi]).T
 
 
 

@@ -8,7 +8,6 @@ from .padfvol_props import PadfVolProps
 from ...utils.env import PADF_PADF
 
 
-#PADF_PADF = '/home/pat/Documents/cloudstor/phd/python_projects/padf/'
 
 
 
@@ -55,7 +54,8 @@ class PadfVol(BaseVol, PadfVolProps):
         corr.save('/tmp/padf/corr.dbin')
 
 
-        padf_config = open(f'{PADF_PADF}config.txt', 'w')
+        padf_config = open(f'{scorpy.PADFDIR}config.txt', 'w')
+        
         padf_config.write(f'correlationfile = /tmp/padf/corr.dbin\n\n')
 
         padf_config.write('outpath = /tmp/padf\n\n')
@@ -73,7 +73,7 @@ class PadfVol(BaseVol, PadfVolProps):
 
         padf_config.close()
 
-        cmd = f'{PADF_PADF}padf {PADF_PADF}config.txt'
+        cmd = f'{scorpy.PADFDIR}padf {scorpy.PADFDIR}config.txt'
 
         if log is None:
             os.system(cmd)

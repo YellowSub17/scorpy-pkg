@@ -38,7 +38,7 @@ class CorrelationVol(BaseVol,               #Parent Vol Class
         CorrelationVol.plot_q1q2()
     """
 
-    def __init__(self, nq=100, npsi=180, qmax=1, cos_sample=True, inc_self_corr=True, path=None):
+    def __init__(self, nq=100, npsi=180, qmax=1, cos_sample=True,  path=None):
 
 
 
@@ -53,7 +53,6 @@ class CorrelationVol(BaseVol,               #Parent Vol Class
                 BaseVol.__init__(self, nq, nq, npsi, 0, 0, 0, qmax, qmax, np.pi, False, False, False, comp=False, path=path)
 
             self._cos_sample = cos_sample
-            self._inc_self_corr = inc_self_corr
 
         self.plot_q1q2 = self.plot_xy
 

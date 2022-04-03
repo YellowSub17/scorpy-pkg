@@ -1,4 +1,5 @@
 
+import numpy as np
 
 
 
@@ -32,12 +33,6 @@ class CorrelationVolCorr:
 
 
 
-        # calc start and end positions if inlcuding self correlation
-        if self.inc_self_corr:
-            q2start_term, q2end_term = 0, None
-        else:
-            q2start_term, q2end_term = 1, None
-
 
         for i, q1 in enumerate(qti):
             print(f'Peak: {i+1}/{nscats}', end='\r')
@@ -45,9 +40,9 @@ class CorrelationVolCorr:
             q1_ind = q_inds[i]
 
 
-            for j, q2 in enumerate(qti[i+q2start_term:q2end_term]):
+            for j, q2 in enumerate(qti[i:]):
                 # get q index
-                q2_ind = q_inds[i + j+q2start_term]
+                q2_ind = q_inds[i + j]
 
                 # get the angle between vectors, and index it
                 psi = angle_between_pol(q1[1], q2[1])
@@ -90,12 +85,6 @@ class CorrelationVolCorr:
         ite = np.ones(nscats)
         q_inds = list(map(index_x, qmags, 0 * ite, self.qmax * ite, self.nq * ite))
 
-        # calc start and end positions if inlcuding self correlation
-        if self.inc_self_corr:
-            q2start_term, q2end_term = 0, None
-        else:
-            q2start_term, q2end_term = 1, None
-
 
         for i, q1 in enumerate(qxyzi):
             print(f'Peak: {i+1}/{nscats}', end='\r')
@@ -103,9 +92,9 @@ class CorrelationVolCorr:
             # get q index
             q1_ind = q_inds[i]
 
-            for j, q2 in enumerate(qxyzi[i+q2start_term:q2end_term]):
+            for j, q2 in enumerate(qxyzi[i:]):
                 # get q index
-                q2_ind = q_inds[i + j+q2start_term]
+                q2_ind = q_inds[i + j]
 
                 # get the angle between vectors, and index it
                 psi = angle_between_rect(q1[:3], q2[:3])
@@ -146,12 +135,6 @@ class CorrelationVolCorr:
         ite = np.ones(nscats)
         q_inds = list(map(index_x, qtpi[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
 
-        # calc start and end positions if inlcuding self correlation
-        if self.inc_self_corr:
-            q2start_term, q2end_term = 0, None
-        else:
-            q2start_term, q2end_term = 1, -1
-
 
 
 
@@ -163,10 +146,10 @@ class CorrelationVolCorr:
             theta1 = q1[1]
             phi1 = q1[2]
 
-            for j, q2 in enumerate(qtpi[i+q2start_term:q2end_term]):
+            for j, q2 in enumerate(qtpi[i:]):
 
                 # get q index, theta and phi
-                q2_ind = q_inds[i + j+q2start_term]
+                q2_ind = q_inds[i + j]
                 theta2 = q2[1]
                 phi2 = q2[2]
 

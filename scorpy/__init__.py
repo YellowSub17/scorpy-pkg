@@ -14,7 +14,8 @@ from .read.geom.expgeom import ExpGeom
 from .iqlm.iqlmhandler import IqlmHandler
 from .algo.algohandler import AlgoHandler
 
-#from .env import DATADIR, SCORPYDIR, PADFCORRDIR
+from .utils.env import DATADIR, SCORPYDIR 
+# from .utils.env import DATADIR, SCORPYDIR, PADFDIR
 
 
 

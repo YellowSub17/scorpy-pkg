@@ -6,10 +6,12 @@ from ...utils.env import DATADIR
 from ...utils.utils import index_x
 
 from .peakdata_props import PeakDataProperties
+from .peakdata_plot import PeakDataPlot
+
 
 DEFAULT_GEOM = ExpGeom(f'{DATADIR}/geoms/agipd_2304_vj_opt_v4.geom')
 
-class PeakData(PeakDataProperties):
+class PeakData(PeakDataProperties, PeakDataPlot):
 
     def __init__(self, df, geom=DEFAULT_GEOM, cxi_flag=True, qmax=None, qmin=1e-14, mask_flag=False):
         '''
@@ -25,8 +27,6 @@ class PeakData(PeakDataProperties):
             df = self.read_file(df, cxi_flag)
 
         self._df = df
-
-
 
 
         self._frame_numbers = np.unique(self.df[:, 0])
@@ -235,31 +235,6 @@ class PeakData(PeakDataProperties):
 
 
 
-
-
-
-
-
-
-    def plot_peaks(self, scatter=False, cmap=None, sizes=None,  newfig=True):
-
-        if newfig:
-            plt.figure()
-        self.geom.plot_panels()
-
-
-        x = self.scat_rect[:,1]
-        y = self.scat_rect[:,2]
-        colors = self.scat_rect[:,-1]
-        marker = 'o'
-
-        if sizes is not None:
-            sizes = (np.max(sizes)-np.min(sizes))*(colors-colors.min())/(colors.max()-colors.min()) + np.min(sizes)
-        else:
-            sizes = 15
-
-        plt.scatter(x, y, c=colors, s=sizes, cmap=cmap, marker=marker)
-        plt.colorbar()
 
 
 
