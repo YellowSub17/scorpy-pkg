@@ -17,6 +17,11 @@ lcrop = 45
 rcond = 0.1
 
 
+recon_tag = 'barite'
+cif_fname = 'barite'
+
+
+
 ntheta = nl*2
 nphi = ntheta*2
 
@@ -26,40 +31,40 @@ nphi = ntheta*2
 
 
 
-tag = 'nacl'
-cif_fname = 'nacl-sf.cif'
 
 
 
 
 # # # Generate Target
-cif_targ = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/{cif_fname}', qmax=qmax, rotk=[1,1,1], rottheta=np.radians(30))
-
+cif_targ = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/{cif_fname}/{cif_fname}-sf.cif', qmax=qmax, rotk=[1,1,1], rottheta=np.radians(30))
 sphv_targ = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_targ.fill_from_cif(cif_targ)
 
-qloc = np.unique(np.where(sphv_targ.vol !=0)[0])
+
+
 
 
 # # # # Generate Support 
-cif_supp = scorpy.CifData(f'{scorpy.DATADIR}/xtal/{cif_fname}', qmax = qmax, rotk=[1,1,1], rottheta=np.radians(30))
+cif_supp = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/{cif_fname}/{cif_fname}-sf.cif', qmax=qmax, rotk=[1,1,1], rottheta=np.radians(30))
 sphv_supp = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_supp.fill_from_cif(cif_supp)
 sphv_supp.make_mask()
 
 
+
+
+# qloc = np.unique(sphv_supp.ls_pts(inds=1)[:,0])
+# print(qloc)
+
 plt.figure()
 plt.plot(sphv_supp.vol.sum(axis=-1).sum(axis=-1))
-plt.title('c')
-
-
-qloc = np.unique(sphv_supp.ls_pts(inds=1)[:,0])
-print(qloc)
+plt.xlabel('Q index')
+plt.ylabel('Bragg Multi.')
 
 
 
 
-sphv_supp.plot_slice(0,244)
+sphv_supp.plot_slice(0,242)
 
 dxsupp = 2
 for pti in sphv_supp.ls_pts(inds=True):
@@ -79,7 +84,7 @@ for pti in sphv_supp.ls_pts(inds=True):
 
 
 
-sphv_supp.plot_slice(0, 244)
+sphv_supp.plot_slice(0, 242)
 
 
 
@@ -95,11 +100,13 @@ sphv_supp.plot_slice(0, 244)
 corr_data = scorpy.CorrelationVol(nq, npsi, qmax)
 corr_data.fill_from_cif(cif_targ, verbose=2)
 
-blqq_data = scorpy.BlqqVol(nq, nl, qmax)
-blqq_data.fill_from_corr(corr_data, rcond=rcond, verbose=1)
-blqq_data.plot_q1q2()
-blqq_data.vol[:,:,lcrop:] = 0
-blqq_data.plot_q1q2()
+blqq_data_full = scorpy.BlqqVol(nq, nl, qmax)
+blqq_data_full.fill_from_corr(corr_data, rcond=rcond, verbose=1)
+
+blqq_data_crop = blqq_data_full.copy()
+blqq_data_crop.vol[:,:,lcrop:] = 0
+
+
 
 # corr_calc = scorpy.CorrelationVol(nq, npsi, qmax)
 # corr_calc.fill_from_blqq(blqq_data, verbose=1)
@@ -107,13 +114,14 @@ blqq_data.plot_q1q2()
 
 
 # # Make directory to save vols
-os.mkdir(f'{scorpy.DATADIR}/algo/{tag}')
+os.mkdir(f'{scorpy.DATADIR}/algo/{recon_tag}')
 
-sphv_targ.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_targ.dbin')
-cif_targ.save(f'{scorpy.DATADIR}/algo/{tag}/{tag}_targ-sf.cif')
-sphv_supp.save(f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_supp.dbin')
-blqq_data.save(f'{scorpy.DATADIR}/algo/{tag}/blqq_{tag}_data.dbin')
+sphv_targ.save(f'{scorpy.DATADIR}/algo/{recon_tag}/sphv_{recon_tag}_targ.dbin')
+cif_targ.save(f'{scorpy.DATADIR}/algo/{recon_tag}/{recon_tag}_targ-sf.cif')
+sphv_supp.save(f'{scorpy.DATADIR}/algo/{recon_tag}/sphv_{recon_tag}_supp.dbin')
+blqq_data_crop.save(f'{scorpy.DATADIR}/algo/{recon_tag}/blqq_{recon_tag}_data.dbin')
 
+# blqq_data_full.save(f'{scorpy.DATADIR}/algo/{recon_tag}/blqq_full_{recon_tag}_data.dbin')
 # corr_data.save(f'{scorpy.DATADIR}/algo/{tag}/qcor_{tag}_data.dbin')
 # corr_calc.save(f'{scorpy.DATADIR}/algo/{tag}/qcor_{tag}_calc.dbin')
 

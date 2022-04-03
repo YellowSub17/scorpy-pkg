@@ -21,16 +21,16 @@ import CifFile as pycif
 # tag = 'anilinomethylphenol'
 tag = 'agno3'
 tag = 'nacl'
+tag = 'aluminophosphate'
+tag = 'barite'
 
-cif = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/{tag}.cif')
-cif.fill_from_vhkl( f'{scorpy.DATADIR}/xtal/{tag}.vhkl')
+atomic_cif = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/{tag}/{tag}.cif')
+atomic_cif.fill_from_vhkl( f'{scorpy.DATADIR}/xtal/{tag}/{tag}.vhkl')
 
-cif.save(f'{scorpy.DATADIR}/xtal/{tag}-sf.cif')
-
-
+atomic_cif.save(f'{scorpy.DATADIR}/xtal/{tag}/{tag}-sf.cif')
 
 print(f'Made {tag}-sf.cif')
-print(f'qmax: {cif.qmax}')
+print(f'qmax: {atomic_cif.qmax}')
 
 
 

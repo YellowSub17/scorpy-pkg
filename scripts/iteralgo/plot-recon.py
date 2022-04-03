@@ -13,12 +13,12 @@ plt.close('all')
 
 
 
-tag = 'nacl'
+tag = 'barite'
 sub_tags = ['testing']
 
 
 
-ciffname = 'nacl'
+ciffname = 'barite'
 
 
 # tag = 'p1-inten-r0-from-corr-qloose-supp'
@@ -31,7 +31,7 @@ ciffname = 'nacl'
 
 
 
-qq = 179
+qq = 240
 
 
 
@@ -58,7 +58,7 @@ for sub_tag in sub_tags:
     si.integrate_peaks(mask_vol=st, dpix=2)
 
 
-    cif_f = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/{ciffname}.cif', rotk=[1,1,1], rottheta=np.radians(30))
+    cif_f = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/{ciffname}/{ciffname}.cif', rotk=[1,1,1], rottheta=np.radians(30))
     cif_f.fill_from_sphv(si, bragg_xyz=cif_t.scat_bragg[:,:3])
 
 

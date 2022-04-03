@@ -357,22 +357,6 @@ xmax=1, ymax=1, zmax=1,
 
 
 
-        
-        # if disc_sphere=='disk':
-
-
-     #    elif disc_sphere=='sphere':
-
-            # xx, yy, zz = np.meshgrid(self.xpts, self.ypts, self.zpts)
-
-        # else:
-            # xx, yy, zz = self.xpts, self.ypts, self.zpts
-
-
-
-
-
-
 
 
 

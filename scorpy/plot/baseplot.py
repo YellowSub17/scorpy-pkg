@@ -78,7 +78,6 @@ class BasePlot:
             im = gaussian_filter(im,  sigma=kwargs['blur'])
 
 
-      
 
 
 

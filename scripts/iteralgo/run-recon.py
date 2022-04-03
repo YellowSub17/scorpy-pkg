@@ -17,7 +17,7 @@ import sys
 
 
 
-tag = 'nacl'
+tag = 'barite'
 
 
 sub_tag = 'testing'
@@ -90,7 +90,7 @@ for line in recipe_file:
         sphv_integrated = a.sphv_iter.copy()
         sphv_integrated.integrate_peaks(mask_vol=sphv_targ, dpix=2)
 
-        cif_f = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/nacl.cif', rotk=[1,1,1], rottheta=np.radians(30))
+        cif_f = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/barite/barite.cif', rotk=[1,1,1], rottheta=np.radians(30))
         cif_f.fill_from_sphv(sphv_integrated, bragg_xyz=cif_targ.scat_bragg[:,:3])
 
 
@@ -123,11 +123,6 @@ for line in recipe_file:
 
 
 a.sphv_iter.save(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/sphv_{tag}_{sub_tag}_final.dbin')
-
-# sphv_integrated = a.sphv_iter.copy()
-# sphv_integrated.integrate_peaks(mask_vol=sphv_targ, dpix=2)
-# cif_f = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/nacl.cif', rotk=[1,1,1], rottheta=np.radians(30))
-# cif_f.fill_from_sphv(sphv_integrated, bragg_xyz=cif_targ.scat_bragg[:,:3])
 
 
 
