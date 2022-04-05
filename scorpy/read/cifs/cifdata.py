@@ -15,7 +15,7 @@ from .cifdata_saveload import CifDataSaveLoad
 
 class CifData(CifDataProperties, CifDataSaveLoad):
 
-    def __init__(self,path, qmax=None, rotk=None, rottheta=None):
+    def __init__(self,path, qmax=None, fill_peaks=False, rotk=None, rottheta=None, skip_sym=False ):
 
 
 
@@ -31,7 +31,13 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
 
         if '_refln.index_h' in cif_dict.keys():
-            self._calc_scat(cif_dict, qmax=qmax)
+            self._calc_scat(cif_dict, qmax=qmax, fill_peaks=fill_peaks, skip_sym=skip_sym)
+
+        else:
+            self._scat_bragg= None
+            self._scat_rect = None
+            self._scat_sph = None
+
 
 
 
@@ -125,7 +131,7 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
 
 
-    def _calc_scat(self, cif_dict, qmax=None, fill=True):
+    def _calc_scat(self, cif_dict, qmax=None, fill_peaks=False, skip_sym=False):
         '''
         Parse cif data to generate scattering infomation, in Bragg indices,
         rectilinear reciprocal units, and spherical reciprocal units
@@ -149,12 +155,16 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
         # apply symmetry to generate all bragg points
         asym_refl = np.array([h, k, l, I]).T
-        loc = np.where(asym_refl[:, -1] >= 0)
-        asym_refl = asym_refl[loc]
-        sym_refl = apply_sym(asym_refl, self.spg)
+        # loc = np.where(asym_refl[:, -1] >= 0)
+        # asym_refl = asym_refl[loc]
+
+        if skip_sym:
+            sym_refl = asym_refl
+        else:
+            sym_refl = apply_sym(asym_refl, self.spg)
 
 
-        if fill:
+        if fill_peaks:
             # Fill missing bragg indices 
             ast_max_bragg_ind = np.max(np.abs(sym_refl[:,0]))
             bst_max_bragg_ind = np.max(np.abs(sym_refl[:,1]))
@@ -177,16 +187,7 @@ class CifData(CifDataProperties, CifDataSaveLoad):
                     self._scat_bragg[i,-1] = sym_refl[loc,-1]
         else:
             self._scat_bragg = sym_refl
-                    
 
-            
-
-
-
-
-
-
-        # self._scat_bragg = sym_refl
 
 
 
@@ -227,19 +228,21 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
 
 
-    def fill_from_vhkl(self, path, qmax=None):
+    def fill_from_vhkl(self, path, qmax=None, skip_sym=False, fill_peaks=False):
 
         hklI = np.genfromtxt(path, skip_header=1, usecols=(0,1,2,6))
 
         hklI[:, -1] = hklI[:,-1]**2
 
-        loc = np.where(hklI[:, -1] >= 0)
-        hklI = hklI[loc]
-        self._scat_bragg = apply_sym(hklI, self.spg)
+        cif_dict = {}
+        cif_dict['_refln.index_h'] =  hklI[:,0]
+        cif_dict['_refln.index_k'] =  hklI[:,1]
+        cif_dict['_refln.index_l'] =  hklI[:,2]
+        cif_dict['_refln.intensity_meas'] = hklI[:,-1]
 
-        self._calc_scat_rect()
-        self._calc_scat_sph()
-        self._qcrop(qmax)
+        self._calc_scat(cif_dict, qmax=sphv.qmax, skip_sym=skip_sym, fill_peaks=fill_peaks)
+
+
 
 
 
@@ -250,7 +253,6 @@ class CifData(CifDataProperties, CifDataSaveLoad):
         ast_max_bragg_ind = int(sphv.qmax/self.ast_mag)
         bst_max_bragg_ind = int(sphv.qmax/self.bst_mag)
         cst_max_bragg_ind = int(sphv.qmax/self.cst_mag)
-
 
         ast_ite = np.arange(-ast_max_bragg_ind, ast_max_bragg_ind+1)
         bst_ite = np.arange(-bst_max_bragg_ind, bst_max_bragg_ind+1)
@@ -290,7 +292,7 @@ class CifData(CifDataProperties, CifDataSaveLoad):
         cif_dict['_refln.index_l'] =  bragg_xyz[:,2]
         cif_dict['_refln.intensity_meas'] = I
 
-        self._calc_scat(cif_dict, qmax=sphv.qmax)
+        self._calc_scat(cif_dict, qmax=sphv.qmax, skip_sym=True, fill_peaks=False)
 
 
 
@@ -299,41 +301,6 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
 
 
-
-
-
-
-
-
-    # def make_2D(self, lam):
-
-        # if lam is None:
-            # self._scat_sph[:,1] = np.pi/2
-        # else:
-            # self._scat_sph[:,1] = np.arccos( self._scat_sph[:,0]*lam/2)
-
-
-    # def bin_sph(self, nq, ntheta, nphi):
-
-        # qs = self.scat_sph[:, 0]
-        # ts = self.scat_sph[:, 1]
-        # ps = self.scat_sph[:, 2]
-
-        # ite = np.ones(np.shape(qs))
-
-        # qinds = list(map(index_x, qs, 0 * ite, self.qmax * ite, nq * ite))
-        # tinds = list(map(index_x, ts * ite, -np.pi * ite,
-                         # 2, np.pi * ite / 2, ntheta * ite))
-        # pinds = list(map(index_x, ps * ite, 0 * ite,
-                         # 2 * np.pi * ite, nphi * ite))
-
-        # qspace = np.linspace(0, self.qmax, nq)
-        # tspace = np.linspace(-np.pi / 2, np.pi / 2, ntheta)
-        # pspace = np.linspace(0, 2 * np.pi, nphi)
-
-        # self.scat_sph[:, 0] = qspace[qinds]
-        # self.scat_sph[:, 1] = tspace[tinds]
-        # self.scat_sph[:, 2] = pspace[pinds]
 
 
 

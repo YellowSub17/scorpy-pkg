@@ -66,6 +66,7 @@ def index_x(x_val, x_min, x_max, nx, wrap=False):
     return int(x_out)
 
 
+
 def angle_between_pol(t1, t2):
     '''
     Calculate angluar difference between two polar angles.
@@ -75,13 +76,10 @@ def angle_between_pol(t1, t2):
         t2 (): Angle 2 [degrees]
 
     Returns:
-        psi (): Difference between t1 and t2, in degrees between 0 and 180
+        psi (): Difference between t1 and t2, in radians between 0 and 180
     '''
-    psi = np.abs((t1 - t2 + 180) % 360 - 180)
+    psi = np.abs((t1 - t2 + np.pi) % (np.pi*2) - np.pi)
     return psi
-
-    # dot = np.cos(np.radians(psi))
-    # return dot
 
 
 def angle_between_rect(q1, q2):
@@ -102,10 +100,8 @@ def angle_between_rect(q1, q2):
     elif dot < -1:
         dot = -1.0
 
-    return dot
-
-    # psi = np.arccos(dot)
-    # return psi
+    psi = np.arccos(dot)
+    return psi
 
 
 def angle_between_sph(theta1, theta2, phi1, phi2):

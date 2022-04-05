@@ -19,46 +19,29 @@ plt.close('all')
 
 
 
+fig, axes = plt.subplots(1,2)
 
-cif = scorpy.CifData(f'{scorpy.DATADIR}/xtal/test.cif', rotk=[1,1,1], rottheta=np.radians(30))
-
-
-
-
-# x = np.array([
-      # [ 0, 0, 1],
-      # [ 0, 1, 0],
-      # [ 1, 0, 0],
-      # [ 1, 1, 1],
-      # [ 0, 2, 0],
-    # ])
-
-# y = np.array([
-      # [ 0, 0, 1],
-      # [ 0, 1, 0],
-      # [ 1, 0, 0],
-      # [ 1, 1, 1],
-      # [ 0, 0, 2],
-      # [ 0, 2, 0],
-      # [ 2, 0, 0],
-      # [ 2, 2, 2],
-    # ])
+cif = scorpy.CifData(f'{scorpy.DATADIR}/test-data/test-sf.cif', fill_peaks=True, rotk=[1,1,1], rottheta=np.radians(30))
+cif.scat_bragg[:,-1] =1
+cif.scat_rect[:,-1] =1
+cif.scat_sph[:,-1] =1
+corr = scorpy.CorrelationVol(qmax=cif.qmax)
+corr.fill_from_cif(cif)
+corr.plot_q1q2(fig=fig,axes=axes[0])
 
 
 
-# for pty in y:
-    # print( np.where((x == pty).all(axis=1)))
-# # np.where((vals == (0, 1)).all(axis=1))
 
-# for pt in y:
-    # if np.all(pt in x):
-        # print('y', pt)
-    # else:
-        # print('n', pt)
+cif = scorpy.CifData(f'{scorpy.DATADIR}/test-data/test-sf.cif', fill_peaks=True, rotk=[0,1,1], rottheta=np.radians(60))
+cif.scat_bragg[:,-1] =1
+cif.scat_rect[:,-1] =1
+cif.scat_sph[:,-1] =1
+corr = scorpy.CorrelationVol(qmax=cif.qmax)
+corr.fill_from_cif(cif)
+corr.plot_q1q2(fig=fig,axes=axes[1])
 
+plt.show()
 
-
-# cif.fill_from_vhkl(f'{scorpy.DATADIR}/xtal/nacl/nacl.vhkl')
 
 
 

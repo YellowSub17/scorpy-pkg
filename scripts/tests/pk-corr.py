@@ -13,32 +13,39 @@ plt.close('all')
 
 
 
-geom = scorpy.ExpGeom(f'{scorpy.DATADIR}/test-data/test.geom')
+# geom = scorpy.ExpGeom(f'{scorpy.DATADIR}/test-data/test.geom')
 
-pk = scorpy.PeakData(f'{scorpy.DATADIR}/test-data/runx_peaks.txt', geom=geom, qmax=0.9, qmin=0.001)
-print(pk.scat_pol)
-
-
-frames = pk.split_frames()
-
-
-
-
-corr = scorpy.CorrelationVol(50, 90, 0.9, cos_sample=False)
-
-corr.fill_from_peakdata(pk, verbose=2)
-
-corr.plot_q1q2(title='q1q2')
-
-corr.plot_sumax(0, title='sumax')
+pk = scorpy.PeakData(f'{scorpy.DATADIR}/cxi/run125_peaks.txt', qmax=1.45, qmin=0.001)
 
 
 
 
 
 
-pk.plot_peaks()
-geom.plot_qring(0.9)
+
+corr1 = scorpy.CorrelationVol(100, 180, 1.45, cos_sample=False)
+corr1.fill_from_peakdata(pk, verbose=1, method='scat_pol')
+
+corr2 = scorpy.CorrelationVol(100, 180, 1.45, cos_sample=False)
+corr2.fill_from_peakdata(pk, verbose=1, method='scat_sph')
+
+
+
+
+corr3 = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/dbins/cxi/qcors/125/run125-qcor.dbin')
+
+
+
+corr1.plot_q1q2(log=True)
+corr2.plot_q1q2(log=True)
+corr3.plot_q1q2(log=True)
+
+
+
+
+
+# pk.plot_peaks()
+# pk.geom.plot_qring(0.9)
 
 plt.show()
 

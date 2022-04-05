@@ -19,15 +19,18 @@ class CorrelationVolCorr:
                 polar radius or peak (A-1), polar angle of peak (degrees), and
                 intensity of the peak.
         '''
+
         # only correlate less than qmax
+        le_qmax_loc = np.where(qti[:, 0] <= self.qmax)[0]
+        qti = qti[le_qmax_loc]
 
-        le_qmax = np.where(qti[:, 0] <= self.qmax)[0]
-        qti = qti[le_qmax]
+        # only correlate intensity greater then 0
+        Igt0_loc = np.where(qti[:,-1]>0)
+        qti = qti[Igt0_loc]
 
-        qti[:,1] = np.degrees(qti[:,1])
 
         nscats = qti.shape[0]
-        # calculate q indices of every scattering vector outside of loop
+        # calculate q indices of every scattering vector
         ite = np.ones(nscats)
         q_inds = list(map(index_x, qti[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
 
@@ -44,14 +47,12 @@ class CorrelationVolCorr:
                 # get q index
                 q2_ind = q_inds[i + j]
 
-                # get the angle between vectors, and index it
+                # get the angle between vectors
                 psi = angle_between_pol(q1[1], q2[1])
-
                 if self.cos_sample:
-                    psi = np.cos(np.radians(psi))
-                else:
-                    psi = np.radians(psi)
+                    psi = np.cos(psi)
 
+                #calculate psi index for angle between vectors
                 psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=self.zwrap)
 
                 # fill the volume
@@ -78,10 +79,16 @@ class CorrelationVolCorr:
         le_qmax = np.where(qmags <= self.qmax)[0]
         qxyzi = qxyzi[le_qmax]
         qmags = qmags[le_qmax]
+        
+        # only correlate intensity greater then 0
+        Igt0_loc = np.where(qxyzi[:,-1]>0)[0]
+        qxyzi = qxyzi[Igt0_loc]
+        qmags = qmags[Igt0_loc]
+
 
         nscats = qxyzi.shape[0]
 
-        # calculate q indices of every scattering vector outside of loop
+        # calculate q indices of every scattering vector
         ite = np.ones(nscats)
         q_inds = list(map(index_x, qmags, 0 * ite, self.qmax * ite, self.nq * ite))
 
@@ -96,12 +103,13 @@ class CorrelationVolCorr:
                 # get q index
                 q2_ind = q_inds[i + j]
 
-                # get the angle between vectors, and index it
+                # get the angle between vectors
                 psi = angle_between_rect(q1[:3], q2[:3])
 
-                if not self.cos_sample:
-                    psi = np.arccos(psi)
+                if self.cos_sample:
+                    psi = np.cos(psi)
 
+                #calculate psi index for angle between vectors
                 psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=self.zwrap)
 
                 # fill the volume
@@ -109,7 +117,7 @@ class CorrelationVolCorr:
                 if j > 0:  # if not on diagonal
                     self.vol[q2_ind, q1_ind, psi_ind] += q1[-1] * q2[-1]
 
-        print('\x1b[2K', end='\r')
+        # print('\x1b[2K', end='\r')
 
 
 
@@ -129,9 +137,13 @@ class CorrelationVolCorr:
         le_qmax = np.where(qtpi[:, 0] <= self.qmax)[0]
         qtpi = qtpi[le_qmax]
 
+        # only correlate intensity greater then 0
+        Igt0_loc = np.where(qtpi[:,-1]>0)[0]
+        qtpi = qtpi[Igt0_loc]
+
 
         nscats = qtpi.shape[0]
-        # calculate q indices of every scattering vector outside of loop
+        # calculate q indices of every scattering vector 
         ite = np.ones(nscats)
         q_inds = list(map(index_x, qtpi[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
 
@@ -153,12 +165,13 @@ class CorrelationVolCorr:
                 theta2 = q2[1]
                 phi2 = q2[2]
 
-                # get the angle between angluar coordinates, and index it
+                # get the angle between angluar coordinates
                 psi = angle_between_sph(theta1, theta2, phi1, phi2)
 
-                if not self.cos_sample:
-                    psi = np.arccos(psi)
+                if self.cos_sample:
+                    psi = np.cos(psi)
 
+                #calculate psi index for angle between vectors
                 psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=self.zwrap)
 
                 # fill the volume
@@ -166,9 +179,7 @@ class CorrelationVolCorr:
 
                 if j > 0:  # if not on diagonal
                     self.vol[q2_ind, q1_ind, psi_ind] += q1[-1] * q2[-1]
-
-
-        print('\x1b[2K', end='\r')
+        # print('\x1b[2K', end='\r')
 
 
 

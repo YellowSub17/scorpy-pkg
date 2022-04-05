@@ -8,6 +8,7 @@ from .algohandler_operators import AlgoHandlerOperators
 from .algohandler_schemes import AlgoHandlerSchemes
 from .algohandler_plot import AlgoHandlerPlot
 from .algohandler_props import AlgoHandlerProps
+from .algohandler_recon import AlgoHandlerRecon
 
 from ..vols.sphv.sphericalvol import SphericalVol
 from ..iqlm.iqlmhandler import IqlmHandler
@@ -16,7 +17,7 @@ from ..iqlm.iqlmhandler import IqlmHandler
 
 
 
-class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerProps):
+class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerProps, AlgoHandlerRecon):
 
 
     def __init__(self, blqq, sphv_supp, sphv_init=None, lossy_sphv=True, lossy_iqlm=True,

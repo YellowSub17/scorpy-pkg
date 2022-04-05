@@ -21,7 +21,7 @@ class CorrelationVolFill:
         '''
 
         assert self.qmax >= cif.qmax, 'cif.qmax > corr.qmax'
-        assert method in ['scat_sph', 'scat_rect', 'scat_pol'], 'Invalid correlation method.'
+        assert method in ['scat_sph', 'scat_rect'], 'Invalid correlation method.'
 
         print('')
         print('############')
@@ -30,13 +30,10 @@ class CorrelationVolFill:
         print(f'Started: {time.asctime()}')
 
         if method == 'scat_sph':
-            # print('', end='\n')
             self.correlate_scat_sph(cif.scat_sph, verbose=verbose-1)
         elif method == 'scat_rect':
-            # print('', end='\n')
             self.correlate_scat_rect(cif.scat_rect, verbose=verbose-1)
         elif method == 'scat_pol':
-            # print('', end='\n')
             self.correlate_scat_pol(cif.scat_pol, verbose=verbose-1)
 
         print(f'Finished: {time.asctime()}')
@@ -84,7 +81,7 @@ class CorrelationVolFill:
                 self.correlate_scat_sph(frame.scat_sph[:,1:])
                 print('\x1b[2A\x1b[2K', end='\n')
 
-        print(f'Correlation ended: {time.asctime()}\n')
+        print(f'Correlation ended: {time.asctime()}')
         print('############')
 
 
