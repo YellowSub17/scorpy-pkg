@@ -1,62 +1,76 @@
 
-import numpy as np
-import matplotlib.pyplot as plt
-import copy
 
 
-from .algohandler_operators import AlgoHandlerOperators
-from .algohandler_schemes import AlgoHandlerSchemes
-from .algohandler_plot import AlgoHandlerPlot
-from .algohandler_props import AlgoHandlerProps
-from .algohandler_setuprecon import AlgoHandlerSetupRecon
-from .algohandler_runrecon import AlgoHandlerRunRecon
-from .algohandler_saveload import AlgoHandlerSaveLoad
+
 
 from ..vols.sphv.sphericalvol import SphericalVol
+from ..vols.corr.correlationvol import CorrelationVol
+from ..vols.blqq.blqqvol import BlqqVol
 from ..iqlm.iqlmhandler import IqlmHandler
 
 
 
-from ..utils.env import DATADIR
-import os
 
-
-class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerProps, AlgoHandlerSetupRecon, AlgoHandlerRunRecon, AlgoHandlerSaveLoad):
-
-
-    def __init__(self, tag, path=None):#, nq=256, qmax=None, npsi=360*32, nl=180, lcrop=45, pinv_rcond=0.1, eig_rcond=None, rotk=None, rottheta=0):
-
-
-        self.tag = tag
-
-        if path is None:
-            path = f'{DATADIR}/algo/'
-        self.path = f'{path}/{tag}'
-
-
-        if not os.path.exists(self.path):
-            os.mkdir(f'{self.path}')
+import numpy as np
 
 
 
 
-        # self.nq = nq
-        # self.qmax = qmax
-        # self.npsi = npsi
-        # self.nl = nl
-        # self.lcrop = lcrop
-        # self.pinv_rcond = pinv_rcond
-        # self.eig_rcond = eig_rcond
-        # self.rotk =rotk
-        # self.rottheta = rottheta
+class AlgoHandlerRunRecon:
 
 
-#         if path is None:
-            # path = f'{DATADIR}/algo/'
-        # self.path = f'{path}/{tag}'
 
-        # os.mkdir(f'{self.path}')
-        
+
+    def load_inputs(self, blqq=None, sphv_supp=None):
+
+
+        if blqq is None:
+            self._blqq = BlqqVol(path=f'{self.path}/blqq_{self.tag}_data.dbin')
+        else:
+            self._blqq = blqq.copy()
+            self._qmax = self.blqq.qmax
+            self._nq = self.blqq.nq
+            self._nl = self.blqq.nl
+
+        if sphv_supp is None:
+            self._sphv_supp = SphericalVol(path=f'{self.path}/sphv_{self.tag}_supp.dbin')
+        else:
+            self._sphv_supp = sphv_supp.copy()
+            self._ntheta = self.sphv_supp.ntheta
+            self._nphi = self.sphv_supp.nphi
+
+
+        self._supp_loc = np.where(self.sphv_supp.vol == 1 )
+        self._supp_notloc = np.where(self.sphv_supp.vol == 0 )
+
+
+        self._lams, self._us = self.blqq.get_eig()
+        #condition threshold
+        if self.rcond is not None:
+            eigs_thresh = np.max(self.lams, axis=0)*self.rcond
+            for l_ind, eig_thresh in enumerate(eigs_thresh):
+                loc = np.where(np.abs(self.lams[:,l_ind]) < eig_thresh)
+                self.lams[loc, l_ind] = 0
+                loc = np.where(self.lams[:,l_ind] ==0)
+                self.us[:, loc, l_ind] = 0
+
+
+        ##### base objects to copy from
+        self._iqlm_base = IqlmHandler(self.nq, self.nl, self.qmax, self.inc_odds)
+        self._sphv_base = SphericalVol(self.nq, self.ntheta, self.nphi, self.qmax)
+
+
+        ##### initialize random spherical intensity
+        if sphv_init is not None:
+            self.sphv_iter = sphv_init.copy()
+        else:
+            self.sphv_iter = self.sphv_base.copy()
+            self.sphv_iter.vol = np.random.random(self.sphv_iter.vol.shape)
+
+
+
+
+
 
 
 
@@ -113,17 +127,6 @@ class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerProps, Alg
         # else:
             # self.sphv_iter = self.sphv_base.copy()
             # self.sphv_iter.vol = np.random.random(self.sphv_iter.vol.shape)
-
-
-
-
-
-
-    def copy(self):
-        a = copy.deepcopy(self)
-        return a
-
-
 
 
 

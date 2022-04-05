@@ -12,12 +12,14 @@ plt.close('all')
 
 
 
-a = scorpy.AlgoHandler('x', qmax=9.01, rotk=None, rottheta=np.radians(0))
+a = scorpy.AlgoHandler('x')
 
-print('making target')
-a.make_target(f'{scorpy.DATADIR}/xtal/agno3/agno3-sf.cif')
-print('making supper')
-x = a.make_support(f'{scorpy.DATADIR}/xtal/agno3/agno3.cif')
+
+
+
+
+
+
 
 
 

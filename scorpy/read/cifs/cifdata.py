@@ -133,6 +133,7 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
 
 
+
     def _calc_scat(self, cif_dict, qmax=None, fill_peaks=False, skip_sym=False):
         '''
         Parse cif data to generate scattering infomation, in Bragg indices,
@@ -242,7 +243,7 @@ class CifData(CifDataProperties, CifDataSaveLoad):
         cif_dict['_refln.index_l'] =  hklI[:,2]
         cif_dict['_refln.intensity_meas'] = hklI[:,-1]
 
-        self._calc_scat(cif_dict, qmax=sphv.qmax, skip_sym=skip_sym, fill_peaks=fill_peaks)
+        self._calc_scat(cif_dict, qmax=qmax, skip_sym=skip_sym, fill_peaks=fill_peaks)
 
 
 
