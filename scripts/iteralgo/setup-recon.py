@@ -36,7 +36,7 @@ nphi = ntheta*2
 
 
 # # # Generate Target
-cif_targ = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/{cif_fname}/{cif_fname}-sf.cif', qmax=qmax, rotk=[1,1,1], rottheta=np.radians(30))
+cif_targ= scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/{cif_fname}/{cif_fname}-sf.cif', qmax=qmax, rotk=[1,1,1], rottheta=np.radians(30))
 sphv_targ = scorpy.SphericalVol(nq, ntheta, nphi, qmax)
 sphv_targ.fill_from_cif(cif_targ)
 

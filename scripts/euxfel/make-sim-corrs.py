@@ -38,6 +38,9 @@ geom = scorpy.ExpGeom(f'{geompath}')
 
 
 
+###### Generate Frames
+
+
 
 
 #### SCORPY CORRELATION
@@ -79,9 +82,13 @@ for n in nframes:
         print(f'Time: {time.asctime()}.')
         corra = scorpy.CorrelationVol(nq=nq, npsi=npsi, qmax=qmax, cos_sample=False)
 
+
+        #numbers 1 to n
         frames_shuffled = np.arange(1, n+1)
+        # numbers 1 to n in a random order
         np.random.shuffle(frames_shuffled)
 
+        # first half of the random numbers make a
         for i, seed_i in enumerate(frames_shuffled[:int(n/2)]):
 
             pk = scorpy.PeakData(f'/tmp/euxfel-simcorr-{n}-{seed_i}.h5', qmax=qmax, geom=geom )
@@ -92,6 +99,7 @@ for n in nframes:
 
         corrb = scorpy.CorrelationVol(nq=nq, npsi=npsi, qmax=qmax, cos_sample=False)
 
+        # second half of the random numbers make b
         for i, seed_i in enumerate(frames_shuffled[int(n/2):]):
 
             pk = scorpy.PeakData(f'/tmp/euxfel-simcorr-{n}-{seed_i}.h5', qmax=qmax, geom=geom )

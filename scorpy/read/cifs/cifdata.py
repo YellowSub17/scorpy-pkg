@@ -97,8 +97,10 @@ class CifData(CifDataProperties, CifDataSaveLoad):
         c_unit = np.array([
             np.cos(self.beta),
             (np.cos(self.alpha) - np.cos(self.beta) * np.cos(self.gamma)) / np.sin(self.gamma),
-            np.sqrt(1 - np.cos(self.beta)**2 - ((np.cos(self.alpha) - np.cos(self.beta) * np.cos(self.gamma)) / np.sin(self.gamma))**2)
+            np.sqrt(1 - np.cos(self.beta)**2 - ( (np.cos(self.alpha) - np.cos(self.beta) * np.cos(self.gamma)) / np.sin(self.gamma))**2)
         ])
+        # # another expressions for cz
+        # np.sqrt(1 - np.cos(self.alpha)**2 - np.cos(self.beta)**2 - np.cos(self.gamma)**2 + 2*np.cos(self.alpha)*np.cos(self.beta)*np.cos(self.gamma))/np.sin(self.gamma)
 
         #Rodriguiz formula
         if rotk is not None:
