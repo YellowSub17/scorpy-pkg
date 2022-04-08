@@ -64,7 +64,6 @@ class AlgoHandlerOperators:
         ##### difference lost between low pass filtered and original coords.
         self.sphv_diff = self.sphv_base.copy()
         self.sphv_diff.vol = self.sphv_iter.vol - self.sphv_lm.vol
-        # self.sphv_diff.vol = self.sphv_lm.vol - self.sphv_iter.vol
 
         ##### Transform K[I_(q, l, m)]
         self.knlm = self.iqlm_iter.copy()
@@ -77,7 +76,6 @@ class AlgoHandlerOperators:
         ##### difference lost over K transformation
         self.iqlm_diff = self.iqlm_base.copy()
         self.iqlm_diff.vals = self.iqlm_iter.vals - self.ikqlm.vals
-        # self.iqlm_diff.vals = self.ikqlm.vals - self.iqlm_iter.vals
 
         ##### Calculate K' after modifered by lamda
         self.knlmp = self.knlm.copy()
@@ -92,6 +90,7 @@ class AlgoHandlerOperators:
         self.iqlm_add = self.iqlmp.copy()
         if self.lossy_iqlm:
             self.iqlm_add.vals += self.iqlm_diff.vals
+
 
         ##### calculate the spherical coordinates deom new harmonics
         self.sphvp = self.sphv_base.copy()

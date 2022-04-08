@@ -10,35 +10,50 @@ import CifFile as pycif
 
 
 
+sample = 'nacl'
 
 
+cif = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/{sample}/{sample}.cif')
+cif.fill_from_vhkl( f'{scorpy.DATADIR}/xtal/{sample}/{sample}.vhkl', fill_peaks=False)
+cif.save(f'{scorpy.DATADIR}/xtal/{sample}/{sample}-sf.cif')
+cif.save_hkl(f'{scorpy.DATADIR}/xtal/{sample}/{sample}.hkl')
 
-
-# tag = 'hexamine-bis-benzoic-acid'
-# tag = 'ausb2'
-# tag = 'cuso45h2o'
-# tag = 'nicotineamide'
-# tag = 'anilinomethylphenol'
-tag = 'agno3'
-tag = 'nacl'
-tag = 'aluminophosphate'
-tag = 'barite'
-
-atomic_cif = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/{tag}/{tag}.cif')
-atomic_cif.fill_from_vhkl( f'{scorpy.DATADIR}/xtal/{tag}/{tag}.vhkl')
-
-atomic_cif.save(f'{scorpy.DATADIR}/xtal/{tag}/{tag}-sf.cif')
-
-print(f'Made {tag}-sf.cif')
-print(f'qmax: {atomic_cif.qmax}')
+print(f'Made {sample}-sf.cif')
+print(f'qmax: {cif.qmax}')
 
 
 
 
 
 
+# cif1 = scorpy.CifData(f'{scorpy.DATADIR}/xtal/{sample}/{sample}-sf.cif')
 
-plt.show()
+
+# sphv = scorpy.SphericalVol(256, 180*2, 180*4, cif1.qmax)
+# sphv.vol +=1
+
+
+# cif2 = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/{sample}/{sample}.cif')
+# cif2.fill_from_sphv(sphv)
+
+
+
+
+
+# cif1.scat_bragg[:,-1] = 0
+# cif2.scat_bragg[:,-1] = 0
+
+# cif1.save('/home/pat/Desktop/targ.cif')
+# cif2.save('/home/pat/Desktop/supp.cif')
+
+
+
+
+
+
+
+
+
 
 
 

@@ -2,15 +2,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import copy
+import configparser as cfp
+from datetime import datetime
+
+
 
 
 from .algohandler_operators import AlgoHandlerOperators
 from .algohandler_schemes import AlgoHandlerSchemes
 from .algohandler_plot import AlgoHandlerPlot
 from .algohandler_props import AlgoHandlerProps
-from .algohandler_setuprecon import AlgoHandlerSetupRecon
 from .algohandler_runrecon import AlgoHandlerRunRecon
-from .algohandler_saveload import AlgoHandlerSaveLoad
+from .algohandler_setuprecon import AlgoHandlerSetupRecon
+from .algohandler_postrecon import AlgoHandlerPostRecon
 
 from ..vols.sphv.sphericalvol import SphericalVol
 from ..iqlm.iqlmhandler import IqlmHandler
@@ -21,10 +25,12 @@ from ..utils.env import DATADIR
 import os
 
 
-class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerProps, AlgoHandlerSetupRecon, AlgoHandlerRunRecon, AlgoHandlerSaveLoad):
+class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerProps, AlgoHandlerRunRecon, AlgoHandlerSetupRecon, AlgoHandlerPostRecon):
 
 
-    def __init__(self, tag, path=None):#, nq=256, qmax=None, npsi=360*32, nl=180, lcrop=45, pinv_rcond=0.1, eig_rcond=None, rotk=None, rottheta=0):
+    def __init__(self, tag, path=None, nq=256, qmax=None, npsi=360*32, nl=180, lcrop=45,
+                 dxsupp=2, pinv_rcond=0.1, eig_rcond=1e-15, lossy_iqlm=True, lossy_sphv=True,
+                 rotk=[1,1,1], rottheta=np.radians(30)):
 
 
         self.tag = tag
@@ -36,92 +42,69 @@ class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerProps, Alg
 
         if not os.path.exists(self.path):
             os.mkdir(f'{self.path}')
+            self.nq = nq
+            self.qmax = qmax
+            self.npsi = npsi
+            self.nl = nl
+            self.lcrop = lcrop
+            self.dxsupp = dxsupp
+            self.pinv_rcond = pinv_rcond
+            self.eig_rcond = eig_rcond
+            self.lossy_iqlm = lossy_iqlm
+            self.lossy_sphv = lossy_sphv
+            self.rotk = rotk
+            self.rottheta = rottheta
+            self.save_params()
+        else:
+            self.load_params()
 
 
 
 
-        # self.nq = nq
-        # self.qmax = qmax
-        # self.npsi = npsi
-        # self.nl = nl
-        # self.lcrop = lcrop
-        # self.pinv_rcond = pinv_rcond
-        # self.eig_rcond = eig_rcond
-        # self.rotk =rotk
-        # self.rottheta = rottheta
+    def save_params(self):
+        f = open(f'{self.path}/algo_{self.tag}_params.txt', 'w')
+        f.write('##Scorpy Algo Config File\n')
+        f.write(f'## Created: {datetime.now().strftime("%Y/%m/%d %H:%M")}\n\n')
+        f.write('[algo]\n')
+        f.write(f'nq = {self.nq}\n')
+        f.write(f'qmax = {self.qmax}\n')
+        f.write(f'npsi = {self.npsi}\n')
+        f.write(f'nl = {self.nl}\n')
+        f.write(f'lcrop = {self.lcrop}\n')
+        f.write(f'rotk = {self.rotk}\n')
+        f.write(f'rottheta = {self.rottheta}\n')
+        f.write(f'dxsupp = {self.dxsupp}\n')
+        f.write(f'pinv_rcond = {self.pinv_rcond}\n')
+        f.write(f'eig_rcond = {self.eig_rcond}\n')
+        f.write(f'lossy_iqlm = {self.lossy_iqlm}\n')
+        f.write(f'lossy_sphv = {self.lossy_sphv}\n')
+        f.close()
 
 
-#         if path is None:
-            # path = f'{DATADIR}/algo/'
-        # self.path = f'{path}/{tag}'
+    def load_params(self):
 
-        # os.mkdir(f'{self.path}')
-        
+        config = cfp.ConfigParser()
+        config.read(f'{self.path}/algo_{self.tag}_params.txt')
 
+        self.nq = int(config['algo']['nq'])
 
+        qmax = config['algo']['qmax']
+        if qmax == "None":
+            self.qmax = None
+        else:
+            self.qmax = float(config['algo']['qmax'])
+        self.npsi = int(config['algo']['npsi'])
+        self.nl = int(config['algo']['nl'])
+        self.lcrop = int(config['algo']['lcrop'])
+        self.dxsupp = int(config['algo']['dxsupp'])
 
-#     def __init__(self, blqq, sphv_supp, sphv_init=None, lossy_sphv=True, lossy_iqlm=True,
-                 # rcond=None, inc_odds=True):
+        self.rotk = eval(config['algo']['rotk'])
+        self.rottheta = float(config['algo']['rottheta'])
+        self.pinv_rcond = float(config['algo']['pinv_rcond'])
+        self.eig_rcond = float(config['algo']['eig_rcond'])
 
-        # ##### check inputs
-        # assert blqq.qmax == sphv_supp.qmax
-        # assert blqq.nq == sphv_supp.nq
-        # assert 2*blqq.nl == sphv_supp.ntheta
-
-        # ##### save inputs 
-        # self._blqq = blqq.copy()
-        # self._sphv_supp = sphv_supp.copy()
-        # self._lossy_sphv = lossy_sphv
-        # self._lossy_iqlm = lossy_iqlm
-        # self._rcond = rcond
-        # self._inc_odds = inc_odds
-
-
-        # ##### find indices of support that are inside and outside S
-        # self._supp_loc = np.where(self.sphv_supp.vol == 1 )
-        # self._supp_notloc = np.where(self.sphv_supp.vol == 0 )
-
-        # ##### check input properties are consistent and save them
-        # self._qmax = self.blqq.qmax
-
-        # self._nq = self.blqq.nq
-
-        # self._nl = self.blqq.nl
-        # self._ntheta = self.sphv_supp.ntheta
-        # self._nphi = self.sphv_supp.nphi
-
-        # self._lams, self._us = self.blqq.get_eig(inc_odds=self.inc_odds)
-        # #condition threshold
-        # if self.rcond is not None:
-            # eigs_thresh = np.max(self.lams, axis=0)*self.rcond
-            # for l_ind, eig_thresh in enumerate(eigs_thresh):
-                # loc = np.where(np.abs(self.lams[:,l_ind]) < eig_thresh)
-                # self.lams[loc, l_ind] = 0
-                # loc = np.where(self.lams[:,l_ind] ==0)
-                # self.us[:, loc, l_ind] = 0
-
-
-
-        # ##### base objects to copy from
-        # self._iqlm_base = IqlmHandler(self.nq, self.nl, self.qmax, self.inc_odds)
-        # self._sphv_base = SphericalVol(self.nq, self.ntheta, self.nphi, self.qmax)
-
-
-        # ##### initialize random spherical intensity
-        # if sphv_init is not None:
-            # self.sphv_iter = sphv_init.copy()
-        # else:
-            # self.sphv_iter = self.sphv_base.copy()
-            # self.sphv_iter.vol = np.random.random(self.sphv_iter.vol.shape)
-
-
-
-
-
-
-    def copy(self):
-        a = copy.deepcopy(self)
-        return a
+        self.lossy_iqlm = config.getboolean('algo', 'lossy_iqlm')
+        self.lossy_sphv = config.getboolean('algo', 'lossy_sphv')
 
 
 

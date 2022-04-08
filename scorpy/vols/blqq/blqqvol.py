@@ -91,7 +91,6 @@ class BlqqVol(BaseVol, BlqqVolProps):
         # in iteralgo, tweak algo type/inputs + rcond
 
         for iq1 in range(self.nq):
-            
             print(f'q index: {iq1+1}/{self.nq}', end='\r')
             for iq2 in range(iq1, self.nq):
                 dot = np.dot(fmat_inv, corr.vol[iq1, iq2, :])
@@ -102,12 +101,13 @@ class BlqqVol(BaseVol, BlqqVolProps):
         print('\x1b[2K', end='\r')
         print(f'Ended: {time.asctime()}')
         print('############')
+        print('')
 
 
 
 
 
-    def fill_from_iqlm(self, iqlm):
+    def fill_from_iqlm(self, iqlm, verbose=0):
         '''
         scorpy.BlqqVol.fill_from_iqlm():
             Fill the Blqq from a IqlmHandler object
@@ -121,7 +121,10 @@ class BlqqVol(BaseVol, BlqqVolProps):
         assert iqlm.qmax == self.qmax, 'IqlmHandler and BlqqVol have different qmax'
 
 
+
+
         for i, q1_coeffs in enumerate(iqlm.vals):
+
 
             for j, q2_coeffs in enumerate(iqlm.vals[i:]):
 
@@ -133,6 +136,8 @@ class BlqqVol(BaseVol, BlqqVolProps):
                 self.vol[i, j + i, :] = multi.sum(axis=0).sum(axis=1)[:self.nl]
                 if j > 0:
                     self.vol[j + i, i, :] = multi.sum(axis=0).sum(axis=1)[:self.nl]
+
+
 
 
 

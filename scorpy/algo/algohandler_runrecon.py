@@ -1,18 +1,19 @@
 
 
 
+import numpy as np
+import os
+import shutil
 
+
+from ..read.cifs.cifdata import CifData
 
 from ..vols.sphv.sphericalvol import SphericalVol
 from ..vols.corr.correlationvol import CorrelationVol
 from ..vols.blqq.blqqvol import BlqqVol
 from ..iqlm.iqlmhandler import IqlmHandler
 
-
-
-
-import numpy as np
-
+from ..utils.utils import verbose_dec
 
 
 
@@ -21,46 +22,57 @@ class AlgoHandlerRunRecon:
 
 
 
-    def load_inputs(self, blqq=None, sphv_supp=None):
 
 
-        if blqq is None:
-            self._blqq = BlqqVol(path=f'{self.path}/blqq_{self.tag}_data.dbin')
-        else:
-            self._blqq = blqq.copy()
-            self._qmax = self.blqq.qmax
-            self._nq = self.blqq.nq
-            self._nl = self.blqq.nl
+    @verbose_dec
+    def run_recon(self, sub_tag, recipe, sphv_init=None, verbose=0):
+        print('Running recon')
 
-        if sphv_supp is None:
-            self._sphv_supp = SphericalVol(path=f'{self.path}/sphv_{self.tag}_supp.dbin')
-        else:
-            self._sphv_supp = sphv_supp.copy()
-            self._ntheta = self.sphv_supp.ntheta
-            self._nphi = self.sphv_supp.nphi
-
-
-        self._supp_loc = np.where(self.sphv_supp.vol == 1 )
-        self._supp_notloc = np.where(self.sphv_supp.vol == 0 )
-
-
-        self._lams, self._us = self.blqq.get_eig()
+        assert os.path.exists(f'{self.path}/blqq_{self.tag}_data.dbin'), "Data BlqqVol not saved to algo folder"
+        self.blqq = BlqqVol(path=f'{self.path}/blqq_{self.tag}_data.dbin')
+        self.lams, self.us = self.blqq.get_eig()
         #condition threshold
-        if self.rcond is not None:
-            eigs_thresh = np.max(self.lams, axis=0)*self.rcond
-            for l_ind, eig_thresh in enumerate(eigs_thresh):
-                loc = np.where(np.abs(self.lams[:,l_ind]) < eig_thresh)
-                self.lams[loc, l_ind] = 0
-                loc = np.where(self.lams[:,l_ind] ==0)
-                self.us[:, loc, l_ind] = 0
+        eigs_thresh = np.max(self.lams, axis=0)*self.eig_rcond
+        for l_ind, eig_thresh in enumerate(eigs_thresh):
+            loc = np.where(np.abs(self.lams[:,l_ind]) < eig_thresh)
+            self.lams[loc, l_ind] = 0
+            loc = np.where(self.lams[:,l_ind] ==0)
+            self.us[:, loc, l_ind] = 0
 
 
-        ##### base objects to copy from
-        self._iqlm_base = IqlmHandler(self.nq, self.nl, self.qmax, self.inc_odds)
-        self._sphv_base = SphericalVol(self.nq, self.ntheta, self.nphi, self.qmax)
 
 
-        ##### initialize random spherical intensity
+        assert os.path.exists(f'{self.path}/sphv_{self.tag}_supp.dbin'), "Support SphericalVol not saved to algo folder"
+        self.sphv_supp = SphericalVol(path=f'{self.path}/sphv_{self.tag}_supp.dbin')
+        self.supp_loc = np.where(self.sphv_supp.vol == 1 )
+        self.supp_notloc = np.where(self.sphv_supp.vol == 0 )
+
+
+        assert self.blqq.nq ==self.sphv_supp.nq
+        self.nq = self.blqq.nq
+
+        assert self.blqq.nl*2 ==self.sphv_supp.ntheta
+        assert self.blqq.nl*4 ==self.sphv_supp.nphi
+
+        self.nl = self.blqq.nl
+        self.ntheta = self.sphv_supp.ntheta
+        self.nphi = self.sphv_supp.nphi
+
+        assert self.blqq.qmax == self.sphv_supp.qmax
+
+        self.qmax = self.blqq.qmax
+
+        # ##### base objects to copy from
+        self.iqlm_base = IqlmHandler(self.nq, self.nl, self.qmax,True)
+        self.sphv_base = SphericalVol(self.nq, self.ntheta, self.nphi, self.qmax)
+
+
+
+        os.mkdir(f'{self.path}/{sub_tag}')
+
+        shutil.copyfile(f'{recipe}', f'{self.path}/{sub_tag}/recipe_{self.tag}_{sub_tag}.txt')
+
+
         if sphv_init is not None:
             self.sphv_iter = sphv_init.copy()
         else:
@@ -70,63 +82,49 @@ class AlgoHandlerRunRecon:
 
 
 
+        self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_init.dbin')
+        cif_f = CifData(f'{self.path}/{self.tag}_targ-sf.cif', rotk=self.rotk, rottheta=self.rottheta)
+        cif_f.fill_from_sphv(self.sphv_iter)
+        cif_f.save(f'{self.path}/{sub_tag}/{self.tag}_{sub_tag}_init.cif')
+
+        recipe_file = open(f'{self.path}/{sub_tag}/recipe_{self.tag}_{sub_tag}.txt')
+
+        count = 0
+        for line in recipe_file:
+
+            terms = line.split()
+            if terms == [] or line[0]=='#':
+                continue
+            niter = int(terms[0])
+            scheme = eval('self.'+terms[1])
+
+            kwargs = {}
+            for kwarg in terms[2:]:
+                kwargs[kwarg.split('=')[0]] = eval(kwarg.split('=')[1])
+
+
+
+            print(f'Running: {line[:-1]}')
+            for iter_num in range(niter):
+                print(f'{iter_num}', end='\r')
+
+                _,_, step = scheme(**kwargs)
+                count +=1
+
+                self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_final.dbin')
+
+
+        self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_final.dbin')
+
+        cif_f = CifData(f'{self.path}/{self.tag}_targ-sf.cif', rotk=self.rotk, rottheta=self.rottheta)
+        cif_f.fill_from_sphv(self.sphv_iter)
+        cif_f.save(f'{self.path}/{sub_tag}/{self.tag}_{sub_tag}_final.cif')
 
 
 
 
-#     def __init__(self, blqq, sphv_supp, sphv_init=None, lossy_sphv=True, lossy_iqlm=True,
-                 # rcond=None, inc_odds=True):
-
-        # ##### check inputs
-        # assert blqq.qmax == sphv_supp.qmax
-        # assert blqq.nq == sphv_supp.nq
-        # assert 2*blqq.nl == sphv_supp.ntheta
-
-        # ##### save inputs 
-        # self._blqq = blqq.copy()
-        # self._sphv_supp = sphv_supp.copy()
-        # self._lossy_sphv = lossy_sphv
-        # self._lossy_iqlm = lossy_iqlm
-        # self._rcond = rcond
-        # self._inc_odds = inc_odds
 
 
-        # ##### find indices of support that are inside and outside S
-        # self._supp_loc = np.where(self.sphv_supp.vol == 1 )
-        # self._supp_notloc = np.where(self.sphv_supp.vol == 0 )
-
-        # ##### check input properties are consistent and save them
-        # self._qmax = self.blqq.qmax
-
-        # self._nq = self.blqq.nq
-
-        # self._nl = self.blqq.nl
-        # self._ntheta = self.sphv_supp.ntheta
-        # self._nphi = self.sphv_supp.nphi
-
-        # self._lams, self._us = self.blqq.get_eig(inc_odds=self.inc_odds)
-        # #condition threshold
-        # if self.rcond is not None:
-            # eigs_thresh = np.max(self.lams, axis=0)*self.rcond
-            # for l_ind, eig_thresh in enumerate(eigs_thresh):
-                # loc = np.where(np.abs(self.lams[:,l_ind]) < eig_thresh)
-                # self.lams[loc, l_ind] = 0
-                # loc = np.where(self.lams[:,l_ind] ==0)
-                # self.us[:, loc, l_ind] = 0
-
-
-
-        # ##### base objects to copy from
-        # self._iqlm_base = IqlmHandler(self.nq, self.nl, self.qmax, self.inc_odds)
-        # self._sphv_base = SphericalVol(self.nq, self.ntheta, self.nphi, self.qmax)
-
-
-        # ##### initialize random spherical intensity
-        # if sphv_init is not None:
-            # self.sphv_iter = sphv_init.copy()
-        # else:
-            # self.sphv_iter = self.sphv_base.copy()
-            # self.sphv_iter.vol = np.random.random(self.sphv_iter.vol.shape)
 
 
 

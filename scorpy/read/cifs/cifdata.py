@@ -42,7 +42,7 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
 
 
-    # def rfactor(self, cif_targ, sqrt=False):
+# def rfactor(self, cif_targ, sqrt=False):
         # assert np.all(cif_targ.scat_bragg[:,:3] == self.scat_bragg[:,:3]), 'Cannot calcuate Rfactor, bragg indices are different'
 
         # Fo = cif_targ.scat_bragg[:,-1]
@@ -169,13 +169,13 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
         if fill_peaks:
             # Fill missing bragg indices 
-            ast_max_bragg_ind = np.max(np.abs(sym_refl[:,0]))
-            bst_max_bragg_ind = np.max(np.abs(sym_refl[:,1]))
-            cst_max_bragg_ind = np.max(np.abs(sym_refl[:,2]))
+            h_max = np.max(np.abs(sym_refl[:,0]))
+            k_max = np.max(np.abs(sym_refl[:,1]))
+            l_max = np.max(np.abs(sym_refl[:,2]))
 
-            ast_ite = np.arange(-ast_max_bragg_ind, ast_max_bragg_ind+1)
-            bst_ite = np.arange(-bst_max_bragg_ind, bst_max_bragg_ind+1)
-            cst_ite = np.arange(-cst_max_bragg_ind, cst_max_bragg_ind+1)
+            ast_ite = np.arange(-h_max, h_max+1)
+            bst_ite = np.arange(-k_max, k_max+1)
+            cst_ite = np.arange(-l_max, l_max+1)
 
             all_bragg_xyz = np.array(list(itertools.product( ast_ite, bst_ite, cst_ite)))
             loc_000 = np.all(all_bragg_xyz == 0, axis=1)  # remove 000 reflection
@@ -188,6 +188,8 @@ class CifData(CifDataProperties, CifDataSaveLoad):
                 loc = np.where( (sym_refl[:,:-1]==bragg_pt).all(axis=1))[0]
                 if len(loc)==1:
                     self._scat_bragg[i,-1] = sym_refl[loc,-1]
+
+
         else:
             self._scat_bragg = sym_refl
 
@@ -211,19 +213,28 @@ class CifData(CifDataProperties, CifDataSaveLoad):
         self._scat_sph[:, -1] = self.scat_bragg[:,-1]
 
 
+        inten_loc = np.where(self._scat_sph[:,-1]>0)[0]
+        inten_qmax = self._scat_sph[inten_loc,0].max()
+
+
 
         if qmax is not None:
-            loc = np.where(self.scat_sph[:, 0] <= qmax)
-            self._scat_rect = self._scat_rect[loc]
-            self._scat_bragg = self._scat_bragg[loc]
-            self._scat_sph = self._scat_sph[loc]
+            qmax = min(qmax, inten_qmax)
+        else:
+            qmax = inten_qmax
+
+
+        loc = np.where(self.scat_sph[:, 0] <= qmax)
+        self._scat_rect = self._scat_rect[loc]
+        self._scat_bragg = self._scat_bragg[loc]
+        self._scat_sph = self._scat_sph[loc]
+
 
         self._qmax = np.round(np.max(self.scat_sph[:,0]), 14)
 
         self._scat_bragg = np.round(self.scat_bragg, 14)
         self._scat_sph = np.round(self.scat_sph, 14)
         self._scat_rect = np.round(self.scat_rect, 14)
-
 
 
 
@@ -253,9 +264,9 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
     def fill_from_sphv(self, sphv):
 
-        ast_max_bragg_ind = int(sphv.qmax/self.ast_mag)
-        bst_max_bragg_ind = int(sphv.qmax/self.bst_mag)
-        cst_max_bragg_ind = int(sphv.qmax/self.cst_mag)
+        ast_max_bragg_ind = int(sphv.qmax/self.ast_mag)+1
+        bst_max_bragg_ind = int(sphv.qmax/self.bst_mag)+1
+        cst_max_bragg_ind = int(sphv.qmax/self.cst_mag)+1
 
         ast_ite = np.arange(-ast_max_bragg_ind, ast_max_bragg_ind+1)
         bst_ite = np.arange(-bst_max_bragg_ind, bst_max_bragg_ind+1)
@@ -297,6 +308,18 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
         self._calc_scat(cif_dict, qmax=sphv.qmax, skip_sym=True, fill_peaks=False)
 
+    def save_hkl(self, path):
+
+
+        f = open(path, 'w')
+
+        for bragg_pt in self.scat_bragg:
+
+            line = '%4d%4d%4d%8.2f%8.2f\n' % (bragg_pt[0], bragg_pt[1], bragg_pt[2], bragg_pt[3], 0)
+
+            f.write(line)
+        f.write('   0   0   0       0       0       0       0')
+        f.close()
 
 
 

@@ -23,11 +23,21 @@ geompath = f'{scorpy.DATADIR}/geoms/agipd_2304_vj_opt_v4.geom'
 pdbpath = f'{scorpy.DATADIR}/xtal/1vds.pdb'
 hklpath = f'{scorpy.DATADIR}/xtal/1vds.hkl'
 
+framesdir = f'{scorpy.DATADIR}/frames'
 
 
-nframes = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
 
-nparentframes = 2048
+nframes = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]
+npartitions = [21, 21, 21, 21, 21, 21, 21, 21, 16, 8, 4, 2]
+# nparentframes = 4096
+nparentframes = 1024
+
+
+
+# nframes = [1, 2, 4, 8]
+# npartitions = [21, 21, 21, 21]
+# nparentframes = 4096
+
 
 
 
@@ -38,55 +48,35 @@ geom = scorpy.ExpGeom(f'{geompath}')
 
 
 
+###### Generate Frames
+print(f'######Generating {nparentframes} frames. {time.asctime()}')
+cmd = f"pattern_sim -g {geompath} -p {pdbpath} -r --really-random --number={nparentframes} -i {hklpath} --photon-energy 9300 --gpu --min-size=500 --max-size=500 -o {framesdir}/euxfel-simcorr-alpha-x"
+os.system(f'{cmd} >/tmp/euxfel-simcorr-patternsim.log 2>&1')
 
 
-# #### clean up
-# for file in os.listdir('/tmp/'):
-    # if 'euxfel-simcorr' in file:
-        # os.remove(f'/tmp/{file}')
 
 
-# ###### Generate Frames
-# print(f'######Generating {nparentframes} frames. {time.asctime()}')
-# cmd = f"pattern_sim -g {geompath} -p {pdbpath} -r --really-random --number={nparentframes} -i {hklpath} --photon-energy 9300 --gpu --min-size=500 --max-size=500 -o /tmp/euxfel-simcorr-x"
-# os.system(f'{cmd} >/tmp/euxfel-simcorr-patternsim.log 2>&1')
+# for nframe, npartition in zip(nframes, npartitions):
 
-#### SCORPY CORRELATION
-for n in nframes:
-
-    for seed in range(20):
-
-        print(f'n: {n}.')
-        print(f'Seed: {seed}.')
-        # print(f'Time: {time.asctime()}.')
-        corra = scorpy.CorrelationVol(nq=nq, npsi=npsi, qmax=qmax, cos_sample=False)
+    # print(f'Nframes: {nframe}, Npartitions: {npartition}')
 
 
-        #numbers 1 to n
-        frames_shuffled = np.arange(1, nparentframes+1)
-        # numbers 1 to n in a random order
-        np.random.shuffle(frames_shuffled)
+    # for partition in range(0, npartition):
 
-        # first half of the random numbers make a
-        for i, seed_i in enumerate(frames_shuffled[:int(n/2)]):
+        # part_start = nframe*partition +1
+        # part_end = nframe*partition +nframe
 
-            pk = scorpy.PeakData(f'/tmp/euxfel-simcorr-x-{seed_i}.h5', qmax=qmax, geom=geom )
+        # print(f'\tPartition {partition}: {part_start} - {part_end}')
 
-            print(f'\x1b[2Ka Frame {i+1}', end='\r')
-            corra.fill_from_peakdata(pk)
-        corra.save(f'{scorpy.DATADIR}/dbins/cxi/qcors/sim/{n}/sim{n}-seed{seed}a-qcor.dbin')
+        # corrp = scorpy.CorrelationVol(nq, npsi, qmax, cos_sample=False)
+        # for frame in range(part_start, part_end+1):
 
-        corrb = scorpy.CorrelationVol(nq=nq, npsi=npsi, qmax=qmax, cos_sample=False)
+            # pk = scorpy.PeakData(f'{scorpy.DATADIR}/frames/euxfel-simcorr-{frame}.h5', qmax=qmax, geom=geom)
 
-        # second half of the random numbers make b
-        for i, seed_i in enumerate(frames_shuffled[int(n/2):n]):
+            # corrp.fill_from_peakdata(pk)
 
-            pk = scorpy.PeakData(f'/tmp/euxfel-simcorr-x-{seed_i}.h5', qmax=qmax, geom=geom )
 
-            print(f'\x1b[2Kb Frame {i+1}', end='\r')
-            corrb.fill_from_peakdata(pk)
-        corrb.save(f'{scorpy.DATADIR}/dbins/cxi/qcors/sim/{n}/sim{n}-seed{seed}b-qcor.dbin')
-        print()
+        # corrp.save(f'{scorpy.DATADIR}/dbins/cxi/qcors/sim/{nframe}/sim{nframe}-p{partition}-qcor.dbin')
 
 
 
@@ -102,14 +92,55 @@ for n in nframes:
 
 
 
-pk.plot_peaks()
 
 
 
 
 
 
-plt.show()
+
+
+
+
+
+
+
+
+
+
+# #### SCORPY CORRELATION
+# for n in nframes:
+
+    # for seed in range(20):
+
+        # print(f'n: {n}.')
+        # print(f'Seed: {seed}.')
+        # # print(f'Time: {time.asctime()}.')
+        # corra = scorpy.CorrelationVol(nq=nq, npsi=npsi, qmax=qmax, cos_sample=False)
+
+        # # first half of the random numbers make a
+        # for i, seed_i in enumerate(frames_shuffled[:n]):
+
+            # pk = scorpy.PeakData(f'{framesdir}/euxfel-simcorr-{seed_i}.h5', qmax=qmax, geom=geom )
+
+            # corra.fill_from_peakdata(pk)
+        # corra.save(f'{scorpy.DATADIR}/dbins/cxi/qcors/sim/{n}/sim{n}-seed{seed}a-qcor.dbin')
+
+        # corrb = scorpy.CorrelationVol(nq=nq, npsi=npsi, qmax=qmax, cos_sample=False)
+
+        # # second half of the random numbers make b
+        # for i, seed_i in enumerate(frames_shuffled[n:2*n]):
+
+            # pk = scorpy.PeakData(f'/tmp/euxfel-simcorr-x-{seed_i}.h5', qmax=qmax, geom=geom )
+
+            # corrb.fill_from_peakdata(pk)
+        # corrb.save(f'{scorpy.DATADIR}/dbins/cxi/qcors/sim/{n}/sim{n}-seed{seed}b-qcor.dbin')
+        # print()
+
+
+
+
+# plt.show()
 
 
 
