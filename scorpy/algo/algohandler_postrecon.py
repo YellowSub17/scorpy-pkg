@@ -27,13 +27,14 @@ class AlgoHandlerPostRecon:
         pass
 
 
-    def It_vs_Ia(self, sub_tag):
+    def It_vs_Ia(self, sub_tag, count=None):
 
 
-        cif_final = CifData(f'{self.path}/{sub_tag}/{self.tag}_{sub_tag}_final-sf.cif', rotk=self.rotk, rottheta= self.rottheta)
         cif_targ = CifData(f'{self.path}/{self.tag}_targ-sf.cif', rotk=self.rotk, rottheta= self.rottheta)
+        cif_final = CifData(f'{self.path}/{sub_tag}/{self.tag}_{sub_tag}_final-sf.cif', rotk=self.rotk, rottheta= self.rottheta)
 
-
+        if count is not None:
+            cif_final.fill_from_hkl(f'{self.path}/{sub_tag}/cifs/{self.tag}_{sub_tag}_count_{count}.hkl')
 
 
         It = []

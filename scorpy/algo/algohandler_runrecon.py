@@ -69,6 +69,7 @@ class AlgoHandlerRunRecon:
 
 
         os.mkdir(f'{self.path}/{sub_tag}')
+        os.mkdir(f'{self.path}/{sub_tag}/hkls')
 
         shutil.copyfile(f'{recipe}', f'{self.path}/{sub_tag}/recipe_{self.tag}_{sub_tag}.txt')
 
@@ -109,6 +110,20 @@ class AlgoHandlerRunRecon:
                 count +=1
 
                 self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_final.dbin')
+
+                self.integrate_final(sub_tag)
+
+                cif_integrated = CifData(f'{self.path}/{sub_tag}/{self.tag}_{sub_tag}_final-sf.cif', rotk=self.rotk, rottheta=self.rottheta)
+                cif_integrated.scat_bragg[:,-1] /=np.max(cif_integrated.scat_bragg[:,-1])
+                cif_integrated.scat_bragg[:,-1] *=1000
+                cif_integrated.save_hkl(f'{self.path}/{sub_tag}/hkls/{self.tag}_{sub_tag}_count_{count}.hkl')
+
+
+
+
+
+
+
 
 
         self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_final.dbin')

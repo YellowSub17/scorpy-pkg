@@ -261,6 +261,22 @@ class CifData(CifDataProperties, CifDataSaveLoad):
         self._calc_scat(cif_dict, qmax=qmax, skip_sym=skip_sym, fill_peaks=fill_peaks)
 
 
+    def fill_from_hkl(self, path, qmax=None, skip_sym=False, fill_peaks=False):
+
+        hklI = np.genfromtxt(path, skip_header=0, usecols=(0,1,2,3))
+
+
+        cif_dict = {}
+        cif_dict['_refln.index_h'] =  hklI[:,0]
+        cif_dict['_refln.index_k'] =  hklI[:,1]
+        cif_dict['_refln.index_l'] =  hklI[:,2]
+        cif_dict['_refln.intensity_meas'] = hklI[:,-1]
+
+        self._calc_scat(cif_dict, qmax=qmax, skip_sym=skip_sym, fill_peaks=fill_peaks)
+
+
+
+
 
 
 

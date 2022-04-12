@@ -28,10 +28,7 @@ class AlgoHandlerSetupRecon:
     @verbose_dec
     def make_target(self, ciffname, insfname=None, verbose=0):
 
-        print('Making target')
-
-        # assert not os.path.exists(f'{self.path}/sphv_{self.tag}_targ.dbin'), "Target sphv already in folder"
-        # assert not os.path.exists(f'{self.path}/{self.tag}_targ-sf.cif'), "Target cif already in folder"
+        print('Making Target')
 
 
 
@@ -57,7 +54,7 @@ class AlgoHandlerSetupRecon:
 
     @verbose_dec
     def make_support(self, ciffname, verbose=0):
-        print('Making support')
+        print('Making Support')
 
         # assert not os.path.exists(f'{self.path}/sphv_{self.tag}_supp.dbin'), "Support SphericalVol already in folder"
         # assert not os.path.exists(f'{self.path}/{self.tag}_supp-sf.cif'), "Support cif already in folder"
@@ -93,7 +90,7 @@ class AlgoHandlerSetupRecon:
 
     @verbose_dec
     def make_data(self,  verbose=0):
-        print('Making data')
+        print('Making Data')
 
         cif_targ = CifData(f'{self.path}/{self.tag}_targ-sf.cif', qmax=self.qmax, rotk=self.rotk, rottheta=self.rottheta)
 
