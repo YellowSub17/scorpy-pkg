@@ -42,8 +42,8 @@ class AlgoHandlerRunRecon:
 
 
 
-        assert os.path.exists(f'{self.path}/sphv_{self.tag}_supp.dbin'), "Support SphericalVol not saved to algo folder"
-        self.sphv_supp = SphericalVol(path=f'{self.path}/sphv_{self.tag}_supp.dbin')
+        assert os.path.exists(f'{self.path}/sphv_{self.tag}_supp_loose.dbin'), "Support SphericalVol not saved to algo folder"
+        self.sphv_supp = SphericalVol(path=f'{self.path}/sphv_{self.tag}_supp_loose.dbin')
         self.supp_loc = np.where(self.sphv_supp.vol == 1 )
         self.supp_notloc = np.where(self.sphv_supp.vol == 0 )
 
@@ -83,9 +83,6 @@ class AlgoHandlerRunRecon:
 
 
         self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_init.dbin')
-        cif_f = CifData(f'{self.path}/{self.tag}_targ-sf.cif', rotk=self.rotk, rottheta=self.rottheta)
-        cif_f.fill_from_sphv(self.sphv_iter)
-        cif_f.save(f'{self.path}/{sub_tag}/{self.tag}_{sub_tag}_init.cif')
 
         recipe_file = open(f'{self.path}/{sub_tag}/recipe_{self.tag}_{sub_tag}.txt')
 
@@ -115,11 +112,6 @@ class AlgoHandlerRunRecon:
 
 
         self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_final.dbin')
-
-        cif_f = CifData(f'{self.path}/{self.tag}_targ-sf.cif', rotk=self.rotk, rottheta=self.rottheta)
-        cif_f.fill_from_sphv(self.sphv_iter)
-        cif_f.save(f'{self.path}/{sub_tag}/{self.tag}_{sub_tag}_final.cif')
-
 
 
 

@@ -146,7 +146,7 @@ class CifData(CifDataProperties, CifDataSaveLoad):
         l = np.array(cif_dict['_refln.index_l']).astype(np.float).astype(np.int32)
 
 
-        inten_keys = ['_refln.intensity_meas' ,'_refln.f_squared_meas','_refln.f_meas_au' ]
+        inten_keys = ['_refln.intensity_meas', '_refln.f_squared_meas', '_refln.f_meas_au' ]
 
         I=None
         for inten_key, inten_pw in zip(inten_keys, [1,1,2]):
@@ -217,11 +217,15 @@ class CifData(CifDataProperties, CifDataSaveLoad):
         inten_qmax = self._scat_sph[inten_loc,0].max()
 
 
+        # # qmax=12.5
+        # # if qmax is not None:
+            # # qmax = min(qmax, inten_qmax)
+        # # else:
+            # # qmax = inten_qmax
 
-        if qmax is not None:
-            qmax = min(qmax, inten_qmax)
-        else:
-            qmax = inten_qmax
+
+        if qmax is None:
+            qmax= inten_qmax
 
 
         loc = np.where(self.scat_sph[:, 0] <= qmax)
@@ -264,9 +268,9 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
     def fill_from_sphv(self, sphv):
 
-        ast_max_bragg_ind = int(sphv.qmax/self.ast_mag)+1
-        bst_max_bragg_ind = int(sphv.qmax/self.bst_mag)+1
-        cst_max_bragg_ind = int(sphv.qmax/self.cst_mag)+1
+        ast_max_bragg_ind = round(sphv.qmax/self.ast_mag)+1
+        bst_max_bragg_ind = round(sphv.qmax/self.bst_mag)+1
+        cst_max_bragg_ind = round(sphv.qmax/self.cst_mag)+1
 
         ast_ite = np.arange(-ast_max_bragg_ind, ast_max_bragg_ind+1)
         bst_ite = np.arange(-bst_max_bragg_ind, bst_max_bragg_ind+1)
@@ -301,6 +305,10 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
 
         cif_dict = {}
+
+        cif_dict['_symmetry.space_group_name_h-m'] = 'X'
+        self._spg = 'X'
+
         cif_dict['_refln.index_h'] =  bragg_xyz[:,0]
         cif_dict['_refln.index_k'] =  bragg_xyz[:,1]
         cif_dict['_refln.index_l'] =  bragg_xyz[:,2]
@@ -315,7 +323,7 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
         for bragg_pt in self.scat_bragg:
 
-            line = '%4d%4d%4d%8.2f%8.2f\n' % (bragg_pt[0], bragg_pt[1], bragg_pt[2], bragg_pt[3], 0)
+            line = '%4d%4d%4d%8.2f%8.2f\n' % (round(bragg_pt[0]), round(bragg_pt[1]), round(bragg_pt[2]), bragg_pt[3], 0)
 
             f.write(line)
         f.write('   0   0   0       0       0       0       0')

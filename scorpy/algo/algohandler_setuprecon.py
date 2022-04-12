@@ -26,7 +26,8 @@ class AlgoHandlerSetupRecon:
 
 
     @verbose_dec
-    def make_target(self, ciffname, verbose=0):
+    def make_target(self, ciffname, insfname=None, verbose=0):
+
         print('Making target')
 
         # assert not os.path.exists(f'{self.path}/sphv_{self.tag}_targ.dbin'), "Target sphv already in folder"
@@ -42,6 +43,11 @@ class AlgoHandlerSetupRecon:
         sphv_targ = SphericalVol(nq=self.nq, ntheta=self.nl*2, nphi=self.nl*4, qmax=self.qmax)
         sphv_targ.fill_from_cif(cif_targ)
         sphv_targ.save(f'{self.path}/sphv_{self.tag}_targ.dbin')
+
+        if insfname is not None:
+            shutil.copyfile(insfname, f'{self.path}/{self.tag}.ins')
+
+
 
         self.save_params()
 
@@ -62,10 +68,10 @@ class AlgoHandlerSetupRecon:
         sphv_supp = SphericalVol(nq=self.nq, ntheta=self.nl*2, nphi=self.nl*4, qmax=self.qmax)
         sphv_supp.vol+=1
         cif_supp.fill_from_sphv(sphv_supp)
-        cif_supp.save(f'{self.path}/{self.tag}_supp-sf.cif')
-
         sphv_supp.vol*=0
         sphv_supp.fill_from_cif(cif_supp)
+
+        sphv_supp.save(f'{self.path}/sphv_{self.tag}_supp_tight.dbin')
 
         for pti in sphv_supp.ls_pts(inds=True):
             xul = int(pti[0]-self.dxsupp), int(pti[0]+self.dxsupp+1)
@@ -82,7 +88,7 @@ class AlgoHandlerSetupRecon:
                 sphv_supp.vol[xul[0]:xul[1], yul[0]:yul[1], zul[0]:] = 1
                 sphv_supp.vol[xul[0]:xul[1], yul[0]:yul[1], 0:zul[1]] = 1
 
-        sphv_supp.save(f'{self.path}/sphv_{self.tag}_supp.dbin')
+        sphv_supp.save(f'{self.path}/sphv_{self.tag}_supp_loose.dbin')
 
 
     @verbose_dec

@@ -13,12 +13,12 @@ plt.close('all')
 
 
 
-tag = 'barite'
-sub_tags = ['testing']
+tag = 'cubic'
+sub_tags = ['a']
 
 
 
-ciffname = 'barite'
+ciffname = 'nacl'
 
 
 # tag = 'p1-inten-r0-from-corr-qloose-supp'
@@ -31,7 +31,6 @@ ciffname = 'barite'
 
 
 
-qq = 240
 
 
 
@@ -48,6 +47,9 @@ stepfig, stepaxes = plt.subplots(1,1)
 rffig, rfaxes = plt.subplots(1,1)
 
 
+qq = 15
+
+
 for sub_tag in sub_tags:
 
 
@@ -59,50 +61,51 @@ for sub_tag in sub_tags:
 
 
     cif_f = scorpy.CifData(path=f'{scorpy.DATADIR}/xtal/{ciffname}/{ciffname}.cif', rotk=[1,1,1], rottheta=np.radians(30))
-    cif_f.fill_from_sphv(si, bragg_xyz=cif_t.scat_bragg[:,:3])
+    cif_f.fill_from_sphv(si)
 
 
-    R = cif_f.rfactor(cif_t)
-    print('R factor:', R)
+    # R = cif_f.rfactor(cif_t)
+    # print('R factor:', R)
 
 
 
 
-    y = np.loadtxt(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/steps_{tag}_{sub_tag}.txt', delimiter=',', usecols=0)
-    stepaxes.plot(np.log10(y[1:]), label=f'{sub_tag}')
-    stepaxes.legend()
-    stepaxes.set_xlabel('Iteration Number')
-    stepaxes.set_ylabel('Iteration Step')
+    # y = np.loadtxt(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/steps_{tag}_{sub_tag}.txt', delimiter=',', usecols=0)
+    # stepaxes.plot(np.log10(y[1:]), label=f'{sub_tag}')
+    # stepaxes.legend()
+    # stepaxes.set_xlabel('Iteration Number')
+    # stepaxes.set_ylabel('Iteration Step')
 
-    y = np.loadtxt(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/rfactor_{tag}_{sub_tag}.txt', delimiter=',', usecols=0)
-    rfaxes.plot(y[1:], label=f'{sub_tag}')
-    rfaxes.legend()
-    rfaxes.set_xlabel('Iteration Number')
-    rfaxes.set_ylabel('Rfactor')
+    # y = np.loadtxt(f'{scorpy.DATADIR}/algo/{tag}/{sub_tag}/rfactor_{tag}_{sub_tag}.txt', delimiter=',', usecols=0)
+    # rfaxes.plot(y[1:], label=f'{sub_tag}')
+    # rfaxes.legend()
+    # rfaxes.set_xlabel('Iteration Number')
+    # rfaxes.set_ylabel('Rfactor')
+
+#     R=99
+
+    # plt.figure()
+    # plt.title(f'{sub_tag} Rfactor: {np.round(R, 4)}')
+    # plt.scatter(cif_t.scat_bragg[:,-1]/cif_t.scat_bragg[:,-1].sum(),
+                # cif_f.scat_bragg[:,-1]/cif_f.scat_bragg[:,-1].sum(), c=cif_t.scat_sph[:,1], cmap='hsv')
+    # plt.xlabel('Itarg')
+    # plt.ylabel('Ialgo')
+    # plt.plot( [0,cif_t.scat_bragg[:,-1].max()/cif_t.scat_bragg[:,-1].sum() ],
+              # [0,cif_t.scat_bragg[:,-1].max()/cif_t.scat_bragg[:,-1].sum()])
+    # cb = plt.colorbar()
+    # cb.set_label('theta')
 
 
-    plt.figure()
-    plt.title(f'{sub_tag} Rfactor: {np.round(R, 4)}')
-    plt.scatter(cif_t.scat_bragg[:,-1]/cif_t.scat_bragg[:,-1].sum(),
-                cif_f.scat_bragg[:,-1]/cif_f.scat_bragg[:,-1].sum(), c=cif_t.scat_sph[:,1], cmap='hsv')
-    plt.xlabel('Itarg')
-    plt.ylabel('Ialgo')
-    plt.plot( [0,cif_t.scat_bragg[:,-1].max()/cif_t.scat_bragg[:,-1].sum() ],
-              [0,cif_t.scat_bragg[:,-1].max()/cif_t.scat_bragg[:,-1].sum()])
-    cb = plt.colorbar()
-    cb.set_label('theta')
-
-
-    plt.figure()
-    plt.title(f'{sub_tag} Rfactor: {np.round(R, 4)}')
-    plt.scatter(cif_t.scat_bragg[:,-1]/cif_t.scat_bragg[:,-1].sum(),
-                cif_f.scat_bragg[:,-1]/cif_f.scat_bragg[:,-1].sum(), c=cif_t.scat_sph[:,0], cmap='hsv')
-    plt.xlabel('Itarg')
-    plt.ylabel('Ialgo')
-    plt.plot( [0,cif_t.scat_bragg[:,-1].max()/cif_t.scat_bragg[:,-1].sum() ],
-              [0,cif_t.scat_bragg[:,-1].max()/cif_t.scat_bragg[:,-1].sum()])
-    cb = plt.colorbar()
-    cb.set_label('Q')
+    # plt.figure()
+    # plt.title(f'{sub_tag} Rfactor: {np.round(R, 4)}')
+    # plt.scatter(cif_t.scat_bragg[:,-1]/cif_t.scat_bragg[:,-1].sum(),
+                # cif_f.scat_bragg[:,-1]/cif_f.scat_bragg[:,-1].sum(), c=cif_t.scat_sph[:,0], cmap='hsv')
+    # plt.xlabel('Itarg')
+    # plt.ylabel('Ialgo')
+    # plt.plot( [0,cif_t.scat_bragg[:,-1].max()/cif_t.scat_bragg[:,-1].sum() ],
+              # [0,cif_t.scat_bragg[:,-1].max()/cif_t.scat_bragg[:,-1].sum()])
+    # cb = plt.colorbar()
+    # cb.set_label('Q')
 
 
 
@@ -113,7 +116,6 @@ for sub_tag in sub_tags:
     sf.plot_slice(0, qq, title='final')
 
 
-    
 
 
 

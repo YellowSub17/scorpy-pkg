@@ -49,34 +49,34 @@ geom = scorpy.ExpGeom(f'{geompath}')
 
 
 ###### Generate Frames
-print(f'######Generating {nparentframes} frames. {time.asctime()}')
-cmd = f"pattern_sim -g {geompath} -p {pdbpath} -r --really-random --number={nparentframes} -i {hklpath} --photon-energy 9300 --gpu --min-size=500 --max-size=500 -o {framesdir}/euxfel-simcorr-alpha-x"
-os.system(f'{cmd} >/tmp/euxfel-simcorr-patternsim.log 2>&1')
+# print(f'######Generating {nparentframes} frames. {time.asctime()}')
+# cmd = f"pattern_sim -g {geompath} -p {pdbpath} -r --really-random --number={nparentframes} -i {hklpath} --photon-energy 9300 --gpu --min-size=500 --max-size=500 -o {framesdir}/euxfel-simcorr-alpha-x"
+# os.system(f'{cmd} >/tmp/euxfel-simcorr-patternsim.log 2>&1')
 
 
 
 
-# for nframe, npartition in zip(nframes, npartitions):
+for nframe, npartition in zip(nframes, npartitions):
 
-    # print(f'Nframes: {nframe}, Npartitions: {npartition}')
-
-
-    # for partition in range(0, npartition):
-
-        # part_start = nframe*partition +1
-        # part_end = nframe*partition +nframe
-
-        # print(f'\tPartition {partition}: {part_start} - {part_end}')
-
-        # corrp = scorpy.CorrelationVol(nq, npsi, qmax, cos_sample=False)
-        # for frame in range(part_start, part_end+1):
-
-            # pk = scorpy.PeakData(f'{scorpy.DATADIR}/frames/euxfel-simcorr-{frame}.h5', qmax=qmax, geom=geom)
-
-            # corrp.fill_from_peakdata(pk)
+    print(f'Nframes: {nframe}, Npartitions: {npartition}')
 
 
-        # corrp.save(f'{scorpy.DATADIR}/dbins/cxi/qcors/sim/{nframe}/sim{nframe}-p{partition}-qcor.dbin')
+    for partition in range(0, npartition):
+
+        part_start = nframe*partition +1
+        part_end = nframe*partition +nframe
+
+        print(f'\tPartition {partition}: {part_start} - {part_end}')
+
+        corrp = scorpy.CorrelationVol(nq, npsi, qmax, cos_sample=False)
+        for frame in range(part_start, part_end+1):
+
+            pk = scorpy.PeakData(f'{scorpy.DATADIR}/frames/euxfel-simcorr-alpha-{frame}.h5', qmax=qmax, geom=geom)
+
+            corrp.fill_from_peakdata(pk)
+
+
+        corrp.save(f'{scorpy.DATADIR}/dbins/cxi/qcors/sim/{nframe}/sim{nframe}-alpha-p{partition}-qcor.dbin')
 
 
 

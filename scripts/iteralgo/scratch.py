@@ -12,25 +12,35 @@ plt.close('all')
 
 
 
-qmax = 12.5
+qmax = 9
 nq = 100
 npsi = 360*32
 nl = 180
 
+rotk = [1,1,1]
+rottheta = np.radians(30)
+
+
+tag = 'triclinic'
+sample = 'agno3'
+
+
+
+targ_ciffname = f'{scorpy.DATADIR}/xtal/{sample}/{sample}-sf.cif'
+targ_insfname = f'{scorpy.DATADIR}/xtal/{sample}/{sample}.ins'
+supp_ciffname= f'{scorpy.DATADIR}/xtal/{sample}/{sample}.cif'
 
 
 
 
-
-# a = scorpy.AlgoHandler(tag='x', nq=nq, qmax=qmax, npsi=npsi, nl=nl)
-# a.make_target(f'{scorpy.DATADIR}/xtal/nacl/nacl-sf.cif', verbose=99)
-# a.make_support(f'{scorpy.DATADIR}/xtal/nacl/nacl.cif', verbose=99)
-# a.make_data(verbose=99)
+a = scorpy.AlgoHandler(tag=tag, nq=nq, qmax=qmax, npsi=npsi, nl=nl, rotk=rotk, rottheta=rottheta)
+a.make_target(targ_ciffname, targ_insfname, verbose=99)
+a.make_support(supp_ciffname, verbose=99)
 
 
 
-# sphv_supp = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/x/sphv_x_supp.dbin')
-# sphv_targ = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/x/sphv_x_targ.dbin')
+# sphv_supp = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_supp_loose.dbin')
+# sphv_targ = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_targ.dbin')
 
 # plt.figure()
 # plt.plot(sphv_supp.vol.sum(axis=-1).sum(axis=-1))
@@ -38,38 +48,30 @@ nl = 180
 # plt.figure()
 # plt.plot(sphv_targ.vol.sum(axis=-1).sum(axis=-1))
 
-# sphv_supp.plot_slice(0, -1)
+
+# qloc = np.unique((np.where(sphv_targ.vol>0))[0])
+
+
+# qq = 25
+# sphv_supp.plot_slice(0, qloc[0])
+# sphv_supp.plot_slice(0, qq)
+# sphv_supp.plot_sumax(0)
+
+
+a.make_data(verbose=99)
 
 
 
-
-
-# a = scorpy.AlgoHandler(tag='x')
-# a.run_recon('y', f'{scorpy.DATADIR}/algo/RECIPES/x.txt')
-
-
-
-a = scorpy.AlgoHandler(tag='x')
+# a = scorpy.AlgoHandler(tag=tag)
+a.run_recon('a', f'{scorpy.DATADIR}/algo/RECIPES/rec.txt', verbose=99)
 
 
 
+a = scorpy.AlgoHandler(tag=tag)
+a.integrate_final('a')
+# a.It_vs_Ia('a')
 
-
-
-
-
-# tag='nacl'
-
-
-# cif = scorpy.CifData(f'{scorpy.DATADIR}/algo/{tag}/{tag}_targ-sf.cif')
-# cif.save_hkl(f'{scorpy.DATADIR}/shelx/{tag}_targ.hkl')
-
-# sphv_targ = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_targ.dbin')
-# sphv_f = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/testing/sphv_{tag}_testing_final.dbin')
-# sphv_supp = scorpy.SphericalVol(path=f'{scorpy.DATADIR}/algo/{tag}/sphv_{tag}_supp.dbin')
-
-# sphv_f.integrate_peaks(mask_vol=sphv_targ, dpix=2)
-# sphv_f.vol /= sphv_f.vol.sum()
+a.prep_shelxl('a')
 
 
 
@@ -82,8 +84,8 @@ a = scorpy.AlgoHandler(tag='x')
 
 
 
-# cif.fill_from_sphv(sphv_f)
-# cif.save_hkl(f'{scorpy.DATADIR}/shelx/{tag}_algo.hkl')
+
+
 
 
 
