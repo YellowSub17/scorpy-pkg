@@ -8,6 +8,8 @@ import os
 import shutil
 
 
+import CifFile as pycif
+
 
 
 from ..read.cifs.cifdata import CifData
@@ -27,14 +29,14 @@ class AlgoHandlerPostRecon:
         pass
 
 
-    def It_vs_Ia(self, sub_tag, count=None):
+    def intensity_xy_plot(self, sub_tag, count=None):
 
 
         cif_targ = CifData(f'{self.path}/{self.tag}_targ-sf.cif', rotk=self.rotk, rottheta= self.rottheta)
         cif_final = CifData(f'{self.path}/{sub_tag}/{self.tag}_{sub_tag}_final-sf.cif', rotk=self.rotk, rottheta= self.rottheta)
 
         if count is not None:
-            cif_final.fill_from_hkl(f'{self.path}/{sub_tag}/cifs/{self.tag}_{sub_tag}_count_{count}.hkl')
+            cif_final.fill_from_hkl(f'{self.path}/{sub_tag}/hkl/{self.tag}_{sub_tag}_count_{count}.hkl')
 
 
         It = []
@@ -89,19 +91,107 @@ class AlgoHandlerPostRecon:
 
 
 
-    def prep_shelxl(self, sub_tag):
-        os.mkdir(f'{self.path}/{sub_tag}/shelx')
-
-        shutil.copyfile(f'{self.path}/{self.tag}.ins', f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}.ins')
-        shutil.copyfile(f'{self.path}/{self.tag}.ins', f'{self.path}/{sub_tag}/shelx/{self.tag}_targ.ins')
-        cif_integrated = CifData(f'{self.path}/{sub_tag}/{self.tag}_{sub_tag}_final-sf.cif', rotk=self.rotk, rottheta=self.rottheta)
-        cif_integrated.scat_bragg[:,-1] /=np.max(cif_integrated.scat_bragg[:,-1])
-        cif_integrated.scat_bragg[:,-1] *=1000
-        cif_integrated.save_hkl(f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}.hkl')
+    def prep_shelxl(self, sub_tag, count=None):
 
 
         cif_targ = CifData(f'{self.path}/{self.tag}_targ-sf.cif', rotk=self.rotk, rottheta= self.rottheta)
         cif_targ.save_hkl(f'{self.path}/{sub_tag}/shelx/{self.tag}_targ.hkl')
+
+        cif_integrated = CifData(f'{self.path}/{sub_tag}/{self.tag}_{sub_tag}_final-sf.cif', rotk=self.rotk, rottheta=self.rottheta)
+        shutil.copyfile(f'{self.path}/{self.tag}.ins', f'{self.path}/{sub_tag}/shelx/{self.tag}_targ.ins')
+
+        if count is not None:
+            shutil.copyfile(f'{self.path}/{self.tag}.ins', f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_count_{count}.ins')
+            cif_integrated.fill_from_hkl(f'{self.path}/{sub_tag}/hkl/{self.tag}_{sub_tag}_count_{count}.hkl')
+            cif_integrated.save_hkl(f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_count_{count}.hkl')
+        else:
+            shutil.copyfile(f'{self.path}/{self.tag}.ins', f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}.ins')
+            cif_integrated.scat_bragg[:,-1] /=np.max(cif_integrated.scat_bragg[:,-1])
+            cif_integrated.scat_bragg[:,-1] *=1000
+            cif_integrated.save_hkl(f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}.hkl')
+
+
+
+
+
+    def bond_distance_xy_plot(self,sub_tag):
+
+        cif_targ = pycif.ReadCif(f'{self.path}/{sub_tag}/shelx/{self.tag}_targ.cif')
+        cif_algo = pycif.ReadCif(f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}.cif')
+
+        vk_targ = cif_targ.visible_keys[0]
+        vk_algo = cif_algo.visible_keys[0]
+        
+        targ_vals, targ_errs = [], []
+        algo_vals, algo_errs = [], []
+
+
+        for bond_distance in dict(cif_targ[vk_targ])['_geom_bond_distance']:
+
+            val, err = bond_distance.split('(')[0], bond_distance.split('(')[1][:-1]
+            ndeci = len(val.split('.')[1])
+            err = float('0.'+(ndeci-1)*'0'+'1')*float(err)
+            targ_vals.append(float(val))
+            targ_errs.append(err)
+
+        for bond_distance in dict(cif_algo[vk_algo])['_geom_bond_distance']:
+
+            val, err = bond_distance.split('(')[0], bond_distance.split('(')[1][:-1]
+            ndeci = len(val.split('.')[1])
+            err = float('0.'+(ndeci-1)*'0'+'1')*float(err)
+            algo_vals.append(float(val))
+            algo_errs.append(err)
+
+        plt.figure()
+        plt.errorbar(targ_vals, algo_vals,xerr=targ_errs, yerr=algo_errs, fmt='b.')
+        plt.plot([np.min(targ_vals), np.max(targ_vals)], [np.min(targ_vals), np.max(targ_vals)], 'b-')
+        plt.xlabel('bond dist target')
+        plt.ylabel('bond dist algo')
+
+
+
+
+
+    # def bond_angle_xy_plot(self,sub_tag):
+
+        # cif_targ = pycif.ReadCif(f'{self.path}/{sub_tag}/shelx/{self.tag}_targ.cif')
+        # cif_algo = pycif.ReadCif(f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}.cif')
+
+        # vk_targ = cif_targ.visible_keys[0]
+        # vk_algo = cif_algo.visible_keys[0]
+        
+        # targ_vals, targ_errs = [], []
+        # algo_vals, algo_errs = [], []
+
+
+        # for bond_distance in dict(cif_targ[vk_targ])['_geom_angle']:
+
+            # val, err = bond_distance.split('(')[0], bond_distance.split('(')[1][:-1]
+            # ndeci = len(val.split('.')[1])
+            # err = float('0.'+(ndeci-1)*'0'+'1')*float(err)
+            # targ_vals.append(float(val))
+            # targ_errs.append(err)
+
+        # for bond_distance in dict(cif_algo[vk_algo])['_geom_angle']:
+
+            # val, err = bond_distance.split('(')[0], bond_distance.split('(')[1][:-1]
+            # ndeci = len(val.split('.')[1])
+            # err = float('0.'+(ndeci-1)*'0'+'1')*float(err)
+            # algo_vals.append(float(val))
+            # algo_errs.append(err)
+
+        # plt.figure()
+        # plt.errorbar(targ_vals, algo_vals,xerr=targ_errs, yerr=algo_errs, fmt='b.')
+        # plt.plot([np.min(targ_vals), np.max(targ_vals)], [np.min(targ_vals), np.max(targ_vals)], 'b-')
+
+
+
+
+
+
+
+
+
 
 
 
