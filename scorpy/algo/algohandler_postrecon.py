@@ -25,10 +25,6 @@ class AlgoHandlerPostRecon:
 
 
 
-    def rfactors(self, sub_tag):
-        pass
-
-
     def intensity_xy_plot(self, sub_tag, count=None):
 
 
@@ -102,8 +98,10 @@ class AlgoHandlerPostRecon:
 
         if count is not None:
             shutil.copyfile(f'{self.path}/{self.tag}.ins', f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_count_{count}.ins')
-            cif_integrated.fill_from_hkl(f'{self.path}/{sub_tag}/hkl/{self.tag}_{sub_tag}_count_{count}.hkl')
+            cif_integrated.fill_from_hkl(f'{self.path}/{sub_tag}/hkls/{self.tag}_{sub_tag}_count_{count}.hkl')
             cif_integrated.save_hkl(f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_count_{count}.hkl')
+
+
         else:
             shutil.copyfile(f'{self.path}/{self.tag}.ins', f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}.ins')
             cif_integrated.scat_bragg[:,-1] /=np.max(cif_integrated.scat_bragg[:,-1])
@@ -114,10 +112,16 @@ class AlgoHandlerPostRecon:
 
 
 
-    def bond_distance_xy_plot(self,sub_tag):
+    def bond_distance_xy_plot(self,sub_tag, count=None, col='b', new_fig=True):
+
+        if new_fig:
+            plt.figure()
 
         cif_targ = pycif.ReadCif(f'{self.path}/{sub_tag}/shelx/{self.tag}_targ.cif')
-        cif_algo = pycif.ReadCif(f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}.cif')
+        if count is not None:
+            cif_algo = pycif.ReadCif(f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_count_{count}.cif')
+        else:
+            cif_algo = pycif.ReadCif(f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}.cif')
 
         vk_targ = cif_targ.visible_keys[0]
         vk_algo = cif_algo.visible_keys[0]
@@ -142,12 +146,35 @@ class AlgoHandlerPostRecon:
             algo_vals.append(float(val))
             algo_errs.append(err)
 
-        plt.figure()
-        plt.errorbar(targ_vals, algo_vals,xerr=targ_errs, yerr=algo_errs, fmt='b.')
-        plt.plot([np.min(targ_vals), np.max(targ_vals)], [np.min(targ_vals), np.max(targ_vals)], 'b-')
+
+
+        sigma= np.array(targ_errs)*np.array(algo_errs)*5
+        diff = np.abs(np.array(targ_vals)-np.array(algo_vals))
+
+
+        # low = (diff>sigma)
+        # print(low)
+
+        # for ind in range(len(targ_vals)):
+
+            # if not low[ind]:
+                # plt.errorbar(targ_vals, algo_vals,xerr=targ_errs, yerr=algo_errs, fmt=f'g.')
+            # else:
+                # plt.errorbar(targ_vals, algo_vals,xerr=targ_errs, yerr=algo_errs, fmt=f'r.')
+        # plt.plot([np.min(targ_vals), np.max(targ_vals)], [np.min(targ_vals), np.max(targ_vals)], c=f'k')
+
+
+
+
+
+
+        # plt.figure()
+        plt.errorbar(targ_vals, algo_vals, xerr=targ_errs, yerr=algo_errs, fmt=f'{col}.')
+        plt.plot([np.min(targ_vals), np.max(targ_vals)], [np.min(targ_vals), np.max(targ_vals)], f'k:')
+
         plt.xlabel('bond dist target')
         plt.ylabel('bond dist algo')
-
+ # # |a-b| > 3sigma(a)sigma(b)
 
 
 

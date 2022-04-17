@@ -4,6 +4,7 @@
 import numpy as np
 import os
 import shutil
+import time
 
 
 from ..read.cifs.cifdata import CifData
@@ -26,11 +27,13 @@ class AlgoHandlerRunRecon:
 
     @verbose_dec
     def run_recon(self, sub_tag, recipe, sphv_init=None, verbose=0):
-        print('Running recon')
+        print('Running Recon')
+        print(f'Time started: {time.asctime()}')
 
         assert os.path.exists(f'{self.path}/blqq_{self.tag}_data.dbin'), "Data BlqqVol not saved to algo folder"
         self.blqq = BlqqVol(path=f'{self.path}/blqq_{self.tag}_data.dbin')
         self.lams, self.us = self.blqq.get_eig()
+
         #condition threshold
         eigs_thresh = np.max(self.lams, axis=0)*self.eig_rcond
         for l_ind, eig_thresh in enumerate(eigs_thresh):
@@ -80,10 +83,23 @@ class AlgoHandlerRunRecon:
             self.sphv_iter = self.sphv_base.copy()
             self.sphv_iter.vol = np.random.random(self.sphv_iter.vol.shape)
 
+        self.iqlm_iter = self.iqlm_base.copy()
+
+
+
 
 
 
         self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_init.dbin')
+        self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_final.dbin')
+        self.integrate_final(sub_tag)
+        cif_integrated = CifData(f'{self.path}/{sub_tag}/{self.tag}_{sub_tag}_final-sf.cif', rotk=self.rotk, rottheta=self.rottheta)
+        cif_integrated.scat_bragg[:,-1] /=np.max(cif_integrated.scat_bragg[:,-1])
+        cif_integrated.scat_bragg[:,-1] *=9999.99
+        cif_integrated.save_hkl(f'{self.path}/{sub_tag}/hkls/{self.tag}_{sub_tag}_count_0.hkl')
+
+
+
 
         recipe_file = open(f'{self.path}/{sub_tag}/recipe_{self.tag}_{sub_tag}.txt')
 
@@ -115,7 +131,8 @@ class AlgoHandlerRunRecon:
 
                 cif_integrated = CifData(f'{self.path}/{sub_tag}/{self.tag}_{sub_tag}_final-sf.cif', rotk=self.rotk, rottheta=self.rottheta)
                 cif_integrated.scat_bragg[:,-1] /=np.max(cif_integrated.scat_bragg[:,-1])
-                cif_integrated.scat_bragg[:,-1] *=1000
+                cif_integrated.scat_bragg[:,-1] *=9999.99
+
                 cif_integrated.save_hkl(f'{self.path}/{sub_tag}/hkls/{self.tag}_{sub_tag}_count_{count}.hkl')
 
 
@@ -127,6 +144,8 @@ class AlgoHandlerRunRecon:
 
 
         self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_final.dbin')
+
+        print(f'Time Finished: {time.asctime()}')
 
 
 

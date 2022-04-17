@@ -30,8 +30,6 @@ class AlgoHandlerSetupRecon:
 
         print('Making Target')
 
-
-
         cif_targ = CifData(ciffname, qmax=self.qmax, rotk=self.rotk, rottheta=self.rottheta)
         cif_targ.save(f'{self.path}/{self.tag}_targ-sf.cif')
 
