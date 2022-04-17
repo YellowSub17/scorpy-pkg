@@ -29,27 +29,6 @@ class AlgoHandlerSchemes:
         return sphv_i, sphv_f, err
 
 
-    def SF(self, sphv_i=None):
-        '''Solvent Flipping'''
-
-
-        if sphv_i is None:
-            sphv_i = self.sphv_iter.copy()
-        else:
-            self.sphv_iter = sphv_i.copy()
-
-        self.Pm()
-        self.Rs()
-
-        sphv_f = self.sphv_iter.copy()
-
-
-        err = np.linalg.norm(sphv_f.vol - sphv_i.vol)
-        return sphv_i, sphv_f, err
-
-
-
-
     def HIO(self, beta=0.9, sphv_i=None):
         '''Hybrid Input Output'''
 
@@ -70,6 +49,55 @@ class AlgoHandlerSchemes:
 
         err = np.linalg.norm(sphv_f.vol - sphv_i.vol)
         return sphv_i, sphv_f, err
+
+    def ER_fast(self):
+        '''Error Reduction'''
+
+
+
+
+        self.Pm_fast()
+        self.Ps_fast()
+
+
+        return None, None, None
+
+
+    def HIO_fast(self, beta=0.9):
+        '''Hybrid Input Output'''
+
+
+        sphv_i_vol = self.sphv_iter.vol
+        self.Pm_fast()
+        pm_out_vol = self.sphv_iter.vol
+        self.Ps_fast()
+
+        self.sphv_iter.vol[self.supp_notloc] = sphv_i_vol[self.supp_notloc] - beta*pm_out_vol[self.supp_notloc]
+
+        return None, None, None
+
+
+
+
+    def SF(self, sphv_i=None):
+        '''Solvent Flipping'''
+
+
+        if sphv_i is None:
+            sphv_i = self.sphv_iter.copy()
+        else:
+            self.sphv_iter = sphv_i.copy()
+
+        self.Pm()
+        self.Rs()
+
+        sphv_f = self.sphv_iter.copy()
+
+
+        err = np.linalg.norm(sphv_f.vol - sphv_i.vol)
+        return sphv_i, sphv_f, err
+
+
 
 
     def DM(self, beta=0.7, gamma_m=None, gamma_s=None, sphv_i=None):

@@ -4,6 +4,7 @@
 
 import scorpy
 import numpy as np
+np.random.seed(0)
 import matplotlib.pyplot as plt
 plt.close('all')
 
@@ -12,23 +13,23 @@ plt.close('all')
 
 
 
-# qmax = 9
-# nq = 100
-# npsi = 360*32
-# nl = 180
+qmax = 9
+nq = 100
+npsi = 360*32
+nl = 180
 
-# rotk = [1,1,1]
-# rottheta = np.radians(30)
+rotk = [1,1,1]
+rottheta = np.radians(30)
 
 
 tag = 'copy-time-test'
-# sample = 'nacl'
+sample = 'nacl'
 
 
 
-# targ_ciffname = f'{scorpy.DATADIR}/xtal/{sample}/{sample}-sf.cif'
-# targ_insfname = f'{scorpy.DATADIR}/xtal/{sample}/{sample}.ins'
-# supp_ciffname= f'{scorpy.DATADIR}/xtal/{sample}/{sample}.cif'
+targ_ciffname = f'{scorpy.DATADIR}/xtal/{sample}/{sample}-sf.cif'
+targ_insfname = f'{scorpy.DATADIR}/xtal/{sample}/{sample}.ins'
+supp_ciffname= f'{scorpy.DATADIR}/xtal/{sample}/{sample}.cif'
 
 
 
@@ -38,26 +39,17 @@ tag = 'copy-time-test'
 # a.make_support(supp_ciffname, verbose=99)
 
 
-
-# # a = scorpy.AlgoHandler(tag)
-# # sphv_suppl = scorpy.SphericalVol(path=f'{a.path}/sphv_{a.tag}_supp_loose.dbin')
-# # sphv_suppt = scorpy.SphericalVol(path=f'{a.path}/sphv_{a.tag}_supp_tight.dbin')
-
-# # plt.figure()
-# # plt.plot(sphv_suppt.vol.sum(axis=-1).sum(axis=-1))
-
-# # sphv_suppl.plot_slice(0, 248)
-# # sphv_suppt.plot_slice(0, 248)
-
-
-
 # a.make_data(verbose=99)
 
 
-
-
 a = scorpy.AlgoHandler(tag=tag)
-a.run_recon('b', f'{scorpy.DATADIR}/algo/RECIPES/rec.txt', verbose=99)
+sphv_init = scorpy.SphericalVol(a.nq, a.nl*2, a.nl*4, a.qmax)
+sphv_init.vol = np.random.random(sphv_init.vol.shape)
+
+print(sphv_init.vol[0,0,0])
+
+
+a.run_recon('slow', f'{scorpy.DATADIR}/algo/RECIPES/rec_slow.txt', verbose=99, sphv_init=sphv_init)
 
 
 
