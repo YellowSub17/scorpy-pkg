@@ -34,11 +34,6 @@ def to_polar(im, rmax, cenx, ceny):
 
 
 
-
-
-
-
-
 def strerr2floaterrr(s):
 
 

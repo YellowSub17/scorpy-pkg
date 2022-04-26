@@ -12,7 +12,7 @@ plt.close('all')
 
 
 
-qmax = 9
+qmax = 3
 nq = 150
 npsi = 360*32
 
@@ -23,17 +23,21 @@ ciffname = f'{scorpy.DATADIR}/xtal/{sample}/{sample}-sf.cif'
 
 
 
-for nl in [165, 135, 105, 75, 60]:
-    tag = f'agno3-nl{nl}-x'
+tag = 'x'
+nl = 180
+
+a = scorpy.AlgoHandler(tag=tag, nq=nq, qmax=qmax, npsi=npsi, nl=nl, rotk=rotk, rottheta=rottheta, overwrite=0)
+a.make_target(ciffname, verbose=99)
+a.make_support(ciffname,verbose=99, unit=True)
 
 
-    a = scorpy.AlgoHandler(tag=tag, nq=nq, qmax=qmax, npsi=npsi, nl=nl, rotk=rotk, rottheta=rottheta, overwrite=0)
-    a.make_target(ciffname, verbose=99)
-    a.make_support(ciffname,verbose=99, unit=True)
+
+a.make_data(verbose=99)
 
 
+a.check_inputs(verbose=99)
 
-    a.make_data(verbose=99)
+a.run_recon('a', f'{scorpy.DATADIR}/algo/RECIPES/short_test.txt', verbose=99)
 
 
 

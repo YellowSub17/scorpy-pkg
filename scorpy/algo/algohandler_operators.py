@@ -133,8 +133,7 @@ class AlgoHandlerOperators:
         ##### only keep intenisty values at bragg positions defined by support
         self.sphv_b = self.sphv_base.copy()
 
-        self.sphv_b.vol = self.sphv_iter.vol * self.sphv_supp.vol
-
+        self.sphv_b.vol[self.supp_loc] = self.sphv_iter.vol[self.supp_loc]
 
         # # # # #global positivitiy: if the intensity is still negative, set to 0
         self.sphv_b.vol[self.sphv_b.vol<0] = 0

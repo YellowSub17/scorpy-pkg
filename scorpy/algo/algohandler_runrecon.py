@@ -21,18 +21,28 @@ from ..utils.utils import verbose_dec
 class AlgoHandlerRunRecon:
 
 
-
-
     @verbose_dec
-    def run_recon(self, sub_tag, recipe, sphv_init=None, verbose=0):
-        print(f'Running Recon {self.tag}_{sub_tag}')
-        print(f'Started: {time.asctime()}')
+    def check_inputs(self, verbose=0):
+        print(f'Checking Inputs')
+        assert os.path.exists(self.blqq_data_path()), "Data BlqqVol not saved to algo folder"
+        blqq = BlqqVol(path=self.blqq_data_path())
 
-        assert os.path.exists(f'{self.path}/blqq_{self.tag}_data.dbin'), "Data BlqqVol not saved to algo folder"
-        self.blqq = BlqqVol(path=f'{self.path}/blqq_{self.tag}_data.dbin')
-        self.lams, self.us = self.blqq.get_eig()
 
-        #condition threshold
+        assert os.path.exists(self.sphv_supp_loose_path()), "Support SphericalVol not saved to algo folder"
+        sphv_supp = SphericalVol(path=self.sphv_supp_loose_path())
+
+
+        assert blqq.nq == sphv_supp.nq == self.nq
+        assert blqq.qmax == sphv_supp.qmax == self.qmax
+        assert blqq.nl*2 == sphv_supp.ntheta
+        assert blqq.nl*4 == sphv_supp.nphi
+        assert self.nl == blqq.nl
+
+
+
+
+        # save eigens
+        self.lams, self.us = blqq.get_eig()
         eigs_thresh = np.max(self.lams, axis=0)*self.eig_rcond
         for l_ind, eig_thresh in enumerate(eigs_thresh):
             loc = np.where(np.abs(self.lams[:,l_ind]) < eig_thresh)
@@ -40,32 +50,21 @@ class AlgoHandlerRunRecon:
             loc = np.where(self.lams[:,l_ind] ==0)
             self.us[:, loc, l_ind] = 0
 
+        # save support
+        self.supp_loc = np.where(sphv_supp.vol != 0 )
+        self.supp_notloc = np.where(sphv_supp.vol == 0 )
+
+        # save base
+        self.iqlm_base = IqlmHandler(self.nq, self.nl, self.qmax, True)
+        self.sphv_base = SphericalVol(self.nq, self.nl*2, self.nl*4, self.qmax)
 
 
-
-        assert os.path.exists(f'{self.path}/sphv_{self.tag}_supp_loose.dbin'), "Support SphericalVol not saved to algo folder"
-        self.sphv_supp = SphericalVol(path=f'{self.path}/sphv_{self.tag}_supp_loose.dbin')
-        self.supp_loc = np.where(self.sphv_supp.vol == 1 )
-        self.supp_notloc = np.where(self.sphv_supp.vol == 0 )
+    @verbose_dec
+    def run_recon(self, sub_tag, recipe, sphv_init=None, verbose=0):
 
 
-        assert self.blqq.nq ==self.sphv_supp.nq
-        self.nq = self.blqq.nq
-
-        assert self.blqq.nl*2 ==self.sphv_supp.ntheta
-        assert self.blqq.nl*4 ==self.sphv_supp.nphi
-
-        self.nl = self.blqq.nl
-        self.ntheta = self.sphv_supp.ntheta
-        self.nphi = self.sphv_supp.nphi
-
-        assert self.blqq.qmax == self.sphv_supp.qmax
-
-        self.qmax = self.blqq.qmax
-
-        # ##### base objects to copy from
-        self.iqlm_base = IqlmHandler(self.nq, self.nl, self.qmax,True)
-        self.sphv_base = SphericalVol(self.nq, self.ntheta, self.nphi, self.qmax)
+        print(f'Running Recon {self.tag}_{sub_tag}')
+        print(f'Started: {time.asctime()}')
 
 
 
@@ -89,9 +88,6 @@ class AlgoHandlerRunRecon:
 
         self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_init.dbin')
 
-#         self.integrate_final(sub_tag)
-        # cif_integrated = CifData(f'{self.path}/{sub_tag}/{self.tag}_{sub_tag}_final-sf.cif', rotk=self.rotk, rottheta=self.rottheta)
-        # cif_integrated.save_hkl(f'{self.path}/{sub_tag}/hkls/{self.tag}_{sub_tag}_count_0.hkl')
 
 
 
@@ -118,26 +114,16 @@ class AlgoHandlerRunRecon:
                 print(f'{iter_num}', end='\r')
 
 
-                # self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_iter.dbin')
                 self.sphv_iter.save(self.sphv_iter_path(sub_tag))
                 self.integrate_iter(sub_tag)
 
-                # cif_integrated = CifData(self.cif_targ_path(), rotk=self.rotk, rottheta=self.rottheta)
 
                 _,_, step = scheme(**kwargs)
                 count +=1
 
-
-
-
-        # self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_iter.dbin')
         self.sphv_iter.save(self.sphv_iter_path(sub_tag))
         self.integrate_iter(sub_tag)
         cif_integrated = CifData(self.cif_targ_path(), rotk=self.rotk, rottheta=self.rottheta)
-
-
-
-
 
 
 

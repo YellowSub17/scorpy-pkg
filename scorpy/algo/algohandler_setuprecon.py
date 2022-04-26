@@ -24,28 +24,26 @@ class AlgoHandlerSetupRecon:
 
 
     @verbose_dec
-    def make_target(self, ciffname, insfname=None, verbose=0):
+    def make_target(self, ciffname, verbose=0):
 
         print('Making Target')
 
         cif_targ = CifData(ciffname, qmax=self.qmax, rotk=self.rotk, rottheta=self.rottheta)
-        cif_targ.save(f'{self.path}/{self.tag}_targ-sf.cif')
+        cif_targ.save(self.cif_targ_path())
 
         if self.qmax is None:
             self.qmax = cif_targ.qmax
         sphv_targ = SphericalVol(nq=self.nq, ntheta=self.nl*2, nphi=self.nl*4, qmax=self.qmax)
         sphv_targ.fill_from_cif(cif_targ)
-        sphv_targ.save(f'{self.path}/sphv_{self.tag}_targ.dbin')
+        sphv_targ.save(self.cif_targ_path())
 
-        if insfname is not None:
-            shutil.copyfile(insfname, f'{self.path}/{self.tag}.ins')
 
         self.save_params()
 
 
 
     @verbose_dec
-    def make_support(self, ciffname, verbose=0, unit=True):
+    def make_support(self, ciffname, verbose=0, unit=False):
         print('Making Support')
 
         assert self.qmax is not None, "Cannot make support, qmax required"
@@ -86,7 +84,6 @@ class AlgoHandlerSetupRecon:
         if unit:
             sphv_supp_loose.make_mask()
 
-        # sphv_supp_loose.save(f'{self.path}/sphv_{self.tag}_supp_loose.dbin')
         sphv_supp_loose.save(self.sphv_supp_loose_path())
 
 

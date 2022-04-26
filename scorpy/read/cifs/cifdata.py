@@ -20,7 +20,7 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
 
 
-        starcif = pycif.ReadCif(path)
+        starcif = pycif.ReadCif(f'{path}')
         vk = starcif.visible_keys[0]
         cif_dict = dict(starcif[vk])
 
@@ -30,7 +30,7 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
 
 
-        if '_refln.index_h' or '_refln_index_h'  in cif_dict.keys():
+        if '_refln.index_h' or '_refln_index_h' in cif_dict.keys():
             self._calc_scat(cif_dict, qmax=qmax, fill_peaks=fill_peaks, skip_sym=skip_sym)
 
         else:
