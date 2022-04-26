@@ -30,37 +30,13 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
 
 
-        if '_refln.index_h' in cif_dict.keys():
+        if '_refln.index_h' or '_refln_index_h'  in cif_dict.keys():
             self._calc_scat(cif_dict, qmax=qmax, fill_peaks=fill_peaks, skip_sym=skip_sym)
 
         else:
             self._scat_bragg= None
             self._scat_rect = None
             self._scat_sph = None
-
-
-
-
-
-# def rfactor(self, cif_targ, sqrt=False):
-        # assert np.all(cif_targ.scat_bragg[:,:3] == self.scat_bragg[:,:3]), 'Cannot calcuate Rfactor, bragg indices are different'
-
-        # Fo = cif_targ.scat_bragg[:,-1]
-        # Fc = self.scat_bragg[:,-1]
-
-
-        # if sqrt:
-            # Fo = np.sqrt(Fo)
-            # Fc = np.sqrt(Fc)
-
-        # Fo /= np.sum(Fo)
-        # Fc /= np.sum(Fc)
-
-
-
-        # R = np.sum( np.abs( np.abs(Fo) - np.abs(Fc)))/np.sum(np.abs(Fo))
-        # return R
-
 
 
 
@@ -99,8 +75,6 @@ class CifData(CifDataProperties, CifDataSaveLoad):
             (np.cos(self.alpha) - np.cos(self.beta) * np.cos(self.gamma)) / np.sin(self.gamma),
             np.sqrt(1 - np.cos(self.beta)**2 - ( (np.cos(self.alpha) - np.cos(self.beta) * np.cos(self.gamma)) / np.sin(self.gamma))**2)
         ])
-        # # another expressions for cz
-        # np.sqrt(1 - np.cos(self.alpha)**2 - np.cos(self.beta)**2 - np.cos(self.gamma)**2 + 2*np.cos(self.alpha)*np.cos(self.beta)*np.cos(self.gamma))/np.sin(self.gamma)
 
         #Rodriguiz formula
         if rotk is not None:
@@ -130,10 +104,6 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
 
 
-
-
-
-
     def _calc_scat(self, cif_dict, qmax=None, fill_peaks=False, skip_sym=False):
         '''
         Parse cif data to generate scattering infomation, in Bragg indices,
@@ -141,12 +111,18 @@ class CifData(CifDataProperties, CifDataSaveLoad):
         '''
 
         ##### Bragg Indices
-        h = np.array(cif_dict['_refln.index_h']).astype(np.float).astype(np.int32)
-        k = np.array(cif_dict['_refln.index_k']).astype(np.float).astype(np.int32)
-        l = np.array(cif_dict['_refln.index_l']).astype(np.float).astype(np.int32)
+
+        if '_refln.index_h' in cif_dict.keys():
+            sf = '.'
+        else:
+            sf = '_'
+
+        h = np.array(cif_dict[f'_refln{sf}index_h']).astype(np.float).astype(np.int32)
+        k = np.array(cif_dict[f'_refln{sf}index_k']).astype(np.float).astype(np.int32)
+        l = np.array(cif_dict[f'_refln{sf}index_l']).astype(np.float).astype(np.int32)
 
 
-        inten_keys = ['_refln.intensity_meas', '_refln.f_squared_meas', '_refln.f_meas_au' ]
+        inten_keys = [f'_refln{sf}intensity_meas', f'_refln{sf}f_squared_meas', f'_refln{sf}f_meas_au' ]
 
         I=None
         for inten_key, inten_pw in zip(inten_keys, [1,1,2]):
@@ -158,8 +134,6 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
         # apply symmetry to generate all bragg points
         asym_refl = np.array([h, k, l, I]).T
-        # loc = np.where(asym_refl[:, -1] >= 0)
-        # asym_refl = asym_refl[loc]
 
         if skip_sym:
             sym_refl = asym_refl
@@ -167,35 +141,35 @@ class CifData(CifDataProperties, CifDataSaveLoad):
             sym_refl = apply_sym(asym_refl, self.spg)
 
 
+        # Fill missing bragg indices 
         if fill_peaks:
-            # Fill missing bragg indices 
+            # max bragg index for hkl
             h_max = np.max(np.abs(sym_refl[:,0]))
             k_max = np.max(np.abs(sym_refl[:,1]))
             l_max = np.max(np.abs(sym_refl[:,2]))
 
+            # ranges of hkl
             ast_ite = np.arange(-h_max, h_max+1)
             bst_ite = np.arange(-k_max, k_max+1)
             cst_ite = np.arange(-l_max, l_max+1)
 
+            #3D cube of bragg points 
             all_bragg_xyz = np.array(list(itertools.product( ast_ite, bst_ite, cst_ite)))
             loc_000 = np.all(all_bragg_xyz == 0, axis=1)  # remove 000 reflection
             all_bragg_xyz = all_bragg_xyz[~loc_000]
 
 
+            # init list of bragg reflections
             self._scat_bragg = np.zeros( (all_bragg_xyz.shape[0], 4))
-            for i, bragg_pt in enumerate(all_bragg_xyz):
-                self._scat_bragg[i,:-1] = bragg_pt
-                loc = np.where( (sym_refl[:,:-1]==bragg_pt).all(axis=1))[0]
-                if len(loc)==1:
-                    self._scat_bragg[i,-1] = sym_refl[loc,-1]
+            for i, bragg_pt in enumerate(all_bragg_xyz):    #for each bragg reflection
+                self._scat_bragg[i,:-1] = bragg_pt          #fill hkl
+                loc = np.where( (sym_refl[:,:-1]==bragg_pt).all(axis=1))[0] #find reflection in original list
+                if len(loc)==1: #if reflection is in the original list
+                    self._scat_bragg[i,-1] = sym_refl[loc,-1] #add intensity of original list
 
 
         else:
             self._scat_bragg = sym_refl
-
-
-
-
 
 
 
@@ -213,19 +187,12 @@ class CifData(CifDataProperties, CifDataSaveLoad):
         self._scat_sph[:, -1] = self.scat_bragg[:,-1]
 
 
-        inten_loc = np.where(self._scat_sph[:,-1]>0)[0]
-        inten_qmax = self._scat_sph[inten_loc,0].max()
-
-
-        # # qmax=12.5
-        # # if qmax is not None:
-            # # qmax = min(qmax, inten_qmax)
-        # # else:
-            # # qmax = inten_qmax
+        inten_loc = np.where(self._scat_sph[:,-1]>0)[0] #positions that have intensity
+        inten_qmax = self._scat_sph[inten_loc,0].max() #maximum q value of the positions with intensity
 
 
         if qmax is None:
-            qmax= inten_qmax
+            qmax = inten_qmax
 
 
         loc = np.where(self.scat_sph[:, 0] <= qmax)
@@ -264,7 +231,7 @@ class CifData(CifDataProperties, CifDataSaveLoad):
     def fill_from_hkl(self, path, qmax=None, skip_sym=False, fill_peaks=False):
 
         hklI = np.genfromtxt(path, skip_header=0, usecols=(0,1,2,3))
-
+        ## to do: rather then read cols, should read %4d%4d%4d%8.2f%8.2f for fortran
 
         cif_dict = {}
         cif_dict['_refln.index_h'] =  hklI[:,0]
@@ -273,9 +240,6 @@ class CifData(CifDataProperties, CifDataSaveLoad):
         cif_dict['_refln.intensity_meas'] = hklI[:,-1]
 
         self._calc_scat(cif_dict, qmax=qmax, skip_sym=skip_sym, fill_peaks=fill_peaks)
-
-
-
 
 
 
@@ -331,20 +295,6 @@ class CifData(CifDataProperties, CifDataSaveLoad):
         cif_dict['_refln.intensity_meas'] = I
 
         self._calc_scat(cif_dict, qmax=sphv.qmax, skip_sym=True, fill_peaks=False)
-
-    def save_hkl(self, path):
-
-
-        f = open(path, 'w')
-
-        for bragg_pt in self.scat_bragg:
-
-            line = '%4d%4d%4d%8.2f%8.2f\n' % (round(bragg_pt[0]), round(bragg_pt[1]), round(bragg_pt[2]), bragg_pt[3], 0)
-
-            f.write(line)
-        f.write('   0   0   0       0       0       0       0')
-        f.close()
-
 
 
 

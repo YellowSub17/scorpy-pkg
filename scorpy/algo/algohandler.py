@@ -23,14 +23,15 @@ from ..iqlm.iqlmhandler import IqlmHandler
 
 from ..utils.env import DATADIR
 import os
+import shutil
 
 
-class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerProps, AlgoHandlerRunRecon, AlgoHandlerSetupRecon, AlgoHandlerPostRecon):
+class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerProps, AlgoHandlerRunRecon, AlgoHandlerSetupRecon, AlgoHandlerPostRecon, AlgoHandlerPlot):
 
 
     def __init__(self, tag, path=None, nq=256, qmax=None, npsi=360*32, nl=180, lcrop=45,
                  dxsupp=2, pinv_rcond=0.1, eig_rcond=1e-15, lossy_iqlm=True, lossy_sphv=True,
-                 rotk=[1,1,1], rottheta=np.radians(30)):
+                 rotk=[1,1,1], rottheta=np.radians(30), overwrite=0):
 
 
         self.tag = tag
@@ -39,24 +40,48 @@ class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerProps, Alg
             path = f'{DATADIR}/algo/'
         self.path = f'{path}/{tag}'
 
+        self.nq = nq
+        self.qmax = qmax
+        self.npsi = npsi
+        self.nl = nl
+        self.lcrop = lcrop
+        self.dxsupp = dxsupp
+        self.pinv_rcond = pinv_rcond
+        self.eig_rcond = eig_rcond
+        self.lossy_iqlm = lossy_iqlm
+        self.lossy_sphv = lossy_sphv
+        self.rotk = rotk
+        self.rottheta = rottheta
+
+
 
         if not os.path.exists(self.path):
             os.mkdir(f'{self.path}')
-            self.nq = nq
-            self.qmax = qmax
-            self.npsi = npsi
-            self.nl = nl
-            self.lcrop = lcrop
-            self.dxsupp = dxsupp
-            self.pinv_rcond = pinv_rcond
-            self.eig_rcond = eig_rcond
-            self.lossy_iqlm = lossy_iqlm
-            self.lossy_sphv = lossy_sphv
-            self.rotk = rotk
-            self.rottheta = rottheta
             self.save_params()
+            return
+
+        elif os.path.exists(self.path) and overwrite==2:
+            shutil.rmtree(f'{self.path}')
+            os.mkdir(f'{self.path}')
+            self.save_params()
+            return
+
+        elif os.path.exists(self.path) and overwrite==1:
+            print(f'Algo path {self.path} exists. Overwrite? (y/n)')
+            query = input('>> ')
+            if query=='y':
+                shutil.rmtree(f'{self.path}')
+                os.mkdir(f'{self.path}')
+                self.save_params()
+                return
+            else:
+                self.load_params()
+
         else:
             self.load_params()
+
+
+
 
 
 

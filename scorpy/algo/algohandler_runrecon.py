@@ -23,12 +23,10 @@ class AlgoHandlerRunRecon:
 
 
 
-
-
     @verbose_dec
     def run_recon(self, sub_tag, recipe, sphv_init=None, verbose=0):
-        print('Running Recon')
-        print(f'Time started: {time.asctime()}')
+        print(f'Running Recon {self.tag}_{sub_tag}')
+        print(f'Started: {time.asctime()}')
 
         assert os.path.exists(f'{self.path}/blqq_{self.tag}_data.dbin'), "Data BlqqVol not saved to algo folder"
         self.blqq = BlqqVol(path=f'{self.path}/blqq_{self.tag}_data.dbin')
@@ -83,7 +81,6 @@ class AlgoHandlerRunRecon:
             self.sphv_iter = self.sphv_base.copy()
             self.sphv_iter.vol = np.random.random(self.sphv_iter.vol.shape)
 
-        self.iqlm_iter = self.iqlm_base.copy()
 
 
 
@@ -91,12 +88,10 @@ class AlgoHandlerRunRecon:
 
 
         self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_init.dbin')
-        self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_final.dbin')
-        self.integrate_final(sub_tag)
-        cif_integrated = CifData(f'{self.path}/{sub_tag}/{self.tag}_{sub_tag}_final-sf.cif', rotk=self.rotk, rottheta=self.rottheta)
-        cif_integrated.scat_bragg[:,-1] /=np.max(cif_integrated.scat_bragg[:,-1])
-        cif_integrated.scat_bragg[:,-1] *=9999.99
-        cif_integrated.save_hkl(f'{self.path}/{sub_tag}/hkls/{self.tag}_{sub_tag}_count_0.hkl')
+
+#         self.integrate_final(sub_tag)
+        # cif_integrated = CifData(f'{self.path}/{sub_tag}/{self.tag}_{sub_tag}_final-sf.cif', rotk=self.rotk, rottheta=self.rottheta)
+        # cif_integrated.save_hkl(f'{self.path}/{sub_tag}/hkls/{self.tag}_{sub_tag}_count_0.hkl')
 
 
 
@@ -122,18 +117,23 @@ class AlgoHandlerRunRecon:
             for iter_num in range(niter):
                 print(f'{iter_num}', end='\r')
 
+
+                # self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_iter.dbin')
+                self.sphv_iter.save(self.sphv_iter_path(sub_tag))
+                self.integrate_iter(sub_tag)
+
+                # cif_integrated = CifData(self.cif_targ_path(), rotk=self.rotk, rottheta=self.rottheta)
+
                 _,_, step = scheme(**kwargs)
                 count +=1
 
-                self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_final.dbin')
 
-                self.integrate_final(sub_tag)
 
-                cif_integrated = CifData(f'{self.path}/{sub_tag}/{self.tag}_{sub_tag}_final-sf.cif', rotk=self.rotk, rottheta=self.rottheta)
-                cif_integrated.scat_bragg[:,-1] /=np.max(cif_integrated.scat_bragg[:,-1])
-                cif_integrated.scat_bragg[:,-1] *=9999.99
 
-                cif_integrated.save_hkl(f'{self.path}/{sub_tag}/hkls/{self.tag}_{sub_tag}_count_{count}.hkl')
+        # self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_iter.dbin')
+        self.sphv_iter.save(self.sphv_iter_path(sub_tag))
+        self.integrate_iter(sub_tag)
+        cif_integrated = CifData(self.cif_targ_path(), rotk=self.rotk, rottheta=self.rottheta)
 
 
 
@@ -141,13 +141,28 @@ class AlgoHandlerRunRecon:
 
 
 
+        print(f'Finished: {time.asctime()}')
 
 
-        self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_final.dbin')
-
-        print(f'Time Finished: {time.asctime()}')
 
 
+
+
+
+
+
+
+    def integrate_iter(self,sub_tag):
+
+        sphv_supp_tight = SphericalVol(path=self.sphv_supp_tight_path())
+        sphv_integrated = SphericalVol(path=self.sphv_iter_path(sub_tag))
+        sphv_integrated.integrate_peaks(sphv_supp_tight, self.dxsupp)
+        sphv_integrated.save(self.sphv_final_path(sub_tag))
+
+        cif_integrated = CifData(self.cif_targ_path(), rotk=self.rotk, rottheta=self.rottheta)
+        cif_integrated.fill_from_sphv(sphv_integrated)
+        cif_integrated.save(self.cif_final_path(sub_tag))
+        cif_integrated.save_hkl(self.hkl_count_path(sub_tag, count=None))
 
 
 

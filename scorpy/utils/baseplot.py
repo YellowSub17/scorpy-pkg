@@ -92,7 +92,6 @@ class BasePlot:
             vmax = im.max()
 
 
-        # why is colorbar incorrect when min=max?
         if vmax==vmin:
             kwargs['cb']=False
 
@@ -111,4 +110,80 @@ class BasePlot:
 
         if kwargs['save'] is not None:
             plt.savefig(kwargs['save'])
- 
+
+
+
+
+
+    def _plot_2D_scatter(self, x,y,z=None, **new_kwargs):
+        kwargs ={
+                    'fig':None,
+                    'axes':None,
+                    'xlabel':'',
+                    'ylabel':'',
+                    'title':'',
+                    'save':'',
+                    'plot_xy':True,
+
+                }
+
+        kwargs.update(new_kwargs)
+
+        # Make figure if none given
+        if kwargs['fig'] is None:
+            kwargs['fig'] = plt.figure()
+            kwargs['axes'] = plt.gca()
+
+        kwargs['axes'].scatter(x,y)
+
+        if kwargs['plot_xy']:
+            kwargs['axes'].plot([0,x.max()],[0, x.max()])
+
+        kwargs['axes'].set_title(kwargs['title'])
+        kwargs['axes'].set_xlabel(kwargs['xlabel'])
+        kwargs['axes'].set_ylabel(kwargs['ylabel'])
+
+        if kwargs['save'] is not None:
+            plt.savefig(kwargs['save'])
+
+
+
+
+    def _plot_errorbar(self, x,y, xerr=None,yerr=None, **new_kwargs):
+
+        kwargs ={
+                    'fig':None,
+                    'axes':None,
+                    'cmap':'viridis',
+                    'cb':True,
+                    'xlabel':'',
+                    'ylabel':'',
+                    'title':'',
+                    'save':'',
+                    'label':'',
+                    'marker':'.',
+                    'linestyle': '',
+                    'color':(0,0,0),
+                }
+
+        kwargs.update(new_kwargs)
+
+        # Make figure if none given
+        if kwargs['fig'] is None:
+            kwargs['fig'] = plt.figure()
+            kwargs['axes'] = plt.gca()
+
+        kwargs['axes'].errorbar(x,y,xerr=xerr, yerr=yerr, marker=kwargs["marker"], linestyle=kwargs["linestyle"], label=kwargs['label'], color=kwargs['color'])
+
+        kwargs['axes'].set_title(kwargs['title'])
+        kwargs['axes'].set_xlabel(kwargs['xlabel'])
+        kwargs['axes'].set_ylabel(kwargs['ylabel'])
+
+        if kwargs['save'] is not None:
+            plt.savefig(kwargs['save'])
+
+
+
+
+
+

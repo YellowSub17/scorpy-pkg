@@ -28,7 +28,10 @@ class BaseVolSaveLoad:
 
 
         config = cfp.ConfigParser()
-        config.read(f'{parent}/{stem}.log')
+        # config.read(f'{parent}/{stem}.log')
+
+        log_path = Path(f'{parent}/{stem}.log')
+        config.read(str(log_path))
 
 
         self._nx = int(config['vol']['nx'])

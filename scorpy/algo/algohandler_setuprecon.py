@@ -23,8 +23,6 @@ class AlgoHandlerSetupRecon:
 
 
 
-
-
     @verbose_dec
     def make_target(self, ciffname, insfname=None, verbose=0):
 
@@ -42,48 +40,103 @@ class AlgoHandlerSetupRecon:
         if insfname is not None:
             shutil.copyfile(insfname, f'{self.path}/{self.tag}.ins')
 
-
-
         self.save_params()
 
 
 
-
-
     @verbose_dec
-    def make_support(self, ciffname, verbose=0):
+    def make_support(self, ciffname, verbose=0, unit=True):
         print('Making Support')
-
-        # assert not os.path.exists(f'{self.path}/sphv_{self.tag}_supp.dbin'), "Support SphericalVol already in folder"
-        # assert not os.path.exists(f'{self.path}/{self.tag}_supp-sf.cif'), "Support cif already in folder"
 
         assert self.qmax is not None, "Cannot make support, qmax required"
 
         cif_supp = CifData(ciffname, rotk=self.rotk, rottheta=self.rottheta)
-        sphv_supp = SphericalVol(nq=self.nq, ntheta=self.nl*2, nphi=self.nl*4, qmax=self.qmax)
-        sphv_supp.vol+=1
-        cif_supp.fill_from_sphv(sphv_supp)
-        sphv_supp.vol*=0
-        sphv_supp.fill_from_cif(cif_supp)
+        sphv_supp_tight = SphericalVol(nq=self.nq, ntheta=self.nl*2, nphi=self.nl*4, qmax=self.qmax)
+        sphv_supp_tight.vol+=1
+        cif_supp.fill_from_sphv(sphv_supp_tight)
+        sphv_supp_tight.vol*=0
+        sphv_supp_tight.fill_from_cif(cif_supp)
 
-        sphv_supp.save(f'{self.path}/sphv_{self.tag}_supp_tight.dbin')
+        # sphv_supp_tight.save(f'{self.path}/sphv_{self.tag}_supp_tight.dbin')
+        sphv_supp_tight.save(self.sphv_supp_tight_path())
 
-        for pti in sphv_supp.ls_pts(inds=True):
+
+        sphv_supp_loose = sphv_supp_tight.copy()
+        sphv_supp_loose.vol *=0
+
+        for pti in sphv_supp_tight.ls_pts(inds=True):
             xul = int(pti[0]-self.dxsupp), int(pti[0]+self.dxsupp+1)
             yul = int(pti[1]-self.dxsupp), int(pti[1]+self.dxsupp+1)
             zul = int(pti[2]-self.dxsupp), int(pti[2]+self.dxsupp+1)
 
-            sphv_supp.vol[xul[0]:xul[1], yul[0]:yul[1], zul[0]:zul[1]] = 1
+            sphv_supp_loose.vol[xul[0]:xul[1], yul[0]:yul[1], zul[0]:zul[1]] += 1
 
             #wrap support around phi axis
-            if zul[1]>sphv_supp.nz:
-                sphv_supp.vol[xul[0]:xul[1], yul[0]:yul[1], 0:zul[1]-sphv_supp.nz] = 1
+            if zul[1]>sphv_supp_loose.nz:
+                sphv_supp_loose.vol[xul[0]:xul[1], yul[0]:yul[1], 0:zul[1]-sphv_supp_loose.nz] += 1
 
             if zul[0]<0:
-                sphv_supp.vol[xul[0]:xul[1], yul[0]:yul[1], zul[0]:] = 1
-                sphv_supp.vol[xul[0]:xul[1], yul[0]:yul[1], 0:zul[1]] = 1
+                sphv_supp_loose.vol[xul[0]:xul[1], yul[0]:yul[1], zul[0]:] += 1
+                sphv_supp_loose.vol[xul[0]:xul[1], yul[0]:yul[1], 0:zul[1]] += 1
 
-        sphv_supp.save(f'{self.path}/sphv_{self.tag}_supp_loose.dbin')
+        overlaps = np.where(sphv_supp_loose.vol>1)
+        if len(overlaps[0])>0:
+            print('OVERLAP IN SUPPORT')
+
+        if unit:
+            sphv_supp_loose.make_mask()
+
+        # sphv_supp_loose.save(f'{self.path}/sphv_{self.tag}_supp_loose.dbin')
+        sphv_supp_loose.save(self.sphv_supp_loose_path())
+
+
+
+
+
+
+
+    # # @verbose_dec
+    # def check_support_overlap(self, ciffname, verbose=0, boundry=0):
+        # print('Checking Support')
+        # assert self.qmax is not None, "Cannot make support, qmax required"
+
+        # cif_supp = CifData(ciffname, rotk=self.rotk, rottheta=self.rottheta)
+        # sphv_supp_tight = SphericalVol(nq=self.nq, ntheta=self.nl*2, nphi=self.nl*4, qmax=self.qmax)
+        # sphv_supp_tight.vol+=1
+        # cif_supp.fill_from_sphv(sphv_supp_tight)
+        # sphv_supp_tight.vol*=0
+        # sphv_supp_tight.fill_from_cif(cif_supp)
+
+        # # sphv_supp_tight.save(f'{self.path}/sphv_{self.tag}_supp_tight.dbin')
+        # sphv_supp_loose = sphv_supp_tight.copy()
+        # sphv_supp_loose.vol *=0
+
+        # for pti in sphv_supp_tight.ls_pts(inds=True):
+            # xul = int(pti[0]-self.dxsupp-boundry), int(pti[0]+self.dxsupp+1+boundry)
+            # yul = int(pti[1]-self.dxsupp-boundry), int(pti[1]+self.dxsupp+1+boundry)
+            # zul = int(pti[2]-self.dxsupp-boundry), int(pti[2]+self.dxsupp+1+boundry)
+
+            # sphv_supp_loose.vol[xul[0]:xul[1], yul[0]:yul[1], zul[0]:zul[1]] += 1
+
+            # #wrap support around phi axis
+            # if zul[1]>sphv_supp_loose.nz:
+                # sphv_supp_loose.vol[xul[0]:xul[1], yul[0]:yul[1], 0:zul[1]-sphv_supp_loose.nz] += 1
+
+            # if zul[0]<0:
+                # sphv_supp_loose.vol[xul[0]:xul[1], yul[0]:yul[1], zul[0]:] += 1
+                # sphv_supp_loose.vol[xul[0]:xul[1], yul[0]:yul[1], 0:zul[1]] += 1
+
+        # overlaps = np.where(sphv_supp_loose.vol>1)
+        # return overlaps
+        # # print('o', overlaps)
+        # if len(overlaps[0])>0:
+            # print('OVERLAP IN SUPPORT')
+
+
+
+
+
+
 
 
     @verbose_dec

@@ -67,7 +67,7 @@ class CorrelationVolFill:
 
         print('############')
         print(f'Filling CorrelationVol from Peakdata via {method}.')
-        print(f'Correlation started: {time.asctime()}\n')
+        print(f'Started: {time.asctime()}\n')
 
         if method=='scat_pol':
             for i, frame in enumerate(frames):
@@ -81,7 +81,7 @@ class CorrelationVolFill:
                 self.correlate_scat_sph(frame.scat_sph[:,1:])
                 print('\x1b[2A\x1b[2K', end='\n')
 
-        print(f'Correlation ended: {time.asctime()}')
+        print(f'Finished: {time.asctime()}')
         print('############')
 
 
