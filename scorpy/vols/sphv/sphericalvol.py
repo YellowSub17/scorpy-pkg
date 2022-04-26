@@ -7,10 +7,12 @@ import time
 from ..base.basevol import BaseVol
 from ...utils.utils import index_x
 from .sphericalvol_props import SphericalVolProps
+from .sphericalvol_plot import SphericalVolPlot
+from .sphericalvol_saveload import SphericalVolSaveLoad
 
 
 
-class SphericalVol(BaseVol, SphericalVolProps):
+class SphericalVol(BaseVol, SphericalVolProps, SphericalVolPlot, SphericalVolSaveLoad):
     """scorpy.SphericalVol:
     A representaion of the spherical coordinate function.
     Attributes:

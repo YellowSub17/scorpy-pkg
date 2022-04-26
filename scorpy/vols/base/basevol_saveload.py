@@ -11,27 +11,14 @@ class BaseVolSaveLoad:
 
 
     def _read_log(self, fpath):
-        '''
-	scorpy.Vol._load(path):
-            Loads a Vol object from dbin and log file.
-        Arguments:
-            path : str
-                path to files to be loaded. The filename should exclude filetype.
-        '''
-        assert type(fpath) == str, 'Argument fpath must be string'
-        path = Path(fpath)
 
 
-        parent = path.parent
-        stem = path.stem
-        ftype = path.suffix
+        fpath = Path(fpath)
 
+        logpath = Path(fpath.parent) / f'{fpath.stem}.log'
 
         config = cfp.ConfigParser()
-        # config.read(f'{parent}/{stem}.log')
-
-        log_path = Path(f'{parent}/{stem}.log')
-        config.read(str(log_path))
+        config.read(logpath)
 
 
         self._nx = int(config['vol']['nx'])
@@ -55,74 +42,55 @@ class BaseVolSaveLoad:
 
     def _load(self, fpath, logpath=None):
 
-        assert type(fpath) == str, 'Argument fpath must be string'
-        path = Path(fpath)
+        fpath = Path(fpath)
 
-        assert path.is_file(), f'File {path} not found'
-
-        parent = path.parent
-        stem = path.stem
-        ftype = path.suffix
-
+        assert fpath.is_file(), f'File {fpath} not found'
 
         if logpath is None:
             self._read_log(fpath)
         else:
             self._read_log(logpath)
 
-        if ftype =='.dbin':
+
+
+        if fpath.suffix =='.dbin':
 
             if self.comp:
-                file_vol = np.fromfile(f'{parent}/{stem}.dbin', dtype=np.complex64)
+                file_vol = np.fromfile(fpath, dtype=np.complex64)
             else:
-                file_vol = np.fromfile(f'{parent}/{stem}.dbin')
+                file_vol = np.fromfile(fpath)
 
 
             self._vol = file_vol.reshape((self.nx, self.ny, self.nz))
-        elif ftype =='.npy':
-            self._vol = np.load(f'{parent}/{stem}.npy')
+        elif fpath.suffix =='.npy':
+            self._vol = np.load(fpath)
 
 
 
 
     def save(self, fpath):
-        """
-        scorpy.Vol.save(path):
-            Save the current Vol to a dbin/npy/h5 array and log file.
-        Arguments:
-            path: path of the save location with file tag. The filename should exclude filetype.
-        """
+
+        fpath = Path(fpath)
 
 
-        path = Path(fpath)
-
-        parent = path.parent
-        stem = path.stem
-        ftype = path.suffix
-
-        assert path.suffix != '', 'Path now requires file type (npy or dbin)'
-
-        if path.suffix == '.dbin':
-            # write dbin
+        if fpath.suffix == '.dbin':
             flat_vol = self.vol.flatten()
-            flat_vol.tofile(f'{path.parent}/{path.stem}.dbin')
+            flat_vol.tofile(fpath)
 
-        if path.suffix == '.npy':
-            np.save(f'{path.parent}/{path.stem}.npy', self.vol)
+        elif fpath.suffix == '.npy':
+            np.save(fpath, self.vol)
         
         self.write_log(fpath)
 
     def write_log(self, fpath):
 
-        path = Path(fpath)
+        fpath = Path(fpath)
 
-        parent = path.parent
-        stem = path.stem
-        ftype = path.suffix
 
+        logpath = Path(fpath.parent) / f'{fpath.stem}.log'
 
         # write log
-        f = open(f'{parent}/{stem}.log', 'w')
+        f = open(logpath, 'w')
         f.write('##Scorpy Vol Config File\n')
         f.write(f'## Created: {datetime.now().strftime("%Y/%m/%d %H:%M")}\n\n')
         f.write('[vol]\n')
@@ -151,23 +119,11 @@ class BaseVolSaveLoad:
 
 
     def _save_extra(self, f):
-        """
-        scorpy.Vol._save_extra(f):
-            Used by children classes to save extra information to log files.
-        Arguments:
-            f : _io.TestIOWrapper
-                file object of log file, to write extra info.
-        """
+
         pass
 
     def _load_extra(self, config):
-        """
-        scorpy.Vol._load_extra(f):
-            Used by children classes to load extra information from log files.
-        Arguments:
-            config : configparser.Configparser
-                configparser object to load extra information from.
-        """
+
         pass
 
 

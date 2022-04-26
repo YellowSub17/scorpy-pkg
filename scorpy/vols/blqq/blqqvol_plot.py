@@ -1,6 +1,6 @@
 
 
-from ..utils.baseplot import BasePlot
+from ...utils.baseplot import BasePlot
 
 
 class BlqqVolPlot(BasePlot):

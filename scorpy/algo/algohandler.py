@@ -11,7 +11,7 @@ from datetime import datetime
 from .algohandler_operators import AlgoHandlerOperators
 from .algohandler_schemes import AlgoHandlerSchemes
 from .algohandler_plot import AlgoHandlerPlot
-from .algohandler_props import AlgoHandlerProps
+from .algohandler_paths import AlgoHandlerPaths
 from .algohandler_runrecon import AlgoHandlerRunRecon
 from .algohandler_setuprecon import AlgoHandlerSetupRecon
 from .algohandler_postrecon import AlgoHandlerPostRecon
@@ -24,9 +24,10 @@ from ..iqlm.iqlmhandler import IqlmHandler
 from ..utils.env import DATADIR
 import os
 import shutil
+from pathlib import Path
 
 
-class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerProps, AlgoHandlerRunRecon, AlgoHandlerSetupRecon, AlgoHandlerPostRecon, AlgoHandlerPlot):
+class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerPaths, AlgoHandlerRunRecon, AlgoHandlerSetupRecon, AlgoHandlerPostRecon, AlgoHandlerPlot):
 
 
     def __init__(self, tag, path=None, nq=256, qmax=None, npsi=360*32, nl=180, lcrop=45,
@@ -37,8 +38,8 @@ class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerProps, Alg
         self.tag = tag
 
         if path is None:
-            path = f'{DATADIR}/algo/'
-        self.path = f'{path}/{tag}'
+            path = DATADIR / 'algo'
+        self.path = path / tag
 
         self.nq = nq
         self.qmax = qmax

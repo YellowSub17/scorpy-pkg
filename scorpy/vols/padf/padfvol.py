@@ -5,14 +5,16 @@ import numpy as np
 from ..base.basevol import BaseVol
 from ..corr.correlationvol import CorrelationVol
 from .padfvol_props import PadfVolProps
-from ...utils.env import PADF_PADF
+from .padfvol_plot import PadfVolPlot
+from .padfvol_saveload import PadfVolSaveLoad
+from ...utils.env import PADFDIR
 
 
 
 
 
 
-class PadfVol(BaseVol, PadfVolProps):
+class PadfVol(BaseVol, PadfVolProps, PadfVolPlot, PadfVolSaveLoad):
 
     def __init__(self, nr=100, npsi=180, rmax=5, nl=10, wavelength=1.33, path=None):
 
@@ -27,21 +29,7 @@ class PadfVol(BaseVol, PadfVolProps):
 
         self.plot_r1r2 = self.plot_xy
 
-    def _save_extra(self, f):
-        f.write('[padf]\n')
-        f.write(f'rmax = {self.rmax}\n')
-        f.write(f'psimax = {np.pi}\n')
-        f.write(f'nr = {self.nr}\n')
-        f.write(f'npsi = {self.npsi}\n')
-        f.write(f'dr = {self.dr}\n')
-        f.write(f'dpsi = {self.dpsi}\n')
-        f.write(f'nl = {self.nl}\n')
-        f.write(f'wavelength = {self.wavelength}\n')
 
-    def _load_extra(self, config):
-
-        self._nl = float(config['padf']['nl'])
-        self._wavelength = float(config['padf']['wavelength'])
 
     def fill_from_corr(self, corr, log='/tmp/padf.log', theta0=True):
 
@@ -54,8 +42,7 @@ class PadfVol(BaseVol, PadfVolProps):
         corr.save('/tmp/padf/corr.dbin')
 
 
-        padf_config = open(f'{scorpy.PADFDIR}config.txt', 'w')
-        
+        padf_config = open(f'{PADFDIR}config.txt', 'w')
         padf_config.write(f'correlationfile = /tmp/padf/corr.dbin\n\n')
 
         padf_config.write('outpath = /tmp/padf\n\n')
@@ -73,7 +60,7 @@ class PadfVol(BaseVol, PadfVolProps):
 
         padf_config.close()
 
-        cmd = f'{scorpy.PADFDIR}padf {scorpy.PADFDIR}config.txt'
+        cmd = f'{PADFDIR}padf {PADFDIR}config.txt'
 
         if log is None:
             os.system(cmd)
