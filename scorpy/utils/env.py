@@ -14,7 +14,7 @@ if sys.platform =='linux':
 
 elif sys.platform =='win32':
     SCORPYDIR = Path('C:\\Users\\s3826109\\Documents\\scorpy-comp')
-    DATADIR = SCORPYDIR / 'data'
+    DATADIR = Path('C:\\Users\\s3826109\\Documents\\scorpy-data')
     PADFDIR = Path('NO\\WINDOWS\\PATH\\FOR\\PADF')
 
 
