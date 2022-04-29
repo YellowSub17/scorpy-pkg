@@ -9,7 +9,8 @@ from .peakdata_props import PeakDataProperties
 from .peakdata_plot import PeakDataPlot
 
 
-DEFAULT_GEOM = ExpGeom(f'{DATADIR}/geoms/agipd_2304_vj_opt_v4.geom')
+
+DEFAULT_GEOM = ExpGeom(DATADIR /"geoms"/"agipd_2304_vj_opt_v4.geom")
 
 class PeakData(PeakDataProperties, PeakDataPlot):
 
