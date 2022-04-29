@@ -123,7 +123,7 @@ class BasePlot:
                 'xlabel':'',
                 'ylabel':'',
                 'title':'',
-                'save':'',
+                'save':None,
                 'label':'',
                 'marker':'.',
                 'linestyle': '',

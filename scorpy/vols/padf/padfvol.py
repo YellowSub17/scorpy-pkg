@@ -1,5 +1,6 @@
 
 import os
+import shutil
 import numpy as np
 
 from ..base.basevol import BaseVol
@@ -18,6 +19,7 @@ class PadfVol(BaseVol, PadfVolProps, PadfVolPlot, PadfVolSaveLoad):
 
     def __init__(self, nr=100, npsi=180, rmax=5, nl=10, wavelength=1.33, path=None):
 
+
         self._nl = nl
         self._wavelength = wavelength
 
@@ -34,20 +36,25 @@ class PadfVol(BaseVol, PadfVolProps, PadfVolPlot, PadfVolSaveLoad):
     def fill_from_corr(self, corr, log='/tmp/padf.log', theta0=True):
 
 
-        os.system('rm -rf /tmp/padf')
-        os.system('mkdir /tmp/padf')
+        # os.system('rm -rf /tmp/padf')
+        # os.system('mkdir /tmp/padf')
+
+        if os.path.exists('/tmp/padf/'):
+            shutil.rmtree('/tmp/padf')
+        os.mkdir('/tmp/padf')
 
         if not theta0:
             corr.vol[:,:,0] = 0
         corr.save('/tmp/padf/corr.dbin')
 
 
-        padf_config = open(f'{PADFDIR}config.txt', 'w')
+        padf_config = open(f'{PADFDIR}/config.txt', 'w')
         padf_config.write(f'correlationfile = /tmp/padf/corr.dbin\n\n')
 
         padf_config.write('outpath = /tmp/padf\n\n')
         padf_config.write(f'wavelength = {self.wavelength*1e-10}\n\n')
         padf_config.write(f'nl = {self.nl}\n\n')
+        print('xxxxxxxxx', self.nl)
         padf_config.write('tag = bingbong\n\n')
 
         padf_config.write(f'qmax = {float(corr.qmax)/1e-10}\n\n')
@@ -60,7 +67,9 @@ class PadfVol(BaseVol, PadfVolProps, PadfVolPlot, PadfVolSaveLoad):
 
         padf_config.close()
 
-        cmd = f'{PADFDIR}padf {PADFDIR}config.txt'
+        cmd = f'{PADFDIR}/padf {PADFDIR}/config.txt'
+
+
 
         if log is None:
             os.system(cmd)
