@@ -55,6 +55,12 @@ class AlgoHandlerPaths:
             count = len(os.listdir(self.hkls_path(sub_tag))) + count
         return self.hkls_path(sub_tag) / f'{self.tag}_{sub_tag}_count_{count}.hkl'
 
+    def rfs_shelx_path(self, sub_tag):
+        return self.path / f'{sub_tag}' / 'shelx' / f'{self.tag}_{sub_tag}_shelx_rfs.npy'
+
+    def rfs_inten_path(self, sub_tag):
+        return self.path / f'{sub_tag}' / f'{self.tag}_{sub_tag}_inten_rfs.npy'
+
 
 
 

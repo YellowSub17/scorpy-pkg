@@ -15,7 +15,7 @@ from .cifdata_saveload import CifDataSaveLoad
 
 class CifData(CifDataProperties, CifDataSaveLoad):
 
-    def __init__(self,path, qmax=None, fill_peaks=False, rotk=None, rottheta=None, skip_sym=False ):
+    def __init__(self,path, qmax=None, fill_peaks=False, rotk=None, rottheta=None, skip_sym=False):
 
 
 
@@ -135,10 +135,17 @@ class CifData(CifDataProperties, CifDataSaveLoad):
         # apply symmetry to generate all bragg points
         asym_refl = np.array([h, k, l, I]).T
 
+
         if skip_sym:
             sym_refl = asym_refl
+            # remove 000 reflections
+            loc_000 = np.all(sym_refl[:, :3] == 0, axis=1)
+            sym_refl = sym_refl[~loc_000]
+            # get unique reflections
+            sym_refl = np.unique(sym_refl, axis=0)
         else:
             sym_refl = apply_sym(asym_refl, self.spg)
+
 
 
         # Fill missing bragg indices 
@@ -187,12 +194,14 @@ class CifData(CifDataProperties, CifDataSaveLoad):
         self._scat_sph[:, -1] = self.scat_bragg[:,-1]
 
 
-        inten_loc = np.where(self._scat_sph[:,-1]>0)[0] #positions that have intensity
+        inten_loc = np.where(self._scat_sph[:,-1] != 0)[0] #positions that have intensity
         inten_qmax = self._scat_sph[inten_loc,0].max() #maximum q value of the positions with intensity
 
 
+        
         if qmax is None:
             qmax = inten_qmax
+
 
 
         loc = np.where(self.scat_sph[:, 0] <= qmax)
@@ -230,18 +239,30 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
     def fill_from_hkl(self, path, qmax=None, skip_sym=False, fill_peaks=False):
 
-        hklI = np.genfromtxt(path, skip_header=0, usecols=(0,1,2,3))
+        hklI = np.genfromtxt(path, skip_header=0, usecols=(0,1,2,3), skip_footer=1)
         ## to do: rather then read cols, should read %4d%4d%4d%8.2f%8.2f for fortran
 
+        hs = []
+        ks = []
+        ls = []
+        Is = []
+
+        f = open(path, 'r')
+        for line in f:
+            hs.append(int(line[:4]))
+            ks.append(int(line[4:8]))
+            ls.append(int(line[8:12]))
+            Is.append(float(line[12:20]))
+        f.close()
+
+
         cif_dict = {}
-        cif_dict['_refln.index_h'] =  hklI[:,0]
-        cif_dict['_refln.index_k'] =  hklI[:,1]
-        cif_dict['_refln.index_l'] =  hklI[:,2]
-        cif_dict['_refln.intensity_meas'] = hklI[:,-1]
+        cif_dict['_refln.index_h'] = hs
+        cif_dict['_refln.index_k'] =  ks
+        cif_dict['_refln.index_l'] =  ls
+        cif_dict['_refln.intensity_meas'] = Is
 
         self._calc_scat(cif_dict, qmax=qmax, skip_sym=skip_sym, fill_peaks=fill_peaks)
-
-
 
 
 
