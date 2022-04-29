@@ -11,12 +11,13 @@ import sys
 
 
 
-tag = f'agno3-rec'
+tag = f'agno3-d05'
+recipe_path = scorpy.DATADIR / 'algo'/ 'RECIPES' / 'HIO120.txt'
 a = scorpy.AlgoHandler(tag)
 
-rec_fname = sys.argv[1]
-a.check_inputs()
-a.run_recon(rec_fname, f'{scorpy.DATADIR}/algo/RECIPES/{rec_fname}.txt', verbose=99)
+for sub_tag in 'abcdef':
+    a.check_inputs()
+    a.run_recon(sub_tag, f'{recipe_path}', verbose=99)
 
 
 

@@ -15,7 +15,7 @@ from .cifdata_saveload import CifDataSaveLoad
 
 class CifData(CifDataProperties, CifDataSaveLoad):
 
-    def __init__(self,path, qmax=None, fill_peaks=False, rotk=None, rottheta=None, skip_sym=False):
+    def __init__(self,path, qmax=None, fill_peaks=False, rotk=None, rottheta=None, skip_sym=False, atomic=False):
 
 
 
@@ -30,9 +30,8 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
 
 
-        if '_refln.index_h' or '_refln_index_h' in cif_dict.keys():
+        if not atomic:
             self._calc_scat(cif_dict, qmax=qmax, fill_peaks=fill_peaks, skip_sym=skip_sym)
-
         else:
             self._scat_bragg= None
             self._scat_rect = None

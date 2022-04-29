@@ -43,7 +43,7 @@ class AlgoHandlerSetupRecon:
 
 
     @verbose_dec
-    def make_support(self, ciffname, verbose=0, unit=False):
+    def make_support(self, ciffname, verbose=0):
         print('Making Support')
 
         assert self.qmax is not None, "Cannot make support, qmax required"
@@ -81,8 +81,6 @@ class AlgoHandlerSetupRecon:
         if len(overlaps[0])>0:
             print('OVERLAP IN SUPPORT')
 
-        if unit:
-            sphv_supp_loose.make_mask()
 
         sphv_supp_loose.save(self.sphv_supp_loose_path())
 

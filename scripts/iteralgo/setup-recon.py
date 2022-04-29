@@ -12,32 +12,37 @@ plt.close('all')
 
 
 
-qmax = 9
-npsi = 360*32
+qmax = ''
+npsi = 360*16
 
 rotk = [1,1,1]
 rottheta = np.radians(30)
-sample = 'agno3'
+sample = 'agno3-d03'
 ciffname = f'{scorpy.DATADIR}/xtal/{sample}/{sample}-sf.cif'
 
 
-nl = 180
+nl = 250
+nq = 300
 
 
-nq = 150
 
-# nqs = [ 25, 50, 75, 100, 125, 175, 225, 250]
-
-# for nq in nqs:
-
-tag = f'agno3-rec'
-a = scorpy.AlgoHandler(tag=tag, nq=nq, qmax=qmax, npsi=npsi, nl=nl, rotk=rotk, rottheta=rottheta, overwrite=0)
+tag = f'{sample}'
+a = scorpy.AlgoHandler(tag=tag, nq=nq, qmax=qmax, npsi=npsi, nl=nl, rotk=rotk, rottheta=rottheta, overwrite=2)
 a.make_target(ciffname, verbose=99)
-a.make_support(ciffname,verbose=99, unit=True)
+a.make_support(ciffname,verbose=99)
+
+# sphv_suppl =  scorpy.SphericalVol(path=f'{a.sphv_supp_loose_path()}')
+# sphv_suppl_mask = sphv_suppl.copy()
+# sphv_suppl_mask.make_mask()
+# plt.figure()
+# plt.plot(sphv_suppl.vol.sum(axis=-1).sum(axis=-1))
+
+# sphv_suppl.plot_slice(0,295)
+
+
 
 a.make_data(verbose=99)
 
-    # a.check_inputs(verbose=99)
 
 
 

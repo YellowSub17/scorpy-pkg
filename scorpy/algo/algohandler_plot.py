@@ -29,14 +29,6 @@ class AlgoHandlerPlot(BasePlot):
 
 
 
-    # def plot_shelx_rfs(self, sub_tag, **new_kwargs):
-
-        # rfs = np.load(self.rfs_shelx_path(sub_tag))
-
-        # counts = np.arange(0, len(rfs))
-
-        # self._plot_errorbar(counts, rfs,  **new_kwargs)
-
 
     def plot_rfs(self, sub_tag, calc='shelx', **new_kwargs):
         assert calc=='shelx' or 'inten', 'calc method must be shelx or inten'
@@ -57,21 +49,21 @@ class AlgoHandlerPlot(BasePlot):
 
 
 
-    def bond_distance_xy_plot(self,sub_tag, count=None, **new_kwargs):
+    def bond_distances_xy_plot(self,sub_tag, count=None, **new_kwargs):
 
 
-        targ_vals, targ_errs = self.get_bond_distances(sub_tag, count='targ')
-        algo_vals, algo_errs = self.get_bond_distances(sub_tag, count=count)
+        targ_vals, targ_errs = self.get_geometry_vals(sub_tag, count='targ', geometry='distances')
+        algo_vals, algo_errs = self.get_geometry_vals(sub_tag, count=count, geometry='distances')
 
         self._plot_errorbar(targ_vals, algo_vals, targ_errs, algo_errs, **new_kwargs)
         plt.plot([np.min(targ_vals), np.max(targ_vals)], [np.min(targ_vals), np.max(targ_vals)], c=f'k')
 
 
-    def bond_angle_xy_plot(self,sub_tag, count=None, **new_kwargs):
+    def bond_angles_xy_plot(self,sub_tag, count=None, **new_kwargs):
 
 
-        targ_vals, targ_errs = self.get_bond_angles(sub_tag, count='targ')
-        algo_vals, algo_errs = self.get_bond_angles(sub_tag, count=count)
+        targ_vals, targ_errs = self.get_geometry_vals(sub_tag, count='targ', geometry='angles')
+        algo_vals, algo_errs = self.get_geometry_vals(sub_tag, count=count, geometry='angles')
 
         self._plot_errorbar(targ_vals, algo_vals, targ_errs, algo_errs, **new_kwargs)
         plt.plot([np.min(targ_vals), np.max(targ_vals)], [np.min(targ_vals), np.max(targ_vals)], c=f'k')

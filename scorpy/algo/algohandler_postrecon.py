@@ -124,7 +124,7 @@ class AlgoHandlerPostRecon:
             cif = pycif.ReadCif(f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_count_{count}.cif')
 
         if geometry=='angles':
-            key = '_geom_angles'
+            key = '_geom_angle'
         else:
             key = '_geom_bond_distance'
 
