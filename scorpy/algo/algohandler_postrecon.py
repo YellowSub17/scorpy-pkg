@@ -64,29 +64,38 @@ class AlgoHandlerPostRecon:
         os.chdir(f'{cwd}')
 
 
+    @verbose_dec
+    def get_intensity(self, sub_tag, count=None, loc=None, z=None, verbose=0):
 
-    def get_intensity(self, sub_tag, count=None, loc=None):
-
+        print('## algo.get_intensity: getting target')
         cif_targ = CifData(self.cif_targ_path(), rotk=self.rotk, rottheta= self.rottheta)
+        print('## algo.get_intensity: getting final')
         cif_final = CifData(self.cif_final_path(sub_tag), rotk=self.rotk, rottheta= self.rottheta)
 
         if count is not None:
+            print('## algo.get_intensity: filling hkl')
             cif_final.fill_from_hkl(self.hkl_count_path(sub_tag, count=count), qmax=self.qmax)
 
 
 
 
         if loc is None:
+            print('## algo.get_intensity: getting loc')
             loc = self.get_targ_final_scat_eq_loc(sub_tag)
 
         It = cif_targ.scat_bragg[:,-1]
 
         If = cif_final.scat_bragg[loc, -1]
 
+        if z=='q':
+            z = cif_final.scat_sph[loc,0]
+        elif z=='theta':
+            z = cif_final.scat_sph[loc,1]
+        elif z=='phi':
+            z = cif_final.scat_sph[loc,2]
 
 
-
-        return It, If
+        return It, If, z
 
 
     def get_targ_final_scat_eq_loc(self, sub_tag):
@@ -141,6 +150,48 @@ class AlgoHandlerPostRecon:
         return vals, errs
 
 
+    def get_xyzs(self, sub_tag, count=None):
+
+        if count is None:
+            cif = pycif.ReadCif(f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}.cif')
+        elif count == 'targ':
+            cif =  pycif.ReadCif(f'{self.path}/{sub_tag}/shelx/{self.tag}_targ.cif')
+        else:
+            cif = pycif.ReadCif(f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_count_{count}.cif')
+
+        vk = cif.visible_keys[0]
+
+        a = strerr2floaterrr(dict(cif[vk])['_cell_length_a'])[0]
+        b = strerr2floaterrr(dict(cif[vk])['_cell_length_a'])[0]
+        c = strerr2floaterrr(dict(cif[vk])['_cell_length_b'])[0]
+
+        xstrs = dict(cif[vk])['_atom_site_fract_x']
+        ystrs = dict(cif[vk])['_atom_site_fract_y']
+        zstrs = dict(cif[vk])['_atom_site_fract_z']
+
+        xyzs = np.zeros( (len(xstrs), 3))
+
+        for i, (fracx, fracy, fracz) in enumerate( zip(xstrs, ystrs, zstrs)):
+            x = strerr2floaterrr(fracx)[0]*a
+            y = strerr2floaterrr(fracy)[0]*b
+            z = strerr2floaterrr(fracz)[0]*c
+
+            xyzs[i, :] =   [x,y,z]
+
+        return xyzs
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def get_shelx_rf(self, sub_tag, count=None):
 
@@ -175,6 +226,97 @@ class AlgoHandlerPostRecon:
 
 
 
+
+
+    @verbose_dec
+    def save_dxyzs(self, sub_tag, verbose=0):
+        print(f'Saving dxyz: {self.tag} {sub_tag}')
+        print(f'Started: {time.asctime()}')
+
+
+        ncounts = len(os.listdir(self.hkls_path(sub_tag)))
+
+        dxyzs = np.zeros(ncounts)
+        mindxyzs = np.zeros(ncounts)
+        maxdxyzs = np.zeros(ncounts)
+        stddxyzs = np.zeros(ncounts)
+
+        targ_xyz = self.get_xyzs(sub_tag, count='targ')
+
+
+
+        for count in range(ncounts):
+
+            print(count, end='\r')
+            count_xyz = self.get_xyzs(sub_tag, count=count)
+
+            count_dxyz =  np.abs( targ_xyz - count_xyz)
+
+            count_dxyz_norm = np.linalg.norm(count_dxyz, axis=1)
+
+            dxyzs[count] = np.mean(count_dxyz_norm)
+            mindxyzs[count] = np.min(count_dxyz_norm)
+            maxdxyzs[count] = np.max(count_dxyz_norm)
+            stddxyzs[count] = np.std(count_dxyz_norm)
+
+        np.save(self.mean_dxyzs_path(sub_tag), dxyzs)
+        np.save(self.min_dxyzs_path(sub_tag), mindxyzs)
+        np.save(self.max_dxyzs_path(sub_tag), maxdxyzs)
+        np.save(self.std_dxyzs_path(sub_tag), stddxyzs)
+
+
+        print(f'Finished: {time.asctime()}')
+
+
+    @verbose_dec
+    def save_dgeom(self, sub_tag,geometry='distances', verbose=0):
+        print(f'Saving mean bond {geometry}: {self.tag} {sub_tag}')
+        print(f'Started: {time.asctime()}')
+
+
+        ncounts = len(os.listdir(self.hkls_path(sub_tag)))
+
+        mean_geom = np.zeros(ncounts)
+        min_geom = np.zeros(ncounts)
+        max_geom = np.zeros(ncounts)
+        std_geom = np.zeros(ncounts)
+
+        targ_xs, targ_errs = self.get_geometry_vals(sub_tag, count='targ', geometry=geometry)
+
+
+
+
+        for count in range(ncounts):
+
+            print(count, end='\r')
+            count_xs, count_errs = self.get_geometry_vals(sub_tag, count=count, geometry=geometry)
+
+
+            count_dxs = np.abs(targ_xs- count_xs)
+            mean_geom[count] = np.mean(count_dxs)
+            min_geom[count] = np.min(count_dxs)
+            max_geom[count] = np.max(count_dxs)
+            std_geom[count] = np.std(count_dxs)
+
+
+
+        if geometry=='distances':
+            np.save(self.mean_bond_distances_path(sub_tag), mean_geom)
+            np.save(self.min_bond_distances_path(sub_tag), min_geom)
+            np.save(self.max_bond_distances_path(sub_tag), max_geom)
+            np.save(self.std_bond_distances_path(sub_tag), std_geom)
+        elif geometry=='angles':
+            np.save(self.mean_bond_angles_path(sub_tag), mean_geom)
+            np.save(self.min_bond_angles_path(sub_tag), min_geom)
+            np.save(self.max_bond_angles_path(sub_tag), max_geom)
+            np.save(self.std_bond_angles_path(sub_tag), std_geom)
+
+
+        print(f'Finished: {time.asctime()}')
+
+
+
+
     @verbose_dec
     def save_rfs(self, sub_tag, verbose=0):
         print(f'Saving R factors: {self.tag} {sub_tag}')
@@ -182,20 +324,15 @@ class AlgoHandlerPostRecon:
 
 
         ncounts = len(os.listdir(self.hkls_path(sub_tag)))
-        loc = self.get_targ_final_scat_eq_loc(sub_tag)
 
         rfs_shelx = np.zeros(ncounts)
-        rfs_inten = np.zeros(ncounts)
 
         for count in range(ncounts):
             print(count, end='\r')
             rf_shelx = self.get_shelx_rf(sub_tag, count=count)
-            rf_inten = self.get_inten_rf(sub_tag, count=count, loc=loc)
             rfs_shelx[count] = rf_shelx
-            rfs_inten[count] = rf_inten
 
         np.save(self.rfs_shelx_path(sub_tag), rfs_shelx)
-        np.save(self.rfs_inten_path(sub_tag), rfs_inten)
 
 
         print(f'Finished: {time.asctime()}')

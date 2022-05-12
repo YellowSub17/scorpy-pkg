@@ -11,6 +11,8 @@ import os
 
 # samples = ['u-chalco', 'garnet', 'bfbtpp-ni', 'bbceap-ag', 'tbcampmamp']
 samples = ['agno3-d05', 'agno3-d03']
+samples = ['tbcampmamp-d05']
+samples = ['aluminophosphate-d05']
 
 
 

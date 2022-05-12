@@ -91,8 +91,9 @@ xmax=1, ymax=1, zmax=1,
         new_nx = xf-xi
         new_ny = yf-yi
         new_nz = zf-zi
+        print(f'{new_nx=} {new_ny=} {new_nz=}')
 
-        new_vol = Vol(new_nx, new_ny, new_nz, 
+        new_vol = BaseVol(new_nx, new_ny, new_nz, 
                         new_xmin-self.dx/2, new_ymin-self.dx/2, new_zmin-self.dx/2,
                         new_xmax-self.dx/2, new_ymax-self.dx/2, new_zmax-self.dx/2,
 

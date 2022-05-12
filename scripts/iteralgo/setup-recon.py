@@ -12,12 +12,12 @@ plt.close('all')
 
 
 
-qmax = ''
+qmax = 9
 npsi = 360*16
 
 rotk = [1,1,1]
 rottheta = np.radians(30)
-sample = 'agno3-d03'
+sample = 'agno3'
 ciffname = f'{scorpy.DATADIR}/xtal/{sample}/{sample}-sf.cif'
 
 
@@ -26,7 +26,7 @@ nq = 300
 
 
 
-tag = f'{sample}'
+tag = f'{sample}-d07'
 a = scorpy.AlgoHandler(tag=tag, nq=nq, qmax=qmax, npsi=npsi, nl=nl, rotk=rotk, rottheta=rottheta, overwrite=2)
 a.make_target(ciffname, verbose=99)
 a.make_support(ciffname,verbose=99)

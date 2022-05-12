@@ -12,36 +12,50 @@ plt.close('all')
 
 
 
-
-a = scorpy.AlgoHandler('agno3-random-starts')
-a.save_rfs('a', verbose=99)
-
-a = scorpy.AlgoHandler('agno3-nl180')
-a.save_rfs('a', verbose=99)
-
-
-# sub_tags = ['ER120', 'HIO10ER10', 'HIO20ER20', 'HIO30ER30', 'HIO60ER60', 'HIO120', 'HIO120beta']
-# counts = [i for i in range(121)]
+tags = ['agno3-d05', 'agno3-d03' ]
 
 
 
-# for sub_tag in sub_tags:
+nqs = [i for i in range(25,251, 25)]
 
-    # a.run_shelx(sub_tag)
-    # a.run_shelx(sub_tag, count='targ')
-
-    # for count in counts:
-        # print(sub_tag, count)
-        # a.run_shelx(sub_tag, count=count)
+for nq in nqs:
 
 
+    if nq==150:
+        tag = 'agno3-nl180'
+    elif nq==200:
+        tag = 'agno3-random-starts'
+    else:
+        tag = f'agno3-nq{nq}'
 
 
-# for sub_tag in sub_tags:
+    a = scorpy.AlgoHandler(tag)
 
-    # a.save_rfs(sub_tag, verbose=99)
+    a.save_dgeom('a', geometry='distances', verbose=99)
+    a.save_dgeom('a', geometry='angles', verbose=99)
+    a.save_dxyzs('a', verbose=99)
 
 
+
+
+nls = [i for i in range(60, 181, 15)]
+for nl in nls:
+    a = scorpy.AlgoHandler(f'agno3-nl{nl}')
+    a.save_dgeom('a', geometry='distances', verbose=99)
+    a.save_dgeom('a', geometry='angles', verbose=99)
+    a.save_dxyzs('a', verbose=99)
+
+
+
+a = scorpy.AlgoHandler(f'agno3-d03')
+a.save_dgeom('a', geometry='distances', verbose=99)
+a.save_dgeom('a', geometry='angles', verbose=99)
+a.save_dxyzs('a', verbose=99)
+
+a = scorpy.AlgoHandler(f'agno3-d05')
+a.save_dgeom('a', geometry='distances', verbose=99)
+a.save_dgeom('a', geometry='angles', verbose=99)
+a.save_dxyzs('a', verbose=99)
 
 
 

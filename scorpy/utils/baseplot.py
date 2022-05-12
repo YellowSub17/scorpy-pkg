@@ -114,7 +114,7 @@ class BasePlot:
 
 
 
-    def _plot_errorbar(self, x,y, xerr=None,yerr=None, **new_kwargs):
+    def _plot_errorbar(self, x,y, xerr=0,yerr=0, **new_kwargs):
 
         kwargs ={'fig':None,
                 'axes':None,
@@ -127,7 +127,12 @@ class BasePlot:
                 'label':'',
                 'marker':'.',
                 'linestyle': '',
+                'logy': False,
                 'color':(0,0,0),
+                'dx':0,
+                'dy':0,
+                'elinewidth':None,
+                'capsize':0,
                 }
 
         kwargs.update(new_kwargs)
@@ -137,7 +142,15 @@ class BasePlot:
             kwargs['fig'] = plt.figure()
             kwargs['axes'] = plt.gca()
 
-        kwargs['axes'].errorbar(x,y,xerr=xerr, yerr=yerr, marker=kwargs["marker"], linestyle=kwargs["linestyle"], label=kwargs['label'], color=kwargs['color'])
+        if kwargs['logy']:
+            y = np.log10(np.abs(y)+1)
+            yerr = None
+
+        kwargs['axes'].errorbar(x+kwargs['dx'],y+kwargs['dy'],
+                                xerr=xerr, yerr=yerr,
+                                marker=kwargs["marker"], linestyle=kwargs["linestyle"],
+                                label=kwargs['label'], color=kwargs['color'],
+                                elinewidth=kwargs['elinewidth'], capsize=kwargs['capsize'])
 
         kwargs['axes'].set_title(kwargs['title'])
         kwargs['axes'].set_xlabel(kwargs['xlabel'])
