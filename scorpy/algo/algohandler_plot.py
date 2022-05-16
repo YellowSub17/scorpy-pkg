@@ -92,29 +92,35 @@ class AlgoHandlerPlot(BasePlot):
 
 
     @verbose_dec
-    def plot_intensity_xy(self, sub_tag, color_by=(None,None), count=None, loc=None,n_intens=None, verbose=0, **new_kwargs):
+    def plot_intensity_xy(self, sub_tag, color_by=(None,None), count=None,n_scats=10000, verbose=0, **new_kwargs):
 
-        It, If, z = self.get_intensity(sub_tag, z=color_by[0], verbose=verbose-1, count=count, loc=loc)
-        z *= 1/np.max(z)
+        It, If, z = self.get_intensity(sub_tag, z=color_by[0], n_scats=n_scats, verbose=verbose-1, count=count)
 
-        if n_intens is not None:
+        It *= 1/np.sum(It)
+        If *= 1/np.sum(If)
 
-            temp = list(zip(It, If, z))
-            np.random.shuffle(temp)
-            It, If, z = temp[0, :n_intens], temp[1, :n_intens], temp[2, :n_intens]
-            
+
+        It *= 1/np.max(It)
+        If *= 1/np.max(If)
+
+        if z is not None:
+            z -=np.min(z)
+            z *= 1/np.max(z)
+
+
 
         if color_by[0] is not None:
             col_map = cm.get_cmap(color_by[1])
             colors = col_map(z)[:,:-1]
 
 
-
+            print('## algo.plot_intensity_xy: Plotting Point')
             for i, (x,y, col) in enumerate(zip(It, If, colors)):
-                print(i, end='\r')
-                self._plot_errorbar(x/np.sum(It), y/np.sum(If), color=col, xlabel='Target Intensity (Norm.)',  ylabel='Algo Intensity (Norm.)', **new_kwargs)
+                print(f'{i}/{n_scats}', end='\r')
+                self._plot_errorbar(x, y, color=col, xlabel='Target Intensity (Norm.)',  ylabel='Algo Intensity (Norm.)', **new_kwargs)
         else:
-            self._plot_errorbar(It/np.sum(It), If/np.sum(If),  xlabel='Target Intensity (Norm.)',  ylabel='Algo Intensity (Norm.)', **new_kwargs)
+            self._plot_errorbar(It, If,  xlabel='Target Intensity (Norm.)',  ylabel='Algo Intensity (Norm.)', **new_kwargs)
+
 
 
 

@@ -63,13 +63,12 @@ class AlgoHandlerPostRecon:
 
         os.chdir(f'{cwd}')
 
-
     @verbose_dec
-    def get_intensity(self, sub_tag, count=None, loc=None, z=None, verbose=0):
+    def get_intensity(self, sub_tag, count=None, z=None, n_scats=10000, verbose=0):
 
-        print('## algo.get_intensity: getting target')
+        print('## algo.get_intensity: Getting target cif')
         cif_targ = CifData(self.cif_targ_path(), rotk=self.rotk, rottheta= self.rottheta)
-        print('## algo.get_intensity: getting final')
+        print('## algo.get_intensity: Getting final cif')
         cif_final = CifData(self.cif_final_path(sub_tag), rotk=self.rotk, rottheta= self.rottheta)
 
         if count is not None:
@@ -77,15 +76,24 @@ class AlgoHandlerPostRecon:
             cif_final.fill_from_hkl(self.hkl_count_path(sub_tag, count=count), qmax=self.qmax)
 
 
+        if n_scats==-1 or n_scats >cif_targ.scat_bragg.shape[0]:
+            n_scats = cif_targ.scat_bragg.shape[0]
+        loc = np.zeros(n_scats)
+
+        scats = list(cif_targ.scat_bragg)
+        np.random.shuffle(scats)
 
 
-        if loc is None:
-            print('## algo.get_intensity: getting loc')
-            loc = self.get_targ_final_scat_eq_loc(sub_tag)
+        print('## algo.get_intensity: Finding bragg points')
+        for i, (h, k, l, I) in enumerate(scats[:n_scats]):
+            print(f'{i}/{n_scats}', end='\r')
+            bragg_loc =np.where( (cif_final.scat_bragg[:,:-1]==[h,k,l]).all(axis=1))[0][0]
+            loc[i] = bragg_loc
+        loc = loc.astype(int)
 
-        It = cif_targ.scat_bragg[:,-1]
-
+        It = np.array(scats[:n_scats])[:,-1]
         If = cif_final.scat_bragg[loc, -1]
+
 
         if z=='q':
             z = cif_final.scat_sph[loc,0]
@@ -93,7 +101,6 @@ class AlgoHandlerPostRecon:
             z = cif_final.scat_sph[loc,1]
         elif z=='phi':
             z = cif_final.scat_sph[loc,2]
-
 
         return It, If, z
 
