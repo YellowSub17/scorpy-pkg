@@ -8,6 +8,86 @@ plt.close('all')
 
 
 
+# blue = '#648FFF'
+# pink = '#DC267F'
+# orange = '#FE6100'
+
+# fig, axes = plt.subplots(1,1)
+# axes.plot([0, 0.455], [0, 0.455], color=(0,0,0), linestyle='dashed', label='y=x')
+
+# a = scorpy.AlgoHandler('aluminophosphate-d05')
+# print(a.tag)
+# a.plot_intensity_xy('a', n_scats=10000, fig=fig, axes=axes, label='AlPO4', color=blue, marker='D', verbose=99)
+
+# a = scorpy.AlgoHandler('tbcampmamp-d05')
+# print(a.tag)
+# a.plot_intensity_xy('a', n_scats=10000, fig=fig, axes=axes, label='C25H40N2O5', color=pink, marker='h', verbose=99)
+
+# a = scorpy.AlgoHandler('agno3-d03')
+# print(a.tag)
+# a.plot_intensity_xy('a', n_scats=10000, fig=fig, axes=axes, label='AgNO3', color=orange, marker='s', verbose=99)
+# plt.legend()
+
+
+
+
+
+# blue = '#648FFF'
+# pink = '#DC267F'
+# orange = '#FE6100'
+
+# fig, axes = plt.subplots(1,1)
+# axes.plot([1.19, 2.6], [1.19, 2.6], color=(0,0,0), linestyle='dashed', label='y=x')
+
+# a = scorpy.AlgoHandler('aluminophosphate-d05')
+# a.plot_bond_geometry_xy('a', geometry='distances', fig=fig, axes=axes, label='AlPO4', color=blue, marker='.', verbose=99)
+
+# a = scorpy.AlgoHandler('tbcampmamp-d05')
+# a.plot_bond_geometry_xy('a', geometry='distances', fig=fig, axes=axes, label='C25H40N2O5', color=pink, marker='.', verbose=99)
+
+# a = scorpy.AlgoHandler('agno3-d03')
+# a.plot_bond_geometry_xy('a', geometry='distances', fig=fig, axes=axes, label='AgNO3', color=orange, marker='.', verbose=99)
+# plt.legend()
+
+
+
+
+# blue = '#648FFF'
+# pink = '#DC267F'
+# orange = '#FE6100'
+
+# fig, axes = plt.subplots(1,1)
+# axes.plot([50, 151], [50, 151], color=(0,0,0), linestyle='dashed', label='y=x')
+
+# a = scorpy.AlgoHandler('aluminophosphate-d05')
+# a.plot_bond_geometry_xy('a', geometry='angles', fig=fig, axes=axes, label='AlPO4', color=blue, marker='.', verbose=99)
+
+# a = scorpy.AlgoHandler('tbcampmamp-d05')
+# a.plot_bond_geometry_xy('a', geometry='angles', fig=fig, axes=axes, label='C25H40N2O5', color=pink, marker='.', verbose=99)
+
+# a = scorpy.AlgoHandler('agno3-d03')
+# a.plot_bond_geometry_xy('a', geometry='angles', fig=fig, axes=axes, label='AgNO3', color=orange, marker='.', verbose=99)
+# plt.legend()
+
+
+
+
+
+
+a = scorpy.AlgoHandler('aluminophosphate-d05')
+vals, errs = a.get_geometry_vals('a',geometry='angles')
+vals_t, errs_t = a.get_geometry_vals('a', count='targ',geometry='angles')
+print(a.tag, np.mean(np.abs(vals-vals_t)))
+
+a = scorpy.AlgoHandler('tbcampmamp-d05')
+vals, errs = a.get_geometry_vals('a',geometry='angles')
+vals_t, errs_t = a.get_geometry_vals('a', count='targ',geometry='angles')
+print(a.tag, np.mean(np.abs(vals-vals_t)))
+
+a = scorpy.AlgoHandler('agno3-d03')
+vals, errs = a.get_geometry_vals('a',geometry='angles')
+vals_t, errs_t = a.get_geometry_vals('a', count='targ',geometry='angles')
+print(a.tag, np.mean(np.abs(vals-vals_t)))
 
 
 
@@ -28,8 +108,6 @@ plt.close('all')
 # plt.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/recipes.png')
 
 
-
-
 # fig, axes = plt.subplots(1,1)
 # axes.plot([0, 1], [0, 1], 'k-')
 # a = scorpy.AlgoHandler('agno3-nq25')
@@ -48,42 +126,41 @@ plt.close('all')
 
 
 
-elinewidth=1.0
-capsize=0.5
-marker=','
+# elinewidth=1.0
+# capsize=0.5
+# marker=','
 
 
 
 
-fig, axes = plt.subplots(1,1)
-a = scorpy.AlgoHandler('agno3-nq250')
-a.plot_mean_dgeom('a', fig=fig, axes=axes, color=(0,0,1), count_max=110,
-                  ylabel='Average Difference in Bond Length [A]', xlabel='Iteration Number',
-                  elinewidth=elinewidth, capsize=capsize, marker=marker, label='d07')
-a = scorpy.AlgoHandler('agno3-d03')
-a.plot_mean_dgeom('a', fig=fig, axes=axes, color=(1,0,0), count_max=110, dx=0.5,
-                  ylabel='Average Difference in Bond Length [A]', xlabel='Iteration Number',
-                  elinewidth=elinewidth, capsize=capsize,marker=marker, label='d03')
-plt.legend()
+# fig, axes = plt.subplots(1,1)
+# a = scorpy.AlgoHandler('agno3-nq250')
+# a.plot_mean_dgeom('a', fig=fig, axes=axes, color=(0,0,1), count_max=110,
+                  # ylabel='Average Difference in Bond Length [A]', xlabel='Iteration Number',
+                  # elinewidth=elinewidth, capsize=capsize, marker=marker, label='d07')
+
+
+# a = scorpy.AlgoHandler('agno3-d03')
+# a.plot_mean_dgeom('a', fig=fig, axes=axes, color=(1,0,0), count_max=110, dx=0.5,
+                  # ylabel='Average Difference in Bond Length [A]', xlabel='Iteration Number',
+                  # elinewidth=elinewidth, capsize=capsize,marker=marker, label='d03')
+# plt.legend()
 
 
 
+# fig, axes = plt.subplots(1,1)
 
+# a = scorpy.AlgoHandler('agno3-nq250')
+# a.plot_mean_dgeom('a', geometry='angle', fig=fig, axes=axes, color=(0,0,1), count_max=110,
+                  # ylabel='Average Difference in Bond Angle [deg]', xlabel='Iteration Number',
+                  # elinewidth=elinewidth, capsize=capsize, marker=marker, label='d07')
 
+# a = scorpy.AlgoHandler('agno3-d03')
+# a.plot_mean_dgeom('a', geometry='angle', fig=fig, axes=axes, color=(1,0,0), count_max=110, dx=0.5,
+                  # ylabel='Average Difference in Bond Angle [deg]', xlabel='Iteration Number',
+                  # elinewidth=elinewidth, capsize=capsize, marker=marker, label='d03')
 
-fig, axes = plt.subplots(1,1)
-
-a = scorpy.AlgoHandler('agno3-nq250')
-a.plot_mean_dgeom('a', geometry='angle', fig=fig, axes=axes, color=(0,0,1), count_max=110,
-                  ylabel='Average Difference in Bond Angle [deg]', xlabel='Iteration Number',
-                  elinewidth=elinewidth, capsize=capsize, marker=marker, label='d07')
-
-a = scorpy.AlgoHandler('agno3-d03')
-a.plot_mean_dgeom('a', geometry='angle', fig=fig, axes=axes, color=(1,0,0), count_max=110, dx=0.5,
-                  ylabel='Average Difference in Bond Angle [deg]', xlabel='Iteration Number',
-                  elinewidth=elinewidth, capsize=capsize, marker=marker, label='d03')
-
-plt.legend()
+# plt.legend()
 
 
 
@@ -163,6 +240,35 @@ plt.legend()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+# a = scorpy.AlgoHandler('tbcampmamp-d05')
+# # a.plot_rfs('a',title=f'{a.tag}',ylabel='rf')
+# # a.plot_mean_dgeom('a',title=f'{a.tag}',ylabel='d distances')
+# # a.plot_mean_dgeom('a',title=f'{a.tag}',geometry='angles', ylabel='d angles')
+# # a.plot_mean_dxyzs('a',title=f'{a.tag}',ylabel='dxyzs')
+# # a.plot_bond_geometry_xy('a',title=f'{a.tag} - distances')
+# # a.plot_bond_geometry_xy('a',geometry='angles',title=f'{a.tag} - angles')
+# a.plot_intensity_xy('a',title=f'{a.tag} - inten')
+
+
+# a = scorpy.AlgoHandler('aluminophosphate-d05')
+# # a.plot_rfs('a',title=f'{a.tag}',ylabel='rf')
+# # a.plot_mean_dgeom('a',title=f'{a.tag}',ylabel='d distances')
+# # a.plot_mean_dgeom('a',title=f'{a.tag}',geometry='angles', ylabel='d angles')
+# # a.plot_mean_dxyzs('a',title=f'{a.tag}',ylabel='dxyzs')
+# # a.plot_bond_geometry_xy('a',title=f'{a.tag} - distances')
+# # a.plot_bond_geometry_xy('a',geometry='angles',title=f'{a.tag} - angles')
+# a.plot_intensity_xy('a',title=f'{a.tag} - inten')
 
 
 

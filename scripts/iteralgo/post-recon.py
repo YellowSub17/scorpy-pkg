@@ -48,31 +48,35 @@ tags = ['agno3-d05', 'agno3-d03' ]
 
 
 
-counts = [i for i in range(121)]
+# counts = [i for i in range(121)]
+
+
+# a = scorpy.AlgoHandler(f'aluminophosphate-d05')
+# print(f'{a.tag} shelx')
+# a.run_shelx('a')
+# a.run_shelx('a', count='targ')
+# for count in counts:
+    # print(f'{count}', end='\r')
+    # a.run_shelx('a', count=count)
+
+# a.save_dgeom('a', geometry='distances', verbose=99)
+# a.save_dgeom('a', geometry='angles', verbose=99)
+# a.save_dxyzs('a', verbose=99)
+
+# a = scorpy.AlgoHandler(f'tbcampmamp-d05')
+# print(f'{a.tag} shelx')
+# a.run_shelx('a')
+# a.run_shelx('a', count='targ')
+# for count in counts:
+    # print(f'{count}', end='\r')
+    # a.run_shelx('a', count=count)
+# a.save_dgeom('a', geometry='distances', verbose=99)
+# a.save_dgeom('a', geometry='angles', verbose=99)
+# a.save_dxyzs('a', verbose=99)
+
 
 
 a = scorpy.AlgoHandler(f'aluminophosphate-d05')
-print(f'{a.tag} shelx')
-a.run_shelx('a')
-a.run_shelx('a', count='targ')
-for count in counts:
-    print(f'{count}', end='\r')
-    a.run_shelx('a', count=count)
-
-a.save_dgeom('a', geometry='distances', verbose=99)
-a.save_dgeom('a', geometry='angles', verbose=99)
-a.save_dxyzs('a', verbose=99)
-
+a.save_rfs('a', verbose=99)
 a = scorpy.AlgoHandler(f'tbcampmamp-d05')
-print(f'{a.tag} shelx')
-a.run_shelx('a')
-a.run_shelx('a', count='targ')
-for count in counts:
-    print(f'{count}', end='\r')
-    a.run_shelx('a', count=count)
-a.save_dgeom('a', geometry='distances', verbose=99)
-a.save_dgeom('a', geometry='angles', verbose=99)
-a.save_dxyzs('a', verbose=99)
-
-
-
+a.save_rfs('a', verbose=99)

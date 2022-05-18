@@ -100,8 +100,8 @@ class AlgoHandlerPlot(BasePlot):
         If *= 1/np.sum(If)
 
 
-        It *= 1/np.max(It)
-        If *= 1/np.max(If)
+        # It *= 1/np.max(It)
+        # If *= 1/np.max(If)
 
         if z is not None:
             z -=np.min(z)
@@ -118,8 +118,10 @@ class AlgoHandlerPlot(BasePlot):
             for i, (x,y, col) in enumerate(zip(It, If, colors)):
                 print(f'{i}/{n_scats}', end='\r')
                 self._plot_errorbar(x, y, color=col, xlabel='Target Intensity (Norm.)',  ylabel='Algo Intensity (Norm.)', **new_kwargs)
+                # plt.plot([0, 1], [0, 1], c=f'k')
         else:
             self._plot_errorbar(It, If,  xlabel='Target Intensity (Norm.)',  ylabel='Algo Intensity (Norm.)', **new_kwargs)
+            # plt.plot([0, 1], [0, 1], c=f'k')
 
 
 
@@ -132,7 +134,14 @@ class AlgoHandlerPlot(BasePlot):
         targ_vals, targ_errs = self.get_geometry_vals(sub_tag, count='targ', geometry=geometry)
         algo_vals, algo_errs = self.get_geometry_vals(sub_tag, count=count, geometry=geometry)
 
-        self._plot_errorbar(targ_vals, algo_vals, targ_errs, algo_errs, **new_kwargs)
-        plt.plot([np.min(targ_vals), np.max(targ_vals)], [np.min(targ_vals), np.max(targ_vals)], c=f'k')
+        if geometry=='distances':
+            label_ps = 'Bond Length [A]'
+        else:
+            label_ps = 'Bond Angle [deg]'
+
+
+        self._plot_errorbar(targ_vals, algo_vals, targ_errs, algo_errs,
+                            xlabel=f'Target {label_ps}',  ylabel=f'Algo {label_ps}', **new_kwargs)
+        # plt.plot([np.min(targ_vals), np.max(targ_vals)], [np.min(targ_vals), np.max(targ_vals)], c=f'k')
 
 
