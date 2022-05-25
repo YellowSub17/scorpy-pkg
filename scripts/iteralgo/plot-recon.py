@@ -1,93 +1,71 @@
 import scorpy
 import numpy as np
+np.random.seed(0)
 import matplotlib.pyplot as plt
-
 import matplotlib.cm as cm
 plt.close('all')
 
 
 
+#### Define colors
 
-# blue = '#648FFF'
-# pink = '#DC267F'
-# orange = '#FE6100'
+blue = '#648FFF'
+pink = '#DC267F'
+orange = '#FE6100'
 
 # fig, axes = plt.subplots(1,1)
-# axes.plot([0, 0.455], [0, 0.455], color=(0,0,0), linestyle='dashed', label='y=x')
+# axes.plot([0, 0.0242], [0, 0.0242], color=(0,0,0), linestyle='dashed', label='y=x')
 
 # a = scorpy.AlgoHandler('aluminophosphate-d05')
 # print(a.tag)
-# a.plot_intensity_xy('a', n_scats=10000, fig=fig, axes=axes, label='AlPO4', color=blue, marker='D', verbose=99)
+# a.plot_intensity_xy('a', fig=fig, axes=axes, label='AlPO4', color=blue, marker='.', verbose=99)
 
 # a = scorpy.AlgoHandler('tbcampmamp-d05')
 # print(a.tag)
-# a.plot_intensity_xy('a', n_scats=10000, fig=fig, axes=axes, label='C25H40N2O5', color=pink, marker='h', verbose=99)
+# a.plot_intensity_xy('a', fig=fig, axes=axes, label='C25H40N2O5', color=pink, marker='.', verbose=99)
 
 # a = scorpy.AlgoHandler('agno3-d03')
 # print(a.tag)
-# a.plot_intensity_xy('a', n_scats=10000, fig=fig, axes=axes, label='AgNO3', color=orange, marker='s', verbose=99)
+# a.plot_intensity_xy('a', fig=fig, axes=axes, label='AgNO3', color=orange, marker='.', verbose=99)
 # plt.legend()
+# plt.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/inten-xy.png')
 
 
 
 
 
-# blue = '#648FFF'
-# pink = '#DC267F'
-# orange = '#FE6100'
 
-# fig, axes = plt.subplots(1,1)
-# axes.plot([1.19, 2.6], [1.19, 2.6], color=(0,0,0), linestyle='dashed', label='y=x')
-
-# a = scorpy.AlgoHandler('aluminophosphate-d05')
-# a.plot_bond_geometry_xy('a', geometry='distances', fig=fig, axes=axes, label='AlPO4', color=blue, marker='.', verbose=99)
-
-# a = scorpy.AlgoHandler('tbcampmamp-d05')
-# a.plot_bond_geometry_xy('a', geometry='distances', fig=fig, axes=axes, label='C25H40N2O5', color=pink, marker='.', verbose=99)
-
-# a = scorpy.AlgoHandler('agno3-d03')
-# a.plot_bond_geometry_xy('a', geometry='distances', fig=fig, axes=axes, label='AgNO3', color=orange, marker='.', verbose=99)
-# plt.legend()
-
-
-
-
-# blue = '#648FFF'
-# pink = '#DC267F'
-# orange = '#FE6100'
-
-# fig, axes = plt.subplots(1,1)
-# axes.plot([50, 151], [50, 151], color=(0,0,0), linestyle='dashed', label='y=x')
-
-# a = scorpy.AlgoHandler('aluminophosphate-d05')
-# a.plot_bond_geometry_xy('a', geometry='angles', fig=fig, axes=axes, label='AlPO4', color=blue, marker='.', verbose=99)
-
-# a = scorpy.AlgoHandler('tbcampmamp-d05')
-# a.plot_bond_geometry_xy('a', geometry='angles', fig=fig, axes=axes, label='C25H40N2O5', color=pink, marker='.', verbose=99)
-
-# a = scorpy.AlgoHandler('agno3-d03')
-# a.plot_bond_geometry_xy('a', geometry='angles', fig=fig, axes=axes, label='AgNO3', color=orange, marker='.', verbose=99)
-# plt.legend()
-
-
-
-
-
+fig, axes = plt.subplots(1,1)
+axes.plot([1.19, 2.6], [1.19, 2.6], color=(0,0,0), linestyle='dashed', label='y=x')
 
 a = scorpy.AlgoHandler('aluminophosphate-d05')
-vals, errs = a.get_geometry_vals('a',geometry='angles')
-vals_t, errs_t = a.get_geometry_vals('a', count='targ',geometry='angles')
-print(a.tag, np.mean(np.abs(vals-vals_t)))
+a.plot_bond_geometry_xy('a', geometry='distances', fig=fig, axes=axes, label='AlPO4', color=blue, marker='.', verbose=99)
 
 a = scorpy.AlgoHandler('tbcampmamp-d05')
-vals, errs = a.get_geometry_vals('a',geometry='angles')
-vals_t, errs_t = a.get_geometry_vals('a', count='targ',geometry='angles')
-print(a.tag, np.mean(np.abs(vals-vals_t)))
+a.plot_bond_geometry_xy('a', geometry='distances', fig=fig, axes=axes, label='C25H40N2O5', color=pink, marker='.', verbose=99)
 
 a = scorpy.AlgoHandler('agno3-d03')
-vals, errs = a.get_geometry_vals('a',geometry='angles')
-vals_t, errs_t = a.get_geometry_vals('a', count='targ',geometry='angles')
-print(a.tag, np.mean(np.abs(vals-vals_t)))
+a.plot_bond_geometry_xy('a', geometry='distances', fig=fig, axes=axes, label='AgNO3', color=orange, marker='.', verbose=99)
+plt.legend()
+plt.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/bond-length-xy.png')
+
+fig, axes = plt.subplots(1,1)
+axes.plot([50, 151], [50, 151], color=(0,0,0), linestyle='dashed', label='y=x')
+
+a = scorpy.AlgoHandler('aluminophosphate-d05')
+a.plot_bond_geometry_xy('a', geometry='angles', fig=fig, axes=axes, label='AlPO4', color=blue, marker='.', verbose=99)
+
+a = scorpy.AlgoHandler('tbcampmamp-d05')
+a.plot_bond_geometry_xy('a', geometry='angles', fig=fig, axes=axes, label='C25H40N2O5', color=pink, marker='.', verbose=99)
+
+a = scorpy.AlgoHandler('agno3-d03')
+a.plot_bond_geometry_xy('a', geometry='angles', fig=fig, axes=axes, label='AgNO3', color=orange, marker='.', verbose=99)
+plt.legend()
+plt.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/bond-angle-xy.png')
+
+
+
+
 
 
 

@@ -126,6 +126,7 @@ class BasePlot:
                 'save':None,
                 'label':'',
                 'marker':'.',
+                'markersize':5,
                 'linestyle': '',
                 'logy': False,
                 'color':(0,0,0),

@@ -37,7 +37,7 @@ class PadfVol(BaseVol, PadfVolProps, PadfVolPlot, PadfVolSaveLoad):
 
 
     @verbose_dec
-    def fill_from_corr(self, corr, theta0=True, sf=1, tag='bingbong', verbose=0):
+    def fill_from_corr(self, corr, theta0=True, sf=1/(np.pi*2), tag='bingbong', verbose=0):
 
 
 
