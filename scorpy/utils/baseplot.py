@@ -134,6 +134,7 @@ class BasePlot:
                 'dy':0,
                 'elinewidth':None,
                 'capsize':0,
+                'errsf': 1,
                 }
 
         kwargs.update(new_kwargs)
@@ -148,7 +149,7 @@ class BasePlot:
             yerr = None
 
         kwargs['axes'].errorbar(x+kwargs['dx'],y+kwargs['dy'],
-                                xerr=xerr, yerr=yerr,
+                                xerr=kwargs['errsf']*xerr, yerr = kwargs['errsf']*yerr,
                                 marker=kwargs["marker"], linestyle=kwargs["linestyle"],
                                 label=kwargs['label'], color=kwargs['color'],
                                 elinewidth=kwargs['elinewidth'], capsize=kwargs['capsize'])

@@ -34,23 +34,23 @@ plt.close('all')
 
 
 
-sub_tags =['a', 'b', 'c']
-counts = [i for i in range(121)]
+# sub_tags =['a', 'b', 'c']
+# counts = [i for i in range(121)]
 
 
-for sub_tag in sub_tags:
-    print(f'##### {sub_tag}')
-    a = scorpy.AlgoHandler('aluminophosphate-d07')
-    a.run_shelx(f'{sub_tag}')
-    a.run_shelx(f'{sub_tag}', count='targ')
-    for count in counts:
-        print(f'shelxl {count}', end='\r')
-        a.run_shelx(f'{sub_tag}', count=count)
+# for sub_tag in sub_tags:
+    # print(f'##### {sub_tag}')
+    # a = scorpy.AlgoHandler('aluminophosphate-d07')
+    # a.run_shelx(f'{sub_tag}')
+    # a.run_shelx(f'{sub_tag}', count='targ')
+    # for count in counts:
+        # print(f'shelxl {count}', end='\r')
+        # a.run_shelx(f'{sub_tag}', count=count)
 
-    a.save_rfs(f'{sub_tag}', verbose=99)
-    a.save_dgeom(f'{sub_tag}', geometry='distances', verbose=99)
-    a.save_dgeom(f'{sub_tag}', geometry='angles', verbose=99)
-    a.save_dxyzs(f'{sub_tag}', verbose=99)
+    # a.save_rfs(f'{sub_tag}', verbose=99)
+    # a.save_dgeom(f'{sub_tag}', geometry='distances', verbose=99)
+    # a.save_dgeom(f'{sub_tag}', geometry='angles', verbose=99)
+    # a.save_dxyzs(f'{sub_tag}', verbose=99)
 
 
 
