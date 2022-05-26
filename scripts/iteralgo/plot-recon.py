@@ -35,10 +35,10 @@ orange = '#FE6100'
 
 
 capsize=2.5
-errsf=3
+errsf=1
 fig, axes = plt.subplots(1,1)
-axes.plot([1.45, 1.75], [1.45, 1.75], color=(0,0,0), linestyle='dashed', label='y=x')
-a = scorpy.AlgoHandler('aluminophosphate-d07')
+axes.plot([1.05, 1.75], [1.05, 1.75], color=(0,0,0), linestyle='dashed', label='y=x')
+a = scorpy.AlgoHandler('tbcampmamp-d05')
 a.plot_bond_geometry_xy('a', fig=fig, axes=axes, marker='.', color=blue,capsize=capsize,errsf=errsf, verbose=99)
 a.plot_bond_geometry_xy('b', fig=fig, axes=axes, marker='.', color=pink,capsize=capsize,errsf=errsf, verbose=99)
 a.plot_bond_geometry_xy('c', fig=fig, axes=axes, marker='.', color=orange,capsize=capsize,errsf=errsf, verbose=99)
@@ -46,8 +46,8 @@ a.plot_bond_geometry_xy('c', fig=fig, axes=axes, marker='.', color=orange,capsiz
 
 
 fig, axes = plt.subplots(1,1)
-axes.plot([106, 150], [106, 150], color=(0,0,0), linestyle='dashed', label='y=x')
-a = scorpy.AlgoHandler('aluminophosphate-d07')
+axes.plot([101, 150], [101, 150], color=(0,0,0), linestyle='dashed', label='y=x')
+a = scorpy.AlgoHandler('tbcampmamp-d05')
 a.plot_bond_geometry_xy('a',geometry='angles', fig=fig, axes=axes, marker='.', color=blue,capsize=capsize,errsf=errsf, verbose=99)
 a.plot_bond_geometry_xy('b',geometry='angles', fig=fig, axes=axes, marker='.', color=pink,capsize=capsize,errsf=errsf, verbose=99)
 a.plot_bond_geometry_xy('c',geometry='angles', fig=fig, axes=axes, marker='.', color=orange,capsize=capsize,errsf=errsf, verbose=99)
