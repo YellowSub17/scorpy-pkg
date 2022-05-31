@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 plt.close('all')
 
+import sys
 
 
 # nr = 1500
@@ -58,17 +59,17 @@ for part in ['p0', 'p1']:
     padf_path = f'{scorpy.DATADIR}/dbins/cxi/padfs/sim/{sim_n}/sim{sim_n}-{part}-padf.dbin'
     corr_path = f'{scorpy.DATADIR}/dbins/cxi/qcors/sim/{sim_n}/sim{sim_n}-{part}-qcor.dbin'
 
-    # corr = scorpy.CorrelationVol(path=corr_path)
+    corr = scorpy.CorrelationVol(path=corr_path)
 
-    # # # # corr = scorpy.CorrelationVol(nq, npsi_q, qmax, cos_sample=False)
-    # # # # corr.vol = np.random.random(corr.vol.shape)
+    # # # corr = scorpy.CorrelationVol(nq, npsi_q, qmax, cos_sample=False)
+    # # # corr.vol = np.random.random(corr.vol.shape)
 
-    # padf = scorpy.PadfVol(nr=nr, npsi=npsi_r, rmax=rmax, nl=nl, wavelength=wavelength)
-    # padf.fill_from_corr(corr, theta0=False, verbose=99, tag=part)
-    # padf.save(padf_path)
+    padf = scorpy.PadfVol(nr=nr, npsi=npsi_r, rmax=rmax, nl=nl, wavelength=wavelength)
+    padf.fill_from_corr(corr, theta0=False, verbose=99, tag=part)
+    padf.save(padf_path)
 
 
-#+\-3.e46
++\-3.e46
 
 
     padf = scorpy.PadfVol(path=padf_path)
