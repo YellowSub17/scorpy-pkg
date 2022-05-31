@@ -37,7 +37,7 @@ class PadfVol(BaseVol, PadfVolProps, PadfVolPlot, PadfVolSaveLoad):
 
 
     @verbose_dec
-    def fill_from_corr(self, corr, theta0=True, sf=1/(np.pi*2), tag='bingbong', verbose=0):
+    def fill_from_corr(self, corr, theta0=True, sf=1/(np.pi*2), output=None, tag='bingbong', verbose=0):
 
 
 
@@ -84,11 +84,11 @@ class PadfVol(BaseVol, PadfVolProps, PadfVolPlot, PadfVolSaveLoad):
 
 
         # os.system(f'{cmd} >/tmp/padf/{tag}/padf_{tag}_output.log 2>&1')
-        print('')
-        print('##################')
-        os.system(f'{cmd}')
-        print('##################')
-        print('')
+        if output is None:
+            os.system(f'{cmd}')
+        else:
+            os.system(f'{cmd} > {output} 2>&1')
+
 
 
         flatv = np.fromfile(f'/tmp/padf/{tag}/{tag}_padf.dbin')
