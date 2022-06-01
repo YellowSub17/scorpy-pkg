@@ -11,33 +11,34 @@ plt.close('all')
 
 
 tags_subtags = [
-                ('agno3-d03', 'a'),
-                # ('agno3-d03', 'b'),
+#                 ('agno3-d03', 'b'),
                 # ('agno3-d03', 'c'),
 
-                ('agno3-d05', 'a'),
                 # ('agno3-d05', 'b'),
                 # ('agno3-d05', 'c'),
 
-                ('agno3-d07', 'a'),
-                ('agno3-d07', 'b'),
-                ('agno3-d07', 'c'),
 
-                ('aluminophosphate-d05', 'a'),
                 # ('aluminophosphate-d05', 'b'),
                 # ('aluminophosphate-d05', 'c'),
 
-                ('aluminophosphate-d07', 'a'),
-                ('aluminophosphate-d07', 'b'),
-                ('aluminophosphate-d07', 'c'),
+                # # # # ('agno3-d03', 'a'),
+                # # # # ('agno3-d05', 'a'),
+                # # # # ('agno3-d07', 'a'),
+                # # # # ('agno3-d07', 'b'),
+                # # # # ('agno3-d07', 'c'),
 
-                ('tbcampmamp-d07', 'a'),
-                ('tbcampmamp-d07', 'b'),
-                ('tbcampmamp-d07', 'c'),
+                # # # # ('aluminophosphate-d05', 'a'),
+                # # # # ('aluminophosphate-d07', 'a'),
+                # # # # ('aluminophosphate-d07', 'b'),
+                # # # # ('aluminophosphate-d07', 'c'),
 
-                ('tbcampmamp-d05', 'a'),
-                ('tbcampmamp-d05', 'b'),
-                ('tbcampmamp-d05', 'c'),
+                # # # # ('tbcampmamp-d07', 'a'),
+                # # # # ('tbcampmamp-d07', 'b'),
+                # # # # ('tbcampmamp-d07', 'c'),
+
+                # # # # ('tbcampmamp-d05', 'a'),
+                # # # # ('tbcampmamp-d05', 'b'),
+                # # # # ('tbcampmamp-d05', 'c'),
                ]
 
 
@@ -63,7 +64,7 @@ tags_subtags = [
 
 
 
-# ##### NL study
+# #### NL study
 # nls = [i for i in range(60, 181, 15)]
 # counts = [i for i in range(111)]
 # subtags = ['a','b','c','d']

@@ -14,7 +14,7 @@ fig, axes = plt.subplots(1,1, )
 
 
 
-tag = 'tbcampmamp-d05'
+tag = 'agno3-d03'
 
 sub_tags = 'abc'
 
@@ -41,7 +41,7 @@ shelx_errs = np.mean(errs, axis=0)
 total_errs = algo_errs + shelx_errs
 
 
-a._plot_errorbar(targ_vals, algo_vals, 0, 3*total_errs,
+a._plot_errorbar(targ_vals, algo_vals, 0, 1*total_errs,
                     xlabel=f'Target Distance',  ylabel=f'Algo Distances',
                 capsize=2, fig=fig, axes=axes)
 

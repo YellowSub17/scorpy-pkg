@@ -12,11 +12,7 @@ import os
 sim_n = 2048
 wavelength = 6.7018e-11*1e10
 npsi= 90
-part = 'p0'
-
-
-
-
+part = 'p1'
 
 
 
@@ -45,25 +41,17 @@ rmax = rmaxs[int(rmax_i)]
 # nl = 32
 
 
-for part in ['p0']:
-    corr_path = f'{scorpy.DATADIR}/dbins/cxi/qcors/sim/{sim_n}/sim{sim_n}-{part}-qcor.dbin'
-    padf_path = f'{scorpy.DATADIR}/dbins/cxi/padfs/sim/{sim_n}/sim{sim_n}-{part}-{code}-padf.dbin'
+corr_path = f'{scorpy.DATADIR}/dbins/cxi/qcors/sim/{sim_n}/sim{sim_n}-{part}-qcor.dbin'
+padf_path = f'{scorpy.DATADIR}/dbins/cxi/padfs/sim/{sim_n}/sim{sim_n}-{part}-{code}-padf.dbin'
 
 
 
 
-    corr = scorpy.CorrelationVol(path=corr_path)
+corr = scorpy.CorrelationVol(path=corr_path)
 
-    # padf = scorpy.PadfVol(nr=nr, npsi=npsi, rmax=rmax, nl=nl, wavelength=wavelength)
-    # padf.fill_from_corr(corr, theta0=False, verbose=99, tag=part)
-    # padf.save(padf_path)
-
-    padf = scorpy.PadfVol(path=padf_path)
-    padf.plot_r1r2()
-    # padf.plot_r1r2(vminmax =(-6e65, 6e65))
-
-plt.show()
-
+padf = scorpy.PadfVol(nr=nr, npsi=npsi, rmax=rmax, nl=nl, wavelength=wavelength)
+padf.fill_from_corr(corr, theta0=False, verbose=99, tag=part)
+padf.save(padf_path)
 
 
 
