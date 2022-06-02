@@ -16,22 +16,22 @@ part = 'p1'
 
 
 
-rmaxs = [86/2, 86/3, 86/4, 86/5, 86/6, 86/7, 86/8]
-nrs = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
-nls = [12, 16, 20, 24, 28, 32, 36, 40, 44, 48]
+# rmaxs = [86/2, 86/3, 86/4, 86/5, 86/6, 86/7, 86/8]
+# nrs = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
+# nls = [12, 16, 20, 24, 28, 32, 36, 40, 44, 48]
 
 
-rmax_i = sys.argv[1]
-nr_i = sys.argv[2]
-nl_i = sys.argv[3]
+# rmax_i = sys.argv[1]
+# nr_i = sys.argv[2]
+# nl_i = sys.argv[3]
 
 
 
-code = f'code_{rmax_i}{nr_i}{nl_i}'
-print(f'##################{code}')
-nr = nrs[int(nr_i)]
-nl = nls[int(nl_i)]
-rmax = rmaxs[int(rmax_i)]
+# code = f'code_{rmax_i}{nr_i}{nl_i}'
+# print(f'##################{code}')
+# nr = nrs[int(nr_i)]
+# nl = nls[int(nl_i)]
+# rmax = rmaxs[int(rmax_i)]
 
 
 
@@ -41,8 +41,14 @@ rmax = rmaxs[int(rmax_i)]
 # nl = 32
 
 
+nr = 500
+npsi = 180
+rmax = 20
+nl = 64
+
+
 corr_path = f'{scorpy.DATADIR}/dbins/cxi/qcors/sim/{sim_n}/sim{sim_n}-{part}-qcor.dbin'
-padf_path = f'{scorpy.DATADIR}/dbins/cxi/padfs/sim/{sim_n}/sim{sim_n}-{part}-{code}-padf.dbin'
+padf_path = f'{scorpy.DATADIR}/dbins/cxi/padfs/sim/{sim_n}/sim{sim_n}-{part}-padf.dbin'
 
 
 
