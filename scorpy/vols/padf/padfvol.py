@@ -87,7 +87,7 @@ class PadfVol(BaseVol, PadfVolProps, PadfVolPlot, PadfVolSaveLoad):
         if output is None:
             os.system(f'{cmd}')
         else:
-            os.system(f'{cmd} > {output} 2>&1')
+            os.system(f'{cmd} > {output}')
 
 
 

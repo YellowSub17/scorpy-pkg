@@ -29,12 +29,14 @@ def Jn_zeros(n,nt):
     return (zerosj)
 
 
-def sphB_samp_nmax(lmax, rmax, qmax, nt=360):
+def sphB_samp_nmax(lmax, rmax, qmax, nt=1000):
 
     qlim = 2 * np.pi * qmax * rmax
     out=0
+
+    print(f'Calculating {nt} times...')
     for i in np.arange(nt):
-        print(f'nt: {i}', end='\r')
+        print(f'{i}', end='\r')
 
         jnuzeros = Jn_zeros(lmax, nt)
         qln = jnuzeros[lmax, i]
@@ -58,7 +60,6 @@ if __name__ == "__main__":
 
     print(f'{lmax=} {rmax=} {qmax=}')
 
-    print('Calculating...')
     x = sphB_samp_nmax(lmax, rmax, qmax)
 
     print(f'ANS: {x}')

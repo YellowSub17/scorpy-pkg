@@ -42,25 +42,43 @@ part = 'p1'
 
 
 nr = 500
-npsi = 180
-rmax = 20
-nl = 64
+npsi = 90
+rmax = 86
+nl = 56
+# # parts = [1,2,3,4,5]
+# # parts = [11,12,13,14,15]
+# # parts = [16,17,18,19,20]
+# # # # parts = [6,7,8,9,10]
+
+# # parts = [4,5,14,15,16,17,18,19,20]
+# parts = [4,5]
+# parts = [14,15]
+# parts = [16,17]
+# parts = [18,19,20]
+
+# sim_ns = [4,8,16,32,64,128]
 
 
-corr_path = f'{scorpy.DATADIR}/dbins/cxi/qcors/sim/{sim_n}/sim{sim_n}-{part}-qcor.dbin'
-padf_path = f'{scorpy.DATADIR}/dbins/cxi/padfs/sim/{sim_n}/sim{sim_n}-{part}-padf.dbin'
 
 
+parts = [3, 13]
+sim_ns = [128]
 
 
-corr = scorpy.CorrelationVol(path=corr_path)
+for p in parts:
+    for sim_n in sim_ns:
+        corr_path = f'{scorpy.DATADIR}/dbins/cxi/qcors/sim/{sim_n}/sim{sim_n}-p{p}-qcor.dbin'
+        padf_path = f'{scorpy.DATADIR}/dbins/cxi/padfs/sim/{sim_n}/sim{sim_n}-p{p}-padf.dbin'
 
-padf = scorpy.PadfVol(nr=nr, npsi=npsi, rmax=rmax, nl=nl, wavelength=wavelength)
-padf.fill_from_corr(corr, theta0=False, verbose=99, tag=part)
-padf.save(padf_path)
-
-
-
+        print(f'!!!!#######{p=}, {sim_n=}')
+        print(f'!!!!#######')
+        print(f'!!!!#######')
+        corr = scorpy.CorrelationVol(path=corr_path)
+        padf = scorpy.PadfVol(nr=nr, npsi=npsi, rmax=rmax, nl=nl, wavelength=wavelength)
+        padf.fill_from_corr(corr, theta0=False, verbose=99, tag=f'{part}_{sim_n}')
+        padf.save(padf_path)
+        print(f'!!!!#######')
+        print(f'!!!!#######')
 
 
 
