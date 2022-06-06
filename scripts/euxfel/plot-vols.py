@@ -14,39 +14,36 @@ import sys
 
 
 
-sim_n = 128
-wavelength = 6.7018e-11*1e10
-npsi= 90
-part = 'p0'
+# sim_n = sys.argv[1]
+
+
+# for part in sys.argv[2:]:
+    # corr_path = f'{scorpy.DATADIR}/dbins/cxi/qcors/sim/{sim_n}/sim{sim_n}-p{part}-qcor.dbin'
+    # padf_path = f'{scorpy.DATADIR}/dbins/cxi/padfs/sim/{sim_n}/sim{sim_n}-p{part}-padf.dbin'
+
+
+    # padf = scorpy.PadfVol(path=padf_path)
+
+    # fig, axes = plt.subplots(1,1)
+
+
+    # padf.plot_xy(vminmax=(-2.5e64, 12.0e63), fig=fig, axes=axes )
 
 
 
 
-corr_path = f'{scorpy.DATADIR}/dbins/cxi/qcors/sim/{sim_n}/sim{sim_n}-{part}-qcor.dbin'
-padf_path = f'{scorpy.DATADIR}/dbins/cxi/padfs/sim/{sim_n}/sim{sim_n}-{part}-padf.dbin'
+for run in sys.argv[1:]:
+    # corr_path = f'{scorpy.DATADIR}/dbins/cxi/qcors/sim/{sim_n}/sim{sim_n}-p{part}-qcor.dbin'
+    corr_path = f'{scorpy.DATADIR}/dbins/cxi/qcors/{run}/run{run}-qcor.dbin'
+    padf_path = f'{scorpy.DATADIR}/dbins/cxi/padfs/{run}/run{run}-padf.dbin'
 
 
-padf = scorpy.PadfVol(path=padf_path)
+    padf = scorpy.PadfVol(path=padf_path)
+
+    fig, axes = plt.subplots(1,1)
 
 
-
-fig, axes = plt.subplots(1,1)
-
-
-
-
-
-padf.plot_xy(vminmax=(-2.5e64, 6.0e64), fig=fig, axes=axes )
-
-
-# cs = [15]
-# for c in cs:
-    # r = c/(2*np.sin(padf.zpts/2))
-    # axes.plot(padf.zpts, r, 'r')
-
-# axes.set_ylim([0, padf.xmax])
-
-
+    padf.plot_xy(vminmax=(-2.5e64, 12.0e63), fig=fig, axes=axes )
 
 
 plt.show()
