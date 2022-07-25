@@ -34,23 +34,23 @@ orange = '#FE6100'
 
 
 
-capsize=2.5
-errsf=3
-fig, axes = plt.subplots(1,1)
-axes.plot([1.05, 1.75], [1.05, 1.75], color=(0,0,0), linestyle='dashed', label='y=x')
-a = scorpy.AlgoHandler('tbcampmamp-d05')
-a.plot_bond_geometry_xy('a', fig=fig, axes=axes, marker='>', color=blue,capsize=capsize,errsf=errsf, verbose=99)
-a.plot_bond_geometry_xy('b', fig=fig, axes=axes, marker='<', color=pink,capsize=capsize,errsf=errsf, verbose=99)
-a.plot_bond_geometry_xy('c', fig=fig, axes=axes, marker='^', color=orange,capsize=capsize,errsf=errsf, verbose=99)
+# capsize=2.5
+# errsf=3
+# fig, axes = plt.subplots(1,1)
+# axes.plot([1.05, 1.75], [1.05, 1.75], color=(0,0,0), linestyle='dashed', label='y=x')
+# a = scorpy.AlgoHandler('tbcampmamp-d05')
+# a.plot_bond_geometry_xy('a', fig=fig, axes=axes, marker='>', color=blue,capsize=capsize,errsf=errsf, verbose=99)
+# a.plot_bond_geometry_xy('b', fig=fig, axes=axes, marker='<', color=pink,capsize=capsize,errsf=errsf, verbose=99)
+# a.plot_bond_geometry_xy('c', fig=fig, axes=axes, marker='^', color=orange,capsize=capsize,errsf=errsf, verbose=99)
 
 
 
-fig, axes = plt.subplots(1,1)
-axes.plot([101, 150], [101, 150], color=(0,0,0), linestyle='dashed', label='y=x')
-a = scorpy.AlgoHandler('tbcampmamp-d05')
-a.plot_bond_geometry_xy('a',geometry='angles', fig=fig, axes=axes, marker='>', color=blue,capsize=capsize,errsf=errsf, verbose=99)
-a.plot_bond_geometry_xy('b',geometry='angles', fig=fig, axes=axes, marker='<', color=pink,capsize=capsize,errsf=errsf, verbose=99)
-a.plot_bond_geometry_xy('c',geometry='angles', fig=fig, axes=axes, marker='^', color=orange,capsize=capsize,errsf=errsf, verbose=99)
+# fig, axes = plt.subplots(1,1)
+# axes.plot([101, 150], [101, 150], color=(0,0,0), linestyle='dashed', label='y=x')
+# a = scorpy.AlgoHandler('tbcampmamp-d05')
+# a.plot_bond_geometry_xy('a',geometry='angles', fig=fig, axes=axes, marker='>', color=blue,capsize=capsize,errsf=errsf, verbose=99)
+# a.plot_bond_geometry_xy('b',geometry='angles', fig=fig, axes=axes, marker='<', color=pink,capsize=capsize,errsf=errsf, verbose=99)
+# a.plot_bond_geometry_xy('c',geometry='angles', fig=fig, axes=axes, marker='^', color=orange,capsize=capsize,errsf=errsf, verbose=99)
 
 
 
@@ -61,6 +61,21 @@ a.plot_bond_geometry_xy('c',geometry='angles', fig=fig, axes=axes, marker='^', c
 # a.plot_intensity_xy('b', n_scats=-1, fig=fig, axes=axes, marker='x', color=pink, verbose=99)
 # a.plot_intensity_xy('c', n_scats=-1, fig=fig, axes=axes, marker='x', color=orange, verbose=99)
 
+
+
+
+fig, axes = plt.subplots(1,1)
+
+
+capsize=2.5
+errsf=3
+a = scorpy.AlgoHandler('agno3-d03')
+# a.plot_intensity_xy('a', n_scats=-1, fig=fig, axes=axes, marker='x', color=blue, verbose=99)
+# a.plot_intensity_xy('aER', n_scats=-1, fig=fig, axes=axes, marker='x', color=orange, verbose=99)
+
+
+a.plot_bond_geometry_xy('a', fig=fig, axes=axes, marker='x', color=blue,capsize=capsize,errsf=errsf, verbose=99)
+a.plot_bond_geometry_xy('aER', fig=fig, axes=axes, marker='x', color=pink,capsize=capsize,errsf=errsf, verbose=99)
 
 
 

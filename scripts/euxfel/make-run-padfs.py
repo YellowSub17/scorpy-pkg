@@ -30,6 +30,9 @@ runs = [108,113,109,125,110,123,118,112,119,120,102,104,105,103,121,126]
 
 
 
+
+
+
 for run in runs:
     corr_path = f'{scorpy.DATADIR}/dbins/cxi/qcors/{run}/run{run}-qcor.dbin'
     padf_path = f'{scorpy.DATADIR}/dbins/cxi/padfs/{run}/run{run}-padf.dbin'

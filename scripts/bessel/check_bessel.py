@@ -39,6 +39,7 @@ def sphB_samp_nmax(lmax, rmax, qmax, nt=1000):
         print(f'{i}', end='\r')
 
         jnuzeros = Jn_zeros(lmax, nt)
+
         qln = jnuzeros[lmax, i]
         if qln > qlim:
             out = i - 1
