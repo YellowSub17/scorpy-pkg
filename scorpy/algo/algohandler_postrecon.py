@@ -196,10 +196,6 @@ class AlgoHandlerPostRecon:
 
 
 
-
-
-
-
     def get_shelx_rf(self, sub_tag, count=None):
 
         if count is None:
@@ -347,56 +343,4 @@ class AlgoHandlerPostRecon:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # def get_bond_distances(self, sub_tag, count=None):
-
-        # if count is None:
-            # cif = pycif.ReadCif(f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}.cif')
-        # elif count == 'targ':
-            # cif =  pycif.ReadCif(f'{self.path}/{sub_tag}/shelx/{self.tag}_targ.cif')
-        # else:
-            # cif = pycif.ReadCif(f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_count_{count}.cif')
-
-
-        # vk = cif.visible_keys[0]
-        
-        # bond_distances= dict(cif[vk])['_geom_bond_distance']
-
-        # vals, errs = np.zeros(len(bond_distances)), np.zeros(len(bond_distances))
-
-
-        # for i, bond_d in enumerate(bond_distances):
-            # val, err = strerr2floaterrr(bond_d)
-
-
-
-            # vals[i] = val
-            # errs[i] = err
-
-        # return vals, errs
 
