@@ -10,29 +10,46 @@ import numpy as np
 
 nls = list(range(60, 181, 15))
 
-cmap = cm.jet( np.linspace(0, 1, len(nls)))
+cmap_rf = cm.winter( np.linspace(0, 1, len(nls)))
+cmap_atomic = cm.gist_heat( np.linspace(0,0.75, len(nls)))
 
 
 
 
 
-fig1, axes1 = plt.subplots(1,1)
+
+
+fig, axes = plt.subplots(2,1, figsize=(5, 5), sharex=True)
+fig.tight_layout()
+fig.subplots_adjust(
+    top=0.951,
+    bottom=0.091,
+    left=0.131,
+    right=0.993,
+    hspace=0.04,
+    wspace=0.0
+)
+
+
+
 
 for i, nl in enumerate(nls):
     print(nl)
     a = scorpy.AlgoHandler(f'agno3-nl{nl}')
-    a.plot_vs_count('a', 'rfs', marker='.', fig=fig1, axes=axes1, color = cmap[i], label=f'{nl}', ylabel='$R_f$', xlabel='Iteration')
 
-fig2, axes2 = plt.subplots(1,2)
+    a.plot_vs_count('a', 'rfs', marker='',linestyle='-', fig=fig, axes=axes[0], color = cmap_rf[i], label=f'{nl}', ylabel='$R_f$')
 
-for i, nl in enumerate(nls):
-    print(nl)
-    a = scorpy.AlgoHandler(f'agno3-nl{nl}')
-    a.plot_vs_count('a', 'mean_dxyzs', marker='.',fig=fig2, axes=axes2[0], color = cmap[i], label=f'{nl}', ylabel='Mean Atomic Displacement', xlabel='Iteration')
-    a.plot_vs_count('a', 'mean_ddistances', marker='.',fig=fig2, axes=axes2[1], color = cmap[i], label=f'{nl}', ylabel='Mean $\\Delta$ Bond Length', xlabel='Iteration')
+    a.plot_vs_count('a', 'mean_dxyzs', marker='',linestyle='-',fig=fig, axes=axes[1], color = cmap_atomic[i], label=f'{nl}', ylabel='Mean Atomic Displacement [\u212B]', xlabel='Algorithm Iteration')
 
 
 
-plt.legend()
+axes[0].legend(bbox_to_anchor=(1,1), loc="upper right", framealpha=1)
+axes[1].legend(bbox_to_anchor=(1,1), loc="upper right", framealpha=1)
+axes[0].set_title('Algorithm Accuracy as a Function of nl Sampling')
+
+
+
 plt.show()
+
+fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/nl-test.png', dpi=300)
 

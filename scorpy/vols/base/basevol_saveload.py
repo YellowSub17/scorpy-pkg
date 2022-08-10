@@ -77,6 +77,7 @@ class BaseVolSaveLoad:
             flat_vol = self.vol.flatten()
             flat_vol.tofile(fpath)
 
+
         elif fpath.suffix == '.npy':
             np.save(fpath, self.vol)
         

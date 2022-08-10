@@ -114,7 +114,7 @@ class BasePlot:
 
 
 
-    def _plot_errorbar(self, x,y, xerr=0,yerr=0, **new_kwargs):
+    def _plot_errorbar(self, x,y, xerr=None,yerr=None, **new_kwargs):
 
         kwargs ={'fig':None,
                 'axes':None,
@@ -148,11 +148,21 @@ class BasePlot:
             y = np.log10(np.abs(y)+1)
             yerr = None
 
-        kwargs['axes'].errorbar(x+kwargs['dx'],y+kwargs['dy'],
-                                xerr=kwargs['errsf']*xerr, yerr = kwargs['errsf']*yerr,
-                                marker=kwargs["marker"], linestyle=kwargs["linestyle"],
-                                label=kwargs['label'], color=kwargs['color'],
-                                elinewidth=kwargs['elinewidth'], capsize=kwargs['capsize'])
+
+        if yerr is None and xerr is None:
+
+            kwargs['axes'].plot(x+kwargs['dx'],y+kwargs['dy'],
+                                    marker=kwargs["marker"], linestyle=kwargs["linestyle"],
+                                    label=kwargs['label'], color=kwargs['color'])
+
+        else:
+
+
+            kwargs['axes'].errorbar(x+kwargs['dx'],y+kwargs['dy'],
+                                    xerr=kwargs['errsf']*xerr, yerr = kwargs['errsf']*yerr,
+                                    marker=kwargs["marker"], linestyle=kwargs["linestyle"],
+                                    label=kwargs['label'], color=kwargs['color'],
+                                    elinewidth=kwargs['elinewidth'], capsize=kwargs['capsize'])
 
         kwargs['axes'].set_title(kwargs['title'])
         kwargs['axes'].set_xlabel(kwargs['xlabel'])
