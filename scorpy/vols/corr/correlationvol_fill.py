@@ -2,10 +2,49 @@
 
 
 from ...utils.utils import verbose_dec
+from ...utils.utils import to_polar
 import time
 
 
+import matplotlib.pyplot as plt
+
+
 class CorrelationVolFill:
+
+
+
+
+
+    @verbose_dec
+    def fill_from_detector_imgs(self, imgs, cenx, ceny, verbose=0):
+        '''
+        scorpy.CorrelationVol.fill_from_detector_imgs():
+            Fill the CorrelationVol from a collection of 2D detector image
+
+        Arguments:
+            img : np.array
+            rmax : int
+            cenx : float
+            ceny : float
+        '''
+
+        for img in imgs:
+            qt = to_polar(img, rmax=self.nq, cenx=cenx, ceny=ceny)
+            plt.figure()
+            plt.imshow(qt)
+            plt.show()
+            self.correlate_convolve(qt, verbose=verbose-1)
+
+
+
+# def to_polar(im, rmax, cenx, ceny):
+    # x = warp_polar( im, center=(cenx,ceny), radius=rmax)
+    # return np.rot90(x, k=3)
+
+
+
+
+
 
     @verbose_dec
     def fill_from_cif(self, cif, method='scat_rect', verbose=0):

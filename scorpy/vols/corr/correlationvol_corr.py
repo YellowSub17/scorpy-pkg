@@ -9,6 +9,44 @@ class CorrelationVolCorr:
 
 
     @verbose_dec
+    def correlate_convolve(self, qt, verbose=0):
+
+        f_qt = np.fft.fft(qt, axis=1)
+        print(f_qt.shape)
+
+        for i, f_qtrowi in enumerate(f_qt):
+            for j, f_qtrowj in enumerate(f_qt[i:]):
+
+                convolved_rows = f_qtrowi*f_qtrowj.conjugate()
+
+
+                self.vol[i, j,:] += np.real(convolved_rows)
+                if j >0:
+                    self.vol[j, i,:] += np.real(convolved_rows)
+
+
+
+#     def correlate_fft_pol(self, polar):
+
+        # fpolar = np.fft.fft( polar, axis=1 )
+
+        # out = np.zeros( (polar.shape[0],polar.shape[0],polar.shape[1]), np.complex128)
+
+        # for i, fp_rowi in enumerate(fpolar):
+            # for j, fp_rowj in enumerate(fpolar):
+                # out[i,j,:] = fp_rowi*fp_rowj.conjugate()
+
+
+        # out = np.real(np.fft.ifft( out, axis=2 ))
+
+        # return out
+
+
+
+
+
+
+    @verbose_dec
     def correlate_scat_pol(self, qti, verbose=0):
         '''
         scorpy.CorrelationVol.correlate_scat_pol():
@@ -180,23 +218,6 @@ class CorrelationVolCorr:
                 if j > 0:  # if not on diagonal
                     self.vol[q2_ind, q1_ind, psi_ind] += q1[-1] * q2[-1]
         # print('\x1b[2K', end='\r')
-
-
-
-#     def correlate_fft_pol(self, polar):
-
-        # fpolar = np.fft.fft( polar, axis=1 )
-
-        # out = np.zeros( (polar.shape[0],polar.shape[0],polar.shape[1]), np.complex128)
-
-        # for i, fp_rowi in enumerate(fpolar):
-            # for j, fp_rowj in enumerate(fpolar):
-                # out[i,j,:] = fp_rowi*fp_rowj.conjugate()
-
-
-        # out = np.real(np.fft.ifft( out, axis=2 ))
-
-        # return out
 
 
 
