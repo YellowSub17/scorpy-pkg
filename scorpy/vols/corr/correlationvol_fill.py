@@ -30,9 +30,6 @@ class CorrelationVolFill:
 
         for img in imgs:
             qt = to_polar(img, rmax=self.nq, cenx=cenx, ceny=ceny)
-            plt.figure()
-            plt.imshow(qt)
-            plt.show()
             self.correlate_convolve(qt, verbose=verbose-1)
 
 

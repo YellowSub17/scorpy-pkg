@@ -354,6 +354,15 @@ xmax=1, ymax=1, zmax=1,
 
 
 
+    def zmean_subtraction(self):
+
+        zmean = np.mean(self.vol, axis=2)
+        return zmean
+
+
+
+
+
 
 
 

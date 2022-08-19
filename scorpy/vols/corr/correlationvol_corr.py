@@ -10,6 +10,12 @@ class CorrelationVolCorr:
 
     @verbose_dec
     def correlate_convolve(self, qt, verbose=0):
+ #        qt[440:500,33:40] = 1
+        # qt[440:500,90:96] = 1
+        # qt[440:500,145:152] = 1
+        # qt[440:500,204:214] = 1
+        # qt[440:500,265:273] = 1
+        # qt[440:500,318:324] = 1
 
         f_qt = np.fft.fft(qt, axis=1)
         print(f_qt.shape)
@@ -20,9 +26,9 @@ class CorrelationVolCorr:
                 convolved_rows = f_qtrowi*f_qtrowj.conjugate()
 
 
-                self.vol[i, j,:] += np.real(convolved_rows)
+                self.vol[i, j+i,:] += np.real(convolved_rows)
                 if j >0:
-                    self.vol[j, i,:] += np.real(convolved_rows)
+                    self.vol[j+i, i,:] += np.real(convolved_rows)
 
 
 
