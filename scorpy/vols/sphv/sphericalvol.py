@@ -30,7 +30,12 @@ class SphericalVol(BaseVol, SphericalVolProps, SphericalVolPlot, SphericalVolSav
 
         self._nl = int(ntheta / 2)
 
-        BaseVol.__init__(self, nx=nq, ny=ntheta, nz=nphi,
+
+
+        if path is not None:
+            BaseVol.__init__(self, path=path)
+        else:
+            BaseVol.__init__(self, nx=nq, ny=ntheta, nz=nphi,
                      xmin=0, ymin=0, zmin=0,
                      xmax=qmax, ymax=np.pi, zmax=2 * np.pi,
                      xwrap=False, ywrap=True, zwrap=True,

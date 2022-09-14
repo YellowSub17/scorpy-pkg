@@ -57,41 +57,64 @@ loc = np.unique(np.where(corr3d_inte.vol >0)[0])
 print(loc)
 
 
-corr2d_inte.plot_q1q2()
-corr3d_inte.plot_q1q2()
+fig, axes = plt.subplots(1,2, sharey=True)
+corr2d_inte.plot_q1q2(xlabel='$\\psi$ [rad]', ylabel='$q_1=q_2$ [$A^{-1}$]', fig=fig, axes=axes[0])
+corr3d_inte.plot_q1q2(xlabel='$\\psi$ [rad]',  fig=fig, axes=axes[1])
 
 
-blqq2d = scorpy.BlqqVol(corr2d_inte.nq, 90, corr2d_inte.qmax)
-blqq2d.fill_from_corr(corr2d_inte,rcond=0.1)
-blqq3d = scorpy.BlqqVol(corr3d_inte.nq, 90, corr3d_inte.qmax)
-blqq3d.fill_from_corr(corr3d_inte, rcond=0.1)
+# blqq2d = scorpy.BlqqVol(corr2d_inte.nq, 90, corr2d_inte.qmax)
+# blqq2d.fill_from_corr(corr2d_inte,rcond=0.1)
+# blqq3d = scorpy.BlqqVol(corr3d_inte.nq, 90, corr3d_inte.qmax)
+# blqq3d.fill_from_corr(corr3d_inte, rcond=0.1)
 
 
 
-blqq2d.plot_slice(0, loc[-2])
-blqq3d.plot_slice(0, loc[-2])
+# blqq2d.plot_slice(0, loc[-2])
+# blqq3d.plot_slice(0, loc[-2])
 
-blqq2d.plot_slice(-1, 20)
-blqq3d.plot_slice(-1, 20)
+# blqq2d.plot_slice(-1, 20)
+# blqq3d.plot_slice(-1, 20)
 
 ###### corr(psi)
-fig, axes = plt.subplots(4,1)
-axes[2].plot(corr3d_inte.psipts, corr3d_inte.vol[76, 76,:]/np.max(corr3d_inte.vol[76,76,:]), label='3d')
-axes[2].plot(corr2d_inte.psipts, corr2d_inte.vol[76, 76,:]/np.max(corr2d_inte.vol[76,76,:]), label='2d')
-axes[2].set_title('qq=76')
-axes[2].legend()
-axes[1].plot(corr3d_inte.psipts, corr3d_inte.vol[-17, -17,:]/np.max(corr3d_inte.vol[-17, -17,:]) , label='3d')
-axes[1].plot(corr2d_inte.psipts, corr2d_inte.vol[-17, -17,:]/np.max(corr2d_inte.vol[-17,-17,:]), label='2d')
-axes[1].set_title('qq=-17')
-axes[1].legend()
-axes[3].plot(corr3d_inte.psipts, corr3d_inte.vol[58, 58,:]/np.max(corr3d_inte.vol[58,58,:]), label='3d')
-axes[3].plot(corr2d_inte.psipts, corr2d_inte.vol[58, 58,:]/np.max(corr2d_inte.vol[58,58,:]), label='2d')
-axes[3].set_title('qq=58')
-axes[3].legend()
-axes[0].plot(corr3d_inte.psipts, corr3d_inte.vol[96, 96,:]/np.max(corr3d_inte.vol[96,96,:]), label='3d')
-axes[0].plot(corr2d_inte.psipts, corr2d_inte.vol[96, 96,:]/np.max(corr2d_inte.vol[96,96,:]), label='2d')
-axes[0].set_title('qq=96')
-axes[0].legend()
+fig, axes = plt.subplots(4,1, sharex=True)
+
+
+plt.subplots_adjust(hspace=0.4)
+
+
+# qqs = ,cc
+# qqs = [58, 96, 76, -17]
+# qqs = [58, 76, -17, 96]
+qqs = [96, -17, 76, 58]
+
+for i, qq in enumerate(qqs):
+    axes[i].plot(corr3d_inte.psipts, corr3d_inte.vol[qq, qq,:]/np.max(corr3d_inte.vol[qq,qq,:]), label='3d')
+    axes[i].plot(corr2d_inte.psipts, corr2d_inte.vol[qq, qq,:]/np.max(corr2d_inte.vol[qq,qq,:]), label='2d')
+    axes[i].set_title(f'q={np.round(corr2d_inte.qpts[qq], 3)} [$A^{{-1}}$]')
+    axes[i].legend()
+
+axes[-2].set_ylabel('Correlation Intensity [Normalized AU]')
+
+
+axes[-1].set_xlabel('$\\psi$ [rad]')
+
+
+# axes[2].plot(corr3d_inte.psipts, corr3d_inte.vol[76, 76,:]/np.max(corr3d_inte.vol[76,76,:]), label='3d')
+# axes[2].plot(corr2d_inte.psipts, corr2d_inte.vol[76, 76,:]/np.max(corr2d_inte.vol[76,76,:]), label='2d')
+# axes[2].set_title('qq=76')
+# axes[2].legend()
+# axes[1].plot(corr3d_inte.psipts, corr3d_inte.vol[-17, -17,:]/np.max(corr3d_inte.vol[-17, -17,:]) , label='3d')
+# axes[1].plot(corr2d_inte.psipts, corr2d_inte.vol[-17, -17,:]/np.max(corr2d_inte.vol[-17,-17,:]), label='2d')
+# axes[1].set_title('qq=-17')
+# axes[1].legend()
+# axes[3].plot(corr3d_inte.psipts, corr3d_inte.vol[58, 58,:]/np.max(corr3d_inte.vol[58,58,:]), label='3d')
+# axes[3].plot(corr2d_inte.psipts, corr2d_inte.vol[58, 58,:]/np.max(corr2d_inte.vol[58,58,:]), label='2d')
+# axes[3].set_title('qq=58')
+# axes[3].legend()
+# axes[0].plot(corr3d_inte.psipts, corr3d_inte.vol[96, 96,:]/np.max(corr3d_inte.vol[96,96,:]), label='3d')
+# axes[0].plot(corr2d_inte.psipts, corr2d_inte.vol[96, 96,:]/np.max(corr2d_inte.vol[96,96,:]), label='2d')
+# axes[0].set_title('qq=96')
+# axes[0].legend()
 
 
 

@@ -41,6 +41,7 @@ class BaseVolSaveLoad:
         self._load_extra(config)
 
     def _load(self, fpath, logpath=None):
+        # print('loading')
 
         fpath = Path(fpath)
 
@@ -61,6 +62,7 @@ class BaseVolSaveLoad:
                 file_vol = np.fromfile(fpath)
 
 
+            # print(file_vol)
             self._vol = file_vol.reshape((self.nx, self.ny, self.nz))
         elif fpath.suffix =='.npy':
             self._vol = np.load(fpath)
