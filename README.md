@@ -5,7 +5,7 @@
 Scattering CORrelation in PYthon 
 
 
-## Conda Setup
+## Conda Setup (Requirements)
 
 Use the following commands to set up a conda environment.
 
@@ -36,5 +36,8 @@ This will create a link from your python site-package directory to an egg-info d
     git clone https://github.com/YellowSub17/scorpy-pkg.git
     cd scorpy-pkg
     pip install -e .
+
+
+
 
 
