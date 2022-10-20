@@ -2,7 +2,7 @@
 
 
 
-Scattering CORrelation in PYthon (WIP).
+Scattering CORrelation in PYthon 
 
 
 ## Conda Setup
@@ -12,14 +12,14 @@ Use the following commands to set up a conda environment.
     conda deactivate
     conda create -n phd python==3.9 --yes
     conda activate phd
-    conda install -c anaconda ipython --yes
+    conda install -c conda-forge ipython --yes
     conda install -c conda-forge numpy --yes
     conda install -c conda-forge matplotlib --yes
     conda install -c conda-forge pyshtools --yes
-    conda install -c conda-forge healpy --yes
     conda install -c conda-forge h5py --yes
     conda install -c conda-forge pycifrw --yes
     conda install -c conda-forge scipy --yes
+    conda install -c conda-forge scikit-image
 
 To setup auto reload in ipython.
 
@@ -37,10 +37,4 @@ This will create a link from your python site-package directory to an egg-info d
     cd scorpy-pkg
     pip install -e .
 
-
-## Testing
-
-The included Makefile will run test files in the test directory.
-
-    make clean
 
