@@ -11,7 +11,7 @@ if sys.platform =='linux':
     SCORPYDIR = Path('/home/pat/Documents/cloudstor/phd/python_projects/scorpy-pkg/')
     PADFDIR = Path('/home/pat/Documents/cloudstor/phd/python_projects/padf/')
     # DATADIR = SCORPYDIR / 'data'
-    DATADIR = Path('/media/pat/datadrive/scorpy-data')
+    DATADIR = Path('/media/pat/datadrive')
 
 
 elif sys.platform =='win32':

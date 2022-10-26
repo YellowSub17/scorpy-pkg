@@ -2,6 +2,7 @@ import numpy as np
 from scipy import special
 from skimage.transform import warp_polar
 
+import regex as re
 # import sys, os
 
 # def block_print():
@@ -53,6 +54,31 @@ def strerr2floaterrr(s):
 
 
     return float(val), float(err)
+
+
+
+
+
+
+def concat_file(f):
+    # print(f'Concantenating file: {f}')
+    single_file_str = ''
+    with open(f, 'r') as f:
+        for line in f:
+            single_file_str +=line
+
+    return single_file_str
+
+
+
+
+def grep(s, reg, fn=None):
+    # print(f'greping reg: {reg}')
+    found = re.findall(reg, s)
+    if fn is not None:
+        found = list(map(fn, found))
+    return found
+
 
 
 
