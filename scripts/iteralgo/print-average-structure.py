@@ -77,6 +77,9 @@ mean_struct = value_storage.mean(axis=0)
 atoms_exps = scorpy.utils.utils.grep(s, r'[ABCDEFGHIJKLMNOPRSTUVWXYZ]+\d+\s+\d', fn=None)
 
 
+print(atoms_exps)
+
+
 
 
 
