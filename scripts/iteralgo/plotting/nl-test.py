@@ -26,6 +26,7 @@ fig.subplots_adjust(
     bottom=0.091,
     left=0.131,
     right=0.993,
+subtags = 'a'
     hspace=0.04,
     wspace=0.0
 )
