@@ -35,7 +35,7 @@ for i, nq in enumerate(nqs):
     else:
         a = scorpy.AlgoHandler(f'agno3-nq{nq}')
     a.plot_vs_count('a', 'rfs', marker='',linestyle='-', fig=fig, axes=axes[0], color = cmap_rf[i], label=f'{nq}', ylabel='$R_f$')
-    a.plot_vs_count('a', 'mean_dxyzs', marker='',linestyle='-',fig=fig, axes=axes[1], color = cmap_atomic[i], label=f'{nq}', ylabel='Mean Atomic Displacement [\u212B]', xlabel='Algorithm Iteration')
+    a.plot_vs_count('a', 'mean_dxyzs',logy=False, marker='',linestyle='-',fig=fig, axes=axes[1], color = cmap_atomic[i], label=f'{nq}', ylabel='Mean Atomic Displacement [\u212B]', xlabel='Algorithm Iteration')
 
 axes[0].legend(bbox_to_anchor=(1,1), loc="upper right", framealpha=1, title='$nq$')
 axes[1].legend(bbox_to_anchor=(1,1), loc="upper right", framealpha=1, title='$nq$')
@@ -67,7 +67,7 @@ for i, nl in enumerate(nls):
 
     a.plot_vs_count('a', 'rfs', marker='',linestyle='-', fig=fig, axes=axes[0], color = cmap_rf[i], label=f'{nl}', ylabel='$R_f$')
 
-    a.plot_vs_count('a', 'mean_dxyzs', marker='',linestyle='-',fig=fig, axes=axes[1], color = cmap_atomic[i], label=f'{nl}', ylabel='Mean Atomic Displacement [\u212B]', xlabel='Algorithm Iteration')
+    a.plot_vs_count('a', 'mean_dxyzs',logy=False, marker='',linestyle='-',fig=fig, axes=axes[1], color = cmap_atomic[i], label=f'{nl}', ylabel='Mean Atomic Displacement [\u212B]', xlabel='Algorithm Iteration')
 
 
 
