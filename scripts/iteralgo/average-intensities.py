@@ -13,7 +13,8 @@ import shutil
 
 
 
-tag = 'aluminophosphate-d05'
+# tag = 'aluminophosphate-d05'
+tag = 'tbcampmamp-d05'
 meansubtag = 'means'
 
 

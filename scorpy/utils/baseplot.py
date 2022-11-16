@@ -154,7 +154,7 @@ class BasePlot:
 
             kwargs['axes'].plot(x+kwargs['dx'],y+kwargs['dy'],
                                     marker=kwargs["marker"], linestyle=kwargs["linestyle"],
-                                    label=kwargs['label'], color=kwargs['color'])
+                                    label=kwargs['label'], color=kwargs['color'], markersize=kwargs['markersize'])
 
         else:
 
@@ -163,7 +163,7 @@ class BasePlot:
                                     xerr=kwargs['errsf']*xerr, yerr = kwargs['errsf']*yerr,
                                     marker=kwargs["marker"], linestyle=kwargs["linestyle"],
                                     label=kwargs['label'], color=kwargs['color'],
-                                    elinewidth=kwargs['elinewidth'], capsize=kwargs['capsize'])
+                                    elinewidth=kwargs['elinewidth'], capsize=kwargs['capsize'], markersize=kwargs['markersize'])
 
         kwargs['axes'].set_title(kwargs['title'])
         kwargs['axes'].set_xlabel(kwargs['xlabel'])
