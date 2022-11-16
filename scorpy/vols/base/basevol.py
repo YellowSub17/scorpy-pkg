@@ -361,7 +361,24 @@ xmax=1, ymax=1, zmax=1,
 
 
 
+    def get_index(self, x=None, y=None, z=None):
 
+        xloc = None
+        yloc = None
+        yloc = None
+
+        if x is not None:
+            xloc = np.where(np.abs(self.xpts-x)==np.min(np.abs(self.xpts-x)))
+            return xloc[0][0]
+        if y is not None:
+            yloc = np.where(np.abs(self.ypts-y)==np.min(np.abs(self.ypts-y)))
+            return yloc[0][0]
+        if z is not None:
+            zloc = np.where(np.abs(self.zpts-z)==np.min(np.abs(self.zpts-z)))
+            return zloc[0][0]
+
+        print('No value given')
+        return None
 
 
 

@@ -51,7 +51,7 @@ class BasePlot:
                     'norm':False,
                     'subtmean':False,
                     'blur':False,
-                    'save':''
+                    'save':None
                 }
 
         kwargs.update(new_kwargs)
@@ -109,12 +109,13 @@ class BasePlot:
         kwargs['axes'].set_ylabel(kwargs['ylabel'])
 
         if kwargs['save'] is not None:
+            print('saving image')
             plt.savefig(kwargs['save'])
 
 
 
 
-    def _plot_errorbar(self, x,y, xerr=None,yerr=None, **new_kwargs):
+    def _plot_errorbar(self, x,y, xerr=0,yerr=0, **new_kwargs):
 
         kwargs ={'fig':None,
                 'axes':None,

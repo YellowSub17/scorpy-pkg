@@ -3,6 +3,7 @@
 
 
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 
@@ -14,7 +15,7 @@ class PeakDataPlot:
 
 
 
-    def plot_peaks(self, scatter=False, cmap=None, sizes=None,  newfig=True):
+    def plot_peaks(self, intenthresh=50, scatter=False, cmap=None, sizes=None,  newfig=True):
 
         if newfig:
             plt.figure()
@@ -25,6 +26,19 @@ class PeakDataPlot:
         y = self.scat_rect[:,2]
         colors = self.scat_rect[:,-1]
         marker = 'o'
+
+        # x = x[::skippeaks]
+        # y = y[::skippeaks]
+        # colors = colors[::skippeaks]
+
+
+        loc = np.where(colors>intenthresh)
+
+        x = x[loc]
+        y = y[loc]
+
+        colors = colors[loc]
+
 
         if sizes is not None:
             sizes = (np.max(sizes)-np.min(sizes))*(colors-colors.min())/(colors.max()-colors.min()) + np.min(sizes)

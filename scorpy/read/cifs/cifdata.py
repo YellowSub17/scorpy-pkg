@@ -266,6 +266,38 @@ class CifData(CifDataProperties, CifDataSaveLoad):
 
 
 
+
+
+    def fill_from_merged_crystfel(self, path, qmax=None, skip_sym=False, fill_peaks=False, inten_thresh=0):
+
+        hklI = np.genfromtxt(path, skip_header=3, skip_footer=1, usecols=(0,1,2,3))
+
+        I = hklI[:,-1]
+
+        inten_loc = np.where(I>inten_thresh)
+
+        cif_dict = {}
+        cif_dict['_refln.index_h'] = hklI[inten_loc[0],0]
+        cif_dict['_refln.index_k'] = hklI[inten_loc[0],1]
+        cif_dict['_refln.index_l'] = hklI[inten_loc[0],2]
+        cif_dict['_refln.intensity_meas'] = hklI[inten_loc[0],3]
+
+
+        # hklI = np.genfromtxt(path, skip_header=3, skip_footer=1, usecols=(0,1,2,3))
+        # cif_dict = {}
+        # cif_dict['_refln.index_h'] = hklI[:,0]
+        # cif_dict['_refln.index_k'] = hklI[:,1]
+        # cif_dict['_refln.index_l'] = hklI[:,2]
+        # cif_dict['_refln.intensity_meas'] = hklI[:,3]
+
+        self._calc_scat(cif_dict, qmax=qmax, skip_sym=skip_sym, fill_peaks=fill_peaks)
+
+
+
+
+
+
+
     def fill_from_sphv(self, sphv):
 
         ast_max_bragg_ind = round(sphv.qmax/self.ast_mag)+1
