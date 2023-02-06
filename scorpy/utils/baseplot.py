@@ -131,6 +131,7 @@ class BasePlot:
                 'linestyle': '',
                 'logy': False,
                 'color':(0,0,0),
+                'ecolor':(0,0,0),
                 'dx':0,
                 'dy':0,
                 'elinewidth':None,
@@ -162,8 +163,9 @@ class BasePlot:
             kwargs['axes'].errorbar(x+kwargs['dx'],y+kwargs['dy'],
                                     xerr=kwargs['errsf']*xerr, yerr = kwargs['errsf']*yerr,
                                     marker=kwargs["marker"], linestyle=kwargs["linestyle"],
-                                    label=kwargs['label'], color=kwargs['color'],
+                                    label=kwargs['label'], color=kwargs['color'], ecolor=kwargs['ecolor'],
                                     elinewidth=kwargs['elinewidth'], capsize=kwargs['capsize'], markersize=kwargs['markersize'])
+
 
         kwargs['axes'].set_title(kwargs['title'])
         kwargs['axes'].set_xlabel(kwargs['xlabel'])

@@ -13,6 +13,7 @@ from mpl_toolkits.axes_grid.inset_locator import (inset_axes, InsetPosition, mar
 
 
 
+plt.rc('font', size=8)
 
 
 
@@ -104,32 +105,30 @@ a_totalerr = np.sqrt(ameans_errs**2 +a_std**2)
 
 
 
-fig, axes = plt.subplots(2,1,figsize=(7.87, 2*3.93), dpi=150 )
+fig, axes = plt.subplots(1,1,figsize=(8/2.54, 8/2.54), dpi=300 )
 
-axes[0].plot([min(dmeans_vals), max(dmeans_vals)],[min(dmeans_vals), max(dmeans_vals)], linestyle='dotted')
-axes[1].plot([min(ameans_vals), max(ameans_vals)],[min(ameans_vals), max(ameans_vals)], linestyle='dotted')
+axes.plot([min(dmeans_vals), max(dmeans_vals)],[min(dmeans_vals), max(dmeans_vals)], linestyle='dotted')
 
 
-a._plot_errorbar(dtarg_vals, dmeans_vals, yerr=d_totalerr*3, xerr=dtarg_err*0, fig=fig, axes=axes[0],
+a._plot_errorbar(dtarg_vals, dmeans_vals, yerr=d_totalerr*3, xerr=dtarg_err*0, fig=fig, axes=axes,
                  xlabel='Target Bond Distance [\u212B]', ylabel='Recovered Bond Distance [\u212B]',
-                marker='.', markersize=3, capsize=2, color='black')
-a._plot_errorbar(atarg_vals, ameans_vals, yerr=a_totalerr*3, xerr=atarg_err*0, fig=fig, axes=axes[1],
+                marker='.', markersize=3, capsize=2, color=(0.5,0.5,0.5), ecolor='black')
+
+plt.tight_layout()
+fig.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/algo_tbcampmamp_lengths.png')
+
+
+fig, axes = plt.subplots(1,1,figsize=(8/2.54, 8/2.54), dpi=300 )
+axes.plot([min(ameans_vals), max(ameans_vals)],[min(ameans_vals), max(ameans_vals)], linestyle='dotted')
+a._plot_errorbar(atarg_vals, ameans_vals, yerr=a_totalerr*3, xerr=atarg_err*0, fig=fig, axes=axes,
                  xlabel='Target Bond Angle [deg]', ylabel='Recovered Bond Angle [deg]',
-                marker='.', markersize=3, capsize=2, color='black')
-
-
-
-
-
-
-
-
+                marker='.', markersize=3, capsize=2,color=(0.5,0.5,0.5), ecolor='black')
 
 
 plt.tight_layout()
+fig.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/algo_tbcampmamp_angles.png')
 
 
-fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/bond-da-xy-tbcampmamp.png')
 
 
 plt.show()
