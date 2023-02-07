@@ -26,7 +26,9 @@ cmap_atomic = cm.gist_heat( np.linspace(0, 0.75, len(nqs)))
 
 
 
-fig, axes = plt.subplots(2,1,figsize=(16/2.54, 8/2.54), dpi=300, sharex=True)
+
+plt.rc('font', size=8)
+fig, axes = plt.subplots(2,1,figsize=(16/2.54, 8/2.54), dpi=300, sharex=True )
 
 
 for i, nq in enumerate(nqs):

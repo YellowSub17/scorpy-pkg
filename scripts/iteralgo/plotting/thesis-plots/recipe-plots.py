@@ -9,11 +9,11 @@ import numpy as np
 
 
 
-subtags = [('ER120','P'),
-           ('HIO10ER10','X'),
-           ('HIO20ER20','*'),
-           ('HIO30ER30','h'),
-           ('HIO120','o'),
+subtags = [('ER120','120 ER'),
+           ('HIO10ER10','(10 HIO + 10 ER) x12'),
+           ('HIO20ER20','(20 HIO + 20 ER) x6'),
+           ('HIO30ER30','(30 HIO + 30 ER) x3'),
+           ('HIO120','120 HIO')
            ]
 
 
@@ -24,27 +24,34 @@ cmap_atomic = cm.gist_heat( np.linspace(0, 0.75, len(subtags)))
 
 
 
-fig, axes = plt.subplots(2,1, figsize=(7.87, 2*3.93),dpi=150, sharex=True)
+plt.rc('font', size=8)
+figrecrf, axesrecrf = plt.subplots(1,1,figsize=(8/2.54, 8/2.54), dpi=300 )
+figrecd, axesrecd = plt.subplots(1,1,figsize=(8/2.54, 8/2.54), dpi=300 )
 
 
-for i, (subtag, marker) in enumerate(subtags):
+for i, (subtag, label) in enumerate(subtags):
     a = scorpy.AlgoHandler('agno3-rec')
-    a.plot_vs_count(f'{subtag}', 'rfs', marker='', linestyle='-',  fig=fig, axes=axes[0], color = cmap_rf[i], label=f'{subtag}', ylabel='$R_f$')
+    a.plot_vs_count(f'{subtag}', 'rfs', marker='', linestyle='-',  fig=figrecrf, axes=axesrecrf,
+                    color = cmap_rf[i], label=f'{label}',xlabel='Algorithm Iteration', ylabel='$R_f$',xerr=None,yerr=None)
 
 
-    a.plot_vs_count(f'{subtag}', 'mean_dxyzs', marker='', linestyle='-', fig=fig, axes=axes[1], color =cmap_atomic[i], label=f'{subtag}', ylabel='Mean Atomic Displacement', xlabel='Iteration', logy=False)
-
-# axes[0].legend(bbox_to_anchor=(1,1), loc="upper left")
-# axes[1].legend(bbox_to_anchor=(1,1), loc="upper left")
-
-axes[0].legend(loc="upper right", title='Iterative Scheme')
-axes[1].legend(loc="upper right", title='Iterative Scheme')
-axes[0].set_title('Iterative Algorithm Recipes')
-
-plt.tight_layout()
+    a.plot_vs_count(f'{subtag}', 'mean_dxyzs', marker='', linestyle='-', fig=figrecd, axes=axesrecd,
+                    color =cmap_atomic[i], label=f'{label}',
+                    ylabel='Mean Atomic Displacement', xlabel='Algorithm Iteration', logy=False, xerr=None, yerr=None)
 
 
-fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/recipes.png')
+axesrecrf.legend(loc="upper right", title='Iterative Scheme')
+axesrecd.legend(loc="upper right", title='Iterative Scheme')
+# axes[0].set_title('Iterative Algorithm Recipes')
+axesrecrf.set_xlim(0.5, 120)
+axesrecd.set_xlim(0.5, 120)
+axesrecrf.set_ylim(0.145, 0.5)
+axesrecd.set_ylim(0, 1.16)
+
+figrecrf.tight_layout()
+figrecd.tight_layout()
+figrecrf.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/algo_rec_rf.png')
+figrecd.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/algo_rec_d.png')
 
 
 
