@@ -111,12 +111,12 @@ geo = scorpy.ExpGeom(f'{geompath}')
 
 
 
-pk = scorpy.PeakData(f'{scorpy.DATADIR}/patternsim/plot-test.h5', geo=geo)
+pk = scorpy.PeakData(f'{scorpy.DATADIR}/patternsim/plot-test.h5', geom=geo)
 
 pk.plot_peaks(cmap='spring')
 ax = plt.gca()
 ax.set_facecolor("black")
-pk.geo.plot_qring(qmax, ec='white')
+pk.geom.plot_qring(qmax, ec='white')
 
 
 

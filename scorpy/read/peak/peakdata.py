@@ -64,30 +64,30 @@ class PeakData(PeakDataProperties, PeakDataPlot):
             df = np.genfromtxt(fname, delimiter=delim, skip_header=1, usecols=cols)
 
         elif fname[-2:] == 'h5':
-#             h5f = h5py.File(fname, 'r')
-            # if self.mask_flag:
-                # data = h5f['data/data'][:]
-            # else:
-                # data = h5f['entry_1/instrument_1/detector_1/data'][:]
-            # h5f.close()
+            h5f = h5py.File(fname, 'r')
+            if self.mask_flag:
+                data = h5f['data/data'][:]
+            else:
+                data = h5f['entry_1/instrument_1/detector_1/data'][:]
+            h5f.close()
 
-            # loc = np.where(data > 0)
-            # df = np.zeros( (len(loc[0]), 4))
-            # df[:,0] = 0
-            # df[:,1] = loc[1]
-            # df[:,2] = loc[0]
-            # df[:,3] = data[loc[0], loc[1]]
+            loc = np.where(data > 0)
+            df = np.zeros( (len(loc[0]), 4))
+            df[:,0] = 0
+            df[:,1] = loc[1]
+            df[:,2] = loc[0]
+            df[:,3] = data[loc[0], loc[1]]
 
 
-            with h5py.File(fname, 'r') as h5f:
-                fs = h5f['/fs'][:]
-                ss = h5f['/ss'][:]
-                inten = h5f['/inten'][:]
+    #         with h5py.File(fname, 'r') as h5f:
+                # fs = h5f['/fs'][:]
+                # ss = h5f['/ss'][:]
+                # inten = h5f['/inten'][:]
 
-            df = np.zeros( (len(inten), 4))
-            df[:,1] = fs
-            df[:,2] = ss
-            df[:,3] = inten
+            # df = np.zeros( (len(inten), 4))
+            # df[:,1] = fs
+            # df[:,2] = ss
+            # df[:,3] = inten
 
 
         return df

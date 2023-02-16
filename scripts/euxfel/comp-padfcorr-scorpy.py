@@ -49,7 +49,7 @@ r = scorpy.utils.convert_q2r(qmax, clen, wavelength*1e10)
 im = pk.make_im(r=r, fname=f'/tmp/tmp_frame_im.dbin', bool_inten=True)
 
 pk.plot_peaks()
-pk.geo.plot_qring(qmax)
+pk.geom.plot_qring(qmax)
 plt.figure()
 plt.imshow(im)
 
