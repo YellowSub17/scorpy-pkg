@@ -13,7 +13,7 @@ from .peakdata_plot import PeakDataPlot
 
 class PSPeakData(PeakDataProperties, PeakDataPlot):
 
-    def __init__(self, path, geom=None):
+    def __init__(self, h5path, geompath):
         '''
         handler for a peaks.txt file
         df: dataframe of the peak data, or str file path to txt
@@ -28,16 +28,25 @@ class PSPeakData(PeakDataProperties, PeakDataPlot):
 
         data_loc =  np.where(data>0) # fs is the cols
 
-        self._df = np.zeros( (len(data_loc[0]), 3) )
+        fs_pix = data_loc[1]
 
 
-        self._df[:, 0] = data_loc[1] #fs
-        self._df[:, 1] = data_loc[0] #ss
-        self._df[:,2] = data[data_loc[0], data_loc[1]]
+        self._scat_fs_ss = np.array([
+            data_loc[1],
+            data_loc[0], 
+            data[data_loc[0], data_loc[1]]
+        ]).T
 
-        if self.geom is not None:
-            pix_pos = self.geom.translate_pixels(self._df)
 
+        pix_pos = self.geom.translate_pixels(self._scat_fs_ss)
+
+
+        self.scat_rect = np.array([
+            pix_pos[:,0],
+            pix_pos[:,1],
+            pix_pos[:,2],
+            data[data_loc[0], data_loc[1]]
+        ])
 
         nscats = self._df.shape[0]
         scat_rect = np.zeros( (nscats, 4) )
@@ -48,8 +57,8 @@ class PSPeakData(PeakDataProperties, PeakDataPlot):
 
 
         pol_r_mag = np.hypot(pix_pos[:, 0], pix_pos[:, 1]) #distance in meters from detector center to pixel
-        pol_phi = np.arctan2(pix_pos[:, 1], pix_pos[:, 0]) # angular polar coordinate of pixel
-        pol_phi[np.where(pol_phi < 0)] = pol_phi[np.where(pol_phi < 0)] + 2*np.pi #angle measures from 0 to 2pi radians
+        # pol_phi = np.arctan2(pix_pos[:, 1], pix_pos[:, 0]) # angular polar coordinate of pixel
+        # pol_phi[np.where(pol_phi < 0)] = pol_phi[np.where(pol_phi < 0)] + 2*np.pi #angle measures from 0 to 2pi radians
 
 
         theta_scatter_angle = np.arctan2(pol_r_mag, pix_pos[:, 2])
