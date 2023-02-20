@@ -215,6 +215,7 @@ class CorrelationVolCorr:
                 if self.cos_sample:
                     psi = np.cos(psi)
 
+
                 #calculate psi index for angle between vectors
                 psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=self.zwrap)
 
@@ -223,7 +224,6 @@ class CorrelationVolCorr:
 
                 if j > 0:  # if not on diagonal
                     self.vol[q2_ind, q1_ind, psi_ind] += q1[-1] * q2[-1]
-        # print('\x1b[2K', end='\r')
 
 
 
