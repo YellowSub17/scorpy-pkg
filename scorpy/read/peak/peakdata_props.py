@@ -15,12 +15,15 @@ class PeakDataProperties:
         return self._geom
 
     @property
-    def cxi_flag(self):
+    def path(self):
         '''
-        Boolean flag for if data came from XFEL dataset (True) or simulated ensemble (False)
+        path to data
         '''
-        return self._cxi_flag
+        return self._path
 
+
+
+  
     @property
     def df(self):
         '''
@@ -28,12 +31,7 @@ class PeakDataProperties:
         '''
         return self._df
 
-    @property
-    def frame_numbers(self):
-        '''
-        Set of unique frame numbers for peaklist
-        '''
-        return self._frame_numbers
+
 
     @property
     def scat_pol(self):
@@ -55,18 +53,6 @@ class PeakDataProperties:
         scatting in 3D spherical coordinates
         '''
         return self._scat_sph
-
-    @property
-    def qmax(self):
-        return self._qmax
-
-    @property
-    def qmin(self):
-        return self._qmin
-
-    @property
-    def mask_flag(self):
-        return self._mask_flag
 
 
 

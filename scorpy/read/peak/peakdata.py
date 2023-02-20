@@ -10,122 +10,41 @@ from .peakdata_plot import PeakDataPlot
 
 
 
-DEFAULT_GEOM = ExpGeom(DATADIR /"geoms"/"agipd_2304_vj_opt_v4.geom")
 
-class PeakData(PeakDataProperties, PeakDataPlot):
+class PSPeakData(PeakDataProperties, PeakDataPlot):
 
-    def __init__(self, df, geom=DEFAULT_GEOM, cxi_flag=True, qmax=None, qmin=1e-14, mask_flag=False):
+    def __init__(self, path, geom=None):
         '''
         handler for a peaks.txt file
         df: dataframe of the peak data, or str file path to txt
         geo: ExpGeom object associated to experiement geomtery
         '''
 
-        self._geom = geom  # ExpGeom object
-        self._mask_flag = mask_flag
+        self._path=path
+        self._geom=geom
 
-        if type(df)==str:
-            df = self.read_file(df, cxi_flag)
+        with h5py.File(self.path) as h5file:
+            data = h5file['/entry_1/instrument_1/detector_1/data'][:]
 
-        self._df = df
+        data_loc =  np.where(data>0) # fs is the cols
 
-
-        self._frame_numbers = np.unique(self.df[:, 0])
-
-
-        self._scat_rect, self._scat_pol, self._scat_sph = self.get_scat(qmax=qmax, qmin=qmin)
+        self._df = np.zeros( (len(data_loc[0]), 3) )
 
 
+        self._df[:, 0] = data_loc[1] #fs
+        self._df[:, 1] = data_loc[0] #ss
+        self._df[:,2] = data[data_loc[0], data_loc[1]]
+
+        if self.geom is not None:
+            pix_pos = self.geom.translate_pixels(self._df)
 
 
-        if qmax is not None:
-            self._qmax = round(qmax, 14)
-        else:
-            self._qmax = round(self.scat_pol.max(axis=0)[1],14)
-
-        if qmin is not None:
-            self._qmin = round(qmin, 14)
-        else:
-            self._qmin = round(self.scat_pol.min(axis=0)[1],14)
+        nscats = self._df.shape[0]
+        scat_rect = np.zeros( (nscats, 4) )
+        scat_rect[:,0:3] = pix_pos
+        scat_rect[:,3] = self._df[:,-1]
 
 
-
-
-
-
-    def read_file(self, fname, cxi_flag):
-        if cxi_flag:
-            # 0: frameNumber, 6: peak_x_raw, 7: peak_y_raw, 12: total intens
-            delim, cols = ', ', (0,6,7,12)
-        else:
-            delim, cols = ' ', (0,2,1,3)
-
-        if fname[-3:] == 'txt':
-            df = np.genfromtxt(fname, delimiter=delim, skip_header=1, usecols=cols)
-
-        elif fname[-2:] == 'h5':
-            h5f = h5py.File(fname, 'r')
-            if self.mask_flag:
-                data = h5f['data/data'][:]
-            else:
-                data = h5f['entry_1/instrument_1/detector_1/data'][:]
-            h5f.close()
-
-            loc = np.where(data > 0)
-            print('loc')
-            print(loc)
-            df = np.zeros( (len(loc[0]), 4))
-            df[:,0] = 0
-            df[:,1] = loc[1]
-            df[:,2] = loc[0]
-            df[:,3] = data[loc[0], loc[1]]
-
-
-    #         with h5py.File(fname, 'r') as h5f:
-                # fs = h5f['/fs'][:]
-                # ss = h5f['/ss'][:]
-                # inten = h5f['/inten'][:]
-
-            # df = np.zeros( (len(inten), 4))
-            # df[:,1] = fs
-            # df[:,2] = ss
-            # df[:,3] = inten
-
-
-        return df
-
-
-
-    def get_scat(self, qmax=None, qmin=None):
-
-        if self.df.shape[1]==4:
-            #if the df is an array of framenumber, fs, ss, intensity
-            framenumber_df = self.df[:, 0] 
-            fss_df = self.df[:, 1]  #  fs direction
-            sss_df = self.df[:, 2]  # ss direction
-            inten_df = self.df[:, 3]  # intensity
-
-
-            pix_pos = self.geom.translate_pixels(
-                sss_df, fss_df)  # x,y,z position [m]
-
-        elif self.df.shape[1]==5:
-            #if the df is an array of framenumber, x,y, z, intensity
-            framenumber_df = self.df[:, 0]
-            pix_pos = self.df[:,1:4]
-            inten_df = self.df[:, 4]  # intensity
-
-        print('pixpos)')
-        print(pix_pos)
-
-        nscats = self.df.shape[0]
-        scat_rect = np.zeros( (nscats, 5) )
-        scat_rect[:,0] = framenumber_df
-        scat_rect[:,1:4] = pix_pos
-        scat_rect[:,4] = inten_df
-
-        print('scat_rect')
-        print(scat_rect)
 
 
         pol_r_mag = np.hypot(pix_pos[:, 0], pix_pos[:, 1]) #distance in meters from detector center to pixel
@@ -142,63 +61,44 @@ class PeakData(PeakDataProperties, PeakDataPlot):
 
 
         #flat ewald sphere approx
-        scat_pol = np.zeros( (nscats, 4) )
-        scat_pol[:,0] = framenumber_df
-        scat_pol[:,1] = q_mag
-        scat_pol[:,2] = pol_phi
-        scat_pol[:,3] = inten_df
+        scat_pol = np.zeros( (nscats, 3) )
+        scat_pol[:,0] = q_mag
+        scat_pol[:,1] = pol_phi
+        scat_pol[:,2] = self._df[:,-1]
 
 
 
         #curved ewald sphere
-        scat_sph = np.zeros( ( nscats, 5))
-        scat_sph[:,0] = framenumber_df
-        scat_sph[:,1] = q_mag
-        scat_sph[:,2] = saldin_sph_theta
-        scat_sph[:,3] = pol_phi
-        scat_sph[:,4] = inten_df
-
-        # if qmax is not None:
-            # loc = np.where(scat_pol[:, 1] <= qmax)
-            # scat_sph = scat_sph[loc]
-            # scat_rect = scat_rect[loc]
-            # scat_pol = scat_pol[loc]
-
-        # if qmin is not None:
-            # loc = np.where(scat_pol[:, 1] >= qmin)
-            # scat_sph = scat_sph[loc]
-            # scat_rect = scat_rect[loc]
-            # scat_pol = scat_pol[loc]
-
-
-        return scat_rect, scat_pol, scat_sph
-
-    def split_frames(self):
-        '''
-        return a list of PeakData objects, where each PeakData object on has a
-        single frame of data
-        '''
-
-        frames = []  # init list of frames
-        for fn in self.frame_numbers:  # for each frame number
-            # get the peaks from this frame number
-            frame_df = self.df[np.where(self.df[:, 0] == fn)]
-            # make the Peak data object and append
-            frames.append(PeakData(frame_df, geom=self.geom, qmax=self.qmax, qmin=self.qmin))
-        return frames  # return the list of appended peak datas
+        scat_sph = np.zeros( ( nscats, 4))
+        scat_sph[:,0] = q_mag
+        scat_sph[:,1] = saldin_sph_theta
+        scat_sph[:,2] = pol_phi
+        scat_sph[:,3] = self._df[:,-1]
 
 
 
-    def make_im(self, npix=500, r=0.055, bool_inten=False, fname=None):
+
+        self._scat_rect = scat_rect
+        self._scat_pol = scat_pol
+        self._scat_sph = scat_sph
+
+
+
+
+    def make_im(self, npix, r, bool_inten=False, fname=None):
 
         im = np.zeros( (npix,npix) )
 
-        ite = np.ones( self.scat_rect.shape[0])
+        loc = np.where(np.linalg.norm(self.scat_rect[:,0:2], axis=1)<r)[0]
 
-        xinds = map(index_x, self.scat_rect[:,0], -r*ite, r*ite, ite*npix)
-        yinds = map(index_x, self.scat_rect[:,1], -r*ite, r*ite, ite*npix)
+        ite = np.ones( len(loc))
 
-        for xind, yind, inten in zip(xinds, yinds, self.scat_rect[:,-1]):
+        xinds = map(index_x, self.scat_rect[loc,0], -r*ite, r*ite, ite*npix)
+        yinds = map(index_x, self.scat_rect[loc,1], -r*ite, r*ite, ite*npix)
+
+     
+
+        for xind, yind, inten in zip(xinds, yinds, self.scat_rect[loc,-1]):
             im[xind, yind] += inten
 
         if bool_inten:
@@ -209,7 +109,7 @@ class PeakData(PeakDataProperties, PeakDataPlot):
             flat_im = im.flatten()
             flat_im.tofile(fname)
 
-        return im
+        return im.T
 
 
 
@@ -217,13 +117,11 @@ class PeakData(PeakDataProperties, PeakDataPlot):
 
     def integrate_peaks(self, r):
 
-        assert self.frame_numbers.shape[0]==1, 'only integrate peaks for single frame peak data objects'
         pixels = self.scat_rect[self.scat_rect[:, -1].argsort()]
 
         pixel_averaged_bool = np.zeros(pixels.shape[0])
 
         pixels = pixels[::-1]
-
 
         integrated_peaks_list = []
 
@@ -234,7 +132,7 @@ class PeakData(PeakDataProperties, PeakDataPlot):
 
             dxypixels = pixels - pixel
 
-            dr = np.linalg.norm(dxypixels[:,1:3], axis=1)
+            dr = np.linalg.norm(dxypixels[:,0:2], axis=1)
             loc = np.where(dr<r)
             pixel_averaged_bool[loc] = 1
 
@@ -248,10 +146,9 @@ class PeakData(PeakDataProperties, PeakDataPlot):
 
 
 
-        df = np.array(integrated_peaks_list)
+        return np.array(integrated_peaks_list)
 
 
-        return PeakData(df, geom=self.geom, qmax=self.qmax, qmin=self.qmin)
 
 
 

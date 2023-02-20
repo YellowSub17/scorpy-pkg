@@ -9,25 +9,25 @@ from .expgeom_plot import ExpGeomPlot
 
 class ExpGeom(ExpGeomProps, ExpGeomPlot):
 
-    def __init__(self, filename):
+    def __init__(self, path):
         '''
         Handler for .geom parameter files
-        filename: str of the path to the .geom file
+        path: str of the path to the .geom file
         '''
 
-        self.filename = filename
+        self.path = path
         self.file_args, self.panel_args = self.parse_file()
         # pixel resolution (~5000 Pix/m, 200 e-6 m/Pix)
         self.res = float(self.file_args['res'])
         self.clen = float(self.file_args['clen'])  # camera length
         self.photon_energy = float(self.file_args['photon_energy'])  # eV
 
-        if 'nfs' and 'nss' in self.file_args.keys():
-            self.nfs = int(self.file_args['nfs'])
-            self.nss = int(self.file_args['nss'])
-        else:
-            self.nfs = 128
-            self.nss = 64
+#         if 'nfs' and 'nss' in self.file_args.keys():
+            # self.nfs = int(self.file_args['nfs'])
+            # self.nss = int(self.file_args['nss'])
+        # else:
+            # self.nfs = 128
+            # self.nss = 64
         
         #props
         self.wavelength = (4.135667e-15 * 2.99792e8 *1e10) / self.photon_energy  # A
@@ -35,7 +35,49 @@ class ExpGeom(ExpGeomProps, ExpGeomPlot):
 
         self.panels = self.make_panels(self.panel_args)  # make the panels
 
-    def translate_pixels(self, pix_sss, pix_fss):
+#     def translate_pixelsbkup(self, pix_sss, pix_fss):
+        # '''
+        # Translate pixel indices of fast and slow scan directions into position.
+
+        # Arguments:
+            # pix_sss: list of pixels indices in slow scan direction.
+            # pix_fss: list of pixels indices in fast scan direction.
+
+        # Returns:
+            # pos: list of pixels positions in real space coordinates, (x,y,z).
+        # '''
+
+        # pix_posx = np.zeros((len(pix_sss)))
+        # pix_posy = np.zeros((len(pix_sss)))
+        # pix_posz = np.zeros((len(pix_sss)))
+
+        # pix_pos = np.zeros((len(pix_sss), 3))
+
+        # panel_mods = np.floor(pix_sss / self.nss)
+
+
+        # for i_p, panel in enumerate(self.panels):
+            # if np.floor(panel['min_ss'] / self.nss) not in panel_mods:
+                # continue
+            # else:
+                # loc = np.where(int(panel['min_ss'] / self.nss) == panel_mods)
+
+                # pix_posx[loc] = panel['fs_xy'][0] * (pix_fss[loc] % self.nfs) \
+                    # + panel['ss_xy'][0] * (pix_sss[loc] % self.nss)
+
+                # pix_posy[loc] = panel['fs_xy'][1] * (pix_fss[loc] % self.nfs) \
+                    # + panel['ss_xy'][1] * (pix_sss[loc] % self.nss)
+
+                # pix_posz[loc] = panel['coffset']
+
+                # # translate according to corner of panel
+                # pix_posx[loc] += panel['corner_xy'][0]
+                # pix_posy[loc] += panel['corner_xy'][1]
+
+        # rect_pos = np.array([pix_posx / self.res, pix_posy / self.res, pix_posz + self.clen]).T
+
+        # return rect_pos
+    def translate_pixels(self, pk_df):
         '''
         Translate pixel indices of fast and slow scan directions into position.
 
@@ -47,36 +89,61 @@ class ExpGeom(ExpGeomProps, ExpGeomPlot):
             pos: list of pixels positions in real space coordinates, (x,y,z).
         '''
 
-        pix_posx = np.zeros((len(pix_sss)))
-        pix_posy = np.zeros((len(pix_sss)))
-        pix_posz = np.zeros((len(pix_sss)))
+        pix_posx = np.zeros(pk_df.shape[0])
+        pix_posy = np.zeros(pk_df.shape[0])
+        pix_posz = np.zeros(pk_df.shape[0])
 
-        pix_pos = np.zeros((len(pix_sss), 3))
+        # pix_pos = np.zeros((len(pix_sss), 3))
 
-        panel_mods = np.floor(pix_sss / self.nss)
+        # panel_mods = np.floor(pix_sss / self.nss)
+
+        print('pix_posx.shape')
+        print(pix_posx.shape)
+
+        print('pk_df.shape')
+        print(pk_df.shape)
+
 
         for i_p, panel in enumerate(self.panels):
-            if np.floor(panel['min_ss'] / self.nss) not in panel_mods:
-                continue
-            else:
-                loc = np.where(int(panel['min_ss'] / self.nss) == panel_mods)
 
-                pix_posx[loc] = panel['fs_xy'][0] * (pix_fss[loc] % self.nfs) \
-                    + panel['ss_xy'][0] * (pix_sss[loc] % self.nss)
+            pix_fs_in_panel_cond = np.logical_and( pk_df[:,0] >= panel['min_fs'], pk_df[:,0] <= panel['max_fs'] )
+            pix_ss_in_panel_cond = np.logical_and( pk_df[:,1] >= panel['min_ss'], pk_df[:,1] <= panel['max_ss'] )
 
-                pix_posy[loc] = panel['fs_xy'][1] * (pix_fss[loc] % self.nfs) \
-                    + panel['ss_xy'][1] * (pix_sss[loc] % self.nss)
+            loc = np.where(np.logical_and(pix_fs_in_panel_cond, pix_ss_in_panel_cond))
 
-                pix_posz[loc] = panel['coffset']
+   
 
-                # translate according to corner of panel
-                pix_posx[loc] += panel['corner_xy'][0]
-                pix_posy[loc] += panel['corner_xy'][1]
+            nfs = panel['max_fs'] -panel['min_fs']
+            nss = panel['max_ss'] -panel['min_ss']
+
+            pix_posx[loc] = panel['fs_xy'][0] * (pk_df[loc,0] % nfs) \
+                + panel['ss_xy'][0] * (pk_df[loc,1] % nss)
+
+            pix_posy[loc] = panel['fs_xy'][1] * (pk_df[loc,0] % nfs) \
+                + panel['ss_xy'][1] * (pk_df[loc,1] % nss)
+
+            pix_posz[loc] = panel['coffset']
+
+            # translate according to corner of panel
+            pix_posx[loc] += panel['corner_xy'][0]
+            pix_posy[loc] += panel['corner_xy'][1]
 
         rect_pos = np.array([pix_posx / self.res, pix_posy / self.res, pix_posz + self.clen]).T
 
-
         return rect_pos
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def parse_file(self):
         '''
@@ -90,7 +157,7 @@ class ExpGeom(ExpGeomProps, ExpGeomPlot):
             parsed_panels (dict): description of panels
         '''
 
-        f = open(self.filename, 'r')
+        f = open(self.path, 'r')
         cont = f.read()
         cont = '[params]' + cont
         config = cfp.ConfigParser(

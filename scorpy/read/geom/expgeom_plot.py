@@ -9,7 +9,7 @@ class ExpGeomPlot:
 
 
 
-    def plot_panels(self):
+    def plot_panels(self, panel_label=True, fs_arrow=True, ss_arrow=True, units='m'):
         '''
         Plot the panels in the experiment geometry.
 
@@ -20,21 +20,26 @@ class ExpGeomPlot:
             None.
         '''
         plt.axis('equal')
-        plt.vlines(0, -0.005, 0.005)
-        plt.hlines(0, -0.005, 0.005)
+
+
+        if units=='m':
+            sf=1
+
+        elif units=='pix':
+            sf = 1/self.res
 
         for panel in self.panels:
 
             rect_width = panel['fs_xy'][1] * \
-                (panel['max_fs'] - panel['min_fs']) / self.res
+                (panel['max_fs'] - panel['min_fs']) / (self.res*sf)
             rect_height = panel['ss_xy'][0] * \
-                (panel['max_ss'] - panel['min_ss']) / self.res
+                (panel['max_ss'] - panel['min_ss']) / (self.res*sf)
 
             rect_rot = np.degrees(np.arctan2( np.abs(panel['fs_xy'][1]), panel['fs_xy'][0]))
 
             # corner of the panel
-            rect_x = panel['corner_xy'][0] / self.res
-            rect_y = panel['corner_xy'][1] / self.res
+            rect_x = panel['corner_xy'][0] / (self.res*sf)
+            rect_y = panel['corner_xy'][1] / (self.res*sf)
 
             # rectangle object
             rect = patches.Rectangle((rect_x, rect_y), rect_width, -rect_height, rect_rot,
@@ -44,12 +49,32 @@ class ExpGeomPlot:
             plt.gca().add_patch(rect)
 
             # plot an X in the (0,0) corner, add a label here as well
-            plt.plot(panel['corner_xy'][0] / self.res,
-                     panel['corner_xy'][1] / self.res, 'rx')
-            plt.text(panel['corner_xy'][0] / self.res, panel['corner_xy']
-                     [1] / self.res, panel['name'], fontsize=6)
-        plt.xlabel('x [m]')
-        plt.ylabel('y [m]')
+            plt.plot(panel['corner_xy'][0] / (self.res*sf),
+                     panel['corner_xy'][1] / (self.res*sf), 'rx')
+
+            if panel_label:
+                plt.text(panel['corner_xy'][0] / (self.res*sf), panel['corner_xy']
+                         [1] / (self.res*sf), panel['name'], fontsize=6)
+
+            if fs_arrow:
+                plt.arrow(panel['corner_xy'][0] / (self.res*sf),panel['corner_xy'][1] / (self.res*sf),
+                          30*panel['fs_xy'][0]/(self.res*sf), 30*panel['fs_xy'][1]/(self.res*sf),
+                         color='blue')
+#             if ss_arrow:
+                # plt.arrow(panel['corner_xy'][0] / (self.res*sf),panel['corner_xy'][1] / (self.res*sf),
+                          # 30*panel['ss_xy'][0]/(self.res*sf), 30*panel['ss_xy'][1]/(self.res*sf),
+                         color='red')
+        # plt.vlines(0, -0.005, 0.005)
+        # plt.hlines(0, -0.005, 0.005)
+        cross_hair = 30/(self.res*sf)
+        
+
+        plt.vlines(0, -cross_hair, cross_hair)
+        plt.hlines(0, -cross_hair, cross_hair)
+
+
+        plt.xlabel(f'x [{units}]')
+        plt.ylabel(f'y [{units}]')
 
 
     def plot_qring(self, q=1, ec='purple', ls=":"):

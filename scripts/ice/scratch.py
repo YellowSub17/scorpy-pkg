@@ -3,43 +3,53 @@ import scorpy
 import os
 import h5py
 
-
 import utils
+
 import matplotlib.pyplot as plt
 plt.close('all')
 
-### make
 
 
 
-utils.write_geom(clen=0.18, photonenergy=9300, pixsize=2e-4, npix=1024)
-geom = scorpy.ExpGeom(f'{scorpy.DATADIR}/ice/sim/detector.geom')
-geom.plot_panels()
+geom = scorpy.ExpGeom(f'{scorpy.DATADIR}/ice/sim/geoms/detector.geom')
 
-for q in [0.5, 1,1.5, 2, 2.25]:
-    geom.plot_qring(q=q)
+# utils.gen_pattern(size=500)
 
 
-utils.gen_pattern(size=5, nphotons=1e26, pdb='hex-ice')
-
-# with h5py.File(f'{scorpy.DATADIR}/ice/sim/x.h5', 'r') as h5file:
-
-    # data = h5file['/entry_1/instrument_1/detector_1/data'][:]
 
 
-# print(data.max())
-# print(data.min())
+pk = scorpy.PeakData(f'{scorpy.DATADIR}/ice/sim/patterns/x.h5', geom=geom)
 
-# plt.figure()
-# plt.imshow(np.log10(np.abs(data)+1))
+
+im = pk.make_im(2001, 0.1)
+
+plt.figure()
+plt.imshow(im, clim=(0, np.max(im)/10000000), origin='lower')
 # plt.colorbar()
 
 
-print('\nmaking pk')
-pk = scorpy.PeakData(f'{scorpy.DATADIR}/ice/sim/x.h5', geom=geom, qmax=2.25)
+loc = np.where(pk.scat_rect[:,-1]>1000)
+
+plt.figure()
+plt.plot(pk.scat_rect[loc[0],0], pk.scat_rect[loc[0],1], ls='', marker='.')
+geom.plot_panels(units='m')
+geom.plot_qring(0.4)
 
 
-pk.plot_peaks()
+
+x = pk.integrate_peaks(0.02)
+
+
+loc = np.where(x[:,-1])
+
+plt.figure()
+plt.plot(x[loc[0],0], x[loc[0],1], ls='', marker='.')
+geom.plot_panels(units='m')
+geom.plot_qring(0.4)
+
+
+
+
 
 
 plt.show()

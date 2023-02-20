@@ -199,14 +199,15 @@ def convert_rect2sph(xyz):
 
 
 
+def convert_cart2pol(xy):
+    r = np.linalg.norm(xy, axis=1)
 
-# def fsc(v1,v2):
+    phi = np.arctan2(pix_pos[:, 1], pix_pos[:, 0]) # angular polar coordinate of pixel
+    phi[np.where(pol_phi < 0)] = pol_phi[np.where(pol_phi < 0)] + 2*np.pi #angle measures from 0 to 2pi radians
 
-    # ned =  np.sum(v1 * v2, axis = -1).sum(axis=-1)
-    # donk = np.sqrt( np.sum(v1**2, axis= -1).sum(axis=-1) *  np.sum(v2**2, axis= -1).sum(axis=-1)   )
+    return np.array([r, phi]).T
 
-    # fsc = ned/donk
-    # fsc = np.nan_to_num(fsc, copy=True, nan=0.0, posinf=None, neginf=None)
 
-    # return fsc
+
+
 
