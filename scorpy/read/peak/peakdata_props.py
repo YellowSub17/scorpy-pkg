@@ -8,51 +8,93 @@
 class PeakDataProperties:
 
     @property
-    def geom(self):
+    def geompath(self):
         '''
-        ExpoGeom object that handles experiment geometry.
+        path to geom
         '''
-        return self._geom
+        return self._geompath
 
     @property
-    def path(self):
+    def h5path(self):
         '''
         path to data
         '''
-        return self._path
-
-
-
-  
-    @property
-    def df(self):
-        '''
-        data frame containing frame numbers, fs and ss pixel indices and scattering intensity 
-        '''
-        return self._df
-
+        return self._h5path
 
 
     @property
-    def scat_pol(self):
+    def geom_params(self):
         '''
-        scattering in polar coordinates
+        parameters defined in geom
         '''
-        return self._scat_pol
+        return self._geom_params
 
     @property
-    def scat_rect(self):
+    def res(self):
         '''
-        scatting in 3D carteasian coordinates
+        resolution = 1/pix size [1/m]
         '''
-        return self._scat_rect
+        return float(self.geom_params['res'])
 
     @property
-    def scat_sph(self):
+    def clen(self):
         '''
-        scatting in 3D spherical coordinates
+        camera length
         '''
-        return self._scat_sph
+        return float(self.geom_params['clen'])  # camera length
+
+
+    @property
+    def photon_energy(self):
+        '''
+        photon engery [eV]
+        '''
+        return float(self.geom_params['photon_energy'])  # eV
+
+
+
+
+    @property
+    def wavelength(self):
+        '''
+        wavelength [A]
+        '''
+        return (4.135667e-15 * 2.99792e8 *1e10) / self.photon_energy  # A
+
+
+    @property
+    def k(self):
+        '''
+        wavenumber
+        '''
+        return (2 * np.pi) / self.wavelength # 1/A
+
+
+
+    @property
+    def panels(self):
+        '''
+        list of panels
+        '''
+        return self.geom_params['panels']
+
+
+
+
+
+
+
+
+
+
+
+        # self.res = float(self.geom_params['res'])
+        # self.clen = 
+        # self.photon_energy = 
+
+        # #props
+        # self.wavelength = 
+        # self.k = 
 
 
 

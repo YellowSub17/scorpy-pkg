@@ -191,6 +191,9 @@ def cosinesim(v1, v2):
 
 
 def convert_rect2sph(xyz):
+    '''
+    convert an (x,y,z) point to (r, theta, phi)
+    '''
     r = np.linalg.norm(xyz, axis=1)
     theta = np.arctan2(np.linalg.norm(xyz[:, :2], axis=1), xyz[:, 2])  # 0 -> pi (NS)
     phi = np.arctan2(xyz[:,1], xyz[:,0])
@@ -199,13 +202,20 @@ def convert_rect2sph(xyz):
 
 
 
-def convert_cart2pol(xy):
+def convert_rect2pol(xy):
+    '''
+    convert an (x,y) point to (r, phi)
+    '''
     r = np.linalg.norm(xy, axis=1)
 
     phi = np.arctan2(pix_pos[:, 1], pix_pos[:, 0]) # angular polar coordinate of pixel
     phi[np.where(pol_phi < 0)] = pol_phi[np.where(pol_phi < 0)] + 2*np.pi #angle measures from 0 to 2pi radians
 
     return np.array([r, phi]).T
+
+
+def convert_scattheta2q(theta):
+    
 
 
 

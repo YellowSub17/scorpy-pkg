@@ -16,7 +16,9 @@ class ExpGeom(ExpGeomProps, ExpGeomPlot):
         '''
 
         self.path = path
-        self.file_args, self.panel_args = self.parse_file()
+
+        self.geom_args, self.panel_args = self.parse_geom_file()
+
         # pixel resolution (~5000 Pix/m, 200 e-6 m/Pix)
         self.res = float(self.file_args['res'])
         self.clen = float(self.file_args['clen'])  # camera length
@@ -29,60 +31,7 @@ class ExpGeom(ExpGeomProps, ExpGeomPlot):
 
         self.panels = self.make_panels(self.panel_args)  # make the panels
 
-    def translate_pixels(self, pk_df):
-        '''
-        Translate pixel indices of fast and slow scan directions into position.
 
-        Arguments:
-            pix_sss: list of pixels indices in slow scan direction.
-            pix_fss: list of pixels indices in fast scan direction.
-
-        Returns:
-            pos: list of pixels positions in real space coordinates, (x,y,z).
-        '''
-
-        pix_posx = np.zeros(pk_df.shape[0])
-        pix_posy = np.zeros(pk_df.shape[0])
-        pix_posz = np.zeros(pk_df.shape[0])
-
-        # pix_pos = np.zeros((len(pix_sss), 3))
-
-        # panel_mods = np.floor(pix_sss / self.nss)
-
-        print('pix_posx.shape')
-        print(pix_posx.shape)
-
-        print('pk_df.shape')
-        print(pk_df.shape)
-
-
-        for i_p, panel in enumerate(self.panels):
-
-            pix_fs_in_panel_cond = np.logical_and( pk_df[:,0] >= panel['min_fs'], pk_df[:,0] <= panel['max_fs'] )
-            pix_ss_in_panel_cond = np.logical_and( pk_df[:,1] >= panel['min_ss'], pk_df[:,1] <= panel['max_ss'] )
-
-            loc = np.where(np.logical_and(pix_fs_in_panel_cond, pix_ss_in_panel_cond))
-
-   
-
-            nfs = panel['max_fs'] -panel['min_fs']
-            nss = panel['max_ss'] -panel['min_ss']
-
-            pix_posx[loc] = panel['fs_xy'][0] * (pk_df[loc,0] % nfs) \
-                + panel['ss_xy'][0] * (pk_df[loc,1] % nss)
-
-            pix_posy[loc] = panel['fs_xy'][1] * (pk_df[loc,0] % nfs) \
-                + panel['ss_xy'][1] * (pk_df[loc,1] % nss)
-
-            pix_posz[loc] = panel['coffset']
-
-            # translate according to corner of panel
-            pix_posx[loc] += panel['corner_xy'][0]
-            pix_posy[loc] += panel['corner_xy'][1]
-
-        rect_pos = np.array([pix_posx / self.res, pix_posy / self.res, pix_posz + self.clen]).T
-
-        return rect_pos
 
 
 
@@ -134,7 +83,7 @@ class ExpGeom(ExpGeomProps, ExpGeomPlot):
 
 
 
-    def make_panels(self, file_panels):
+    def make_panels(self):
         '''
         Parse panel arguments and make each panel.
 
@@ -146,7 +95,7 @@ class ExpGeom(ExpGeomProps, ExpGeomPlot):
         '''
         panels = []  # init a list of panels
 
-        for key in file_panels.keys():  # for every panel in the parsed panels
+        for key in self.geom_args['panels'].keys():  # for every panel in the parsed panels
             this_panel = {}
             this_panel['name'] = key
             this_panel['min_fs'] = int(file_panels[key]['min_fs'])
