@@ -208,13 +208,12 @@ def convert_rect2pol(xy):
     '''
     r = np.linalg.norm(xy, axis=1)
 
-    phi = np.arctan2(pix_pos[:, 1], pix_pos[:, 0]) # angular polar coordinate of pixel
-    phi[np.where(pol_phi < 0)] = pol_phi[np.where(pol_phi < 0)] + 2*np.pi #angle measures from 0 to 2pi radians
+    phi = np.arctan2(xy[:, 1], xy[:, 0]) # angular polar coordinate of pixel
+    phi[np.where(phi < 0)] = phi[np.where(phi < 0)] + 2*np.pi #angle measures from 0 to 2pi radians
 
     return np.array([r, phi]).T
 
 
-def convert_scattheta2q(theta):
     
 
 

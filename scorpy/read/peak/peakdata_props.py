@@ -1,6 +1,7 @@
 
 
 
+import numpy as np
 
 
 
@@ -79,22 +80,43 @@ class PeakDataProperties:
         return self.geom_params['panels']
 
 
+    @property
+    def scat_rect(self):
+        '''
+        scattering rect
+        '''
+        return self._scat_rect
+
+    @property
+    def scat_rpol(self):
+        '''
+        scattering rpol
+        '''
+        return self._scat_rpol
 
 
+    @property
+    def scat_tpol(self):
+        '''
+        scattering tpol
+        '''
+        return self._scat_tpol
+
+    @property
+    def scat_qpol(self):
+        '''
+        scattering qpol
+        '''
+        return self._scat_qpol
+
+    @property
+    def scat_sph(self):
+        '''
+        scattering sph
+        '''
+        return self._scat_sph
 
 
-
-
-
-
-
-        # self.res = float(self.geom_params['res'])
-        # self.clen = 
-        # self.photon_energy = 
-
-        # #props
-        # self.wavelength = 
-        # self.k = 
 
 
 

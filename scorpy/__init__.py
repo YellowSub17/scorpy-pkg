@@ -8,7 +8,7 @@ from .vols.sphv.sphericalvol import SphericalVol
 
 from .read.cifs.cifdata import CifData
 from .read.peak.peakdata import PeakData
-from .read.geom.expgeom import ExpGeom
+# from .read.geom.expgeom import ExpGeom
 
 
 from .iqlm.iqlmhandler import IqlmHandler
