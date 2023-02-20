@@ -54,7 +54,7 @@ def gen_pattern(size=90, nphotons=1e12, photonenergy=9300, pdb='hex-ice'):
     cmd+=f'-g {scorpy.DATADIR}/ice/sim/detector.geom '
     cmd+=f'--intensities={scorpy.DATADIR}/ice/sim/{pdb}.hkl '
     cmd+=f'--pdb={scorpy.DATADIR}/ice/sim/{pdb}.pdb '
-    cmd+=f'--output={scorpy.DATADIR}/ice/sim/test-pattern.h5 '
+    cmd+=f'--output={scorpy.DATADIR}/ice/sim/x.h5 '
 
     os.system(f'{cmd}')
 

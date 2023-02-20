@@ -72,6 +72,8 @@ class PeakData(PeakDataProperties, PeakDataPlot):
             h5f.close()
 
             loc = np.where(data > 0)
+            print('loc')
+            print(loc)
             df = np.zeros( (len(loc[0]), 4))
             df[:,0] = 0
             df[:,1] = loc[1]
@@ -98,8 +100,8 @@ class PeakData(PeakDataProperties, PeakDataPlot):
 
         if self.df.shape[1]==4:
             #if the df is an array of framenumber, fs, ss, intensity
-            framenumber_df = self.df[:, 0]  # 0-127, fs direction
-            fss_df = self.df[:, 1]  # 0-127, fs direction
+            framenumber_df = self.df[:, 0] 
+            fss_df = self.df[:, 1]  #  fs direction
             sss_df = self.df[:, 2]  # ss direction
             inten_df = self.df[:, 3]  # intensity
 
@@ -113,12 +115,17 @@ class PeakData(PeakDataProperties, PeakDataPlot):
             pix_pos = self.df[:,1:4]
             inten_df = self.df[:, 4]  # intensity
 
+        print('pixpos)')
+        print(pix_pos)
 
         nscats = self.df.shape[0]
         scat_rect = np.zeros( (nscats, 5) )
         scat_rect[:,0] = framenumber_df
         scat_rect[:,1:4] = pix_pos
         scat_rect[:,4] = inten_df
+
+        print('scat_rect')
+        print(scat_rect)
 
 
         pol_r_mag = np.hypot(pix_pos[:, 0], pix_pos[:, 1]) #distance in meters from detector center to pixel
@@ -151,17 +158,17 @@ class PeakData(PeakDataProperties, PeakDataPlot):
         scat_sph[:,3] = pol_phi
         scat_sph[:,4] = inten_df
 
-        if qmax is not None:
-            loc = np.where(scat_pol[:, 1] <= qmax)
-            scat_sph = scat_sph[loc]
-            scat_rect = scat_rect[loc]
-            scat_pol = scat_pol[loc]
+        # if qmax is not None:
+            # loc = np.where(scat_pol[:, 1] <= qmax)
+            # scat_sph = scat_sph[loc]
+            # scat_rect = scat_rect[loc]
+            # scat_pol = scat_pol[loc]
 
-        if qmin is not None:
-            loc = np.where(scat_pol[:, 1] >= qmin)
-            scat_sph = scat_sph[loc]
-            scat_rect = scat_rect[loc]
-            scat_pol = scat_pol[loc]
+        # if qmin is not None:
+            # loc = np.where(scat_pol[:, 1] >= qmin)
+            # scat_sph = scat_sph[loc]
+            # scat_rect = scat_rect[loc]
+            # scat_pol = scat_pol[loc]
 
 
         return scat_rect, scat_pol, scat_sph
