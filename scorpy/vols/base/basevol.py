@@ -274,19 +274,6 @@ xmax=1, ymax=1, zmax=1,
 
 
 
-#     def integrate_peaks(self, dnx=0, dny=0, dnz=0):
-
-        # peaks = self.ls_pts(inds=True)
-        # integ_peaks = self.ls_pts(inds=True)
-
-
-        # for i, peak in enumerate(peaks):
-            # xind, yind, zind = int(peak[0]), int(peak[1]), int(peak[2])
-            # integ_peaks[i, -1] = self.vol[xind-dnx:xind+dnx+1, yind-dny:yind+dny+1, zind-dnz:yind+dnz+1].sum()
-
-        # return integ_peaks
-
-
 
     def integrate_region(self, ptx, pty, ptz, dx, dy, dz, shape='disk'):
 
@@ -356,8 +343,17 @@ xmax=1, ymax=1, zmax=1,
 
     def zmean_subtraction(self):
 
-        zmean = np.mean(self.vol, axis=2)
-        return zmean
+        print(self.vol.shape)
+        vol_aligned = np.swapaxes(self.vol, 0,2)
+        print(vol_aligned.shape)
+
+        zmean = np.mean(vol_aligned, axis=0)
+        
+        vol_aligned -= zmean
+
+        self.vol = np.swapaxes(vol_aligned, 0, 2)
+
+        # return zmean
 
 
 

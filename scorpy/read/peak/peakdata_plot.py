@@ -3,6 +3,8 @@
 
 
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+
 import numpy as np
 
 
@@ -15,21 +17,18 @@ class PeakDataPlot:
 
 
 
-    def plot_peaks(self, intenthresh=50, scatter=False, cmap=None, sizes=None,  newfig=True):
+    def plot_peaks(self, intenthresh=500, scatter=False, cmap=None, sizes=None,  newfig=True):
 
         if newfig:
             plt.figure()
-        self.geom.plot_panels()
+        self.plot_panels()
 
 
-        x = self.scat_rect[:,1]
-        y = self.scat_rect[:,2]
+        x = self.scat_rect[:,0]
+        y = self.scat_rect[:,1]
         colors = self.scat_rect[:,-1]
         marker = 'o'
 
-        # x = x[::skippeaks]
-        # y = y[::skippeaks]
-        # colors = colors[::skippeaks]
 
 
         loc = np.where(colors>intenthresh)
@@ -48,7 +47,7 @@ class PeakDataPlot:
         plt.scatter(x, y, c=colors, s=sizes, cmap=cmap, marker=marker)
         plt.colorbar()
 
-    def plot_panels(self, panel_label=True, fs_arrow=True, ss_arrow=True, units='m'):
+    def plot_panels(self, panel_label=True, fs_arrow=False, ss_arrow=True, units='m'):
         '''
         Plot the panels in the experiment geometry.
 

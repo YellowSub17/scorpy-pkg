@@ -19,7 +19,7 @@ class CifDataSaveLoad:
         cif['block']['_cell.angle_beta'] = np.degrees(self.beta)
         cif['block']['_cell.angle_gamma'] = np.degrees(self.gamma)
         cif['block']['_cell.length_a'] = self.a_mag
-        cif['block']['_cell.length_b'] = self.b_mag
+cif['block']['_cell.length_b'] = self.b_mag
         cif['block']['_cell.length_c'] = self.c_mag
 
         cif['block']['_refln.index_h'] = self.scat_bragg[:,0]
@@ -34,7 +34,7 @@ class CifDataSaveLoad:
 
 
 
-    def save_hkl(self, path):
+    def save_shelx_hkl(self, path):
 
         self.scat_bragg[:,-1] /=np.max(self.scat_bragg[:,-1])
         self.scat_bragg[:,-1] *=9999.99
@@ -46,6 +46,26 @@ class CifDataSaveLoad:
             f.write(line)
         f.write('   0   0   0       0       0       0       0')
         f.close()
+
+
+    def save_crystfel_hkl(self, path):
+
+        f = open(path, 'w')
+
+        f.write('CrystFEL reflection list version 2.0\n')
+        f.write('Symmetry: 1\n')
+        f.write('\th\tk\tl\tI\tphase\tsigma(I)\tnmeas\n')
+
+
+        for bragg_pt in self.scat_bragg:
+
+            line = f'\t{int(bragg_pt[0])}\t{int(bragg_pt[1])}\t{int(bragg_pt[2])}\t{round(bragg_pt[3],16)}\t-\t0.0\t1\n'
+
+
+            f.write(line)
+        f.write('End of reflections')
+        f.close()
+
 
 
 

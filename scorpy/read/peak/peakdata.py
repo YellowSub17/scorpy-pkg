@@ -133,7 +133,13 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
 
 
 
+    def convert_r2q(self, r):
+        theta = np.arctan2(r, self.clen)
+        return 2*self.k*np.sin(theta/2)
 
+    def convert_q2r(self, q):
+        arcs = np.arcsin(q/(2*self.k))
+        return np.tan(2*arcs)*self.clen
 
 
 

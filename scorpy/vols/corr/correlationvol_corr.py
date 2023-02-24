@@ -10,12 +10,6 @@ class CorrelationVolCorr:
 
     @verbose_dec
     def correlate_convolve(self, qt, verbose=0):
- #        qt[440:500,33:40] = 1
-        # qt[440:500,90:96] = 1
-        # qt[440:500,145:152] = 1
-        # qt[440:500,204:214] = 1
-        # qt[440:500,265:273] = 1
-        # qt[440:500,318:324] = 1
 
         f_qt = np.fft.fft(qt, axis=1)
         print(f_qt.shape)
@@ -29,25 +23,6 @@ class CorrelationVolCorr:
                 self.vol[i, j+i,:] += np.real(convolved_rows)
                 if j >0:
                     self.vol[j+i, i,:] += np.real(convolved_rows)
-
-
-
-#     def correlate_fft_pol(self, polar):
-
-        # fpolar = np.fft.fft( polar, axis=1 )
-
-        # out = np.zeros( (polar.shape[0],polar.shape[0],polar.shape[1]), np.complex128)
-
-        # for i, fp_rowi in enumerate(fpolar):
-            # for j, fp_rowj in enumerate(fpolar):
-                # out[i,j,:] = fp_rowi*fp_rowj.conjugate()
-
-
-        # out = np.real(np.fft.ifft( out, axis=2 ))
-
-        # return out
-
-
 
 
 
@@ -103,7 +78,6 @@ class CorrelationVolCorr:
                 self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
                 if j > 0:  # if not on diagonal
                     self.vol[q2_ind, q1_ind, psi_ind] += q1[-1] * q2[-1]
-        # print('\x1b[2K', end='\r')
 
 
 
@@ -161,7 +135,6 @@ class CorrelationVolCorr:
                 if j > 0:  # if not on diagonal
                     self.vol[q2_ind, q1_ind, psi_ind] += q1[-1] * q2[-1]
 
-        # print('\x1b[2K', end='\r')
 
 
 

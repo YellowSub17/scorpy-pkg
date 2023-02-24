@@ -35,11 +35,6 @@ class CorrelationVolFill:
 
 
 
-# def to_polar(im, rmax, cenx, ceny):
-    # x = warp_polar( im, center=(cenx,ceny), radius=rmax)
-    # return np.rot90(x, k=3)
-
-
 
 
 
