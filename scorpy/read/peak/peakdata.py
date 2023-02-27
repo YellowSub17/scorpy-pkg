@@ -46,7 +46,6 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
 
 
         xyz_pixel = self.fsss2xyz(scat_fs_ss)
-        print(xyz_pixel.shape, 'ccccc')
 
 
 
