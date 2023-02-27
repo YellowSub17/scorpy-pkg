@@ -29,10 +29,10 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
 
         self._datapath = datapath
 
-        if self.datapath[-2:]=='h5':
+        if self.datapath[-3:]=='.h5':
             with h5py.File(self.datapath) as h5file:
                 data = h5file['/entry_1/instrument_1/detector_1/data'][:]
-        elif self.datapath[-7:]=='coo.npz':
+        elif self.datapath[-4:]=='.npz':
             data_coo = sp.sparse.load_npz(self.datapath)
             data = data_coo.toarray()
 
@@ -60,7 +60,6 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
         rphi = convert_rect2pol(xyz_pixel[:,0:2])
 
         diff_cone_angle = np.arctan2(rphi[:,0], xyz_pixel[:, 2])
-
         q_mag = 2*self.k*np.sin(0.5*diff_cone_angle)
 
         saldin_sph_theta = np.pi/2 - np.arcsin((q_mag)/(2*self.k))
@@ -77,7 +76,21 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
 
         self._scat_sph = np.array([q_mag, saldin_sph_theta, rphi[:,1], intens ]).T
 
-        self._qmax = np.max(q_mag)
+
+
+    def convert_r2q(self, r):
+        theta = np.arctan2(r, self.clen)
+        return 2*self.k*np.sin(theta/2)
+
+    def convert_q2r(self, q):
+        arcs = np.arcsin(q/(2*self.k))
+        return np.tan(2*arcs)*self.clen
+
+
+
+
+
+
 
 
 
@@ -148,14 +161,6 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
         return np.array(integrated_peaks_list)
 
 
-
-    def convert_r2q(self, r):
-        theta = np.arctan2(r, self.clen)
-        return 2*self.k*np.sin(theta/2)
-
-    def convert_q2r(self, q):
-        arcs = np.arcsin(q/(2*self.k))
-        return np.tan(2*arcs)*self.clen
 
 
 

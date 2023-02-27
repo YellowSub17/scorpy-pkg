@@ -53,12 +53,12 @@ class PeakDataProperties:
         return float(self.geom_params['photon_energy'])  # eV
 
 
-    @property
-    def qmax(self):
-        '''
-        maximum scattering vector [A-1]
-        '''
-        return self._qmax
+    # @property
+    # def qmax(self):
+        # '''
+        # maximum scattering vector [A-1]
+        # '''
+        # return self._qmax
 
 
 

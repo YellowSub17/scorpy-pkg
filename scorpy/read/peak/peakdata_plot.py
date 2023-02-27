@@ -50,6 +50,20 @@ class PeakDataPlot:
         plt.colorbar()
 
 
+    def label_qphi(self,dx, dy):
+
+        x = self.scat_rect[:,0]
+        y = self.scat_rect[:,1]
+
+        qs = self.scat_qpol[:,0]
+        phis = self.scat_qpol[:,1]
+        for peakx, peaky, q, phi in zip(x, y, qs, phis):
+            plt.text(peakx+dx, peaky+dy, f'({round(q, 2)}, {round(phi,2)})', fontsize=6)
+
+
+
+
+
     def plot_peakr(self, peakr, ec='red', ls=':'):
 
         x = self.scat_rect[:,0]

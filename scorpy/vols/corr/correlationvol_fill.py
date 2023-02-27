@@ -90,7 +90,7 @@ class CorrelationVolFill:
                 Flag for printing extra information to the screen while correlating.
         '''
 
-        assert self.qmax >= pk.qmax, 'pk.qmax > corr.qmax'
+        # assert self.qmax >= pk.qmax, 'pk.qmax > corr.qmax'
         assert method in ['scat_qpol', 'scat_sph'], 'Invalid correlation method.'
 
 
@@ -99,10 +99,10 @@ class CorrelationVolFill:
         print(f'Started: {time.asctime()}\n')
 
         if method=='scat_qpol':
-            self.correlate_scat_pol(pk.scat_qpol[:,1:], verbose=verbose-1)
+            self.correlate_scat_pol(pk.scat_qpol, verbose=verbose-1)
 
         if method=='scat_sph':
-            self.correlate_scat_sph(pk.scat_sph[:,1:])
+            self.correlate_scat_sph(pk.scat_sph, verbose=verbose-1)
 
         print(f'Finished: {time.asctime()}')
         print('############')

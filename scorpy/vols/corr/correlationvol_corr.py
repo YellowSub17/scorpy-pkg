@@ -40,24 +40,28 @@ class CorrelationVolCorr:
         '''
 
         # only correlate less than qmax
+        # print('qti orig: ', qti[:,0])
         le_qmax_loc = np.where(qti[:, 0] <= self.qmax)[0]
         qti = qti[le_qmax_loc]
+        # print('qti leqm: ', qti[:,0])
 
         # only correlate intensity greater then 0
         Igt0_loc = np.where(qti[:,-1]>0)
         qti = qti[Igt0_loc]
+        # print('qti igt0: ', qti[:,0])
 
 
         nscats = qti.shape[0]
         # calculate q indices of every scattering vector
         ite = np.ones(nscats)
         q_inds = list(map(index_x, qti[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
+        # print('qinds: ', q_inds)
 
 
 
 
         for i, q1 in enumerate(qti):
-            print(f'Peak: {i+1}/{nscats}', end='\r')
+            # print(f'Peak: {i+1}/{nscats}')
             # get q index
             q1_ind = q_inds[i]
 

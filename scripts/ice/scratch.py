@@ -29,40 +29,39 @@ plt.close('all')
 
 
 
-pk = scorpy.PeakData(datapath=f'{scorpy.DATADIR}/ice/sim/patterns/hex-ice-1um-925.coo.npz', 
+pk1 = scorpy.PeakData(datapath=f'{scorpy.DATADIR}/ice/sim/patterns/hex-ice-1um-19.npz', 
                      geompath=f'{scorpy.DATADIR}/ice/sim/geoms/det-1MP-panel.geom')
 
 
-pk.plot_peaks(peakr=0.005)
-pk.plot_qring(1.61)
-pk.plot_qring(2.35)
+
+pk2 = scorpy.PeakData(datapath=f'{scorpy.DATADIR}/ice/sim/patterns/hex-ice-1um-19.npz', 
+                     geompath=f'{scorpy.DATADIR}/ice/sim/geoms/det-1MP-panel.geom')
+
+inte = pk2.integrate_peaks(0.005)
+pk2.calc_scat(inte[:,0:3], inte[:,-1])
 
 
 
 
-inte = pk.integrate_peaks(0.005)
-
-pk.calc_scat(inte[:,0:3], inte[:,-1])
-pk.plot_peaks(peakr=0.005)
-pk.plot_qring(1.61)
-pk.plot_qring(2.35)
-
-
-
-corr = scorpy.CorrelationVol(100, 180, 2.85, cos_sample=False)
-
-corr.fill_from_peakdata(pk,verbose=99)
-
-
-corr.plot_sumax(1, vminmax=(0, corr.vol.max()/100))
-
-
+corr = scorpy.CorrelationVol(100, 180, 2.35, cos_sample=False)
+corr.fill_from_peakdata(pk2,verbose=99)
+corr.plot_sumax(0, vminmax=(0, 1))
 corr.save(fpath=f'{scorpy.DATADIR}/ice/sim/corr/xc.npy')
-corr.save(fpath=f'{scorpy.DATADIR}/ice/sim/corr/xd.dbin')
 
 
-corr2 = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/ice/sim/corr/xc.npy')
-corr3 = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/ice/sim/corr/xd.dbin')
+
+
+
+pk2.plot_peaks()
+pk2.plot_qring(2.35)
+pk2.label_qphi(0.001, 0.001)
+for q in corr.ls_pts()[:,0]:
+    print('q+-: ', q-corr.dq/2, q, q+corr.dq/2)
+    pk2.plot_qring(q)
+    pk2.plot_qring(q+corr.dq/2, ec='red')
+    pk2.plot_qring(q-corr.dq/2,ec='red')
+
+
 
 
 
