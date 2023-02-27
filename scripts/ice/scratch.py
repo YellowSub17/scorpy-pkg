@@ -3,51 +3,55 @@ import scorpy
 import os
 import h5py
 
-import utils
 
 import matplotlib.pyplot as plt
 plt.close('all')
 
 
+# im = np.zeros( (1000,1000) )
 
+# for i in range(1,321):
+    # print(i, end='\r')
+    # pk = scorpy.PeakData(datapath=f'{scorpy.DATADIR}/ice/sim/patterns/hex-ice-1um-{i}.coo.npz', 
+                         # geompath=f'{scorpy.DATADIR}/ice/sim/geoms/det-1MP-panel.geom')
 
-utils.gen_pattern(size=1e4, nph=1e12)
+    # pkim = pk.make_im(1000, 0.1)
+    # im +=pkim
 
-pk = scorpy.PeakData(h5path=f'{scorpy.DATADIR}/ice/sim/patterns/x.h5', 
-                     geompath=f'{scorpy.DATADIR}/ice/sim/geoms/detector.geom')
-
-
-
-
-im = pk.make_im(1000, 0.1)
-
-plt.figure()
-plt.imshow(np.log10(np.abs(im)+1),  origin='lower')
-plt.colorbar()
-
+# fig, axes = plt.subplots(1,2)
+# axes[0].imshow(im, origin='lower')
+# axes[1].imshow(pkim, origin='lower')
 
 
 
 
-# corr = scorpy.CorrelationVol(nq=200, npsi=360,qmax=2.25, cos_sample=False)
-
-# corr.fill_from_detector_imgs([ im ], int(im.shape[0]/2), int(im.shape[0]/2))
-
-# # corr.plot_q1q2( vminmax=(0, 4e15) )
-
-# tmean = corr.zmean_subtraction()
-
-# corr.plot_q1q2()
-
-# pk.plot_peaks(intenthresh=1)
-# pk.plot_qring(q=1)
-# pk.plot_qring(q=0.8)
-# pk.plot_qring(q=2.0)
-# pk.plot_panels()
-# for q in corr.qpts[::10]:
-    # pk.plot_qring(q)
 
 
+
+
+pk = scorpy.PeakData(datapath=f'{scorpy.DATADIR}/ice/sim/patterns/hex-ice-1um-925.coo.npz', 
+                     geompath=f'{scorpy.DATADIR}/ice/sim/geoms/det-1MP-panel.geom')
+
+
+pk.plot_peaks(peakr=0.005)
+pk.plot_qring(1.61)
+pk.plot_qring(2.35)
+
+
+
+
+inte = pk.integrate_peaks(0.005)
+
+pk.calc_scat(inte[:,0:3], inte[:,-1])
+pk.plot_peaks(peakr=0.005)
+pk.plot_qring(1.61)
+pk.plot_qring(2.35)
+
+
+
+corr = scorpy.CorrelationVol(100, 180, 2.85, cos_sample=False)
+
+corr.fill_from_peakdata(pk,verbose=99)
 
 
 

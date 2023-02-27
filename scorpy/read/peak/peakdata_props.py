@@ -16,11 +16,11 @@ class PeakDataProperties:
         return self._geompath
 
     @property
-    def h5path(self):
+    def datapath(self):
         '''
         path to data
         '''
-        return self._h5path
+        return self._datapath
 
 
     @property
@@ -51,6 +51,15 @@ class PeakDataProperties:
         photon engery [eV]
         '''
         return float(self.geom_params['photon_energy'])  # eV
+
+
+    @property
+    def qmax(self):
+        '''
+        maximum scattering vector [A-1]
+        '''
+        return self._qmax
+
 
 
 

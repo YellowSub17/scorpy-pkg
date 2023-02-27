@@ -19,7 +19,7 @@ class CifDataSaveLoad:
         cif['block']['_cell.angle_beta'] = np.degrees(self.beta)
         cif['block']['_cell.angle_gamma'] = np.degrees(self.gamma)
         cif['block']['_cell.length_a'] = self.a_mag
-cif['block']['_cell.length_b'] = self.b_mag
+        cif['block']['_cell.length_b'] = self.b_mag
         cif['block']['_cell.length_c'] = self.c_mag
 
         cif['block']['_refln.index_h'] = self.scat_bragg[:,0]

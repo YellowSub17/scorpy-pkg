@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import h5py
 import os
+import scipy as sp
 from ...utils.env import DATADIR
 from ...utils.utils import index_x, convert_rect2pol
 
@@ -14,7 +15,7 @@ from .expgeom import ExpGeom
 
 class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
 
-    def __init__(self, h5path, geompath):
+    def __init__(self, datapath, geompath, data=None):
         '''
         handler for a peaks.txt file
         df: dataframe of the peak data, or str file path to txt
@@ -26,21 +27,34 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
         self._geom_params = self.parse_geom_file()
 
 
-        self._h5path = h5path
+        self._datapath = datapath
 
-        with h5py.File(self.h5path) as h5file:
-            h5data = h5file['/entry_1/instrument_1/detector_1/data'][:]
-
-
-
-        ss_pixels, fs_pixels =  np.where(h5data>0) # fs is the cols
-        intens = h5data[ss_pixels, fs_pixels]
-
-        self._scat_fs_ss = np.array([ fs_pixels, ss_pixels, intens]).T
+        if self.datapath[-2:]=='h5':
+            with h5py.File(self.datapath) as h5file:
+                data = h5file['/entry_1/instrument_1/detector_1/data'][:]
+        elif self.datapath[-7:]=='coo.npz':
+            data_coo = sp.sparse.load_npz(self.datapath)
+            data = data_coo.toarray()
 
 
-        xyz_pixel = self.fsss2xyz(self._scat_fs_ss)
 
+
+        ss_pixels, fs_pixels =  np.where(data>0) # fs is the cols
+        intens = data[ss_pixels, fs_pixels]
+
+        scat_fs_ss = np.array([ fs_pixels, ss_pixels, intens]).T
+
+
+        xyz_pixel = self.fsss2xyz(scat_fs_ss)
+        print(xyz_pixel.shape, 'ccccc')
+
+
+
+        self.calc_scat(xyz_pixel, intens)
+
+
+
+    def calc_scat(self, xyz_pixel, intens):
 
 
         rphi = convert_rect2pol(xyz_pixel[:,0:2])
@@ -62,6 +76,8 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
         self._scat_qpol = np.array([q_mag , rphi[:,1], intens ]).T
 
         self._scat_sph = np.array([q_mag, saldin_sph_theta, rphi[:,1], intens ]).T
+
+        self._qmax = np.max(q_mag)
 
 
 

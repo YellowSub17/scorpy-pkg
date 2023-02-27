@@ -17,7 +17,7 @@ class PeakDataPlot:
 
 
 
-    def plot_peaks(self, intenthresh=500, scatter=False, cmap=None, sizes=None,  newfig=True):
+    def plot_peaks(self, intenthresh=0, scatter=False, cmap=None, sizes=None,  newfig=True, peakr=None):
 
         if newfig:
             plt.figure()
@@ -45,7 +45,22 @@ class PeakDataPlot:
             sizes = 15
 
         plt.scatter(x, y, c=colors, s=sizes, cmap=cmap, marker=marker)
+
+        if peakr is not None:
+
+  
+
         plt.colorbar()
+
+
+    def plot_peakr(self, peakr, ec='red', ls=':')
+
+        x = self.scat_rect[:,0]
+        y = self.scat_rect[:,1]
+        for peakx, peaky in zip(x, y):
+
+            circ = patches.Circle( (peakx,peaky), radius=peakr, fill=False, ec=ec, alpha=1, lw=1, ls=ls)
+            plt.gca().add_patch(circ)
 
     def plot_panels(self, panel_label=True, fs_arrow=False, ss_arrow=True, units='m'):
         '''
