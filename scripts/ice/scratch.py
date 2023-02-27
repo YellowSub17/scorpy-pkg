@@ -54,6 +54,20 @@ corr = scorpy.CorrelationVol(100, 180, 2.85, cos_sample=False)
 corr.fill_from_peakdata(pk,verbose=99)
 
 
+corr.plot_sumax(1, vminmax=(0, corr.vol.max()/100))
+
+
+corr.save(fpath=f'{scorpy.DATADIR}/ice/sim/corr/xc.npy')
+corr.save(fpath=f'{scorpy.DATADIR}/ice/sim/corr/xd.dbin')
+
+
+corr2 = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/ice/sim/corr/xc.npy')
+corr3 = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/ice/sim/corr/xd.dbin')
+
+
+
+
+
 
 
 

@@ -64,8 +64,16 @@ class BaseVolSaveLoad:
 
             # print(file_vol)
             self._vol = file_vol.reshape((self.nx, self.ny, self.nz))
+
+
         elif fpath.suffix =='.npy':
-            self._vol = np.load(fpath)
+            coo_arr = np.load(fpath)
+            self._vol = np.zeros( (self.nx, self.ny, self.nz) )
+            xi, yi, zi = coo_arr[:,0].astype(int), coo_arr[:,1].astype(int),coo_arr[:,2].astype(int),
+            self._vol[xi, yi, zi] = coo_arr[:,-1]
+
+            
+
 
 
 
@@ -79,9 +87,17 @@ class BaseVolSaveLoad:
             flat_vol = self.vol.flatten()
             flat_vol.tofile(fpath)
 
-
         elif fpath.suffix == '.npy':
-            np.save(fpath, self.vol)
+
+            coo_loc = np.where(self.vol>0)
+            # coo_arr = np.zeros( (coo_loc[0].shape[0], 4) )
+            coo_arr = np.array( [ coo_loc[0], coo_loc[1], coo_loc[2], self.vol[coo_loc] ]).T
+
+            np.save(fpath, coo_arr)
+
+
+
+
         
         self.write_log(fpath)
 

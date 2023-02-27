@@ -46,14 +46,11 @@ class PeakDataPlot:
 
         plt.scatter(x, y, c=colors, s=sizes, cmap=cmap, marker=marker)
 
-        if peakr is not None:
-
-  
 
         plt.colorbar()
 
 
-    def plot_peakr(self, peakr, ec='red', ls=':')
+    def plot_peakr(self, peakr, ec='red', ls=':'):
 
         x = self.scat_rect[:,0]
         y = self.scat_rect[:,1]

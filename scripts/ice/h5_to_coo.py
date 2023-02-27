@@ -16,6 +16,8 @@ for i in range(1, 3721):
         d = h5file['/entry_1/instrument_1/detector_1/data'][:]
 
     coo = sp.sparse.coo_matrix(d)
-    sp.sparse.save_npz(fname+'.coo', coo)
+    sp.sparse.save_npz(fname, coo)
+
+
 
 
