@@ -102,69 +102,88 @@ a_totalerr = np.sqrt(ameans_errs**2 +a_std**2)
 
 
 
+plt.rc('font', size=8)
+fig, axes = plt.subplots(1,1,figsize=(8/2.54, 8/2.54), dpi=300 )
 
-fig, axes = plt.subplots(2,1,figsize=(7.87, 2*3.93), dpi=150 )
-
-axes[0].plot([min(dmeans_vals), max(dmeans_vals)],[min(dmeans_vals), max(dmeans_vals)], linestyle='dotted')
-axes[1].plot([min(ameans_vals), max(ameans_vals)],[min(ameans_vals), max(ameans_vals)], linestyle='dotted')
-
+axes.plot([min(dmeans_vals), max(dmeans_vals)],[min(dmeans_vals), max(dmeans_vals)], linestyle='dotted')
 
 
-
-a._plot_errorbar(dtarg_vals, dmeans_vals, yerr=d_totalerr*3, xerr=dtarg_err*0, fig=fig, axes=axes[0],
+a._plot_errorbar(dtarg_vals, dmeans_vals, yerr=d_totalerr*3, xerr=dtarg_err*0, fig=fig, axes=axes,
                  xlabel='Target Bond Distance [\u212B]', ylabel='Recovered Bond Distance [\u212B]',
-                marker='.', markersize=3, capsize=2)
-a._plot_errorbar(atarg_vals, ameans_vals, yerr=a_totalerr*3, xerr=atarg_err*0, fig=fig, axes=axes[1],
-                 xlabel='Target Bond Angle [deg]', ylabel='Recovered Bond Angle [deg]',
-                marker='.', markersize=3, capsize=2)
+                marker='.', markersize=3, capsize=2,color=(0.5,0.5,0.5), ecolor='black')
 
 
 
 inset_axes0 = plt.axes()
-inset_axes0.get_xaxis().set_visible(False)
-inset_axes0.get_yaxis().set_visible(False)
-ip0 = InsetPosition(axes[0], [0.01, 0.55, 0.45, 0.425])
+inset_axes0.get_xaxis().set_visible(True)
+inset_axes0.get_yaxis().set_visible(True)
+
+ip0 = InsetPosition(axes, [0.01, 0.55, 0.45, 0.425])
 inset_axes0.set_axes_locator(ip0)
-mark_inset(axes[0], inset_axes0, loc1=3, loc2=4, fc='0.75', ec='none')
+mark_inset(axes, inset_axes0, loc1=3, loc2=4, fc='0.75', ec='none')
 
 inset_axes0.plot([min(dmeans_vals), max(dmeans_vals)],[min(dmeans_vals), max(dmeans_vals)], linestyle='dotted')
 
+
 a._plot_errorbar(dtarg_vals, dmeans_vals, yerr=d_totalerr*3, xerr=dtarg_err*0, fig=fig, axes=inset_axes0,
                  xlabel='Target Bond Distance [\u212B]', ylabel='Recovered Bond Distance [\u212B]',
-                marker='.', markersize=3, capsize=2)
+                marker='.', markersize=3, capsize=2,color=(0.5,0.5,0.5), ecolor='black')
 
 
 inset_axes0.set_xlim([1.2205,1.415])
 inset_axes0.set_ylim([1.088,1.61975])
+inset_axes0.set_xticks([1.25, 1.35])
+inset_axes0.set_yticks([1.25, 1.35])
+inset_axes0.yaxis.tick_right()
+
+inset_axes0.set_xlabel('')
+inset_axes0.set_ylabel('')
+
+plt.tight_layout()
+fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_agno3_lengths.png')
 
 
 
 
+fig, axes = plt.subplots(1,1,figsize=(8/2.54, 8/2.54), dpi=300 )
 
+axes.plot([min(ameans_vals), max(ameans_vals)],[min(ameans_vals), max(ameans_vals)], linestyle='dotted')
 
+a._plot_errorbar(atarg_vals, ameans_vals, yerr=a_totalerr*3, xerr=atarg_err*0, fig=fig, axes=axes,
+                 xlabel='Target Bond Angle [deg]', ylabel='Recovered Bond Angle [deg]',
+                marker='.', markersize=3, capsize=2,color=(0.5,0.5,0.5), ecolor='black')
 
 
 inset_axes1 = plt.axes()
-inset_axes1.get_xaxis().set_visible(False)
-inset_axes1.get_yaxis().set_visible(False)
-ip1 = InsetPosition(axes[1], [0.01, 0.55, 0.45, 0.425])
+inset_axes1.get_xaxis().set_visible(True)
+inset_axes1.get_yaxis().set_visible(True)
+ip1 = InsetPosition(axes, [0.01, 0.55, 0.45, 0.425])
 inset_axes1.set_axes_locator(ip1)
-mark_inset(axes[1], inset_axes1, loc1=1, loc2=4, fc='0.75', ec='none')
+mark_inset(axes, inset_axes1, loc1=1, loc2=4, fc='0.75', ec='none')
 inset_axes1.plot([min(ameans_vals), max(ameans_vals)],[min(ameans_vals), max(ameans_vals)], linestyle='dotted')
 
 
 a._plot_errorbar(atarg_vals, ameans_vals, yerr=a_totalerr*3, xerr=atarg_err*0, fig=fig, axes=inset_axes1,
                  xlabel='Target Bond Angle [deg]', ylabel='Recovered Bond Angle [deg]',
-                marker='.', markersize=3, capsize=2)
+                marker='.', markersize=3, capsize=2,color=(0.5,0.5,0.5), ecolor='black')
 
 inset_axes1.set_xlim([116.2524, 124.4131])
 inset_axes1.set_ylim([111.339, 128.1411])
+
+inset_axes1.set_xticks([117, 120, 123])
+inset_axes1.set_yticks([117, 120, 123])
+inset_axes1.yaxis.tick_right()
+
+inset_axes1.set_xlabel('')
+inset_axes1.set_ylabel('')
+
+
 
 
 plt.tight_layout()
 
 
-fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/bond-da-xy-agno3.png')
+fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_agno3_angles.png')
 
 
 plt.show()

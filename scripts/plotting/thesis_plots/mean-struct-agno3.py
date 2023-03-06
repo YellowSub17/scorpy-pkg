@@ -140,7 +140,7 @@ inset_axes0.set_xlabel('')
 inset_axes0.set_ylabel('')
 
 plt.tight_layout()
-fig.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/algo_agno3_lengths.png')
+fig.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/iteralgo/algo_agno3_lengths.png')
 
 
 
@@ -183,7 +183,7 @@ inset_axes1.set_ylabel('')
 plt.tight_layout()
 
 
-fig.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/algo_agno3_angles.png')
+fig.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/iteralgo/algo_agno3_angles.png')
 
 
 plt.show()

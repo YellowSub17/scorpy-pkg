@@ -73,8 +73,8 @@ axesnqd.set_ylim(0, 1.16)
 
 fignqrf.tight_layout()
 fignqd.tight_layout()
-fignqrf.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/algo_samp_nqrf.png')
-fignqd.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/algo_samp_nqd.png')
+fignqrf.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/iteralgo/algo_samp_nqrf.png')
+fignqd.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/iteralgo/algo_samp_nqd.png')
 
 
 
@@ -134,8 +134,8 @@ axesnld.set_ylim(0, 1.16)
 fignlrf.tight_layout()
 fignld.tight_layout()
 
-fignlrf.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/algo_samp_nlrf.png')
-fignld.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/algo_samp_nld.png')
+fignlrf.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/iteralgo/algo_samp_nlrf.png')
+fignld.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/iteralgo/algo_samp_nld.png')
 plt.show()
 
 

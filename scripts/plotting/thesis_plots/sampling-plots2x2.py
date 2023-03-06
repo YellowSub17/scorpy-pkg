@@ -66,7 +66,7 @@ axes[0,0].legend(bbox_to_anchor=(1,1), loc="upper right", framealpha=1, title='$
 
 
 # fig.tight_layout()
-# fig.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/algo_samp_nq.png')
+# fig.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/iteralgo/algo_samp_nq.png')
 
 
 
@@ -125,11 +125,11 @@ axes[0,1].set_ylim(0, 1.16)
 fig.tight_layout()
 
 
-fig.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/algo_samp.png')
+fig.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/iteralgo/algo_samp.png')
 
 
 import os
-os.system('xdg-open /home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/algo_samp.png')
+os.system('xdg-open /home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/iteralgo/algo_samp.png')
 
 
 

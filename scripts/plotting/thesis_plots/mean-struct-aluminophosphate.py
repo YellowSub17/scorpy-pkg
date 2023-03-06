@@ -136,7 +136,7 @@ a._plot_errorbar(dtarg_vals, dmeans_vals, yerr=d_totalerr*3, xerr=dtarg_err*0, f
 plt.tight_layout()
 
 
-fig.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/algo_alpo4_lengths.png')
+fig.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/iteralgo/algo_alpo4_lengths.png')
 
 fig, axes = plt.subplots(1,1,figsize=(8/2.54, 8/2.54), dpi=300 )
 
@@ -173,8 +173,7 @@ inset_axes1.set_ylabel('')
 
 
 plt.tight_layout()
-fig.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/algo_alpo4_angles.png')
-# fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/bond-da-xy-aluminophosphate.png')
+fig.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/iteralgo/algo_alpo4_angles.png')
 
 
 

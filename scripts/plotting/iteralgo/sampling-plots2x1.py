@@ -71,7 +71,7 @@ axes[1].set_ylim(0, 1.16)
 
 
 fig.tight_layout()
-fig.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/algo_samp_nq.png')
+fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_samp_nq.png')
 
 
 
@@ -131,7 +131,7 @@ axes[1].set_ylim(0, 1.16)
 fig.tight_layout()
 
 
-fig.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/algo_samp_nl.png')
+fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_samp_nl.png')
 
 
 

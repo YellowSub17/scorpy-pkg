@@ -50,8 +50,8 @@ axesrecd.set_ylim(0, 1.16)
 
 figrecrf.tight_layout()
 figrecd.tight_layout()
-figrecrf.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/algo_rec_rf.png')
-figrecd.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/algo_rec_d.png')
+figrecrf.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/iteralgo/algo_rec_rf.png')
+figrecd.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/iteralgo/algo_rec_d.png')
 
 
 
