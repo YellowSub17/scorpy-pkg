@@ -116,6 +116,7 @@ class CifData(CifDataProperties, CifDataSaveLoad):
         else:
             sf = '_'
 
+
         h = np.array(cif_dict[f'_refln{sf}index_h']).astype(np.float).astype(np.int32)
         k = np.array(cif_dict[f'_refln{sf}index_k']).astype(np.float).astype(np.int32)
         l = np.array(cif_dict[f'_refln{sf}index_l']).astype(np.float).astype(np.int32)

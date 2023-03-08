@@ -51,7 +51,9 @@ class BasePlot:
                     'norm':False,
                     'subtmean':False,
                     'blur':False,
-                    'save':None
+                    'save':None,
+                    'xticks': True,
+                    'yticks': True,
                 }
 
         kwargs.update(new_kwargs)
@@ -107,6 +109,13 @@ class BasePlot:
         kwargs['axes'].set_title(kwargs['title'])
         kwargs['axes'].set_xlabel(kwargs['xlabel'])
         kwargs['axes'].set_ylabel(kwargs['ylabel'])
+
+        if type(kwargs['xticks']) is list:
+            kwargs['axes'].set_xticks(kwargs['xticks'])
+
+        if type(kwargs['yticks']) is list:
+            kwargs['axes'].set_yticks(kwargs['yticks'])
+
 
         if kwargs['save'] is not None:
             print('saving image')
