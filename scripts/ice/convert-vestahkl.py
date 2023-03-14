@@ -5,19 +5,19 @@ import numpy as np
 
 
 
-# vesta_sf_path = f'{scorpy.DATADIR}/ice/sim/struct/hex-ice-vesta-sf.txt'
+vesta_sf_path = f'{scorpy.DATADIR}/ice/sim/struct/hex-ice-vesta-sf-d05.txt'
 
 
-# vesta_sfs = np.genfromtxt(vesta_sf_path, skip_header=1)
+vesta_sfs = np.genfromtxt(vesta_sf_path, skip_header=1)
 
 
-# hs, ks, ls, Is = vesta_sfs[:,0], vesta_sfs[:,1],vesta_sfs[:,2],vesta_sfs[:,6]
+hs, ks, ls, Is = vesta_sfs[:,0], vesta_sfs[:,1],vesta_sfs[:,2],vesta_sfs[:,6]
 
 
 # Is = Is**2
 
-# # Is /= np.max(Is) 
-# # Is -= 1e-16
+# Is /= np.max(Is) 
+# Is -= 1e-16
 
 
 # crystfel_hkl_file = open(f'{scorpy.DATADIR}/ice/sim/struct/hex-ice.hkl', 'w')
@@ -29,11 +29,13 @@ import numpy as np
 
 
 # for h, k, l, I in zip(hs, ks, ls, Is):
-    # if I > 1e-6:
+    # if I > 1e-5:
         # if l>=0:
-            # line = f'\t{int(h)}\t{int(k)}\t{int(l)}\t{round(I,14)}\t-\t0.0\t1\n'
+            # line = f'\t{int(h)}\t{int(k)}\t{int(l)}\t{round(I,14)}'
+            # # line = f'\t{int(h)}\t{int(k)}\t{int(l)}\t{round(I,14)}\t-\t0.0\t1\n'
             # # line = f'\t{int(h)}\t{int(k)}\t{int(l)}\t{100000}\t-\t0.0\t1\n'
-            # crystfel_hkl_file.write(line)
+            # # crystfel_hkl_file.write(line)
+            # print(line)
 
 
 # crystfel_hkl_file.write('End of reflections')
@@ -47,8 +49,8 @@ import numpy as np
 
 
 
-cif = scorpy.CifData(f'{scorpy.DATADIR}/ice/sim/struct/hex-ice-sf.cif')
+cif = scorpy.CifData(f'{scorpy.DATADIR}/ice/sim/struct/hex-ice-sf-d05.cif')
 
-cif.save_crystfel_hkl(f'{scorpy.DATADIR}/ice/sim/struct/hex-ice-p1.hkl')
+cif.save_crystfel_hkl(f'{scorpy.DATADIR}/ice/sim/struct/hex-ice-p1-d05.hkl')
 
 

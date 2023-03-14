@@ -22,14 +22,6 @@ class PeakDataProperties:
         '''
         return self._datapath
 
-
-    @property
-    def geom_params(self):
-        '''
-        parameters defined in geom
-        '''
-        return self._geom_params
-
     @property
     def res(self):
         '''

@@ -24,17 +24,37 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
 
         self._geompath = geompath
 
-        self._geom_params = self.parse_geom_file()
+        self.geom_params = self.parse_geom_file()
 
 
         self._datapath = datapath
 
-        if self.datapath[-3:]=='.h5':
-            with h5py.File(self.datapath) as h5file:
-                data = h5file['/entry_1/instrument_1/detector_1/data'][:]
-        elif self.datapath[-4:]=='.npz':
-            data_coo = sp.sparse.load_npz(self.datapath)
-            data = data_coo.toarray()
+        if type(datapath) is list:
+            print('list')
+            print(datapath[0])
+
+            data_coo = sp.sparse.load_npz(datapath[0])
+            data_shape = data_coo.toarray().shape
+            data = np.zeros(data_shape)
+            print(data_shape)
+
+
+            for datapathf in self.datapath:
+                data_coo = sp.sparse.load_npz(datapathf)
+                data += data_coo.toarray()
+
+
+        else:
+
+            if self.datapath[-3:]=='.h5':
+                with h5py.File(self.datapath) as h5file:
+                    data = h5file[self.geom_params['data']][:]
+            elif self.datapath[-4:]=='.npz':
+                data_coo = sp.sparse.load_npz(self.datapath)
+                data = data_coo.toarray()
+
+            else:
+                return None
 
 
 
@@ -47,7 +67,7 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
 
         xyz_pixel = self.fsss2xyz(scat_fs_ss)
 
-
+  
 
         self.calc_scat(xyz_pixel, intens)
 
@@ -65,7 +85,10 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
 
 
 
+
+
         self._scat_rect = np.array([ xyz_pixel[:,0], xyz_pixel[:,1], xyz_pixel[:,2], intens]).T
+        print(self.scat_rect.max(axis=0))
 
         self._scat_rpol = np.array([ rphi[:,0], rphi[:,1], intens ]).T
 

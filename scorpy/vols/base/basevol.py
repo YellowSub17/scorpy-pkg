@@ -170,12 +170,66 @@ xmax=1, ymax=1, zmax=1,
 
         # calculates the guassian kernel and convolve
         kern = np.exp(- (x_mesh**2 / (2 * std_x**2) + y_mesh ** 2 / (2 * std_y**2) + z_mesh**2 / (2 * std_z**2)))
+
+
         blur = signal.fftconvolve(self.vol, kern)
 
         # bring the volume in by half the kernal window width (removes edge effects)
         kern_n_half = int((kern_n - 1) / 2)
         blur = blur[kern_n_half:-kern_n_half, kern_n_half:-kern_n_half, kern_n_half:-kern_n_half]
         self.vol = blur
+        return kern
+
+
+    def convolve_tophat(self, kern_L=2, kern_n=5, lim_x=1, lim_y=1, lim_z=1):
+        '''
+	scorpy.Vol.convolve_tophat():
+            Convolve the current vol with a tophat kernel and replace it.
+        Arguments:
+            kern_L : int
+                +/- upper and lower limit of the kernel.
+            kern_n : int
+                number of pixels in the kernel matrix.
+            lim_x, lim_y, lim_z : float
+                limits of the tophat in each x,y,z axis.
+        '''
+        # make linear spaces and meshes for each kernel direction
+        x_space = np.linspace(-kern_L, kern_L, kern_n)
+        y_space = np.linspace(-kern_L, kern_L, kern_n)
+        z_space = np.linspace(-kern_L, kern_L, kern_n)
+
+
+        x_mesh, y_mesh, z_mesh = np.meshgrid(x_space, y_space, z_space)
+
+        x_cond =  np.abs(x_mesh) <= lim_x
+        y_cond =  np.abs(y_mesh) <= lim_y
+        z_cond =  np.abs(z_mesh) <= lim_z
+
+
+        xy_cond = np.logical_and(x_cond, y_cond)
+        xyz_cond = np.logical_and(xy_cond, z_cond)
+
+
+
+
+
+
+
+
+
+        # calculates the  kernel and convolve
+        kern = np.zeros( (kern_n, kern_n, kern_n) )
+        kern[np.where(xyz_cond)] = 1
+        # kern[x_loc, y_loc, z_loc] = 1
+
+
+        blur = signal.fftconvolve(self.vol, kern)
+
+        # bring the volume in by half the kernal window width (removes edge effects)
+        kern_n_half = int((kern_n - 1) / 2)
+        blur = blur[kern_n_half:-kern_n_half, kern_n_half:-kern_n_half, kern_n_half:-kern_n_half]
+        self.vol = blur
+        return kern
 
 
     def convolve2D(self,  kern_L=2, kern_n=5, std_y=1, std_z=1):
