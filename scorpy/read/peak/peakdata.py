@@ -30,18 +30,16 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
         self._datapath = datapath
 
         if type(datapath) is list:
-            print('list')
-            print(datapath[0])
 
             data_coo = sp.sparse.load_npz(datapath[0])
             data_shape = data_coo.toarray().shape
             data = np.zeros(data_shape)
-            print(data_shape)
 
 
-            for datapathf in self.datapath:
+            for i,datapathf in enumerate(self.datapath):
                 data_coo = sp.sparse.load_npz(datapathf)
                 data += data_coo.toarray()
+                print( i, len(datapathf), end='\r' )
 
 
         else:

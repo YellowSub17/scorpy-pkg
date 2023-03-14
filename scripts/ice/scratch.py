@@ -63,17 +63,21 @@ plt.close('all')
 # pk.plot_qring(1.6)
 
 
-# patterns_glob = glob.glob(f'/media/pat/datadrive/ice/sim/patterns/agipdv2/*.npz')
-# print(patterns_glob)
-# pk = scorpy.PeakData(datapath=patterns_glob, 
-                    # geompath='/media/pat/datadrive/ice/sim/geoms/agipdv2x.geom')
+patterns_glob = glob.glob(f'/media/pat/datadrive/ice/sim/patterns/19MPz18/*250nm*.npz')
+print(patterns_glob)
+pk = scorpy.PeakData(datapath=patterns_glob, 
+                    geompath='/media/pat/datadrive/ice/sim/geoms/19MPz18.geom')
 
 
-# pk.plot_panels()
-# im = pk.make_im(1400, 0.127)
+im = pk.make_im(1400, 0.127)
+plt.figure()
+plt.imshow(im, origin='lower')
 
-# plt.figure()
-# plt.imshow(im, origin='lower')
+pk = scorpy.PeakData(datapath=patterns_glob[0], 
+                    geompath='/media/pat/datadrive/ice/sim/geoms/19MPz18.geom')
+
+pk.plot_peaks()
+
 
 
 
