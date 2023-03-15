@@ -39,7 +39,7 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
             for i,datapathf in enumerate(self.datapath):
                 data_coo = sp.sparse.load_npz(datapathf)
                 data += data_coo.toarray()
-                print( i, len(datapathf), end='\r' )
+                # print( i, len(datapathf), end='\r' )
 
 
         else:
@@ -86,7 +86,6 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
 
 
         self._scat_rect = np.array([ xyz_pixel[:,0], xyz_pixel[:,1], xyz_pixel[:,2], intens]).T
-        print(self.scat_rect.max(axis=0))
 
         self._scat_rpol = np.array([ rphi[:,0], rphi[:,1], intens ]).T
 
