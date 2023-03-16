@@ -6,17 +6,17 @@
 size=$1
 
 npats=250
-nchunks=80
+nchunks=160
 
 
 printf "\n"
-for geom in  19MPz12 agipdv2
+for geom in  19MPz18
 do
     printf "Starting Geometry $geom:  $(date +'%l:%M')                                           \n\n"
 
     printf "    Starting Size: $size nm $(date +'%l:%M')                                           \n"
     
-    for chunk in $(seq 0 1 $nchunks);
+    for chunk in $(seq 81 1 $nchunks);
     do
         printf "Chunk $chunk/$nchunks: Generating $npats h5 patterns.                             \r"
         python ./gen-h5-patterns.py $chunk $npats $size $geom
