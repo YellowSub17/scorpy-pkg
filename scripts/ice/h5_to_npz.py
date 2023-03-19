@@ -17,7 +17,7 @@ xtal_size = sys.argv[3]
 geom = sys.argv[4]
 
 prefix = f'hex-ice-{xtal_size}nm-{geom}-{chunk}'
-path = f'{scorpy.DATADIR}/ice/sim/patterns/{geom}'
+path = f'{scorpy.DATADIR}/ice/sim/patterns/{geom}/{xtal_size}nm'
 
 
 pk = scorpy.PeakData(datapath='nonelol',

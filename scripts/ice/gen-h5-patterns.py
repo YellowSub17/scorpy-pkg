@@ -36,7 +36,7 @@ cmd.append(f'--geometry={scorpy.DATADIR}/ice/sim/geoms/{geom}.geom')
 cmd.append(f'--intensities={scorpy.DATADIR}/ice/sim/struct/hex-ice-p1-d05.hkl')
 
 cmd.append(f'--pdb={scorpy.DATADIR}/ice/sim/struct/hex-ice.pdb')
-cmd.append(f'--output={scorpy.DATADIR}/ice/sim/patterns/{geom}/hex-ice-{xtal_size}nm-{geom}-{chunk}')
+cmd.append(f'--output={scorpy.DATADIR}/ice/sim/patterns/{geom}/{xtal_size}nm/hex-ice-{xtal_size}nm-{geom}-{chunk}')
 
 # print(f'Creating {n_patterns} patterns.')
 

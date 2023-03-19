@@ -16,14 +16,14 @@ do
 
     printf "    Starting Size: $size nm $(date +'%l:%M')                                           \n"
     
-    for chunk in $(seq 81 1 $nchunks);
+    for chunk in $(seq 130 1 $nchunks);
     do
         printf "Chunk $chunk/$nchunks: Generating $npats h5 patterns.                             \r"
         python ./gen-h5-patterns.py $chunk $npats $size $geom
         printf "Chunk $chunk/$nchunks: Converting $npats h5s to npz.                              \r"
         python ./h5_to_npz.py $chunk $npats $size $geom
         printf "Chunk $chunk/$nchunks: Removing $npats h5s.                                       \r"
-        rm /media/pat/datadrive/ice/sim/patterns/$geom/*$size*$geom-$chunk*h5
+        rm /media/pat/datadrive/ice/sim/patterns/$geom/${size}nm/*$size*$geom-$chunk*h5
     done
 
     printf "    Finished Size: $size nm $(date +'%l:%M')                                           \n\n"
