@@ -55,7 +55,7 @@ class CorrelationVolCorr:
         # calculate q indices of every scattering vector
         nscats = qti.shape[0]
         ite = np.ones(nscats)
-        q_inds = list(map(index_x, qti[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
+        q_inds = list(map(index_x, qti[:, 0], self.qmin * ite, self.qmax * ite, self.nq * ite))
 
 
 
@@ -106,6 +106,7 @@ class CorrelationVolCorr:
         qxyzi = qxyzi[ge_qmin]
         qmags = qmags[ge_qmin]
 
+
         
         # only correlate intensity greater then 0
         Igt0_loc = np.where(qxyzi[:,-1]>0)[0]
@@ -117,7 +118,7 @@ class CorrelationVolCorr:
 
         # calculate q indices of every scattering vector
         ite = np.ones(nscats)
-        q_inds = list(map(index_x, qmags, 0 * ite, self.qmax * ite, self.nq * ite))
+        q_inds = list(map(index_x, qmags, self.qmin * ite, self.qmax * ite, self.nq * ite))
 
 
         for i, q1 in enumerate(qxyzi):
@@ -175,7 +176,7 @@ class CorrelationVolCorr:
         nscats = qtpi.shape[0]
         # calculate q indices of every scattering vector 
         ite = np.ones(nscats)
-        q_inds = list(map(index_x, qtpi[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
+        q_inds = list(map(index_x, qtpi[:, 0], self.qmin * ite, self.qmax * ite, self.nq * ite))
 
 
 
