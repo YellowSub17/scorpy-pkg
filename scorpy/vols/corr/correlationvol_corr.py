@@ -43,6 +43,10 @@ class CorrelationVolCorr:
         le_qmax_loc = np.where(qti[:, 0] <= self.qmax)[0]
         qti = qti[le_qmax_loc]
 
+        # only correlate more than qmin
+        ge_qmin_loc = np.where(qti[:, 0] >= self.qmin)[0]
+        qti = qti[ge_qmin_loc]
+
         # only correlate intensity greater then 0
         Igt0_loc = np.where(qti[:,-1]>0)
         qti = qti[Igt0_loc]
@@ -91,11 +95,17 @@ class CorrelationVolCorr:
                 should be the reciprocal space coordinates of peaks (qx,qy,qz),
                 and the last coloumn should be the intensity of the peak.
         '''
-        # only correlate less than qmax
         qmags = np.linalg.norm(qxyzi[:, :3], axis=1)
+        # only correlate less than qmax
         le_qmax = np.where(qmags <= self.qmax)[0]
         qxyzi = qxyzi[le_qmax]
         qmags = qmags[le_qmax]
+
+        # only correlate greater than qmin
+        ge_qmin = np.where(qmags >= self.qmin)[0]
+        qxyzi = qxyzi[ge_qmin]
+        qmags = qmags[ge_qmin]
+
         
         # only correlate intensity greater then 0
         Igt0_loc = np.where(qxyzi[:,-1]>0)[0]
@@ -152,6 +162,10 @@ class CorrelationVolCorr:
         # only correlate less than qmax
         le_qmax = np.where(qtpi[:, 0] <= self.qmax)[0]
         qtpi = qtpi[le_qmax]
+
+        # only correlate greater than qmin
+        ge_qmin = np.where(qtpi[:, 0] >= self.qmin)[0]
+        qtpi = qtpi[ge_qmin]
 
         # only correlate intensity greater then 0
         Igt0_loc = np.where(qtpi[:,-1]>0)[0]

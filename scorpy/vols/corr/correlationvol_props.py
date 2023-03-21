@@ -28,6 +28,14 @@ class CorrelationVolProps:
         return self.xmax
 
     @property
+    def qmin(self):
+        '''
+	scorpy.CorrelationVol.qmin:
+            Minimum value of q-axes.
+        '''
+        return self.xmin
+
+    @property
     def dq(self):
         '''
 	scorpy.CorrelationVol.dq:
