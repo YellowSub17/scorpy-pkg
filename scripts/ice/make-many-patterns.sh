@@ -21,7 +21,7 @@ do
         printf "Chunk $chunk/$nchunks: Generating $npats h5 patterns.                             \r"
         python ./gen-h5-patterns.py $chunk $npats $size $geom
         printf "Chunk $chunk/$nchunks: Converting $npats h5s to npz.                              \r"
-        python ./h5_to_npz.py $chunk $npats $size $geom
+        python ./h5-to-npz.py $chunk $npats $size $geom
         printf "Chunk $chunk/$nchunks: Removing $npats h5s.                                       \r"
         rm /media/pat/datadrive/ice/sim/patterns/$geom/${size}nm/*$size*$geom-$chunk*h5
     done

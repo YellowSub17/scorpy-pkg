@@ -12,7 +12,8 @@ import matplotlib.pyplot as plt
 plt.close('all')
 
 
-sizes = ['500nm', '1000nm']
+# sizes = ['500nm', '1000nm']
+sizes = ['125nm']
 geom = '19MPz18'
 
 for size in sizes:
