@@ -5,15 +5,15 @@
 
 
 
-for i in $(seq 45 160);
+for i in $(seq 1 160);
 do
-    if [ $(expr $i % 4) != 0 ];then
+    if [ $(expr $i % 6) != 0 ];then
         python correlate-patterns.py $i &
     else
         python correlate-patterns.py $i
     fi
 
-    sleep 2
+    sleep 10
 
 
 

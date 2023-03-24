@@ -1,6 +1,7 @@
 import numpy as np
 import scorpy
 import os
+import sys
 import h5py
 
 import glob
@@ -10,24 +11,18 @@ plt.close('all')
 
 
 geom= '19MPz18'
-size = '1000nm'
+# size = '1000nm'
 
 
-# print('making glob')
-# aglob = glob.glob(f'/media/pat/datadrive/ice/sim/corr/{geom}/{size}-qmin15/hex-ice-{size}-qmin15-{geom}-*-1-sq.py')
-# print('done')
-
-# for i in aglob: 
-    # print(i)
-
-# print(len(aglob))
+size = sys.argv[1]
 
 
 imax = 160
-jmax = 10
+jmax = 250
 
 
-xs = np.zeros( (imax, jmax ))
+corr_sq_means = np.zeros( (imax, jmax ))
+corr_means = np.zeros( (imax, jmax ))
 
 for i in range(1, imax+1):
     for j in range(1, jmax+1):
@@ -36,18 +31,17 @@ for i in range(1, imax+1):
         corr = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/ice/sim/corr/{geom}/{size}-qmin15/hex-ice-{size}-qmin15-{geom}-{i}-{j}-qcor.npy')
 
 
+        corr_sq_means[i-1, j-1] = corr_sq.vol.mean()
+        corr_means[i-1, j-1] = corr.vol.mean()
 
-        corr_sq_mean = corr_sq.vol.mean()
-        corr_mean_sq = corr.vol.mean()**2
 
         del corr_sq
         del corr
 
 
-        x = np.sqrt(corr_sq_mean - corr_mean_sq)
+        np.save(f'/media/pat/datadrive/ice/sim/corr/19MPz18/means/hex-ice-{size}-qmin15-{geom}-qcor-means.npy', corr_sq_means)
+        np.save(f'/media/pat/datadrive/ice/sim/corr/19MPz18/means/hex-ice-{size}-qmin15-{geom}-qcor-sq-means.npy', corr_means)
 
-
-        xs[i-1, j-1] = x
 
 
 
