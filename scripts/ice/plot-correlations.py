@@ -10,7 +10,7 @@ plt.close('all')
 
 
 
-log=True
+log=False
 # power=0.125
 power=1
 
@@ -29,7 +29,7 @@ corr3d = scorpy.CorrelationVol(path='/media/pat/datadrive/ice/sim/corr/hex-ice-q
 corr3d.vol = corr3d.vol**(power)
 if log:
     corr3d.vol = np.log10(np.abs(corr3d.vol)+1)
-corr3d.plot_q1q2(title='3d')
+corr3d.plot_q1q2(title='3d', xlabel='$\\Delta\\Psi$ [rad]', ylabel='q [A-1]')
 
 
 
@@ -68,8 +68,8 @@ for size in ['1000nm', '500nm', '250nm', '125nm']:
     
 
 
-    print(f'20k {size=} x=y {scorpy.utils.utils.cosinesim(corra.get_xy(), corrb.get_xy())}')
-    print(f'20k {size=} vol {scorpy.utils.utils.cosinesim(corra.vol, corrb.vol)}')
+    # print(f'20k {size=} x=y {scorpy.utils.utils.cosinesim(corra.get_xy(), corrb.get_xy())}')
+    print(f' 20k {size=} cosine sim {scorpy.utils.utils.cosinesim(corra.vol, corrb.vol)}')
 
 
 
@@ -98,8 +98,8 @@ for size in ['1000nm', '500nm', '250nm', '125nm']:
     corrb.plot_q1q2(fig=fig, axes=axes[1,1],  xlabel='b')
 
 
-    print(f'125 {size=} x=y {scorpy.utils.utils.cosinesim(corra.get_xy(), corrb.get_xy())}')
-    print(f'125 {size=} vol {scorpy.utils.utils.cosinesim(corra.vol, corrb.vol)}')
+    # print(f'125 {size=} x=y {scorpy.utils.utils.cosinesim(corra.get_xy(), corrb.get_xy())}')
+    print(f' 125 {size=} cosine sim {scorpy.utils.utils.cosinesim(corra.vol, corrb.vol)}')
 
     plt.tight_layout()
 

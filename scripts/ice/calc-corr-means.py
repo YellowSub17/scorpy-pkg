@@ -6,6 +6,8 @@ import h5py
 
 import glob
 
+from datetime import datetime
+
 import matplotlib.pyplot as plt
 plt.close('all')
 
@@ -25,8 +27,9 @@ corr_sq_means = np.zeros( (imax, jmax ))
 corr_means = np.zeros( (imax, jmax ))
 
 for i in range(1, imax+1):
+
+    print(f'<{datetime.now().strftime("%H:%M:%S")}>:{i=} {size=}')
     for j in range(1, jmax+1):
-        print(i, j)
         corr_sq = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/ice/sim/corr/{geom}/{size}-qmin15/hex-ice-{size}-qmin15-{geom}-{i}-{j}-qcor-sq.npy')
         corr = scorpy.CorrelationVol(path=f'{scorpy.DATADIR}/ice/sim/corr/{geom}/{size}-qmin15/hex-ice-{size}-qmin15-{geom}-{i}-{j}-qcor.npy')
 
