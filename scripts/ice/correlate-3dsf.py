@@ -13,7 +13,7 @@ plt.close('all')
 
 cif = scorpy.CifData(path = '/media/pat/datadrive/ice/sim/struct/hex-ice-sf.cif', qmax=3.1)
 
-corr = scorpy.CorrelationVol(nq=100, npsi=180, qmax=3.1, qmin=0.75, cos_sample=False)
+corr = scorpy.CorrelationVol(nq=100, npsi=180, qmax=3.1, qmin=1.5, cos_sample=False)
 
 corr.fill_from_cif(cif, verbose=99)
 
