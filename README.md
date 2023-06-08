@@ -20,6 +20,7 @@ Use the following commands to set up a conda environment.
     conda install -c conda-forge pycifrw --yes
     conda install -c conda-forge scipy --yes
     conda install -c conda-forge scikit-image
+    conda isntall -c conda-forge regex
 
 To setup auto reload in ipython.
 
