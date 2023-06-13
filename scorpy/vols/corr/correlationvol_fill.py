@@ -37,10 +37,8 @@ class CorrelationVolFill:
 
 
 
-
-
     @verbose_dec
-    def fill_from_cif(self, cif, method='scat_rect', verbose=0):
+    def fill_from_cif(self, cif, method='scat_rect', chopf=0, verbose=0):
         '''
         scorpy.CorrelationVol.fill_from_cif():
             Fill the CorrelationVol from a CifData object
@@ -55,28 +53,32 @@ class CorrelationVolFill:
         assert self.qmax >= cif.qmax, 'cif.qmax > corr.qmax'
         assert method in ['scat_sph', 'scat_rect'], 'Invalid correlation method.'
 
+        nscats = cif.scat_rect.shape[0]
+        nscats_chopped = round(nscats*chopf)
+
         print('')
         print('############')
         print(f'Filling CorrelationVol from CifData via {method}.')
-        print(f'Correlating {cif.scat_rect.shape[0]} vectors.')
+        if chopf >0:
+            print(f'Correlating {nscats-nscats_chopped} out of {nscats} vectors, chopping {chopf*100}%.')
+        else:
+            print(f'Correlating {nscats} vectors.')
+
         print(f'Started: {time.asctime()}')
-
         if method == 'scat_sph':
-            self.correlate_scat_sph(cif.scat_sph, verbose=verbose-1)
+            self.correlate_scat_sph(cif.scat_sph, chopf=chopf, verbose=verbose-1)
         elif method == 'scat_rect':
-            self.correlate_scat_rect(cif.scat_rect, verbose=verbose-1)
+            self.correlate_scat_rect(cif.scat_rect, chopf=chopf, verbose=verbose-1)
         elif method == 'scat_pol':
-            self.correlate_scat_pol(cif.scat_pol, verbose=verbose-1)
-
+            self.correlate_scat_pol(cif.scat_pol, chopf=chopf, verbose=verbose-1)
         print(f'Finished: {time.asctime()}')
         print('############')
         print('')
 
 
 
-
     @verbose_dec
-    def fill_from_peakdata(self, pk, method='scat_qpol', verbose=0):
+    def fill_from_peakdata(self, pk, method='scat_qpol', chopf=0, verbose=0):
         '''
         scorpy.CorrelationVol.fill_from_peakdata():
             Fill the CorrelationVol from a PeakData object.
@@ -94,16 +96,21 @@ class CorrelationVolFill:
         assert method in ['scat_qpol', 'scat_sph'], 'Invalid correlation method.'
 
 
+        nscats = cif.scat_rect.shape[0]
+        nscats_chopped = round(nscats*chopf)
+
         print('############')
         print(f'Filling CorrelationVol from Peakdata via {method}.')
+        if chopf >0:
+            print(f'Correlating {nscats-nscats_chopped} out of {nscats} peaks, chopping {chopf*100}%.')
+        else:
+            print(f'Correlating {nscats} peaks.')
+
         print(f'Started: {time.asctime()}\n')
-
         if method=='scat_qpol':
-            self.correlate_scat_pol(pk.scat_qpol, verbose=verbose-1)
-
+            self.correlate_scat_pol(pk.scat_qpol, chopf=chopf, verbose=verbose-1)
         if method=='scat_sph':
-            self.correlate_scat_sph(pk.scat_sph, verbose=verbose-1)
-
+            self.correlate_scat_sph(pk.scat_sph, chopf=chopf, verbose=verbose-1)
         print(f'Finished: {time.asctime()}')
         print('############')
 

@@ -28,7 +28,7 @@ class CorrelationVolCorr:
 
 
     @verbose_dec
-    def correlate_scat_pol(self, qti, verbose=0):
+    def correlate_scat_pol(self, qti, verbose=0 ):
         '''
         scorpy.CorrelationVol.correlate_scat_pol():
             Correlate diffraction peaks in 2D polar coordinates.
@@ -54,6 +54,17 @@ class CorrelationVolCorr:
 
         # calculate q indices of every scattering vector
         nscats = qti.shape[0]
+
+
+##  DEBUG
+        # nscats_chop = int((1-chopf)*nscats)
+        # np.random.shuffle(qti)
+        # qti = qti[:nscats_chop]
+        # nscats = nscats_chop
+
+
+
+
         ite = np.ones(nscats)
         q_inds = list(map(index_x, qti[:, 0], self.qmin * ite, self.qmax * ite, self.nq * ite))
 
@@ -85,7 +96,7 @@ class CorrelationVolCorr:
 
 
     @verbose_dec
-    def correlate_scat_rect(self, qxyzi, verbose=0):
+    def correlate_scat_rect(self, qxyzi, chopf=0, verbose=0):
         '''
         scorpy.CorrelationVol.correlate_scat_pol():
             Correlate diffraction peaks in 3D rectilinear coordinates.
@@ -115,6 +126,11 @@ class CorrelationVolCorr:
 
 
         nscats = qxyzi.shape[0]
+
+#  DEBUG
+        nscats = nscats - int(chopf*nscats)
+        np.random.shuffle(qxyzi)
+        qxyzi = qxyzi[:nscats]
 
         # calculate q indices of every scattering vector
         ite = np.ones(nscats)
@@ -174,6 +190,13 @@ class CorrelationVolCorr:
 
 
         nscats = qtpi.shape[0]
+
+##  DEBUG
+        # nscats_chop = int((1-chopf)*nscats)
+        # np.random.shuffle(qtpi)
+        # qtpi = qtpi[:nscats_chop]
+        # nscats = nscats_chop
+
         # calculate q indices of every scattering vector 
         ite = np.ones(nscats)
         q_inds = list(map(index_x, qtpi[:, 0], self.qmin * ite, self.qmax * ite, self.nq * ite))

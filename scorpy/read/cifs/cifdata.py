@@ -117,9 +117,9 @@ class CifData(CifDataProperties, CifDataSaveLoad):
             sf = '_'
 
 
-        h = np.array(cif_dict[f'_refln{sf}index_h']).astype(np.float).astype(np.int32)
-        k = np.array(cif_dict[f'_refln{sf}index_k']).astype(np.float).astype(np.int32)
-        l = np.array(cif_dict[f'_refln{sf}index_l']).astype(np.float).astype(np.int32)
+        h = np.array(cif_dict[f'_refln{sf}index_h']).astype(float).astype(np.int32)
+        k = np.array(cif_dict[f'_refln{sf}index_k']).astype(float).astype(np.int32)
+        l = np.array(cif_dict[f'_refln{sf}index_l']).astype(float).astype(np.int32)
 
 
         inten_keys = [f'_refln{sf}intensity_meas', f'_refln{sf}f_squared_meas', f'_refln{sf}f_meas_au' ]
@@ -128,7 +128,7 @@ class CifData(CifDataProperties, CifDataSaveLoad):
         for inten_key, inten_pw in zip(inten_keys, [1,1,2]):
             if inten_key in cif_dict.keys():
                 I = np.array(cif_dict[inten_key])
-                I = I.astype(np.float64)**inten_pw
+                I = I.astype(float)**inten_pw
         assert I is not None, 'WARNING: No intensity found when reading cif.'
 
 
