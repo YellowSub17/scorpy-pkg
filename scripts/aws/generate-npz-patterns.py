@@ -11,6 +11,9 @@ import subprocess
 import h5py
 import scipy as sp
 import time
+import scipy.spatial.transform as scit
+
+
 
 
 #options
@@ -38,20 +41,38 @@ cmd.append(f'--min-size={xtal_size}')
 cmd.append(f'--nphotons=1e12')
 cmd.append(f'--spectrum=tophat')
 cmd.append(f'--sample-spectrum=1')
-cmd.append('--random-orientation')
-cmd.append('--really-random')
+# cmd.append('--random-orientation')
+# cmd.append('--really-random')
+#cmd.append('--no-fringes')
+
 
 cmd.append(f'--geometry={geom_file}')
 cmd.append(f'--intensities={hkl_file}')
 
+
 cmd.append(f'--pdb={pdb_file}')
 cmd.append(f'--output={out_file}')
 
+# oris = ''
+# oris += '0 0 0 1\n'
+# oris += '0 0.08715578000562227 0 0.9961946948320953\n'
+# oris += '0 0.19509040454983462 0 0.9807852639862519\n'
+# oris += '0 0.38268358785518847 0 0.9238794681051637'
+
+
+
+oris = ''
+for dangle in [0, 1, 5,10]:
+    R = scit.Rotation.from_euler(seq='y',angles=dangle, degrees=True)
+    oris += f'{R.as_quat()[0]} {R.as_quat()[1]} {R.as_quat()[2]} {R.as_quat()[3]}\n'
 
 print(f'Generating {n_patterns} patterns of protein {pdb_code} using geometry {geom_code}')
 
 print(f'Starting at: {time.asctime()}')
-subprocess.check_call(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+# subprocess.check_call(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+# subprocess.check_call(cmd, stdin)
+p = subprocess.run(cmd, input=oris, text=True)
+
 print(f'Finished at: {time.asctime()}')
 
 
