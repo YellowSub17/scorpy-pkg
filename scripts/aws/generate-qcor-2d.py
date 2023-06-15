@@ -30,7 +30,6 @@ chunk_end = int(sys.argv[2])
 
 print(f'Correlating chunks: {chunk_start}-{chunk_end}')
 
-
 for i_chunk in range(chunk_start, chunk_end):
     print(f'Correlating chunk: {i_chunk}')
     print(f'Started: {time.asctime()}')
