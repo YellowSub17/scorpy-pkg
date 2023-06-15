@@ -28,7 +28,9 @@ xtal_size = int(sys.argv[5])
 geom_file = f'/home/ec2-user/corr/data/geom/{geom_code}.geom'
 hkl_file =  f'/home/ec2-user/corr/data/xtal/{pdb_code}.hkl'
 pdb_file =  f'/home/ec2-user/corr/data/xtal/{pdb_code}.pdb'
-out_file =  f'/home/ec2-user/corr/data/frames/{pdb_code}-{xtal_size}nm-{geom_code}-{chunk}'
+out_path =  f'/home/ec2-user/corr/data/frames/{xtal_size}nm-{geom_code}/{chunk}'
+out_fname =  f'{pdb_code}-{xtal_size}nm-{geom_code}-{chunk}'
+out_file = f'{out_path}/{out_fname}'
 
 
 #patternsim commands

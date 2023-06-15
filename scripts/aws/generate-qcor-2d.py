@@ -34,7 +34,7 @@ print(f'Correlating chunks: {chunk_start}-{chunk_end}')
 for i_chunk in range(chunk_start, chunk_end):
     print(f'Correlating chunk: {i_chunk}')
     print(f'Started: {time.asctime()}')
-    for i_frame in range(500):
+    for i_frame in range(512):
 
         corr = scorpy.CorrelationVol(nq=150, npsi=180, qmax=1.5, qmin=0.4, cos_sample=False)
 
