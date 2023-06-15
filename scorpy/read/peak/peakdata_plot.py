@@ -19,8 +19,12 @@ class PeakDataPlot:
 
     def plot_peaks(self, intenthresh=0, scatter=False, cmap=None, sizes=None,  peakr=None, fig=None, ax=None):
 
+        
+        if fig is None:
+            fig, ax = plt.subplots(1,1)
 
         self.plot_panels(fig=fig, ax=ax)
+
 
 
         x = self.scat_rect[:,0]

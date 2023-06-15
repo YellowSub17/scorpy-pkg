@@ -5,25 +5,25 @@ import matplotlib.pyplot as plt
 
 
 cif = scorpy.CifData('/home/ec2-user/corr/data/xtal/193l-sf.cif')
-print('ast, bst, cst: ', cif.ast_mag, cif.bst_mag, cif.cst_mag)
 q_inte_r = min(cif.ast_mag, cif.bst_mag, cif.cst_mag)
-# q_inte_r = 0.07999981292563772
+
+
+
+geom_code = '19MPz040'
+
+pdb_code ='193l'
+xtal_size = '100nm'
 
 
 
 
-# for qmax, geomz in zip([1.5], ['040']):
-
-geomz = '040'
-
-
-for x in range(4):
+for x in [34,56,234]:
 
     fig, axes = plt.subplots(1,2, sharex=True, sharey=True)
 
 
-    npz_fname =  f'/home/ec2-user/corr/data/frames/193l-500nm-19MPz{geomz}-test-{x}.npz'
-    pk = scorpy.PeakData(npz_fname, f'/home/ec2-user/corr/data/geom/19MPz{geomz}.geom')
+    npz_fname =  f'/home/ec2-user/corr/data/frames/100nm-19MPz040/{x}/193l-100nm-19MPz040-{x}-{34}.npz'
+    pk = scorpy.PeakData(npz_fname, f'/home/ec2-user/corr/data/geom/19MPz040.geom')
 
     r_inte_r = pk.convert_q2r(q_inte_r)/2
     print(r_inte_r)

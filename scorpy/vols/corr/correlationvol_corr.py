@@ -28,7 +28,7 @@ class CorrelationVolCorr:
 
 
     @verbose_dec
-    def correlate_scat_pol(self, qti, verbose=0 ):
+    def correlate_scat_pol(self, qti,chopf=0, verbose=0 ):
         '''
         scorpy.CorrelationVol.correlate_scat_pol():
             Correlate diffraction peaks in 2D polar coordinates.
@@ -56,12 +56,11 @@ class CorrelationVolCorr:
         nscats = qti.shape[0]
 
 
-##  DEBUG
-        # nscats_chop = int((1-chopf)*nscats)
-        # np.random.shuffle(qti)
-        # qti = qti[:nscats_chop]
-        # nscats = nscats_chop
 
+#  DEBUG
+        nscats = nscats - int(chopf*nscats)
+        np.random.shuffle(qti)
+        qti = qti[:nscats]
 
 
 

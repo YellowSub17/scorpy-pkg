@@ -184,9 +184,14 @@ def angle_between_sph(theta1, theta2, phi1, phi2):
     return angle_between_rect(w1, w2)
 
 
+# def cosinesim(v1, v2):
+    # v1f, v2f = v1.flatten(), v2.flatten()
+    # sim = np.dot(np.conj(v1f / np.linalg.norm(v1f)), v2f / np.linalg.norm(v2f))
+    # return sim
+
 def cosinesim(v1, v2):
     v1f, v2f = v1.flatten(), v2.flatten()
-    sim = np.dot(np.conj(v1f / np.linalg.norm(v1f)), v2f / np.linalg.norm(v2f))
+    sim = np.dot(v1f, v2f)/ (np.linalg.norm(v1f) * np.linalg.norm(v2f))
     return sim
 
 

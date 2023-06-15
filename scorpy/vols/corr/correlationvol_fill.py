@@ -96,7 +96,7 @@ class CorrelationVolFill:
         assert method in ['scat_qpol', 'scat_sph'], 'Invalid correlation method.'
 
 
-        nscats = cif.scat_rect.shape[0]
+        nscats = pk.scat_qpol.shape[0]
         nscats_chopped = round(nscats*chopf)
 
         print('############')
