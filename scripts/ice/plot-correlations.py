@@ -10,69 +10,95 @@ plt.close('all')
 
 
 
-log=False
-# power=0.125
-power=1
-
-
-
-# log=True
-# power = 1
-
-qpsi=True
-
-selfcorrbuff=2
-
 
 
 corr3d = scorpy.CorrelationVol(path='/media/pat/datadrive/ice/sim/corr/hex-ice-qcor.npy')
-corr3d.vol = corr3d.vol**(power)
+# corr3d.vol[:,:,:10] = 1
+# corr3d.vol[:,:,-10:] = 1
 
-if qpsi:
-    corr3d.qpsi_correction()
-if log:
-    corr3d.vol = np.log10(np.abs(corr3d.vol)+1)
-corr3d.plot_q1q2(title='3d', xlabel='$\\Delta\\Psi$ [rad]', ylabel='q [A-1]')
+# fig, ax = plt.subplots(1,1,)
+# corr3d.plot_sumax(0, log=False, title='3D structure factors Sum', fig=fig, axes=ax, extent=[0, 180, corr3d.qmin, corr3d.qmax])
 
 
+fig, ax = plt.subplots(1,1,)
+corr3d.plot_q1q2(log=True, title='3D structure factors q1q2', fig=fig, axes=ax, extent=[0, 180, corr3d.qmin, corr3d.qmax])
 
-print(f'{power=}, {log=}')
-for size in ['1000nm']:
-    print('')
+# fig, ax = plt.subplots(1,1,)
+# corr3d.convolve(kern_L= 3, kern_n=9,)
+# corr3d.plot_q1q2(log=False, title='3D structure factors blurred', fig=fig, axes=ax, extent=[0, 180, corr3d.qmin, corr3d.qmax])
 
-    # fig, axes = plt.subplots(1,2)
-    plt.suptitle(f'{size} {log=} {power=}')
-
-    corra = scorpy.CorrelationVol(path=f'/media/pat/datadrive/ice/sim/corr/sums/stds/hex-ice-{size}-qmin15-std-99900-0-a-qcor.dbin')
-    corrb = scorpy.CorrelationVol(path=f'/media/pat/datadrive/ice/sim/corr/sums/stds/hex-ice-{size}-qmin15-std-99900-0-b-qcor.dbin')
-
-    corra.vol[:,:, :selfcorrbuff] = 0
-    corrb.vol[:,:, :selfcorrbuff] = 0
-
-    if qpsi:
-        corra.qpsi_correction()
-        corrb.qpsi_correction()
-
-
-    corra.vol = corra.vol**(power)
-    corrb.vol = corrb.vol**(power)
-
-    if log:
-        corra.vol = np.log10(np.abs(corra.vol)+1)
-        corrb.vol = np.log10(np.abs(corrb.vol)+1)
+# fig, ax = plt.subplots(1,1,)
+# corr3d.plot_sumax(0, log=False, title='3D structure factors Sum Blurred', fig=fig, axes=ax, extent=[0, 180, corr3d.qmin, corr3d.qmax])
 
 
 
 
-    # corra.plot_q1q2(fig=fig, axes=axes[0],)
-    # corrb.plot_q1q2(fig=fig, axes=axes[1],)
-
-    corra.plot_q1q2()
-    corrb.plot_q1q2()
+corr3d.convolve()
+corr3d.plot_slice(2, 59, title=f'{np.degrees(corr3d.psipts[59])}')
+corr3d.plot_slice(2, 89, title=f'{np.degrees(corr3d.psipts[89])}')
 
 
 
-    plt.tight_layout()
+
+
+
+
+size = '125nm'
+
+stds = [-99900 ]
+stds += [i for i in range(0, 351, 25)]
+
+
+# # stds = [-99900,0 ]
+
+# # stds = [i for i in range(0, 51, 25)]
+
+
+
+# stds = [i for i in range(0, 151, 25)]
+
+corra = corr3d.copy()
+corrb = corr3d.copy()
+
+corra.vol *=0
+corrb.vol *=0
+
+apple = []
+
+for i, std in enumerate(stds[:-1]):
+
+    c1 = scorpy.CorrelationVol(path=f'/media/pat/datadrive/ice/sim/corr/sums/stds/hex-ice-{size}-qmin15-std{std}-{stds[i+1]}-a-qcor.dbin')
+    c2 = scorpy.CorrelationVol(path=f'/media/pat/datadrive/ice/sim/corr/sums/stds/hex-ice-{size}-qmin15-std{std}-{stds[i+1]}-b-qcor.dbin')
+
+    corra.vol +=c1.vol
+    corrb.vol +=c2.vol
+
+    corra.vol[:,:, :5] = 0
+    corrb.vol[:,:, :5] = 0
+
+
+#     corrac = corra.copy()
+    # corrbc = corrb.copy()
+
+    # corrac.convolve()
+    # corrbc.convolve()
+
+    print(std, stds[i+1], scorpy.utils.utils.cosinesim(corra.vol, corrb.vol))
+    # print('c', std, stds[i+1], scorpy.utils.utils.cosinesim(corrac.vol, corrbc.vol))
+    print()
+
+    apple.append(scorpy.utils.utils.cosinesim(corra.vol, corrb.vol))
+
+
+# corr3d.plot_q1q2(title='3d', xlabel='$\\Delta\\Psi$ [rad]', ylabel='q [A-1]')
+# corra.convolve()
+
+corra.vol +=corrb.vol
+corra.plot_q1q2(vminmax=(0,26471023910), title='Simulated',extent=[0, 180, corr3d.qmin, corr3d.qmax])
+plt.tight_layout()
+# corrb.convolve()
+# corrb.plot_q1q2()
+# plt.tight_layout()
 
 
 
@@ -82,3 +108,25 @@ for size in ['1000nm']:
 
 
 plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

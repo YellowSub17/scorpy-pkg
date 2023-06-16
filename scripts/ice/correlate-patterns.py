@@ -62,11 +62,6 @@ for size in sizes:
 
 
 
-
-
-
-
-
 # size = sys.argv[3]
 # nproc = int(sys.argv[2])
 # procs = int(sys.argv[1])

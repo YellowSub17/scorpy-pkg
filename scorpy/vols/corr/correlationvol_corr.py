@@ -18,6 +18,7 @@ class CorrelationVolCorr:
             for j, f_qtrowj in enumerate(f_qt[i:]):
 
                 convolved_rows = f_qtrowi*f_qtrowj.conjugate()
+                ###todo add inverse fft
 
 
                 self.vol[i, j+i,:] += np.real(convolved_rows)

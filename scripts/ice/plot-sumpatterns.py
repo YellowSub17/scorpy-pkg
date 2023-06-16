@@ -4,27 +4,38 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+import glob
 
 
 
 
-sizes=['1000nm', '500nm', '250nm', '125nm']
-
-fig, axes = plt.subplots(2,2, sharex=True, sharey=True, figsize=(16/2.54, 16/2.54))
+sizes = ['1000nm', '500nm', '250nm', '125nm']
 
 
-for i_size, size in enumerate(sizes):
-    im = np.zeros( (1000,1000) )
+# stds = [-99900 ]
+# stds += [i for i in range(0, 151, 25)]
 
-    for i in range(4):
-        p = np.load(f'/media/pat/datadrive/ice/sim/patterns/sums/hex-ice-{size}-19MPz18-10k-{i}.npy')
-        im+=p
+stds = [i for i in range(0, 151, 25)]
 
-    axes.flatten()[i_size].imshow(im, clim=(0,1000000))
 
-    axes.flatten()[i_size].set_title(f'{size}')
 
-plt.tight_layout()
+for size in sizes:
+
+    im = np.zeros( (1000, 1000) )
+    for std_i, std in enumerate(stds[:-1]):
+
+        p = np.load(f'/media/pat/datadrive/ice/sim/patterns/sums/hex-ice-{size}-std{std}-{stds[std_i+1]}-a.npy')
+        im +=p
+    print(im.max())
+
+    plt.figure()
+    plt.imshow(im, clim=(0,im.max()/10))
+    plt.colorbar()
+    plt.tight_layout()
+    plt.title(f'{size}')
 plt.show()
+
+
+
 
 
