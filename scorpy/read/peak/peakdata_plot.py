@@ -17,11 +17,14 @@ class PeakDataPlot:
 
 
 
-    def plot_peaks(self, intenthresh=0, scatter=False, cmap=None, sizes=None,  newfig=True, peakr=None):
+    def plot_peaks(self, intenthresh=0, scatter=False, cmap=None, sizes=None,  peakr=None, fig=None, ax=None):
 
-        if newfig:
-            plt.figure()
-        self.plot_panels()
+        
+        if fig is None:
+            fig, ax = plt.subplots(1,1)
+
+        self.plot_panels(fig=fig, ax=ax)
+
 
 
         x = self.scat_rect[:,0]
@@ -44,10 +47,10 @@ class PeakDataPlot:
         else:
             sizes = 15
 
-        plt.scatter(x, y, c=colors, s=sizes, cmap=cmap, marker=marker)
+        ax.scatter(x, y, c=colors, s=sizes, cmap=cmap, marker=marker)
 
 
-        plt.colorbar()
+        # plt.colorbar()
 
 
     def label_qphi(self,dx, dy):
@@ -64,16 +67,21 @@ class PeakDataPlot:
 
 
 
-    def plot_peakr(self, peakr, ec='red', ls=':'):
+    def plot_peakr(self, peakr, ec='red', ls=':', fig=None, ax=None):
+
+        if fig is None:
+            plt.figure()
+        if ax is None:
+            ax = plt.gca()
 
         x = self.scat_rect[:,0]
         y = self.scat_rect[:,1]
         for peakx, peaky in zip(x, y):
 
             circ = patches.Circle( (peakx,peaky), radius=peakr, fill=False, ec=ec, alpha=1, lw=1, ls=ls)
-            plt.gca().add_patch(circ)
+            ax.add_patch(circ)
 
-    def plot_panels(self, panel_label=True, fs_arrow=False, ss_arrow=True, units='m'):
+    def plot_panels(self, panel_label=True, fs_arrow=False, ss_arrow=True, units='m', fig=None, ax=None):
         '''
         Plot the panels in the experiment geometry.
 
@@ -82,8 +90,12 @@ class PeakDataPlot:
 
         Returns:
             None.
-        '''
-        plt.axis('equal')
+            '''
+        if fig is None:
+            plt.figure()
+        if ax is None:
+            ax = plt.gca()
+        ax.set_aspect('equal')
 
 
         if units=='m':
@@ -110,18 +122,18 @@ class PeakDataPlot:
                                      fill=False, ec='red', alpha=1, lw=1)
 
             # add the rectangle object to the plot
-            plt.gca().add_patch(rect)
+            ax.add_patch(rect)
 
             # plot an X in the (0,0) corner, add a label here as well
-            plt.plot(panel['corner_xy'][0] / (self.res*sf),
+            ax.plot(panel['corner_xy'][0] / (self.res*sf),
                      panel['corner_xy'][1] / (self.res*sf), 'rx')
 
             if panel_label:
-                plt.text(panel['corner_xy'][0] / (self.res*sf), panel['corner_xy']
+                ax.text(panel['corner_xy'][0] / (self.res*sf), panel['corner_xy']
                          [1] / (self.res*sf), panel['name'], fontsize=6)
 
             if fs_arrow:
-                plt.arrow(panel['corner_xy'][0] / (self.res*sf),panel['corner_xy'][1] / (self.res*sf),
+                ax.arrow(panel['corner_xy'][0] / (self.res*sf),panel['corner_xy'][1] / (self.res*sf),
                           30*panel['fs_xy'][0]/(self.res*sf), 30*panel['fs_xy'][1]/(self.res*sf),
                          color='blue')
 #             if ss_arrow:
@@ -133,12 +145,12 @@ class PeakDataPlot:
         cross_hair = 30/(self.res*sf)
         
 
-        plt.vlines(0, -cross_hair, cross_hair)
-        plt.hlines(0, -cross_hair, cross_hair)
+        ax.vlines(0, -cross_hair, cross_hair)
+        ax.hlines(0, -cross_hair, cross_hair)
 
 
-        plt.xlabel(f'x [{units}]')
-        plt.ylabel(f'y [{units}]')
+        ax.set_xlabel(f'x [{units}]')
+        ax.set_ylabel(f'y [{units}]')
 
 
     def plot_qring(self, q=1, ec='purple', ls=":"):
