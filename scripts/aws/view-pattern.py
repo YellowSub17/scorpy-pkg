@@ -8,21 +8,23 @@ cif = scorpy.CifData('/home/ec2-user/corr/data/xtal/193l-sf.cif')
 q_inte_r = min(cif.ast_mag, cif.bst_mag, cif.cst_mag)
 
 
-
 geom_code = '19MPz040'
 
 pdb_code ='193l'
-xtal_size = '100nm'
+xtal_size = '500nm'
+
+chunk=0
 
 
 
 
-for x in [34,56,234]:
+x = 0
+for xtal_size in ['100nm', '200nm', '500nm']:
 
     fig, axes = plt.subplots(1,2, sharex=True, sharey=True)
 
 
-    npz_fname =  f'/home/ec2-user/corr/data/frames/100nm-19MPz040/{x}/193l-100nm-19MPz040-{x}-{34}.npz'
+    npz_fname =  f'/home/ec2-user/corr/data/frames/{xtal_size}-{geom_code}/{chunk}/{pdb_code}-{xtal_size}-{geom_code}-{chunk}-{x}.npz'
     pk = scorpy.PeakData(npz_fname, f'/home/ec2-user/corr/data/geom/19MPz040.geom')
 
     r_inte_r = pk.convert_q2r(q_inte_r)/2
