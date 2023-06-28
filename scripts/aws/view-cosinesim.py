@@ -41,7 +41,7 @@ x = np.power(2, np.arange(7))*256
 
 
 plt.figure()
-plt.plot(x,y, 'x-b')
+# plt.plot(x,y, 'x-b')
 plt.plot(x,y2, 'o-b')
 plt.show()
 

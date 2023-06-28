@@ -28,7 +28,7 @@ for xtal_size in ['100nm', '200nm', '500nm']:
     pk = scorpy.PeakData(npz_fname, f'/home/ec2-user/corr/data/geom/19MPz040.geom')
 
     r_inte_r = pk.convert_q2r(q_inte_r)/2
-    print(r_inte_r)
+    # print(r_inte_r)
 
     pk.plot_peaks(fig=fig, ax=axes[0])
     plt.title(f'{x} orig')
@@ -38,8 +38,9 @@ for xtal_size in ['100nm', '200nm', '500nm']:
     pk.calc_scat(inte[:,0:3], inte[:,-1])
 
     pk.plot_peaks(fig=fig, ax=axes[1])
-    plt.title(f'{x} inte')
+    plt.title(f'{xtal_size}')
     pk.plot_qring(0.4)
+    # fig.colorbar(x, ax=axes[1])
 
 
 
