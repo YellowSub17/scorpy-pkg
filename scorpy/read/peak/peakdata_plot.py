@@ -47,7 +47,8 @@ class PeakDataPlot:
         else:
             sizes = 15
 
-        ax.scatter(x, y, c=colors, s=sizes, cmap=cmap, marker=marker)
+        cax = ax.scatter(x, y, c=colors, s=sizes, cmap=cmap, marker=marker)
+        cbar = fig.colorbar(cax)
 
 
         # plt.colorbar()

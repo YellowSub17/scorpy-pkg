@@ -15,12 +15,9 @@ import time
 
 data_dir = '/home/ec2-user/corr/data'
 
-xtal_size= '100nm'
+xtal_size= sys.argv[2]
 geom_code = '19MPz040'
 pdb_code = '193l'
-
-#some power of 2
-# nframes = sys.argv[1]
 
 
 #exponent of two between 0 and 6 inclus.
@@ -33,7 +30,7 @@ chunk_end = chunk_start + nchunks
 nframes = 256*nchunks
 
 
-print(f'Summing frames for a and b sets.')
+print(f'Summing {xtal_size} frames for a and b sets.')
 print(f'Using {nchunks} chunks from {chunk_start} to {chunk_end}.')
 print(f'Total frames in a and b sets: {nframes} frames.')
 

@@ -16,6 +16,15 @@ import scipy.spatial.transform as scit
 
 
 
+print('''
+#options
+pdb_code = sys.argv[1]
+geom_code = sys.argv[2]
+chunk = sys.argv[3]
+n_patterns = int(sys.argv[4])
+xtal_size = int(sys.argv[5])
+''')
+
 #options
 pdb_code = sys.argv[1]
 geom_code = sys.argv[2]
