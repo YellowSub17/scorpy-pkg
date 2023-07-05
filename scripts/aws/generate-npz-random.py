@@ -15,30 +15,35 @@ import scipy.spatial.transform as scit
 
 
 
+if len(sys.argv)<3:
+    print('''
+    pdb_code = "193l"
+    geom_code = "19MPz040"
+    super_chunk = sys.argv[1]
+    chunk = sys.argv[2]
+    xtal_size = int(sys.argv[3])
+    n_patterns = 512 # if not sys.argv[4]
+    ''')
 
-print('''
 #options
-pdb_code = sys.argv[1]
-geom_code = sys.argv[2]
-chunk = sys.argv[3]
-n_patterns = int(sys.argv[4])
-xtal_size = int(sys.argv[5])
-''')
+pdb_code = "193l"
+geom_code = "19MPz040"
+super_chunk = sys.argv[1]
+chunk = sys.argv[2]
+xtal_size = int(sys.argv[3])
 
-#options
-pdb_code = sys.argv[1]
-geom_code = sys.argv[2]
-chunk = sys.argv[3]
-n_patterns = int(sys.argv[4])
-xtal_size = int(sys.argv[5])
+if len(sys.argv)>3:
+    n_patterns = int(sys.argv[4])
+else:
+    n_patterns = 512
 
 
 #filenames
 geom_file = f'/home/ec2-user/corr/data/geom/{geom_code}.geom'
 hkl_file =  f'/home/ec2-user/corr/data/xtal/{pdb_code}.hkl'
 pdb_file =  f'/home/ec2-user/corr/data/xtal/{pdb_code}.pdb'
-out_path =  f'/home/ec2-user/corr/data/frames/{xtal_size}nm-{geom_code}/{chunk}'
-out_fname =  f'{pdb_code}-{xtal_size}nm-{geom_code}-{chunk}'
+out_path =  f'/home/ec2-user/corr/data/frames/{xtal_size}nm-{geom_code}-{super_chunk}/{chunk}'
+out_fname =  f'{pdb_code}-{xtal_size}nm-{geom_code}-{super_chunk}-{chunk}'
 out_file = f'{out_path}/{out_fname}'
 
 
@@ -55,32 +60,25 @@ cmd.append(f'--sample-spectrum=1')
 cmd.append('--random-orientation')
 cmd.append('--really-random')
 cmd.append('--no-fringes')
-
 cmd.append(f'--geometry={geom_file}')
 cmd.append(f'--intensities={hkl_file}')
-
-
 cmd.append(f'--pdb={pdb_file}')
 cmd.append(f'--output={out_file}')
 
 
-oris = ''
-# for dangle in [ (5, 5), (10, 10) ]:
-    # R = scit.Rotation.from_euler(seq='yz',angles=dangle, degrees=True)
-    # oris += f'{R.as_quat()[0]} {R.as_quat()[1]} {R.as_quat()[2]} {R.as_quat()[3]}\n'
-
-print(f'Generating {n_patterns} patterns of protein {pdb_code} using geometry {geom_code}')
-
+# out_fname =  f'{pdb_code}-{xtal_size}nm-{geom_code}-{super_chunk}-{chunk}'
+print('####')
+print(f'Generating {out_fname}-[0-{n_patterns}]')
 print(f'Starting at: {time.asctime()}')
-p = subprocess.run(cmd, input=oris, text=True)
 
-print(f'Finished at: {time.asctime()}')
-
-
+print('Making npz', end='\r')
+p = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
-print('Resaving h5s to npz')
-print(f'Starting at: {time.asctime()}')
+
+
+
+print('Making h5s', end='\r')
 for i_pattern in range(1, n_patterns+1):
 
     h5_fname = f"{out_file}-{i_pattern}.h5"
@@ -97,4 +95,5 @@ for i_pattern in range(1, n_patterns+1):
     cmd.append(h5_fname)
     subprocess.check_call(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 print(f'Finished at: {time.asctime()}')
+print()
 

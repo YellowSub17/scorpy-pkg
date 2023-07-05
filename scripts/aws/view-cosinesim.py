@@ -11,38 +11,40 @@ xtal_size= '100nm'
 geom_code = '19MPz040'
 pdb_code = '193l'
 
+css = np.zeros((2,7))
+x = np.zeros(7)
 
 
+# for xtal_size in ['100nm', '200nm', '500nm']:
+for xtal_size in ['100nm']:
+    for super_chunk in range(2):
+        for exponent in range(7):
+            nframes = (2**exponent)*256
+            x[exponent] = nframes
+            
 
-y = []
-y2 = []
+            corr_ab_dir =  f'{data_dir}/qcor/nsums'
+            corra = scorpy.CorrelationVol(path=f'{corr_ab_dir}/{pdb_code}-{xtal_size}-{geom_code}-x{super_chunk}-n{nframes}-a-qcor.dbin')
+            corrb = scorpy.CorrelationVol(path=f'{corr_ab_dir}/{pdb_code}-{xtal_size}-{geom_code}-x{super_chunk}-n{nframes}-b-qcor.dbin')
 
-for i in range(7):
-    nframes = (2**i)*256
+            corra.vol[:,:,0] = 0
+            corrb.vol[:,:,0] = 0
 
-    corr_ab_dir =  f'{data_dir}/qcor/nsums'
-    corra = scorpy.CorrelationVol(path=f'{corr_ab_dir}/{pdb_code}-{xtal_size}-{geom_code}-n{nframes}-a-qcor.dbin')
-    corrb = scorpy.CorrelationVol(path=f'{corr_ab_dir}/{pdb_code}-{xtal_size}-{geom_code}-n{nframes}-b-qcor.dbin')
+            css_ab = scorpy.utils.utils.cosinesim(corra.vol, corrb.vol)
 
-    css = scorpy.utils.utils.cosinesim(corra.vol, corrb.vol)
-    y.append(css)
+            css[super_chunk, exponent] = css_ab
 
-    corra.vol[:,:,0] = 0
-    corrb.vol[:,:,0] = 0
+            # print(f'{nframes}, x{super_chunk} {css}')
 
-    css = scorpy.utils.utils.cosinesim(corra.vol, corrb.vol)
-    y2.append(css)
-    print(css)
+print(css)
 
 
-x = np.power(2, np.arange(7))*256
-# x = np.arange(7)
 
 
 
 plt.figure()
-# plt.plot(x,y, 'x-b')
-plt.plot(x,y2, 'o-b')
+plt.plot(x,css[0,:], 'x', label=f'{xtal_size}')
+plt.plot(x,css[1,:], 'x', label=f'{xtal_size}')
 plt.show()
 
 
