@@ -58,12 +58,11 @@ for exp in exps:
     chunk_end = chunk_start+nchunks
 
 
-
-    print(xtal_size, super_chunk, nframes, set_name, chunk_start, chunk_end)
+    print(f'{xtal_size=}, {super_chunk=}, {nframes=}, {set_name=}, {chunk_start=}, {chunk_end=}')
     corra = scorpy.CorrelationVol(nq=150, npsi=180, qmax=1.5, qmin=0.4, cos_sample=False)
     corrb = scorpy.CorrelationVol(nq=150, npsi=180, qmax=1.5, qmin=0.4, cos_sample=False)
 
-    for i_chunk in chunks:
+    for i_chunk in chunks[chunk_start:chunk_end]:
         print(f'Summing chunk: {i_chunk}')
 
         corr_chunk_dir =  f'{data_dir}/qcor/{xtal_size}-{geom_code}-{super_chunk}/{i_chunk}'
@@ -81,7 +80,7 @@ for exp in exps:
             corrb.vol += frame_corr.vol
 
 
-    chunk_start = chunk_end
+    chunk_start = chunk_end+0
 
 
     corra.save(f'{data_dir}/qcor/nsums/{pdb_code}-{xtal_size}-{geom_code}-{super_chunk}-n{nframes}-{set_name}1-qcor.dbin')

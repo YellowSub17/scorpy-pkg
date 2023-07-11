@@ -27,7 +27,7 @@ r_inte = 0.003395225941658224
 
 print(20*'.', end='\r')
 print(f'  {super_chunk} {chunk} {xtal_size}', end='\r')
-for i_frame in range(256):
+for i_frame in range(256, 512):
 
     corr = scorpy.CorrelationVol(nq=150, npsi=180, qmax=1.5, qmin=0.4, cos_sample=False)
 
