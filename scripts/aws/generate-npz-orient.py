@@ -19,16 +19,16 @@ import scipy.spatial.transform as scit
 #options
 pdb_code = sys.argv[1]
 geom_code = sys.argv[2]
-chunk = sys.argv[3]
-n_patterns = int(sys.argv[4])
-xtal_size = int(sys.argv[5])
+ns = sys.argv[3]
+n_patterns = 5
+xtal_size = 80
 
 
 #filenames
 geom_file = f'/home/ec2-user/corr/data/geom/{geom_code}.geom'
 hkl_file =  f'/home/ec2-user/corr/data/xtal/{pdb_code}.hkl'
 pdb_file =  f'/home/ec2-user/corr/data/xtal/{pdb_code}.pdb'
-out_file =  f'/home/ec2-user/corr/data/frames/{pdb_code}-{xtal_size}nm-{geom_code}-{chunk}'
+out_file =  f'/home/ec2-user/corr/data/frames/bw-tests/{pdb_code}-{xtal_size}nm-{geom_code}-ns{ns}'
 
 
 #patternsim commands
@@ -40,9 +40,9 @@ cmd.append(f'--max-size={xtal_size}')
 cmd.append(f'--min-size={xtal_size}')
 cmd.append(f'--nphotons=1e12')
 cmd.append(f'--spectrum=tophat')
-cmd.append(f'--sample-spectrum=1')
-cmd.append('--random-orientation')
-cmd.append('--really-random')
+cmd.append(f'--sample-spectrum={ns}')
+# cmd.append('--random-orientation')
+# cmd.append('--really-random')
 cmd.append('--no-fringes')
 
 cmd.append(f'--geometry={geom_file}')
@@ -54,15 +54,18 @@ cmd.append(f'--output={out_file}')
 
 
 oris = ''
-# for dangle in [ (5, 5), (10, 10) ]:
-    # R = scit.Rotation.from_euler(seq='yz',angles=dangle, degrees=True)
-    # oris += f'{R.as_quat()[0]} {R.as_quat()[1]} {R.as_quat()[2]} {R.as_quat()[3]}\n'
+phis = np.linspace(50, 60, n_patterns)
+thetas = np.linspace(40, 50, n_patterns)
+
+
+for dangle in zip(phis, thetas):
+    R = scit.Rotation.from_euler(seq='yz',angles=dangle, degrees=True)
+    oris += f'{R.as_quat()[0]} {R.as_quat()[1]} {R.as_quat()[2]} {R.as_quat()[3]}\n'
 
 print(f'Generating {n_patterns} patterns of protein {pdb_code} using geometry {geom_code}')
 
 print(f'Starting at: {time.asctime()}')
 p = subprocess.run(cmd, input=oris, text=True)
-
 print(f'Finished at: {time.asctime()}')
 
 
