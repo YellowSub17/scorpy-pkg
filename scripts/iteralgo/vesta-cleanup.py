@@ -10,9 +10,10 @@ import os
 # sample = 'u-chalco'
 
 # samples = ['u-chalco', 'garnet', 'bfbtpp-ni', 'bbceap-ag', 'tbcampmamp']
-samples = ['agno3-d05', 'agno3-d03']
+# samples = ['agno3-d05', 'agno3-d03']
+samples = ['agno3-d03']
 # samples = ['tbcampmamp-d07']
-samples = ['aluminophosphate-d07']
+# samples = ['aluminophosphate-d07']
 
 
 
@@ -28,18 +29,18 @@ for sample in samples:
 
 
 
-    shutil.copyfile(f'{scorpy.DATADIR}/xtal/{sample}/{sample}.vins', f'{scorpy.DATADIR}/xtal/{sample}/{sample}.ins')
+    # shutil.copyfile(f'{scorpy.DATADIR}/xtal/{sample}/{sample}.vins', f'{scorpy.DATADIR}/xtal/{sample}/{sample}.ins')
 
 
-    os.system(f"sed -i 's/L\\.S\\. 5/L\\.S\\. 20/' {scorpy.DATADIR}/xtal/{sample}/{sample}.ins ")
-    os.system(f"sed -i '/FMAP/d' {scorpy.DATADIR}/xtal/{sample}/{sample}.ins ")
-    os.system(f"sed -i '/PLAN/d' {scorpy.DATADIR}/xtal/{sample}/{sample}.ins ")
-    os.system(f"sed -i '/WPDB/d' {scorpy.DATADIR}/xtal/{sample}/{sample}.ins ")
-    os.system(f"sed -i '/^H[1234567890]/d' {scorpy.DATADIR}/xtal/{sample}/{sample}.ins ")
-    os.system(f"sed -i '/BOND/d' {scorpy.DATADIR}/xtal/{sample}/{sample}.ins ")
-    os.system(f"sed -i '/CONF/d' {scorpy.DATADIR}/xtal/{sample}/{sample}.ins ")
-    os.system(f"sed -i '/TEMP/d' {scorpy.DATADIR}/xtal/{sample}/{sample}.ins ")
-    os.system(f"sed -i '/SIZE/d' {scorpy.DATADIR}/xtal/{sample}/{sample}.ins ")
+    # os.system(f"sed -i 's/L\\.S\\. 5/L\\.S\\. 20/' {scorpy.DATADIR}/xtal/{sample}/{sample}.ins ")
+    # os.system(f"sed -i '/FMAP/d' {scorpy.DATADIR}/xtal/{sample}/{sample}.ins ")
+    # os.system(f"sed -i '/PLAN/d' {scorpy.DATADIR}/xtal/{sample}/{sample}.ins ")
+    # os.system(f"sed -i '/WPDB/d' {scorpy.DATADIR}/xtal/{sample}/{sample}.ins ")
+    # os.system(f"sed -i '/^H[1234567890]/d' {scorpy.DATADIR}/xtal/{sample}/{sample}.ins ")
+    # os.system(f"sed -i '/BOND/d' {scorpy.DATADIR}/xtal/{sample}/{sample}.ins ")
+    # os.system(f"sed -i '/CONF/d' {scorpy.DATADIR}/xtal/{sample}/{sample}.ins ")
+    # os.system(f"sed -i '/TEMP/d' {scorpy.DATADIR}/xtal/{sample}/{sample}.ins ")
+    # os.system(f"sed -i '/SIZE/d' {scorpy.DATADIR}/xtal/{sample}/{sample}.ins ")
 
 
 

@@ -27,7 +27,7 @@ nq = 300
 
 
 tag = f'{sample}-d07'
-a = scorpy.AlgoHandler(tag=tag, nq=nq, qmax=qmax, npsi=npsi, nl=nl, rotk=rotk, rottheta=rottheta, overwrite=2)
+a = scorpy.AlgoHandler(tag=tag, nq=nq, qmax=qmax, npsi=npsi, nl=nl, rotk=rotk, rottheta=rottheta, overwrite=1)
 a.make_target(ciffname, verbose=99)
 a.make_support(ciffname,verbose=99)
 

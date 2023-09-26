@@ -1,6 +1,6 @@
 
 
-import scorpy 
+import scorpy
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -17,6 +17,16 @@ xyzd = [ -0.025, 0.025, 0.4 ]
 
 
 
+try:
+    print('d')
+except RuntimeError:
+    raise ValueError
+
+
+
+
+
+
 pk =  scorpy.PeakData('','/home/ec2-user/corr/data/geom/19MPz040.geom' )
 
 
@@ -29,8 +39,6 @@ pk.calc_scat(xyzi, [2,3])
 
 xyzi = np.array([xyza, xyzb, xyzc])
 pk.calc_scat(xyzi, [2,3,5])
-
-
 
 
 corr = scorpy.CorrelationVol(50, 90, 1.5, 0, cos_sample=False)

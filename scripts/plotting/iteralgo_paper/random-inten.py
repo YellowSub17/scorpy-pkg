@@ -17,7 +17,7 @@ for i in range(3):
     supp.vol = np.random.random(supp.vol.shape)
     supp.plot_slice(0, 1, xticks=[], yticks=[], cb=False, fig=fig, axes=axes)
     plt.tight_layout()
-    fig.savefig(f'/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/random_inten{i}.png')
+    # fig.savefig(f'/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/random_inten{i}.png')
 
 
 

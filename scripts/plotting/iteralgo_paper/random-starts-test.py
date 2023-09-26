@@ -47,7 +47,7 @@ axes.set_ylim(0.19, 0.45)
 plt.tight_layout()
 
 
-fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_random_rfs.png')
+# fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_random_rfs.png')
 
 fig, axes = plt.subplots(1,1,figsize=(8/2.54, 8/2.54), dpi=300)
 
@@ -68,7 +68,7 @@ axes.set_xlim(0.5, 240)
 axes.set_ylim(0, .5)
 
 plt.tight_layout()
-fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_random_d.png')
+# fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_random_d.png')
 
 plt.show()
 

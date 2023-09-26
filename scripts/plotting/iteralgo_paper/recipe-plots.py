@@ -13,7 +13,8 @@ subtags = [('ER120','120 ER'),
            ('HIO10ER10','(10 HIO + 10 ER) x12'),
            ('HIO20ER20','(20 HIO + 20 ER) x6'),
            ('HIO30ER30','(30 HIO + 30 ER) x3'),
-           ('HIO120','120 HIO')
+           ('HIO120','120 HIO'),
+           ('a','(20 HIO + 2 ER) x5')
            ]
 
 
@@ -31,6 +32,9 @@ figrecd, axesrecd = plt.subplots(1,1,figsize=(8/2.54, 8/2.54), dpi=300 )
 
 for i, (subtag, label) in enumerate(subtags):
     a = scorpy.AlgoHandler('agno3-rec')
+    if subtag=='a':
+        a = scorpy.AlgoHandler('agno3-nl180')
+
     a.plot_vs_count(f'{subtag}', 'rfs', marker='', linestyle='-',  fig=figrecrf, axes=axesrecrf,
                     color = cmap_rf[i], label=f'{label}',xlabel='Algorithm Iteration', ylabel='$R_f$',xerr=None,yerr=None)
 
@@ -50,8 +54,8 @@ axesrecd.set_ylim(0, 1.16)
 
 figrecrf.tight_layout()
 figrecd.tight_layout()
-figrecrf.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_rec_rf.png')
-figrecd.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_rec_d.png')
+figrecrf.savefig('/home/pat/Documents/phd/writing/iteralgopaper/figs/py/algo_rec_rf.png')
+figrecd.savefig('/home/pat/Documents/phd/writing/iteralgopaper/figs/py/algo_rec_d.png')
 
 
 
