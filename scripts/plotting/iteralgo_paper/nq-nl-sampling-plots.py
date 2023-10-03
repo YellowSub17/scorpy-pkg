@@ -50,14 +50,14 @@ for i, nq in enumerate(nqs):
                     xerr=None, yerr=None, label=f'{nq}', xlabel='Algorithm Iteration')
 
 
-axesnqrf.legend(bbox_to_anchor=(1,1), loc="upper right", framealpha=1, title='$nq$', ncol=2,
+axesnqrf.legend(bbox_to_anchor=(1,1), loc="upper right", framealpha=1, title='$n_q:$', ncol=2, frameon=False
     # borderpad=0.5,
     # labelspacing=0,
     # handlelength=0,
     # handletextpad=0.5,
     # columnspacing=1.5
               )
-axesnqd.legend(bbox_to_anchor=(1,1), loc="upper right", framealpha=1, title='$nq$', ncol=2,
+axesnqd.legend(bbox_to_anchor=(1,1), loc="upper right", framealpha=1, title='$n_q:$', ncol=2, frameon=False
     # borderpad=0.5,
     # labelspacing=0,
     # handlelength=0,
@@ -73,8 +73,8 @@ axesnqd.set_ylim(0, 1.16)
 
 fignqrf.tight_layout()
 fignqd.tight_layout()
-fignqrf.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_samp_nqrf.png')
-fignqd.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_samp_nqd.png')
+fignqrf.savefig('/home/pat/Documents/phd/writing/iteralgopaper/figs/py/algo_samp_nqrf.png')
+fignqd.savefig('/home/pat/Documents/phd/writing/iteralgopaper/figs/py/algo_samp_nqd.png')
 
 
 
@@ -109,7 +109,7 @@ for i, nl in enumerate(nls):
                     fig=fignld, axes=axesnld, color = cmap_atomic[i], xerr=None, yerr=None,
                     ylabel='Mean Atomic Displacement [\u212B]', xlabel='Algorithm Iteration')
 
-axesnlrf.legend(bbox_to_anchor=(1,1), loc="upper right", framealpha=1, title='$nL$', ncol=2,
+axesnlrf.legend(bbox_to_anchor=(1,1), loc="upper right", framealpha=1, title='$n_L:$', ncol=2, frameon=False
     # borderpad=0.5,
     # labelspacing=0,
     # handlelength=0,
@@ -117,7 +117,7 @@ axesnlrf.legend(bbox_to_anchor=(1,1), loc="upper right", framealpha=1, title='$n
     # columnspacing=1.5
               )
 
-axesnld.legend(bbox_to_anchor=(1,1), loc="upper right", framealpha=1, title='$nL$', ncol=2,
+axesnld.legend(bbox_to_anchor=(1,1), loc="upper right", framealpha=1, title='$n_L:$', ncol=2, frameon=False
     # borderpad=0.5,
     # labelspacing=0,
     # handlelength=0,
@@ -134,8 +134,8 @@ axesnld.set_ylim(0, 1.16)
 fignlrf.tight_layout()
 fignld.tight_layout()
 
-fignlrf.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_samp_nlrf.png')
-fignld.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_samp_nld.png')
+fignlrf.savefig('/home/pat/Documents/phd/writing/iteralgopaper/figs/py/algo_samp_nlrf.png')
+fignld.savefig('/home/pat/Documents/phd/writing/iteralgopaper/figs/py/algo_samp_nld.png')
 plt.show()
 
 

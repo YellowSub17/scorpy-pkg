@@ -83,6 +83,9 @@ def grep(s, reg, fn=None):
 
 
 
+def rfactor(It, If):
+    rf = np.sum(np.abs(It - If))/np.sum(np.abs(If))
+    return rf
 
 
 

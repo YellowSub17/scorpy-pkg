@@ -145,6 +145,10 @@ class AlgoHandlerPostRecon:
 
 
 
+
+
+
+
     def get_targ_final_scat_eq_loc(self, sub_tag):
 
         cif_targ = CifData(self.cif_targ_path(), rotk=self.rotk, rottheta= self.rottheta)
@@ -254,10 +258,10 @@ class AlgoHandlerPostRecon:
         return float(rf)
 
 
-    def get_inten_rf(self, sub_tag, count=None, loc=None):
+    def get_inten_rf(self, sub_tag, count=None):
 
 
-        It, If = self.get_intensity(sub_tag, count=count, loc=loc)
+        It, If = self.get_intensity(sub_tag, count=count)
 
         It /=np.sum(It)
         If /=np.sum(If)
@@ -265,6 +269,108 @@ class AlgoHandlerPostRecon:
         rf = np.sum(np.abs(It - If))/np.sum(np.abs(If))
 
         return rf
+
+
+
+    def get_It_If_loc(self, sub_tag):
+
+        #it is missing some intensities
+        It_cif = CifData(self.cif_targ_path())
+        #if has too many brag peaks
+        If_hkli = np.genfromtxt(self.hkl_count_path(sub_tag, count=0),delimiter=(4,4,4,8), skip_footer=1, usecols=(0,1,2,3))
+
+        loc = np.zeros(It_cif.scat_bragg.shape[0])
+        print(f'checking for missing bragg points ({It_cif.scat_bragg.shape[0]})')
+        for i, (h, k, l, I) in enumerate(It_cif.scat_bragg):
+            print(f'{i}', end='\r')
+            bragg_loc =np.where( (If_hkli[:,:-1]==[h,k,l]).all(axis=1))[0][0]
+            loc[i] = bragg_loc
+        print()
+        print('Done')
+
+        #an array that 
+        loc = loc.astype(int)
+         
+        return loc
+
+
+    @verbose_dec
+    def get_inten_quick(self, sub_tag, counts, loc=None, verbose=0):
+
+
+        # #it is missing some intensities
+        # It_cif = CifData(self.cif_targ_path())
+        #if has too many brag peaks
+        If_hkli = np.genfromtxt(self.hkl_count_path(sub_tag, count=0),delimiter=(4,4,4,8), skip_footer=1, usecols=(0,1,2,3))
+
+        if loc is None:
+            print('loc is none, gettting loc')
+            loc = self.get_It_If_loc(sub_tag)
+
+        intens = np.zeros((len(counts), loc.shape[0]))   
+
+        # It = It_cif.scat_bragg[:,-1]
+        # It /=np.sum(It)
+        for i, count in enumerate(counts):
+            print(i)
+
+            If = np.genfromtxt(self.hkl_count_path(sub_tag, count=count),delimiter=(4, 4, 4, 8 ), skip_footer=1, usecols=3)
+
+            If = If[loc]
+
+
+            intens[i] = If
+
+        return intens
+
+
+
+    def get_targ_inten(self):
+        It_cif = CifData(self.cif_targ_path())
+        It = It_cif.scat_bragg[:,-1]
+        return It
+
+
+    def get_inten_rfs_quick(self, sub_tag, n, loc=None, It=None):
+
+        #it is missing some intensities
+        If_hkli = np.genfromtxt(self.hkl_count_path(sub_tag, count=0),delimiter=(4,4,4,8), skip_footer=1, usecols=(0,1,2,3))
+
+        if loc is None:
+
+            loc = self.get_It_If_loc(sub_tag)
+
+
+
+
+        rfs = np.zeros(n)   
+        if It is None:
+            It_cif = CifData(self.cif_targ_path())
+            It = It_cif.scat_bragg[:,-1]
+
+        It /=np.sum(It)
+        for i in range(n):
+            print(i)
+
+            If = np.genfromtxt(self.hkl_count_path(sub_tag, count=i),delimiter=(4, 4, 4, 8 ), skip_footer=1, usecols=3)
+
+            If = If[loc]
+
+            If /=np.sum(If)
+
+            rf = np.sum(np.abs(It - If))/np.sum(np.abs(If))
+            rfs[i] = rf
+
+        return rfs
+
+
+
+            
+
+
+
+
+
 
 
 
