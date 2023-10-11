@@ -17,7 +17,7 @@ class PeakDataPlot:
 
 
 
-    def plot_peaks(self, intenthresh=0, scatter=False, cmap=None, sizes=None,  peakr=None, fig=None, ax=None):
+    def plot_peaks(self, intenthresh=0, scatter=False, cmap=None, sizes=None,  peakr=None, fig=None, ax=None, xysf=1):
 
         
         if fig is None:
@@ -27,8 +27,8 @@ class PeakDataPlot:
 
 
 
-        x = self.scat_rect[:,0]
-        y = self.scat_rect[:,1]
+        x = self.scat_rect[:,0]*xysf
+        y = self.scat_rect[:,1]*xysf
         colors = self.scat_rect[:,-1]
         marker = 'o'
 
@@ -48,10 +48,7 @@ class PeakDataPlot:
             sizes = 15
 
         cax = ax.scatter(x, y, c=colors, s=sizes, cmap=cmap, marker=marker)
-        cbar = fig.colorbar(cax)
-
-
-        # plt.colorbar()
+        # cbar = fig.colorbar(cax)
 
 
     def label_qphi(self,dx, dy):
@@ -119,7 +116,7 @@ class PeakDataPlot:
             rect_y = panel['corner_xy'][1] / (self.res*sf)
 
             # rectangle object
-            rect = patches.Rectangle((rect_x, rect_y), rect_width, -rect_height, rect_rot,
+            rect = patches.Rectangle((rect_x, rect_y), rect_width, -rect_height, angle=rect_rot,
                                      fill=False, ec='red', alpha=1, lw=1)
 
             # add the rectangle object to the plot
@@ -150,13 +147,19 @@ class PeakDataPlot:
         ax.hlines(0, -cross_hair, cross_hair)
 
 
-        ax.set_xlabel(f'x [{units}]')
-        ax.set_ylabel(f'y [{units}]')
+        # ax.set_xlabel(f'x [{units}]')
+        # ax.set_ylabel(f'y [{units}]')
 
 
     def plot_qring(self, q=1, ec='purple', ls=":"):
         r = self.convert_q2r(q)
         circ = patches.Circle( (0,0), radius=r, fill=False, ec=ec, alpha=1, lw=1, ls=ls)
+        plt.gca().add_patch(circ)
+
+    def plot_annulus(self, qmin=1, qmax=1.1, color=(1,0,0,0.5), fill=True):
+        rmin = self.convert_q2r(qmin)
+        rmax = self.convert_q2r(qmax)
+        circ = patches.Annulus( (0,0), r=rmax, width=rmax-rmin, color=color, fill=fill)
         plt.gca().add_patch(circ)
 
 

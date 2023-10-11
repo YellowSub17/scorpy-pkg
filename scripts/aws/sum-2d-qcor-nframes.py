@@ -22,8 +22,6 @@ pdb_code = '193l'
 
 xtal_size = sys.argv[1]
 super_chunk = sys.argv[2]
-
-
 exp_start = int(sys.argv[3])
 reverse_flag = bool(int(sys.argv[4]))
 
@@ -47,7 +45,6 @@ set_name = set_names[exp_start]
 
 
 
-
 chunk_start = 0
 
 for exp in exps:
@@ -59,8 +56,8 @@ for exp in exps:
 
 
     print(f'{xtal_size=}, {super_chunk=}, {nframes=}, {set_name=}, {chunk_start=}, {chunk_end=}')
-    corra = scorpy.CorrelationVol(nq=150, npsi=180, qmax=1.5, qmin=0.4, cos_sample=False)
-    corrb = scorpy.CorrelationVol(nq=150, npsi=180, qmax=1.5, qmin=0.4, cos_sample=False)
+    corr1 = scorpy.CorrelationVol(nq=150, npsi=180, qmax=1.5, qmin=0.4, cos_sample=False)
+    corr2 = scorpy.CorrelationVol(nq=150, npsi=180, qmax=1.5, qmin=0.4, cos_sample=False)
 
     for i_chunk in chunks[chunk_start:chunk_end]:
         print(f'Summing chunk: {i_chunk}')
@@ -71,20 +68,20 @@ for exp in exps:
             print(i_frame, end='\r')
             qcor_path = f'{corr_chunk_dir}/{pdb_code}-{xtal_size}-{geom_code}-{super_chunk}-{i_chunk}-{i_frame}-qcor.npy'
             frame_corr = scorpy.CorrelationVol(path=qcor_path)
-            corra.vol += frame_corr.vol
+            corr1.vol += frame_corr.vol
 
         for i_frame in range(256, 512):
             print(i_frame, end='\r')
             qcor_path = f'{corr_chunk_dir}/{pdb_code}-{xtal_size}-{geom_code}-{super_chunk}-{i_chunk}-{i_frame}-qcor.npy'
             frame_corr = scorpy.CorrelationVol(path=qcor_path)
-            corrb.vol += frame_corr.vol
+            corr2.vol += frame_corr.vol
 
 
     chunk_start = chunk_end+0
 
 
-    corra.save(f'{data_dir}/qcor/nsums/{pdb_code}-{xtal_size}-{geom_code}-{super_chunk}-n{nframes}-{set_name}1-qcor.dbin')
-    corrb.save(f'{data_dir}/qcor/nsums/{pdb_code}-{xtal_size}-{geom_code}-{super_chunk}-n{nframes}-{set_name}2-qcor.dbin')
+    corr1.save(f'{data_dir}/qcor/nsums/{pdb_code}-{xtal_size}-{geom_code}-{super_chunk}-n{nframes}-{set_name}1-qcor.dbin')
+    corr2.save(f'{data_dir}/qcor/nsums/{pdb_code}-{xtal_size}-{geom_code}-{super_chunk}-n{nframes}-{set_name}2-qcor.dbin')
 
 
 

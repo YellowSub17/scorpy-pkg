@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-superchunk=0
+superchunk=1
 
 for flag in 0 1
 do
