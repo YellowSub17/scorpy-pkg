@@ -22,66 +22,89 @@ pdb_code = '193l'
 
 xtal_size = sys.argv[1]
 super_chunk = sys.argv[2]
-exp_start = int(sys.argv[3])
-reverse_flag = bool(int(sys.argv[4]))
+my_exponent = int(sys.argv[3])
+max_exponent = int(sys.argv[4])
+reverse_flag = bool(int(sys.argv[5]))
 
 
-if reverse_flag:
-    exps = [i for i in range(exp_start, -1, -1)]
-    chunks = [i for i in range(255, -1, -1)]
-    set_names='stuvwxyz'
-else:
-    exps = [i for i in range(exp_start, -1, -1)]
+
+
+
+
+exponents = [i for i in range(max_exponent, -1, -1)]
+if not reverse_flag:
     chunks = [i for i in range(0, 256)]
-    set_names='abcdefgh'
-
-set_name = set_names[exp_start]
-
-
-
-
+    set_names ='abcdefgh'
+else:
+    chunks = [i for i in range(255, -1, -1)]
+    set_names ='zyxwvuts'
+set_name = set_names[max_exponent]
 
 
 
 
 
-chunk_start = 0
+#### generate chunk ranges
+# print(f'{exponents=}')
 
-for exp in exps:
-    
-    nchunks =2**exp
+
+chunk_end_index = 0
+for exponent in exponents:
+    chunk_start_index = chunk_end_index
+    nchunks = 2**exponent
     nframes = nchunks*256
+    chunk_end_index = chunk_start_index + nchunks
 
-    chunk_end = chunk_start+nchunks
+    if exponent==my_exponent:
+        break
 
-
-    print(f'{xtal_size=}, {super_chunk=}, {nframes=}, {set_name=}, {chunk_start=}, {chunk_end=}')
-    corr1 = scorpy.CorrelationVol(nq=150, npsi=180, qmax=1.5, qmin=0.4, cos_sample=False)
-    corr2 = scorpy.CorrelationVol(nq=150, npsi=180, qmax=1.5, qmin=0.4, cos_sample=False)
-
-    for i_chunk in chunks[chunk_start:chunk_end]:
-        print(f'Summing chunk: {i_chunk}')
-
-        corr_chunk_dir =  f'{data_dir}/qcor/{xtal_size}-{geom_code}-{super_chunk}/{i_chunk}'
-
-        for i_frame in range(256):
-            print(i_frame, end='\r')
-            qcor_path = f'{corr_chunk_dir}/{pdb_code}-{xtal_size}-{geom_code}-{super_chunk}-{i_chunk}-{i_frame}-qcor.npy'
-            frame_corr = scorpy.CorrelationVol(path=qcor_path)
-            corr1.vol += frame_corr.vol
-
-        for i_frame in range(256, 512):
-            print(i_frame, end='\r')
-            qcor_path = f'{corr_chunk_dir}/{pdb_code}-{xtal_size}-{geom_code}-{super_chunk}-{i_chunk}-{i_frame}-qcor.npy'
-            frame_corr = scorpy.CorrelationVol(path=qcor_path)
-            corr2.vol += frame_corr.vol
+# if reverse_flag:
+    # tmp_var = chunk_start_index
+    # chunk_start_index = chunk_end_index
+    # chunk_end_index = tmp_var
 
 
-    chunk_start = chunk_end+0
 
 
-    corr1.save(f'{data_dir}/qcor/nsums/{pdb_code}-{xtal_size}-{geom_code}-{super_chunk}-n{nframes}-{set_name}1-qcor.dbin')
-    corr2.save(f'{data_dir}/qcor/nsums/{pdb_code}-{xtal_size}-{geom_code}-{super_chunk}-n{nframes}-{set_name}2-qcor.dbin')
+
+chunk_start = chunks[chunk_start_index]
+chunk_end = chunks[chunk_end_index]
+
+
+
+
+print(f'Summing Correlations: {xtal_size}, {nframes} frames, Set {set_name}')
+print(f'Chunk range: {chunk_start} to {chunk_end} ({nchunks} total)')
+corr1 = scorpy.CorrelationVol(nq=150, npsi=180, qmax=1.5, qmin=0.4, cos_sample=False)
+corr2 = scorpy.CorrelationVol(nq=150, npsi=180, qmax=1.5, qmin=0.4, cos_sample=False)
+
+print(20*'. ')
+
+# print(f'{chunk_start_index=} {chunk_end_index=}')
+# print(chunks[chunk_start_index:chunk_end_index])
+
+for i_chunk, chunk in enumerate(chunks[chunk_start_index:chunk_end_index]):
+    print(f'{i_chunk}\t/{nchunks}', end='\r')
+
+
+    corr_chunk_dir =  f'{data_dir}/qcor/{xtal_size}-{geom_code}-{super_chunk}/{chunk}'
+
+    for i_frame in range(256):
+        qcor_path = f'{corr_chunk_dir}/{pdb_code}-{xtal_size}-{geom_code}-{super_chunk}-{chunk}-{i_frame}-qcor.npy'
+        frame_corr = scorpy.CorrelationVol(path=qcor_path)
+        corr1.vol += frame_corr.vol
+
+    for i_frame in range(256, 512):
+        qcor_path = f'{corr_chunk_dir}/{pdb_code}-{xtal_size}-{geom_code}-{super_chunk}-{chunk}-{i_frame}-qcor.npy'
+        frame_corr = scorpy.CorrelationVol(path=qcor_path)
+        corr2.vol += frame_corr.vol
+
+print(20*'. ')
+
+
+corr1.save(f'{data_dir}/qcor/nsums/{pdb_code}-{xtal_size}-{geom_code}-{super_chunk}-n{nframes}-{set_name}1-qcor.dbin')
+corr2.save(f'{data_dir}/qcor/nsums/{pdb_code}-{xtal_size}-{geom_code}-{super_chunk}-n{nframes}-{set_name}2-qcor.dbin')
+print('Done.')
 
 
 

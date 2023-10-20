@@ -35,6 +35,7 @@ css_x  =  np.zeros((nexponents, len(xtal_sizes)))
 
 
 fig1, axes1 = plt.subplots(1,1)
+fig2, axes2 = plt.subplots(1,1)
 
 for i, (xtal_size, color) in enumerate(zip(xtal_sizes, cmap1)):
 
@@ -48,46 +49,22 @@ for i, (xtal_size, color) in enumerate(zip(xtal_sizes, cmap1)):
         if len(corr_glob)%2==1:
             corr_glob = corr_glob[:-1]
 
-        css_s = np.load(f'{data_dir}/css/{pdb_code}-{xtal_size}nm-{geom_code}-x1-n{nframes}-css.npy')
-        css_mean = np.mean(css_s)
-        css_err = np.std(css_s)
-        axes1.errorbar(np.log2(nframes), css_mean, yerr=3*css_err, marker='.', color=color, capsize=0.1)
+        css_s  = []
+        for corr1fname, corr2fname in zip(corr_glob[::2], corr_glob[1::2]):
 
-        css_x[exponent, i] = css_mean
+            print(corr1fname)
+            print(corr2fname)
+     
+            corr1 = scorpy.CorrelationVol(path=f'{corr1fname}')
+            corr2 = scorpy.CorrelationVol(path=f'{corr2fname}')
 
+            corr1.vol[:,:,0] = 0
+            corr2.vol[:,:,0] = 0
 
+            css_12 = scorpy.utils.utils.cosinesim(corr1.vol, corr2.vol)
+            css_s.append(css_12)
 
+            # axes.plot(nframes, css_12, marker='.', color=color)
+        np.save(f'{data_dir}/css/{pdb_code}-{xtal_size}nm-{geom_code}-x1-n{nframes}-css.npy', np.array(css_s))
 
-
-
-
-
-
-for i, (xtal_size, color) in enumerate(zip(xtal_sizes, cmap1)):
-
-
-
-    axes1.plot(xi, yi, color=color, linestyle='dashed', label=f'{xtal_size}nm')
-    axes1.errorbar(x0_fit, logistic_fn(x0_fit, L_fit, k_fit, x0_fit), color=color, marker='x', xerr=3*perr[-1])
-
-
-
-
-
-
-
-
-
-
-
-
-axes1.set_xlabel('# of Frames')
-axes1.set_ylabel('Cosine Similarity')
-axes1.legend()
-
-
-
-
-
-plt.show()
 
