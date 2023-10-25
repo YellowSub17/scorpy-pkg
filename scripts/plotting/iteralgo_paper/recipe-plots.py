@@ -50,7 +50,6 @@ for i, (subtag, label) in enumerate(subtags):
     If = If/np.sum(If, axis=-1)[:,None]
 
     rfs = np.sum(np.abs(It - If), axis=-1) /np.sum( np.abs(If), axis=-1 )
-    print(rfs.shape)
 
     axesrecrf.plot(iter_counts, rfs, marker=',', linestyle='-', color=cmap_rf[i], label=f'{label}')
     # axesnlrf.plot(iter_counts, np.log10(rfs), marker=',', linestyle='-', color=cmap_rf[i], label=f'{nl}')
@@ -77,8 +76,8 @@ axesrecd.set_ylim(0, 1.16)
 
 figrecrf.tight_layout()
 figrecd.tight_layout()
-figrecrf.savefig('/home/pat/Documents/phd/writing/iteralgopaper/figs/py/algo_rec_rf.png')
-figrecd.savefig('/home/pat/Documents/phd/writing/iteralgopaper/figs/py/algo_rec_d.png')
+figrecrf.savefig('/home/pat/Documents/phd/figs/py/algo_rec_rf.svg')
+figrecd.savefig('/home/pat/Documents/phd/figs/py/algo_rec_d.svg')
 
 
 

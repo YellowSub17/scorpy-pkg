@@ -7,7 +7,11 @@ plt.close('all')
 
 import scorpy
 
-from mpl_toolkits.axes_grid.inset_locator import (inset_axes, InsetPosition, mark_inset)
+
+
+
+import mpl_toolkits
+from mpl_toolkits.axes_grid1.inset_locator import (inset_axes, InsetPosition, mark_inset)
 
 
 
@@ -115,7 +119,7 @@ a._plot_errorbar(dtarg_vals, dmeans_vals, yerr=d_totalerr*3, xerr=dtarg_err*0, f
                 marker='.', markersize=3, capsize=2, color=(0.5,0.5,0.5), ecolor='black')
 
 plt.tight_layout()
-fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_tbcampmamp_lengths.png')
+fig.savefig('/home/pat/Documents/phd/figs/py/algo_tbcampmamp_lengths.svg')
 
 
 fig, axes = plt.subplots(1,1,figsize=(8/2.54, 8/2.54), dpi=300 )
@@ -126,7 +130,7 @@ a._plot_errorbar(atarg_vals, ameans_vals, yerr=a_totalerr*3, xerr=atarg_err*0, f
 
 
 plt.tight_layout()
-fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_tbcampmamp_angles.png')
+fig.savefig('/home/pat/Documents/phd/figs/py/algo_tbcampmamp_angles.svg')
 
 
 

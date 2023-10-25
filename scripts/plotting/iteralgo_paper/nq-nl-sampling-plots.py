@@ -101,8 +101,8 @@ axesnqd.set_ylim(0, 1.16)
 fignqrf.tight_layout()
 fignqd.tight_layout()
 
-fignqrf.savefig('/home/pat/Documents/phd/writing/iteralgopaper/figs/py/algo_samp_nqrf.png')
-fignqd.savefig('/home/pat/Documents/phd/writing/iteralgopaper/figs/py/algo_samp_nqd.png')
+fignqrf.savefig('/home/pat/Documents/phd/figs/py/algo_samp_nqrf.svg')
+fignqd.savefig('/home/pat/Documents/phd/figs/py/algo_samp_nqd.svg')
 
 
 
@@ -173,8 +173,8 @@ axesnld.set_ylim(0, 1.16)
 fignlrf.tight_layout()
 fignld.tight_layout()
 
-fignlrf.savefig('/home/pat/Documents/phd/writing/iteralgopaper/figs/py/algo_samp_nlrf.png')
-fignld.savefig('/home/pat/Documents/phd/writing/iteralgopaper/figs/py/algo_samp_nld.png')
+fignlrf.savefig('/home/pat/Documents/phd/figs/py/algo_samp_nlrf.svg')
+fignld.savefig('/home/pat/Documents/phd/figs/py/algo_samp_nld.svg')
 plt.show()
 
 
