@@ -4,7 +4,10 @@ import matplotlib.pyplot as plt
 plt.close('all')
 plt.rc('font', size=8)
 import scorpy
-from mpl_toolkits.axes_grid.inset_locator import (inset_axes, InsetPosition, mark_inset)
+
+
+import mpl_toolkits
+from mpl_toolkits.axes_grid1.inset_locator import (inset_axes, InsetPosition, mark_inset)
 
 
 
@@ -71,7 +74,7 @@ iter_counts = [10,30,50,70, 90, 120]
 
 
 c_vals = np.linspace(0, 1, len(iter_counts))
-c_vals = [0, 0.2, 0.4, 0.7, 0.8, 1]
+c_vals = [0, 0.2, 0.4, 0.65, 0.75, 0.85]
 print(c_vals)
 colors = cm.brg(c_vals)
 
@@ -121,11 +124,18 @@ colors = cm.brg(c_vals)
 
 
 
+apple = np.zeros(len(iter_counts))
 
+
+rfs=['0.90', '0.77', '0.56', '0.23', '0.16', '0.18']
 fig, axes = plt.subplots(2,3,figsize=(16/2.54, 8/2.54), dpi=300, sharex=True, sharey=True )
-for i, (iter_count, color, ax) in enumerate(zip(iter_counts, colors, axes.flatten())):
+for i, (iter_count, color, ax, rf) in enumerate(zip(iter_counts, colors, axes.flatten(), rfs)):
     x =It/np.sum(It)*1000
     y =Ifs_means[iter_count,:]/np.sum(Ifs_means[iter_count,:])*1000
+
+
+    apple[i] = np.sum(Ifs_means[iter_count,:])
+
 
 
     print('\t\t', iter_count)
@@ -149,10 +159,11 @@ for i, (iter_count, color, ax) in enumerate(zip(iter_counts, colors, axes.flatte
     c = np.round(fit.convert().coef[0],2)
 
 
-    ax.plot(x,y, ls='', marker='.', color=color)
+    ax.plot(x,y, ls='', marker='.', color=color, alpha=1,  mew=0, ms=5.0)
     
     ax.plot([0,3], [0,3], ls='-.', marker='', color='k')
     ax.text(0.1, 2.7, f'{iter_count} Iterations')
+    ax.text(0.1, 2.3, f'$R$ factor: {rf}')
 
     ax.set_ylim([0, 3])
     ax.set_xlim([0, 3])
@@ -174,13 +185,15 @@ wspace=0.1
 
 
 
-plt.savefig(f'/home/pat/Documents/phd/writing/iteralgopaper/figs/py/algo_{tag}_inten_xy_2x3.png')
+plt.savefig(f'/home/pat/Documents/phd/figs/py/algo_{tag}_inten_xy_2x3.png')
 
 
 
 
 
 
+# plt.figure()
+# plt.plot(iter_counts, apple)
 
 
 

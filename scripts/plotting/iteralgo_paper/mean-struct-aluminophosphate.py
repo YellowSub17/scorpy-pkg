@@ -7,8 +7,9 @@ plt.close('all')
 
 import scorpy
 
-from mpl_toolkits.axes_grid.inset_locator import (inset_axes, InsetPosition, mark_inset)
 
+import mpl_toolkits
+from mpl_toolkits.axes_grid1.inset_locator import (inset_axes, InsetPosition, mark_inset)
 
 
 plt.rc('font', size=8)
@@ -136,7 +137,8 @@ a._plot_errorbar(dtarg_vals, dmeans_vals, yerr=d_totalerr*3, xerr=dtarg_err*0, f
 plt.tight_layout()
 
 
-fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_alpo4_lengths.png')
+# fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_alpo4_lengths.png')
+fig.savefig('/home/pat/Documents/phd/figs/py/algo_alpo4_lengths.svg')
 
 fig, axes = plt.subplots(1,1,figsize=(8/2.54, 8/2.54), dpi=300 )
 
@@ -173,7 +175,7 @@ inset_axes1.set_ylabel('')
 
 
 plt.tight_layout()
-fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_alpo4_angles.png')
+fig.savefig('/home/pat/Documents/phd/figs/py/algo_alpo4_angles.svg')
 # fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/bond-da-xy-aluminophosphate.png')
 
 

@@ -1,13 +1,15 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
 plt.close('all')
+import matplotlib.cm as cm
+
 
 
 import scorpy
 
-from mpl_toolkits.axes_grid.inset_locator import (inset_axes, InsetPosition, mark_inset)
+import mpl_toolkits
+from mpl_toolkits.axes_grid1.inset_locator import (inset_axes, InsetPosition, mark_inset)
 
 
 
@@ -141,8 +143,11 @@ inset_axes0.yaxis.tick_right()
 inset_axes0.set_xlabel('')
 inset_axes0.set_ylabel('')
 
+
+
+
 plt.tight_layout()
-# fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_agno3_lengths.png')
+fig.savefig('/home/pat/Documents/phd/figs/py/algo_agno3_lengths.svg')
 
 
 
@@ -185,7 +190,8 @@ inset_axes1.set_ylabel('')
 plt.tight_layout()
 
 
-# fig.savefig('/home/pat/Documents/cloudstor/phd/writing/iteralgopaper/figs/py/algo_agno3_angles.png')
+fig.savefig('/home/pat/Documents/phd/figs/py/algo_agno3_angles.svg')
+# fig.savefig('/home/pat/Documents/phd/writing/iteralgopaper/figs/py/algo_agno3_angles.png')
 
 
 plt.show()
