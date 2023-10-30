@@ -20,8 +20,9 @@ corr3d = scorpy.CorrelationVol(path='/media/pat/datadrive/ice/sim/corr/hex-ice-q
 # corr3d.plot_sumax(0, log=False, title='3D structure factors Sum', fig=fig, axes=ax, extent=[0, 180, corr3d.qmin, corr3d.qmax])
 
 
-fig, ax = plt.subplots(1,1,)
+fig, ax = plt.subplots(1,1,figsize=(8/2.54, 8/2.54), dpi= 300)
 corr3d.plot_q1q2(log=True, title='3D structure factors q1q2', fig=fig, axes=ax, extent=[0, 180, corr3d.qmin, corr3d.qmax])
+plt.savefig('/home/pat/Documents/phd/figs/py/ice_3d_q1q2.png')
 
 # fig, ax = plt.subplots(1,1,)
 # corr3d.convolve(kern_L= 3, kern_n=9,)
@@ -34,8 +35,15 @@ corr3d.plot_q1q2(log=True, title='3D structure factors q1q2', fig=fig, axes=ax, 
 
 
 corr3d.convolve()
-corr3d.plot_slice(2, 59, title=f'{np.degrees(corr3d.psipts[59])}')
-corr3d.plot_slice(2, 89, title=f'{np.degrees(corr3d.psipts[89])}')
+
+
+fig, ax = plt.subplots(1,1,figsize=(8/2.54, 8/2.54), dpi= 300)
+corr3d.plot_slice(2, 59, title=f'{np.degrees(corr3d.psipts[59])} degrees', xlabel='q1', ylabel='q2', fig=fig, axes=ax )
+plt.savefig('/home/pat/Documents/phd/figs/py/ice_3dcorr_59deg.png')
+
+fig, ax = plt.subplots(1,1,figsize=(8/2.54, 8/2.54), dpi= 300)
+corr3d.plot_slice(2, 89, title=f'{np.degrees(corr3d.psipts[89])} degrees', xlabel='q1', ylabel='q2', fig=fig, axes=ax)
+plt.savefig('/home/pat/Documents/phd/figs/py/ice_3dcorr_89deg.png')
 
 
 
@@ -66,7 +74,6 @@ corrb.vol *=0
 apple = []
 
 for i, std in enumerate(stds[:-1]):
-
     c1 = scorpy.CorrelationVol(path=f'/media/pat/datadrive/ice/sim/corr/sums/stds/hex-ice-{size}-qmin15-std{std}-{stds[i+1]}-a-qcor.dbin')
     c2 = scorpy.CorrelationVol(path=f'/media/pat/datadrive/ice/sim/corr/sums/stds/hex-ice-{size}-qmin15-std{std}-{stds[i+1]}-b-qcor.dbin')
 
@@ -94,11 +101,16 @@ for i, std in enumerate(stds[:-1]):
 # corra.convolve()
 
 corra.vol +=corrb.vol
-corra.plot_q1q2(vminmax=(0,26471023910), title='Simulated',extent=[0, 180, corr3d.qmin, corr3d.qmax])
+
+
+fig, ax = plt.subplots(1,1,figsize=(8/2.54, 8/2.54), dpi= 300)
+corra.plot_q1q2(vminmax=(0,26471023910), title='Simulated',extent=[0, 180, corr3d.qmin, corr3d.qmax], fig=fig, axes=ax)
 plt.tight_layout()
 # corrb.convolve()
 # corrb.plot_q1q2()
 # plt.tight_layout()
+
+plt.savefig('/home/pat/Documents/phd/figs/py/ice_simulated_q1q2.png')
 
 
 
