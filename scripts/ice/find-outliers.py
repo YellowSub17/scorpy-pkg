@@ -58,15 +58,18 @@ for color, size in zip([(1,0,0,0.99), (0,1,0, 0.99), (0,0,1,0.99), (1,0,1, 0.8)]
 
 
 
-    fig1, axes = plt.subplots(1,1)
+    fig1, axes = plt.subplots(1,1, figsize=(8/2.54, 8/2.54), dpi=300)
     axes = [axes]
     axes[0].stairs(xs_log_counts, xs_log_bins, label=size, color=color)
-    axes[0].axvline(x=xs_log_mode, ymin=0, ymax=10, color='black', ls='dashed')
-    axes[0].axvline(x=xs_thresh_lower, ymin=0, ymax=10, color='black')
-    axes[0].axvline(x=xs_thresh_upper, ymin=0, ymax=10, color='black')
+    axes[0].axvline(x=xs_log_mode, ymin=0, ymax=10, color='black', ls='dashed', label='mode')
+    # axes[0].axvline(x=xs_thresh_lower, ymin=0, ymax=10, color='black')
+    # axes[0].axvline(x=xs_thresh_upper, ymin=0, ymax=10, color='black')
     axes[0].legend()
     axes[0].set_xlabel('Log Varience Correlating Inten.')
     axes[0].set_ylabel('Counts')
+    plt.tight_layout()
+
+    plt.savefig(f'/home/pat/Documents/phd/figs/ice/ice-corr-var-{size}.png')
 
 
     cond1 = xs_log > xs_thresh_lower

@@ -25,7 +25,7 @@ verticalalignment='top')
 axes[1].text(0.05, 0.05, '$3D$', transform=axes[1].transAxes, fontsize=12, color=(1,1,1),
 verticalalignment='top')
 fig.tight_layout()
-fig.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/comp_2d3d_slice_bare.png')
+fig.savefig('/home/pat/Documents/phd/figs/py/comp_2d3d_slice_bare.png')
 
 
 
@@ -48,7 +48,7 @@ verticalalignment='top')
 axes[1].text(0.05, 0.15, '$3D$', transform=axes[1].transAxes, fontsize=12, color=(1,1,1),
 verticalalignment='top')
 fig.tight_layout()
-fig.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/comp_2d3d_integrated_w_alaising_slice.png')
+fig.savefig('/home/pat/Documents/phd/figs/py/comp_2d3d_integrated_w_alaising_slice.png')
 
 
 
@@ -74,7 +74,7 @@ axes.text(0.05, 0.15, '$2D (corrected)$', transform=axes.transAxes, fontsize=12,
 verticalalignment='top')
 
 fig.tight_layout()
-fig.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/comp_2d3d_2dcorrect.png')
+fig.savefig('/home/pat/Documents/phd/figs/py/comp_2d3d_2dcorrect.png')
 
 
 
@@ -129,7 +129,7 @@ axes[-1].set_xlabel('$\\psi$ [rad]')
 
 fig.tight_layout()
 
-fig.savefig('/home/pat/Documents/cloudstor/phd/writing/thesis/figs/py/comp_2d3d_lines.png')
+fig.savefig('/home/pat/Documents/phd/figs/py/comp_2d3d_lines.png')
 plt.show()
 
 

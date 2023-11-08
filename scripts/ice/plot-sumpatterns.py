@@ -28,11 +28,13 @@ for size in sizes:
         im +=p
     print(im.max())
 
-    plt.figure()
-    plt.imshow(im, clim=(0,im.max()/10))
-    plt.colorbar()
+    plt.figure(figsize=(8/2.54, 8/2.54), dpi=300)
+    plt.imshow(np.log10(im+1))
+    # plt.colorbar()
     plt.tight_layout()
-    plt.title(f'{size}')
+    plt.title(f'{size}, {im.max():.2g}')
+
+# plt.savefig('/home/pat/Documents/phd/figs/ice/ice-sumpattern.png')
 plt.show()
 
 

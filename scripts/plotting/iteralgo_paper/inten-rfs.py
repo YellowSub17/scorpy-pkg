@@ -54,8 +54,10 @@ for tag, color, title, ax, label in zip(tags, colors, titles, axes.flatten(), la
     rfs_means = np.mean(rfs, axis=-1)
     rfs_std = np.std(rfs, axis=-1)
 
-    # print(rfs_means.shape)
-    # print(np.round(rfs_means[10],2), np.round(rfs_means[30],2), np.round(rfs_means[50],2), np.round(rfs_means[70],2), np.round(rfs_means[90],2), np.round(rfs_means[120],2))
+    print(rfs_means.shape)
+
+    print(tag)
+    print('[', np.round(rfs_means[10],2), np.round(rfs_means[30],2), np.round(rfs_means[50],2), np.round(rfs_means[70],2), np.round(rfs_means[90],2), np.round(rfs_means[120],2), ']', sep=' , ')
 
     bounds_xpts = iter_counts+iter_counts[::-1]
 
