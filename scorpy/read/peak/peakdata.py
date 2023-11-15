@@ -38,7 +38,6 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
             data = np.zeros(data_shape)
 
 
-            
             for i,datapathf in enumerate(self.datapath):
                 print(f'{i}/{len(self.datapath)}', end='\r')
                 data_coo = sp.sparse.load_npz(datapathf)
@@ -46,32 +45,53 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
                 # print( i, len(datapathf), end='\r' )
 
 
-        else:
+            ss_pixels, fs_pixels =  np.where(data>0) # fs is the cols
+            intens = data[ss_pixels, fs_pixels]
+            scat_fs_ss = np.array([ fs_pixels, ss_pixels, intens]).T
+            xyz_pixel = self.fsss2xyz(scat_fs_ss)
+            self.calc_scat(xyz_pixel, intens)
+
+
+
+            
+
+
+        elif type(datapath) is str:
 
             if self.datapath[-3:]=='.h5':
                 with h5py.File(self.datapath) as h5file:
                     data = h5file[self.geom_params['data']][:]
+                ss_pixels, fs_pixels =  np.where(data>0) # fs is the cols
+                intens = data[ss_pixels, fs_pixels]
+                scat_fs_ss = np.array([ fs_pixels, ss_pixels, intens]).T
+                xyz_pixel = self.fsss2xyz(scat_fs_ss)
+                self.calc_scat(xyz_pixel, intens)
+
+
             elif self.datapath[-4:]=='.npz':
                 data_coo = sp.sparse.load_npz(self.datapath)
                 data = data_coo.toarray()
-
-            else:
-                return None
-
-
-
-
-        ss_pixels, fs_pixels =  np.where(data>0) # fs is the cols
-        intens = data[ss_pixels, fs_pixels]
-
-        scat_fs_ss = np.array([ fs_pixels, ss_pixels, intens]).T
+                ss_pixels, fs_pixels =  np.where(data>0) # fs is the cols
+                intens = data[ss_pixels, fs_pixels]
+                scat_fs_ss = np.array([ fs_pixels, ss_pixels, intens]).T
+                xyz_pixel = self.fsss2xyz(scat_fs_ss)
+                self.calc_scat(xyz_pixel, intens)
 
 
-        xyz_pixel = self.fsss2xyz(scat_fs_ss)
 
-  
+            elif self.datapath[-4:]=='.npy':
+                scat_fs_ss = np.load(self.datapath)
+                xyz_pixel = self.fsss2xyz(scat_fs_ss)
+                self.calc_scat(xyz_pixel, scat_fs_ss[:,-1])
 
-        self.calc_scat(xyz_pixel, intens)
+
+
+
+        else:
+            return None
+
+
+
 
 
 

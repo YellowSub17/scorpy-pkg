@@ -79,7 +79,7 @@ class PeakDataPlot:
             circ = patches.Circle( (peakx,peaky), radius=peakr, fill=False, ec=ec, alpha=1, lw=1, ls=ls)
             ax.add_patch(circ)
 
-    def plot_panels(self, panel_label=True, fs_arrow=False, ss_arrow=True, units='m', fig=None, ax=None):
+    def plot_panels(self, panel_label=True, fs_ss_arrow=False,  units='m', fig=None, ax=None):
         '''
         Plot the panels in the experiment geometry.
 
@@ -104,6 +104,12 @@ class PeakDataPlot:
 
         for panel in self.panels:
 
+            # rect_width = np.linalg.norm(panel['fs_xy']) * \
+                # (panel['max_fs'] - panel['min_fs']) / (self.res*sf)
+            # rect_height = np.linalg.norm(panel['ss_xy'])* \
+                # (panel['max_ss'] - panel['min_ss']) / (self.res*sf)
+
+
             rect_width = panel['fs_xy'][1] * \
                 (panel['max_fs'] - panel['min_fs']) / (self.res*sf)
             rect_height = panel['ss_xy'][0] * \
@@ -116,6 +122,10 @@ class PeakDataPlot:
             rect_y = panel['corner_xy'][1] / (self.res*sf)
 
             # rectangle object
+            #temp fix for p11 stuff
+            # rect = patches.Rectangle((rect_x, rect_y), rect_width, rect_height, angle=rect_rot,
+                                     # fill=False, ec='red', alpha=1, lw=1)
+
             rect = patches.Rectangle((rect_x, rect_y), rect_width, -rect_height, angle=rect_rot,
                                      fill=False, ec='red', alpha=1, lw=1)
 
@@ -130,25 +140,21 @@ class PeakDataPlot:
                 ax.text(panel['corner_xy'][0] / (self.res*sf), panel['corner_xy']
                          [1] / (self.res*sf), panel['name'], fontsize=6)
 
-            if fs_arrow:
+            if fs_ss_arrow:
                 ax.arrow(panel['corner_xy'][0] / (self.res*sf),panel['corner_xy'][1] / (self.res*sf),
                           30*panel['fs_xy'][0]/(self.res*sf), 30*panel['fs_xy'][1]/(self.res*sf),
                          color='blue')
-#             if ss_arrow:
-                # plt.arrow(panel['corner_xy'][0] / (self.res*sf),panel['corner_xy'][1] / (self.res*sf),
-                          # 30*panel['ss_xy'][0]/(self.res*sf), 30*panel['ss_xy'][1]/(self.res*sf),
-                         # color='red')
-        # plt.vlines(0, -0.005, 0.005)
-        # plt.hlines(0, -0.005, 0.005)
+
+                ax.arrow(panel['corner_xy'][1] / (self.res*sf),panel['corner_xy'][0] / (self.res*sf),
+                          30*panel['ss_xy'][0]/(self.res*sf), 30*panel['ss_xy'][1]/(self.res*sf),
+                         color='blue')
+
         cross_hair = 30/(self.res*sf)
-        
 
         ax.vlines(0, -cross_hair, cross_hair)
         ax.hlines(0, -cross_hair, cross_hair)
 
 
-        # ax.set_xlabel(f'x [{units}]')
-        # ax.set_ylabel(f'y [{units}]')
 
 
     def plot_qring(self, q=1, ec='purple', ls=":"):
