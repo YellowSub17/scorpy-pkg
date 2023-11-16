@@ -7,40 +7,102 @@ import matplotlib.pyplot as plt
 
 
 
-runs = [60]
 runs = [i for i in range(11, 25)] + [i for i in range(40, 61)]
 
-corr_total = scorpy.CorrelationVol(nq=150, npsi=180, qmax=1.5, qmin=0.4, cos_sample=False)
+# corr_total = scorpy.CorrelationVol(nq=150, npsi=180, qmax=1.5, qmin=0.4, cos_sample=False)
 
-for run in runs:
-    datapath = f'/home/ec2-user/corr/data/p11'
-    runpath = f'{datapath}/crystfel_calc/{run}/pk8_thr5_snr5'
+# for run in runs:
+    # datapath = f'/home/ec2-user/corr/data/p11'
+    # runpath = f'{datapath}/crystfel_calc/{run}/pk8_thr5_snr5'
+    # corr_run = scorpy.CorrelationVol(path=f'{datapath}/qcor/p11_run{run}_total_qcor.dbin')
+    # corr_total.vol += corr_run.vol
 
+# corr_total.vol[:,:,0] = 0
+# corr_total.plot_q1q2(vminmax=(0, corr_total.vol.mean()), xlabel='$\\psi$', ylabel='$q_1=q_2$', title='All runs')
 
-    corr_run = scorpy.CorrelationVol(path=f'{datapath}/qcor/p11_run{run}_total_qcor.dbin')
-
-    corr_total.vol += corr_run.vol
-    # corr_total.vol[:,:,0] = 0
-    # corr_total.zmean_subtraction()
-
-    # corr_total.plot_q1q2()
-    # corr_total.plot_q1q2(log=True)
-
-corr_total.vol[:,:,0] = 0
-corr_total.plot_q1q2(vminmax=(0, 1e10), xlabel='$\\psi$', ylabel='$q_1=q_2$', title='All runs')
-
+# # plt.figure()
+# # # plt.plot(corr_total.qpts, corr_total.get_xy()[:,0])
+# # plt.figure()
+# # plt.plot(corr_total.psipts, corr_total.get_xy()[9,:])
 
 
 
 # corr_3d = scorpy.CorrelationVol(path='/home/ec2-user/corr/data/qcor/193l_3d_qcor.dbin')
 
-# # corr_3d.zmean_subtraction()
+# corr_3d.vol[:,:,0] = 0
+# corr_3d.plot_q1q2(xlabel='$\\psi$', ylabel='$q_1=q_2$', title='qcor3d' )
+
+# # plt.figure()
+# # plt.plot(corr_3d.psipts, corr_3d.get_xy()[-7,:])
+# # plt.figure()
+# # plt.plot(corr_3d.psipts, corr_3d.get_xy()[4,:])
+# # plt.figure()
+# # plt.plot(corr_3d.qpts, corr_3d.get_xy()[:,0])
+
+# plt.figure()
+# plt.plot(corr_3d.psipts, corr_3d.get_xy()[9,:])
+
 # corr_3d.qpsi_correction()
 
+# # plt.figure()
+# # plt.plot(corr_3d.psipts, corr_3d.get_xy()[-7,:])
+# # plt.figure()
+# # plt.plot(corr_3d.psipts, corr_3d.get_xy()[4,:])
+# # plt.figure()
+# # plt.plot(corr_3d.qpts, corr_3d.get_xy()[:,0])
 
-# corr_3d.plot_q1q2()
+# plt.figure()
+# plt.plot(corr_3d.psipts, corr_3d.get_xy()[9,:])
 
-# plt.show()
+# runs = [13]
+
+# for run in runs:
+    # datapath = f'/home/ec2-user/corr/data/p11'
+    # runpath = f'{datapath}/crystfel_calc/{run}/pk8_thr5_snr5'
+    # corr_run = scorpy.CorrelationVol(path=f'{datapath}/qcor/p11_run{run}_total_qcor.dbin')
+    # corr_run.qpsi_correction()
+
+
+    # corr_run.plot_q1q2(vminmax=(0, corr_run.vol.max()/100), xlabel='$\\psi$', ylabel='$q_1=q_2$', title=f'run {run}')
+
+
+
+
+
+corra = scorpy.CorrelationVol(path=f'/home/ec2-user/corr/data/qcor/nsums/193l-80nm-19MPz040-x1-n32768-s1-qcor.dbin')
+corrb = scorpy.CorrelationVol(path=f'/home/ec2-user/corr/data/qcor/nsums/193l-80nm-19MPz040-x1-n32768-s2-qcor.dbin')
+
+corra.vol +=corrb.vol
+corra.qpsi_correction()
+corra.plot_q1q2(vminmax=(0, 1e7), title='64k simulated 2d patterns')
+
+
+
+
+
+
+
+run = 13
+datapath = f'/home/ec2-user/corr/data/p11'
+
+
+corr_a = scorpy.CorrelationVol(path=f'{datapath}/qcor/p11_run{run}_a_thresh.dbin')
+corr_b = scorpy.CorrelationVol(path=f'{datapath}/qcor/p11_run{run}_b_thresh.dbin')
+corr_a.vol +=corr_b.vol
+
+corr_a.qpsi_correction()
+# corr_b.qpsi_correction()
+
+corr_a.convolve(kern_L =5, kern_n = 7, std_x = 2.0, std_y=2.0, std_z=2.0)
+
+corr_a.plot_q1q2(vminmax=(0, 1e7), title='run 13 (intens thresh <1e4)')
+# corr_b.plot_q1q2(vminmax=(0, 1e7))
+
+
+
+
+
+
 
 
 
@@ -49,6 +111,8 @@ corr_total.plot_q1q2(vminmax=(0, 1e10), xlabel='$\\psi$', ylabel='$q_1=q_2$', ti
 
 # runs = [11,12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
 # runs = [40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]
+
+# runs = [i for i in range(11, 25)] + [i for i in range(40, 61)]
 # css = np.zeros( (len(runs), len(runs)) )
 
 # datapath = f'/home/ec2-user/corr/data/p11'
@@ -77,8 +141,11 @@ corr_total.plot_q1q2(vminmax=(0, 1e10), xlabel='$\\psi$', ylabel='$q_1=q_2$', ti
 
 
 # plt.imshow(css)
+# plt.colorbar()
 
 # plt.title('css runs 40-60')
+
+
 
 
 
