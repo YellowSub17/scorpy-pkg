@@ -20,8 +20,8 @@ for run in runs:
     runpath = f'{datapath}/{run}/pk8_thr5_snr5'
 
 
+    ##### crystfel.total.edit is crystfel.total with s/panel0//g
     crystfeltotal_file = open(f'{runpath}/crystfel.total.edit', 'r')
-
     cont = crystfeltotal_file.read()
 
     chunks = cont.split('\n----- Begin chunk -----\n')[1:]

@@ -69,33 +69,57 @@ runs = [i for i in range(11, 25)] + [i for i in range(40, 61)]
 
 
 
-corra = scorpy.CorrelationVol(path=f'/home/ec2-user/corr/data/qcor/nsums/193l-80nm-19MPz040-x1-n32768-s1-qcor.dbin')
-corrb = scorpy.CorrelationVol(path=f'/home/ec2-user/corr/data/qcor/nsums/193l-80nm-19MPz040-x1-n32768-s2-qcor.dbin')
+corrsim = scorpy.CorrelationVol(path=f'/home/ec2-user/corr/data/qcor/nsums/193l-80nm-19MPz040-x1-n32768-s1-qcor.dbin')
+corrsimb = scorpy.CorrelationVol(path=f'/home/ec2-user/corr/data/qcor/nsums/193l-80nm-19MPz040-x1-n32768-s2-qcor.dbin')
 
-corra.vol +=corrb.vol
-corra.qpsi_correction()
-corra.plot_q1q2(vminmax=(0, 1e7), title='64k simulated 2d patterns')
-
+corrsim.vol +=corrsimb.vol
+corrsim.qpsi_correction()
 
 
 
 
 
 
-run = 13
+
+# run = 13
 datapath = f'/home/ec2-user/corr/data/p11'
 
+runs = [i for i in range(11, 25)] + [i for i in range(40, 61)]
 
-corr_a = scorpy.CorrelationVol(path=f'{datapath}/qcor/p11_run{run}_a_thresh.dbin')
-corr_b = scorpy.CorrelationVol(path=f'{datapath}/qcor/p11_run{run}_b_thresh.dbin')
-corr_a.vol +=corr_b.vol
 
-corr_a.qpsi_correction()
+correxp = corrsim.copy()
+correxp.vol *= 0
+
+for run in runs:
+
+
+
+
+    print(run)
+
+
+
+    corr_a = scorpy.CorrelationVol(path=f'{datapath}/qcor/p11_run{run}_a_thresh.dbin')
+    corr_b = scorpy.CorrelationVol(path=f'{datapath}/qcor/p11_run{run}_b_thresh.dbin')
+
+    correxp.vol +=corr_a.vol
+    correxp.vol +=corr_b.vol
+
+
+
+correxp.qpsi_correction()
 # corr_b.qpsi_correction()
 
-corr_a.convolve(kern_L =5, kern_n = 7, std_x = 2.0, std_y=2.0, std_z=2.0)
+correxp.convolve(kern_L =5, kern_n = 7, std_x = 1.0, std_y=1.0, std_z=1.0)
 
-corr_a.plot_q1q2(vminmax=(0, 1e7), title='run 13 (intens thresh <1e4)')
+
+
+correxp.vol[90:,90:,:] = 0
+corrsim.vol[90:,90:,:] = 0
+fig, axes = plt.subplots(1,2, sharex=True, sharey=True)
+
+corrsim.plot_q1q2(vminmax=(0, 1e6), title='64k simulated 2d patterns',fig=fig, axes=axes[0])
+correxp.plot_q1q2(vminmax=(0, 1e7), title='run 13 (intens thresh <1e4)',fig=fig, axes=axes[1])
 # corr_b.plot_q1q2(vminmax=(0, 1e7))
 
 

@@ -58,8 +58,11 @@ for i, (xtal_size, color) in enumerate(zip(xtal_sizes, cmap1)):
             corr1 = scorpy.CorrelationVol(path=f'{corr1fname}')
             corr2 = scorpy.CorrelationVol(path=f'{corr2fname}')
 
-            corr1.vol[:,:,0] = 0
-            corr2.vol[:,:,0] = 0
+            # corr1.vol[:,:,0] = 0
+            # corr2.vol[:,:,0] = 0
+
+            corr1.qpsi_correction()
+            corr2.qpsi_correction()
 
             css_12 = scorpy.utils.utils.cosinesim(corr1.vol, corr2.vol)
             css_s.append(css_12)
