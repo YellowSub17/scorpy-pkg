@@ -396,6 +396,7 @@ xmax=1, ymax=1, zmax=1,
 
 
     def zmean_subtraction(self):
+        ## add option to excluce theta=0
 
         print(self.vol.shape)
         vol_aligned = np.swapaxes(self.vol, 0,2)

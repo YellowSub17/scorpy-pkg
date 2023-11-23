@@ -92,19 +92,13 @@ correxp.vol *= 0
 
 for run in runs:
 
-
-
-
     print(run)
 
-
-
-    corr_a = scorpy.CorrelationVol(path=f'{datapath}/qcor/p11_run{run}_a_thresh.dbin')
-    corr_b = scorpy.CorrelationVol(path=f'{datapath}/qcor/p11_run{run}_b_thresh.dbin')
+    corr_a = scorpy.CorrelationVol(path=f'{datapath}/qcor/thresh1e4/p11_run{run}_a_thresh.dbin')
+    corr_b = scorpy.CorrelationVol(path=f'{datapath}/qcor/thresh1e4/p11_run{run}_b_thresh.dbin')
 
     correxp.vol +=corr_a.vol
     correxp.vol +=corr_b.vol
-
 
 
 correxp.qpsi_correction()
@@ -116,11 +110,16 @@ correxp.convolve(kern_L =5, kern_n = 7, std_x = 1.0, std_y=1.0, std_z=1.0)
 
 correxp.vol[90:,90:,:] = 0
 corrsim.vol[90:,90:,:] = 0
-fig, axes = plt.subplots(1,2, sharex=True, sharey=True)
+
+fig, axes = plt.subplots(1,3, sharex=True, sharey=True)
 
 corrsim.plot_q1q2(vminmax=(0, 1e6), title='64k simulated 2d patterns',fig=fig, axes=axes[0])
 correxp.plot_q1q2(vminmax=(0, 1e7), title='run 13 (intens thresh <1e4)',fig=fig, axes=axes[1])
-# corr_b.plot_q1q2(vminmax=(0, 1e7))
+
+
+corr3d = scorpy.CorrelationVol(path='/home/ec2-user/corr/data/qcor/193l_3d_qcor.dbin')
+corr3d.plot_q1q2(vminmax=(0, 1e13), title='corr 3d',fig=fig, axes=axes[2])
+
 
 
 
