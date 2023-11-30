@@ -5,6 +5,8 @@ import configparser as cfp
 from datetime import datetime
 import numpy as np
 
+from ...utils.utils import verbose_dec
+
 
 
 class BaseVolSaveLoad:
@@ -13,7 +15,9 @@ class BaseVolSaveLoad:
     def _read_log(self, fpath):
 
 
+
         fpath = Path(fpath)
+
 
         logpath = Path(fpath.parent) / f'{fpath.stem}.log'
 
@@ -40,18 +44,40 @@ class BaseVolSaveLoad:
         self._comp = config.getboolean('vol', 'comp')
         self._load_extra(config)
 
-    def _load(self, fpath, logpath=None):
+
+
+
+    def _load(self, fpath):
         # print('loading')
 
         fpath = Path(fpath)
+        self._read_log(fpath)
 
-        assert fpath.is_file(), f'File {fpath} not found'
 
-        if logpath is None:
-            self._read_log(fpath)
-        else:
-            self._read_log(logpath)
+        assert fpath.suffix in ['.dbin', '.npy', ''], f'Failed to file: {fpath}[".npy"|".dbin"|""]'
 
+        if fpath.suffix =='':
+            dbin_path = fpath.with_suffix('.dbin')
+            npy_path = fpath.with_suffix('.npy')
+
+
+            if dbin_path.exists() and npy_path.exists():
+                dbin_size = dbin_path.stat().st_size
+                npy_size = npy_path.stat().st_size
+
+                if dbin_size > npy_size:
+                    fpath=npy_path
+                else:
+                    fpath=dbin_path
+
+            elif dbin_path.exists():
+                fpath = dbin_path
+            elif npy_path.exists():
+                fpath = npy_path
+
+            else:
+                print('i dont know how you got here')
+                assert False, 'fpath.suffix is "" but dbin and npy dont exist.'
 
 
         if fpath.suffix =='.dbin':
@@ -72,7 +98,6 @@ class BaseVolSaveLoad:
             xi, yi, zi = coo_arr[:,0].astype(int), coo_arr[:,1].astype(int),coo_arr[:,2].astype(int),
             self._vol[xi, yi, zi] = coo_arr[:,-1]
 
-            
 
 
 
@@ -81,6 +106,10 @@ class BaseVolSaveLoad:
     def save(self, fpath):
 
         fpath = Path(fpath)
+
+        if fpath.suffix == '':
+            fpath = fpath.with_suffix(self.file_size())
+
 
 
         if fpath.suffix == '.dbin':
@@ -95,10 +124,6 @@ class BaseVolSaveLoad:
 
             np.save(fpath, coo_arr)
 
-
-
-
-        
         self.write_log(fpath)
 
     def write_log(self, fpath):
@@ -144,6 +169,26 @@ class BaseVolSaveLoad:
     def _load_extra(self, config):
 
         pass
+
+
+    def file_size(self, verbose=1):
+
+
+        dbin_size = self.vol.size*self.vol.itemsize
+
+        coo_loc = np.where(self.vol>0)
+
+        coo_size = self.vol.itemsize*4*len(coo_loc[0])
+
+        # print('File sizes:')
+        # print(f'.dbin:\t{dbin_size/1e3} KB')
+        # print(f'.npy:\t{coo_size/1e3} KB')
+
+        if dbin_size>coo_size:
+            return '.npy'
+        else:
+            return '.dbin'
+
 
 
 

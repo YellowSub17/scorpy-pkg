@@ -75,8 +75,11 @@ chunk_end = chunks[chunk_end_index]
 
 print(f'Summing Correlations: {xtal_size}, {nframes} frames, Set {set_name}')
 print(f'Chunk range: {chunk_start} to {chunk_end} ({nchunks} total)')
-corr1 = scorpy.CorrelationVol(nq=150, npsi=180, qmax=1.5, qmin=0.4, cos_sample=False)
-corr2 = scorpy.CorrelationVol(nq=150, npsi=180, qmax=1.5, qmin=0.4, cos_sample=False)
+# corr1 = scorpy.CorrelationVol(nq=150, npsi=180, qmax=1.5, qmin=0.4, cos_sample=False)
+# corr2 = scorpy.CorrelationVol(nq=150, npsi=180, qmax=1.5, qmin=0.4, cos_sample=False)
+
+corr1 = scorpy.CorrelationVol(nq=200, npsi=360, qmax=1.5, qmin=0.4, cos_sample=False)
+corr2 = scorpy.CorrelationVol(nq=200, npsi=360, qmax=1.5, qmin=0.4, cos_sample=False)
 
 print(20*'. ')
 

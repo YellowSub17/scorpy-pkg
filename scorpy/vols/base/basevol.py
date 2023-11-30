@@ -39,12 +39,12 @@ vol : numpy.ndarray
 
     def __init__(self, nx=10, ny=10, nz=10,
                  xmin=0, ymin=0, zmin=0,
-xmax=1, ymax=1, zmax=1,
+                 xmax=1, ymax=1, zmax=1,
                  xwrap=False, ywrap=False, zwrap=False,
-                 comp=False, path=None, logpath=None):
+                 comp=False, path=None):
 
         if path is not None:
-            self._load(path, logpath)
+            self._load(path)
         else:
             self._nx = nx
             self._ny = ny
@@ -71,7 +71,7 @@ xmax=1, ymax=1, zmax=1,
 
     def copy(self):
         '''
-	scorpy.Vol.copy():
+        scorpy.Vol.copy():
             Make a copy of the Vol, while keeping the original.
         Returns:
             v :  scorpy.Vol
@@ -99,7 +99,6 @@ xmax=1, ymax=1, zmax=1,
 
                         False, False, False, self.comp)
 
-        
         new_vol.vol = cropped_arr
 
         return new_vol
@@ -258,7 +257,7 @@ xmax=1, ymax=1, zmax=1,
 
     def get_xy(self):
         '''
-	scorpy.Vol.get_xy():
+        scorpy.Vol.get_xy():
             Extract diagonal x=y plane through vol. Only possible if x and y axes are identical.
         Returns:
             xy : numpy.ndarray
@@ -276,12 +275,63 @@ xmax=1, ymax=1, zmax=1,
 
 
     def evaluate(self, xval, yval, zval):
+        '''
+        give x,y,z coords between return the intensity value there
+        '''
 
         xind = index_x(xval, self.xmin, self.xmax, self.nq, self.xwrap)
         yind = index_x(yval, self.ymin, self.ymax, self.nq, self.ywrap)
         zind = index_x(zval, self.zmin, self.zmax, self.nq, self.zwrap)
 
         return self.vol[xind, yind, zind]
+
+
+
+
+    def get_index(self, x=None, y=None, z=None):
+        '''
+
+        give eitehr x, y or z, and get the index closest to that value
+
+        '''
+        xloc = None
+        yloc = None
+        yloc = None
+
+        if x is not None:
+            xloc = np.where(np.abs(self.xpts-x)==np.min(np.abs(self.xpts-x)))
+            return xloc[0][0]
+        if y is not None:
+            yloc = np.where(np.abs(self.ypts-y)==np.min(np.abs(self.ypts-y)))
+            return yloc[0][0]
+        if z is not None:
+            zloc = np.where(np.abs(self.zpts-z)==np.min(np.abs(self.zpts-z)))
+            return zloc[0][0]
+
+        print('No value given')
+        return None
+
+
+
+
+
+    def get_integrated_xy_line(self, xy_lower, xy_upper):
+        xy = self.get_xy()
+
+        xy_lower_ind = self.get_index(x=xy_lower)
+        xy_upper_ind = self.get_index(x=xy_upper)
+
+
+        inte = np.sum(xy[xy_lower_ind:xy_upper_ind, :], axis=0)
+
+        return inte
+
+
+
+
+
+
+
 
 
 
@@ -409,31 +459,6 @@ xmax=1, ymax=1, zmax=1,
         self.vol = np.swapaxes(vol_aligned, 0, 2)
 
         # return zmean
-
-
-
-    def get_index(self, x=None, y=None, z=None):
-
-        xloc = None
-        yloc = None
-        yloc = None
-
-        if x is not None:
-            xloc = np.where(np.abs(self.xpts-x)==np.min(np.abs(self.xpts-x)))
-            return xloc[0][0]
-        if y is not None:
-            yloc = np.where(np.abs(self.ypts-y)==np.min(np.abs(self.ypts-y)))
-            return yloc[0][0]
-        if z is not None:
-            zloc = np.where(np.abs(self.zpts-z)==np.min(np.abs(self.zpts-z)))
-            return zloc[0][0]
-
-        print('No value given')
-        return None
-
-
-
-
 
 
 

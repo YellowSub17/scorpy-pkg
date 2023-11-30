@@ -7,17 +7,35 @@ import matplotlib.pyplot as plt
 
 
 data_dir = '/home/ec2-user/corr/data'
+
+
+
 xtal_size= '100nm'
 geom_code = '19MPz040'
 pdb_code = '193l'
 super_chunk = 'x1'
+chunk = 100
+frame = 200
 
 
 
+path=f'{data_dir}/qcor/{xtal_size}-{geom_code}-{super_chunk}/{chunk}'
+filename = f'{pdb_code}-{xtal_size}-{geom_code}-{super_chunk}-{chunk}-{frame}-qcor'
+corr = scorpy.CorrelationVol(path=f'{path}/{filename}')
+corr.plot_q1q2()
 
-corra = scorpy.CorrelationVol(path=f'{data_dir}/qcor/nsums/193l-80nm-19MPz040-x1-n32768-s1-qcor.dbin')
+xtal_size= '100nm'
+geom_code = '19MPz040'
+pdb_code = '193l'
+super_chunk = 'x1'
+chunk = 200
+frame = 300
 
-corra.qpsi_correction()
-corra.plot_q1q2(vminmax=(0, 1e7))
+
+
+path=f'{data_dir}/qcor/{xtal_size}-{geom_code}-{super_chunk}/{chunk}'
+filename = f'{pdb_code}-{xtal_size}-{geom_code}-{super_chunk}-{chunk}-{frame}-qcor'
+corr = scorpy.CorrelationVol(path=f'{path}/{filename}')
+corr.plot_q1q2()
 
 plt.show()

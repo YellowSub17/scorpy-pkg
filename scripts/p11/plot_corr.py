@@ -7,175 +7,158 @@ import matplotlib.pyplot as plt
 
 
 
-runs = [i for i in range(11, 25)] + [i for i in range(40, 61)]
+datapath = f'/home/ec2-user/corr/data/'
 
-# corr_total = scorpy.CorrelationVol(nq=150, npsi=180, qmax=1.5, qmin=0.4, cos_sample=False)
 
-# for run in runs:
-    # datapath = f'/home/ec2-user/corr/data/p11'
-    # runpath = f'{datapath}/crystfel_calc/{run}/pk8_thr5_snr5'
-    # corr_run = scorpy.CorrelationVol(path=f'{datapath}/qcor/p11_run{run}_total_qcor.dbin')
-    # corr_total.vol += corr_run.vol
 
-# corr_total.vol[:,:,0] = 0
-# corr_total.plot_q1q2(vminmax=(0, corr_total.vol.mean()), xlabel='$\\psi$', ylabel='$q_1=q_2$', title='All runs')
 
-# # plt.figure()
-# # # plt.plot(corr_total.qpts, corr_total.get_xy()[:,0])
-# # plt.figure()
-# # plt.plot(corr_total.psipts, corr_total.get_xy()[9,:])
 
 
 
-# corr_3d = scorpy.CorrelationVol(path='/home/ec2-user/corr/data/qcor/193l_3d_qcor.dbin')
 
-# corr_3d.vol[:,:,0] = 0
-# corr_3d.plot_q1q2(xlabel='$\\psi$', ylabel='$q_1=q_2$', title='qcor3d' )
 
-# # plt.figure()
-# # plt.plot(corr_3d.psipts, corr_3d.get_xy()[-7,:])
-# # plt.figure()
-# # plt.plot(corr_3d.psipts, corr_3d.get_xy()[4,:])
-# # plt.figure()
-# # plt.plot(corr_3d.qpts, corr_3d.get_xy()[:,0])
 
-# plt.figure()
-# plt.plot(corr_3d.psipts, corr_3d.get_xy()[9,:])
 
-# corr_3d.qpsi_correction()
+# corr3d = scorpy.CorrelationVol(path=f'{datapath}/qcor/193l_3d_big_qcor')
 
-# # plt.figure()
-# # plt.plot(corr_3d.psipts, corr_3d.get_xy()[-7,:])
-# # plt.figure()
-# # plt.plot(corr_3d.psipts, corr_3d.get_xy()[4,:])
-# # plt.figure()
-# # plt.plot(corr_3d.qpts, corr_3d.get_xy()[:,0])
+# corr3d.qpsi_correction()
+# corr3d.zmean_subtraction()
+# # corr3d.plot_q1q2(title='corr 3d',log=True)
+# corr3d.plot_q1q2(title='corr 3d')
 
-# plt.figure()
-# plt.plot(corr_3d.psipts, corr_3d.get_xy()[9,:])
 
-# runs = [13]
 
-# for run in runs:
-    # datapath = f'/home/ec2-user/corr/data/p11'
-    # runpath = f'{datapath}/crystfel_calc/{run}/pk8_thr5_snr5'
-    # corr_run = scorpy.CorrelationVol(path=f'{datapath}/qcor/p11_run{run}_total_qcor.dbin')
-    # corr_run.qpsi_correction()
+# corr_thresh = scorpy.CorrelationVol(200, 5760, 1.5, 0.4, cos_sample=False)
 
+# import sys
+# option = int(sys.argv[1])
+# tag = sys.argv[2]
 
-    # corr_run.plot_q1q2(vminmax=(0, corr_run.vol.max()/100), xlabel='$\\psi$', ylabel='$q_1=q_2$', title=f'run {run}')
 
 
+# i_min = option
+# i_max = option + 4
 
 
 
-corrsim = scorpy.CorrelationVol(path=f'/home/ec2-user/corr/data/qcor/nsums/193l-80nm-19MPz040-x1-n32768-s1-qcor.dbin')
-corrsimb = scorpy.CorrelationVol(path=f'/home/ec2-user/corr/data/qcor/nsums/193l-80nm-19MPz040-x1-n32768-s2-qcor.dbin')
 
-corrsim.vol +=corrsimb.vol
-corrsim.qpsi_correction()
 
+# print(i_min, i_max)
+# for i in range(i_min, i_max):
+    # print(i)
+    # corr_fname = f'{datapath}/p11/qcor/thresh_d5k/p11_allruns_d5k_{i}_{tag}_qcor'
+    # corr = scorpy.CorrelationVol(path=corr_fname)
+    # corr_thresh.vol +=corr.vol
+    # del corr
+# corr_thresh.save(f'{datapath}/p11/qcor/thresh_d5k/p11_allruns_d20k_{i_min}_{tag}_qcor')
 
 
 
 
+xy_lower = 0.48
+xy_upper = 0.56
 
+fig, axes = plt.subplots(1,2, sharex=True, sharey=True)
+corr_a = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_0-5k_a_qcor')
+corr_a.qpsi_correction()
+corr_a.convolve(kern_L=9, kern_n=15, std_x=3, std_y=3, std_z=6)
+corr_a.plot_q1q2(vminmax=(0, 5*corr_a.vol.mean()), fig=fig, axes=axes[0])
 
-# run = 13
-datapath = f'/home/ec2-user/corr/data/p11'
+axes[0].hlines([xy_lower, xy_upper], corr_a.zmin, corr_a.zmax, color=(1,0,0,0.5), linestyle='dashed')
 
-runs = [i for i in range(11, 25)] + [i for i in range(40, 61)]
 
+corr_b = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_0-5k_b_qcor')
+corr_b.qpsi_correction()
+corr_b.convolve(kern_L=9, kern_n=15, std_x=3, std_y=3, std_z=6)
+corr_b.plot_q1q2(vminmax=(0, 5*corr_a.vol.mean()), fig=fig, axes=axes[1])
 
-correxp = corrsim.copy()
-correxp.vol *= 0
+axes[1].hlines([xy_lower, xy_upper], corr_a.zmin, corr_a.zmax, color=(1,0,0,0.5), linestyle='dashed')
 
-for run in runs:
+print(scorpy.utils.utils.cosinesim(corr_a.vol, corr_b.vol))
 
-    print(run)
 
-    corr_a = scorpy.CorrelationVol(path=f'{datapath}/qcor/thresh1e4/p11_run{run}_a_thresh.dbin')
-    corr_b = scorpy.CorrelationVol(path=f'{datapath}/qcor/thresh1e4/p11_run{run}_b_thresh.dbin')
+# corr3d = scorpy.CorrelationVol(path=f'{datapath}/qcor/193l_3d_big_qcor')
+# corr3d.qpsi_correction()
+# corr3d.convolve(kern_L=9, kern_n=15, std_x=3, std_y=3, std_z=6)
+# corr3d.plot_q1q2(vminmax=(0, 5*corr3d.vol.mean()),title='corr 3d', fig=fig, axes=axes[2])
 
-    correxp.vol +=corr_a.vol
-    correxp.vol +=corr_b.vol
+# axes[2].hlines([xy_lower, xy_upper], corr_a.zmin, corr_a.zmax, color=(1,0,0,0.5), linestyle='dashed')
 
 
-correxp.qpsi_correction()
-# corr_b.qpsi_correction()
 
-correxp.convolve(kern_L =5, kern_n = 7, std_x = 1.0, std_y=1.0, std_z=1.0)
 
+line1 = corr_a.get_integrated_xy_line(xy_lower, xy_upper)
+line2 = corr_b.get_integrated_xy_line(xy_lower, xy_upper)
+# line3 = corr3d.get_integrated_xy_line(xy_lower, xy_upper)
+# fig, axes = plt.subplots(1,1, sharex=True, sharey=True)
+plt.figure()
+plt.plot(line1/np.max(line1))
+plt.plot(line2/np.max(line2))
+# plt.plot(line3/np.max(line3))
 
 
-correxp.vol[90:,90:,:] = 0
-corrsim.vol[90:,90:,:] = 0
-
-fig, axes = plt.subplots(1,3, sharex=True, sharey=True)
-
-corrsim.plot_q1q2(vminmax=(0, 1e6), title='64k simulated 2d patterns',fig=fig, axes=axes[0])
-correxp.plot_q1q2(vminmax=(0, 1e7), title='run 13 (intens thresh <1e4)',fig=fig, axes=axes[1])
-
-
-corr3d = scorpy.CorrelationVol(path='/home/ec2-user/corr/data/qcor/193l_3d_qcor.dbin')
-corr3d.plot_q1q2(vminmax=(0, 1e13), title='corr 3d',fig=fig, axes=axes[2])
-
-
-
-
-
-
-
-
-
-
-# runs = [11,12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
-# runs = [40, 41, 42]
-
-# runs = [11,12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
-# runs = [40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]
-
-# runs = [i for i in range(11, 25)] + [i for i in range(40, 61)]
-# css = np.zeros( (len(runs), len(runs)) )
-
-# datapath = f'/home/ec2-user/corr/data/p11'
-
-# for i_run_a,  run_a in enumerate(runs):
-
-    # corr_a = scorpy.CorrelationVol(path=f'{datapath}/qcor/p11_run{run_a}_total_qcor.dbin')
-
-    # # corr_a.vol[:, :, 0] = 0
-    # corr_a.convolve(kern_L=4, kern_n=7, std_x=2, std_y=2, std_z=2)
-
-
-    # for i_run_b,  run_b in enumerate(runs[i_run_a:]):
-
-        # corr_b = scorpy.CorrelationVol(path=f'{datapath}/qcor/p11_run{run_b}_total_qcor.dbin')
-        # # corr_b.vol[:, :, 0] = 0
-        # corr_b.convolve(kern_L=4, kern_n=7, std_x=2, std_y=2, std_z=2)
-
-        # print(run_a, run_b, scorpy.utils.utils.cosinesim(corr_a.vol, corr_b.vol))
-
-        # ab_css =  scorpy.utils.utils.cosinesim(corr_a.vol, corr_b.vol)
-        # css[i_run_a, i_run_b+i_run_a] = ab_css
-        # if i_run_b>0:
-            # css[i_run_b+i_run_a, i_run_a] = ab_css
-        # # css[i_run_b, i_run_a] = scorpy.utils.utils.cosinesim(corr_a.vol, corr_b.vol)
-
-
-# plt.imshow(css)
-# plt.colorbar()
-
-# plt.title('css runs 40-60')
-
-
-
-
+print(scorpy.utils.utils.cosinesim(line1, line2))
 
 
 
 
 
 plt.show()
+
+
+
+
+
+
+
+
+
+# corr = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_d5k_0_a_qcor')
+# corr.save(f'{datapath}/p11/qcor/thresh/p11_allruns_0-5k_a_qcor')
+# corr = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_d5k_0_b_qcor')
+# corr.save(f'{datapath}/p11/qcor/thresh/p11_allruns_0-5k_b_qcor')
+
+# corr1 = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_d5k_0_a_qcor')
+# corr2 = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_d5k_1_a_qcor')
+# corr1.vol +=corr2.vol
+# corr1.save(f'{datapath}/p11/qcor/thresh/p11_allruns_0-10k_a_qcor')
+
+# corr1 = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_d5k_0_b_qcor')
+# corr2 = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_d5k_1_b_qcor')
+# corr1.vol +=corr2.vol
+# corr1.save(f'{datapath}/p11/qcor/thresh/p11_allruns_0-10k_b_qcor')
+
+# corr = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_d20k_0_a_qcor')
+# corr.save(f'{datapath}/p11/qcor/thresh/p11_allruns_0-20k_a_qcor')
+# corr = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_d20k_0_b_qcor')
+# corr.save(f'{datapath}/p11/qcor/thresh/p11_allruns_0-20k_b_qcor')
+
+
+
+# corr1 = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_d20k_0_a_qcor')
+# corr2 = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_d20k_1_a_qcor')
+# corr1.vol +=corr2.vol
+# corr1.save(f'{datapath}/p11/qcor/thresh/p11_allruns_0-40k_a_qcor')
+
+# corr1 = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_d20k_0_b_qcor')
+# corr2 = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_d20k_1_b_qcor')
+# corr1.vol +=corr2.vol
+# corr1.save(f'{datapath}/p11/qcor/thresh/p11_allruns_0-40k_b_qcor')
+
+# corr1 = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_d20k_0_a_qcor')
+# corr2 = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_d20k_1_a_qcor')
+# corr3 = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_d20k_2_a_qcor')
+# corr4 = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_d20k_3_a_qcor')
+# corr1.vol +=corr2.vol +corr3.vol + corr4.vol
+# corr1.save(f'{datapath}/p11/qcor/thresh/p11_allruns_0-80k_a_qcor')
+
+# corr1 = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_d20k_0_b_qcor')
+# corr2 = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_d20k_1_b_qcor')
+# corr3 = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_d20k_2_b_qcor')
+# corr4 = scorpy.CorrelationVol(path=f'{datapath}/p11/qcor/thresh/p11_allruns_d20k_3_b_qcor')
+# corr1.vol +=corr2.vol +corr3.vol + corr4.vol
+# corr1.save(f'{datapath}/p11/qcor/thresh/p11_allruns_0-80k_b_qcor')
+
+
 
 

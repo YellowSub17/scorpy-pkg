@@ -91,7 +91,7 @@ import glob
 
 
 cifpath = f'/home/ec2-user/corr/data/xtal/193l-sf.cif'
-corr_3d = scorpy.CorrelationVol(nq=200, npsi=5760, qmax=1.5, qmin=0.4, cos_sample=True)
+corr_3d = scorpy.CorrelationVol(nq=200, npsi=5760, qmax=1.5, qmin=0.4, cos_sample=False)
 cif = scorpy.CifData(cifpath, qmax=1.5)
 corr_3d.fill_from_cif(cif, verbose=99)
 corr_3d.save(f'/home/ec2-user/corr/data/qcor/193l_3d_big_qcor.dbin')
