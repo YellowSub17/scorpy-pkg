@@ -39,7 +39,8 @@ class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerPaths, Alg
 
         if path is None:
             path = DATADIR / 'algo'
-        self.path = path / tag
+
+        self.path = Path(f'{path}/{tag}')
 
         self.nq = nq
         self.qmax = qmax

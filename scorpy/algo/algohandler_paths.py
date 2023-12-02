@@ -13,16 +13,19 @@ class AlgoHandlerPaths:
         return self.path / f'algo_{self.tag}_params.txt'
 
     def sphv_supp_tight_path(self):
-        return self.path / f'sphv_{self.tag}_supp_tight.dbin'
+        return self.path / f'sphv_{self.tag}_supp_tight'
 
     def sphv_supp_loose_path(self):
-        return self.path / f'sphv_{self.tag}_supp_loose.dbin'
+        return self.path / f'sphv_{self.tag}_supp_loose'
 
     def sphv_targ_path(self):
-        return self.path / f'sphv_{self.tag}_targ.dbin'
+        return self.path / f'sphv_{self.tag}_targ'
 
     def blqq_data_path(self):
-        return self.path / f'blqq_{self.tag}_data.dbin'
+        return self.path / f'blqq_{self.tag}_data'
+
+    def corr_data_path(self):
+        return self.path / f'corr_{self.tag}_data'
 
     def cif_targ_path(self):
         return self.path / f'{self.tag}_targ-sf.cif'
@@ -32,16 +35,16 @@ class AlgoHandlerPaths:
 
 
     def sphv_init_path(self, sub_tag):
-        return self.path / f'{sub_tag}' / f'sphv_{self.tag}_{sub_tag}_init.dbin'
+        return self.path / f'{sub_tag}' / f'sphv_{self.tag}_{sub_tag}_init'
 
     def sphv_iter_path(self, sub_tag):
-        return self.path / f'{sub_tag}' / f'sphv_{self.tag}_{sub_tag}_iter.dbin'
+        return self.path / f'{sub_tag}' / f'sphv_{self.tag}_{sub_tag}_iter'
 
     def cif_final_path(self, sub_tag):
         return self.path / f'{sub_tag}' / f'{self.tag}_{sub_tag}_final-sf.cif'
 
     def sphv_final_path(self, sub_tag):
-        return self.path / f'{sub_tag}' / f'sphv_{self.tag}_{sub_tag}_final.dbin'
+        return self.path / f'{sub_tag}' / f'sphv_{self.tag}_{sub_tag}_final'
 
 
     def hkls_path(self, sub_tag):

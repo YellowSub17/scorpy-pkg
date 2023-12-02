@@ -24,11 +24,20 @@ class AlgoHandlerRunRecon:
     @verbose_dec
     def check_inputs(self, verbose=0):
         print(f'Checking Inputs')
-        assert os.path.exists(self.blqq_data_path()), "Data BlqqVol not saved to algo folder"
+
+
+
+        blqq_check1 = os.path.exists(self.blqq_data_path().with_suffix('.npy'))
+        blqq_check2 = os.path.exists(self.blqq_data_path().with_suffix('.dbin'))
+
+        assert blqq_check1 or blqq_check2, "Data BlqqVol not saved to algo folder"
         blqq = BlqqVol(path=self.blqq_data_path())
 
 
-        assert os.path.exists(self.sphv_supp_loose_path()), "Support SphericalVol not saved to algo folder"
+
+        supp_check1 = os.path.exists(self.sphv_supp_loose_path().with_suffix('.npy'))
+        supp_check2 = os.path.exists(self.sphv_supp_loose_path().with_suffix('.dbin'))
+        assert supp_check1 or supp_check2, "Support SphericalVol not saved to algo folder"
         sphv_supp = SphericalVol(path=self.sphv_supp_loose_path())
 
 
@@ -60,7 +69,7 @@ class AlgoHandlerRunRecon:
 
 
     @verbose_dec
-    def run_recon(self, sub_tag, recipe, sphv_init=None, verbose=0):
+    def run_recon(self, sub_tag, recipe, sphv_init=None, overwrite=0, verbose=0):
 
 
         print(f'Running Recon {self.tag}_{sub_tag}')
@@ -68,8 +77,33 @@ class AlgoHandlerRunRecon:
 
 
 
-        os.mkdir(f'{self.path}/{sub_tag}')
-        os.mkdir(f'{self.path}/{sub_tag}/hkls')
+
+
+        if not os.path.exists(f'{self.path}/{sub_tag}'):
+
+            os.mkdir(f'{self.path}/{sub_tag}')
+            os.mkdir(f'{self.path}/{sub_tag}/hkls')
+
+        elif os.path.exists(f'{self.path}/{sub_tag}') and overwrite==2:
+            shutil.rmtree(f'{self.path}/{sub_tag}')
+            os.mkdir(f'{self.path}/{sub_tag}')
+            os.mkdir(f'{self.path}/{sub_tag}/hkls')
+
+        elif os.path.exists(f'{self.path}/{sub_tag}') and overwrite==1:
+            print(f'Algo path {self.path}/{sub_tag} exists. Overwrite? (y/n)')
+            query = input('>> ')
+            if query=='y':
+                shutil.rmtree(f'{self.path}/{sub_tag}')
+                os.mkdir(f'{self.path}/{sub_tag}')
+                os.mkdir(f'{self.path}/{sub_tag}/hkls')
+            
+            else:
+                print('Cancelling run.')
+                return
+
+
+
+
 
         shutil.copyfile(f'{recipe}', f'{self.path}/{sub_tag}/recipe_{self.tag}_{sub_tag}.txt')
 
@@ -148,7 +182,7 @@ class AlgoHandlerRunRecon:
         cif_integrated = CifData(self.cif_targ_path(), rotk=self.rotk, rottheta=self.rottheta)
         cif_integrated.fill_from_sphv(sphv_integrated)
         cif_integrated.save(self.cif_final_path(sub_tag))
-        cif_integrated.save_hkl(self.hkl_count_path(sub_tag, count=None))
+        cif_integrated.save_shelx_hkl(self.hkl_count_path(sub_tag, count=None))
 
 
 

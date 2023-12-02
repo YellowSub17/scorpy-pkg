@@ -66,6 +66,7 @@ class BlqqVol(BaseVol, BlqqVolProps):
         else:
             lskip = 2
 
+        ## legendre argument is -1 to 1
         if corr.cos_sample:
             args = corr.psipts
         else:
@@ -74,7 +75,7 @@ class BlqqVol(BaseVol, BlqqVolProps):
         # initialze fmat matrix
         fmat = np.zeros((corr.npsi, self.nl))
 
-        # for every even spherical harmonic
+        # for every spherical harmonic
         for l in range(0, self.nl, lskip):
             leg_vals = special.eval_legendre(l, args)
             fmat[:, l] = leg_vals
@@ -85,12 +86,6 @@ class BlqqVol(BaseVol, BlqqVolProps):
         else:
             fmat_inv = np.linalg.pinv(fmat)
 
-        # fmat_inv = np.linalg.pinv(fmat)
-
-        # calc with svd
-        # so we can pull out uvs
-        # reuse uvs for iteralgo
-        # in iteralgo, tweak algo type/inputs + rcond
 
         for iq1 in range(self.nq):
             print(f'q index: {iq1+1}/{self.nq}', end='\r')
@@ -126,7 +121,6 @@ class BlqqVol(BaseVol, BlqqVolProps):
 
 
         for i, q1_coeffs in enumerate(iqlm.vals):
-
 
             for j, q2_coeffs in enumerate(iqlm.vals[i:]):
 

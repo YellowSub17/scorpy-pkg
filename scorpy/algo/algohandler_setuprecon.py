@@ -135,7 +135,7 @@ class AlgoHandlerSetupRecon:
 
 
     @verbose_dec
-    def make_data(self,  verbose=0):
+    def make_data(self,  verbose=0, save_corr=True):
         print('Making Data')
 
         cif_targ = CifData(f'{self.path}/{self.tag}_targ-sf.cif', qmax=self.qmax, rotk=self.rotk, rottheta=self.rottheta)
@@ -146,7 +146,13 @@ class AlgoHandlerSetupRecon:
         blqq_data.fill_from_corr(corr_data, rcond=self.pinv_rcond, verbose=verbose-1)
         blqq_data.vol[:,:,self.lcrop:] = 0
 
-        blqq_data.save(f'{self.path}/blqq_{self.tag}_data.dbin')
+        blqq_data.save(self.blqq_data_path())
+
+        if save_corr:
+            corr_data.save(self.corr_data_path())
+
+
+
 
 
 
