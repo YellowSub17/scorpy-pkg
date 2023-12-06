@@ -59,9 +59,9 @@ class CorrelationVolCorr:
 
 
 #  DEBUG
-        nscats = nscats - int(chopf*nscats)
-        np.random.shuffle(qti)
-        qti = qti[:nscats]
+        # nscats = nscats - int(chopf*nscats)
+        # np.random.shuffle(qti)
+        # qti = qti[:nscats]
 
 
 
@@ -128,9 +128,9 @@ class CorrelationVolCorr:
         nscats = qxyzi.shape[0]
 
 #  DEBUG
-        nscats = nscats - int(chopf*nscats)
-        np.random.shuffle(qxyzi)
-        qxyzi = qxyzi[:nscats]
+        # nscats = nscats - int(chopf*nscats)
+        # np.random.shuffle(qxyzi)
+        # qxyzi = qxyzi[:nscats]
 
         # calculate q indices of every scattering vector
         ite = np.ones(nscats)

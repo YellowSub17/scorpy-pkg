@@ -31,13 +31,13 @@ class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerPaths, Alg
 
 
 
-    def __init__(self, tag, save_path, nq=256, qmax=None, npsi=360*32, nl=180, lcrop=45,
+    def __init__(self, tag, path, nq=256, qmax=None, npsi=360*32, nl=180, lcrop=45,
                  dxsupp=2, pinv_rcond=0.1, eig_rcond=1e-15, lossy_iqlm=True, lossy_sphv=True,
                  rotk=[1,1,1], rottheta=np.radians(30), overwrite=0):
 
 
         self.tag = tag
-        self.path = f'{save_path}/{tag}'
+        self.path = f'{path}/{tag}'
 
         self.nq = nq
         self.qmax = qmax

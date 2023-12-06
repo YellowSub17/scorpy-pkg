@@ -40,9 +40,6 @@ class CorrelationVol(BaseVol,               #Parent Vol Class
 
     def __init__(self, nq=100, npsi=180, qmax=1, qmin=0, cos_sample=True,  path=None):
 
-
-
-
         if path is not None:
             BaseVol.__init__(self, path=path)
         else:

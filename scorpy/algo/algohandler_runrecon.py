@@ -35,8 +35,8 @@ class AlgoHandlerRunRecon:
 
 
 
-        supp_check1 = os.path.exists(self.sphv_supp_loose_path()+'.npy'))
-        supp_check2 = os.path.exists(self.sphv_supp_loose_path()+'.dbin'))
+        supp_check1 = os.path.exists(self.sphv_supp_loose_path()+'.npy')
+        supp_check2 = os.path.exists(self.sphv_supp_loose_path()+'.dbin')
         assert supp_check1 or supp_check2, "Support SphericalVol not saved to algo folder"
         sphv_supp = SphericalVol(path=self.sphv_supp_loose_path())
 

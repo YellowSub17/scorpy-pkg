@@ -1,18 +1,18 @@
 import numpy as np
 import copy
-import scipy.signal as signal
 import scipy
 import matplotlib.pyplot as plt
 
 from .basevol_props import BaseVolProps
 from .basevol_saveload import BaseVolSaveLoad
 from .basevol_plot import BaseVolPlot
+from .basevol_convolve import BaseVolProc
 
 from ...utils.utils import index_x
 
 
 
-class BaseVol(BaseVolProps, BaseVolPlot, BaseVolSaveLoad):
+class BaseVol(BaseVolProps, BaseVolPlot, BaseVolSaveLoad, BaseVolProc):
     """
         scorpy.Vol:
             A class to describe an arbitrary volume or 3D function.
@@ -93,10 +93,9 @@ vol : numpy.ndarray
         new_nz = zf-zi
         print(f'{new_nx=} {new_ny=} {new_nz=}')
 
-        new_vol = BaseVol(new_nx, new_ny, new_nz, 
+        new_vol = BaseVol(new_nx, new_ny, new_nz,
                         new_xmin-self.dx/2, new_ymin-self.dx/2, new_zmin-self.dx/2,
                         new_xmax-self.dx/2, new_ymax-self.dx/2, new_zmax-self.dx/2,
-
                         False, False, False, self.comp)
 
         new_vol.vol = cropped_arr
@@ -124,136 +123,34 @@ vol : numpy.ndarray
                 nx by ny by nz array of eigenvectors. yth column of the zth slice
                 of us is the eigen vector associated with the eigenvalue of the zth column in lams.
         '''
-        if herm:
-            dtype = np.float64
-            eig_fn = np.linalg.eigh
-        else:
-            dtype = np.complex64
-            eig_fn = np.linalg.eig
+        # if herm:
+            # dtype = np.float64
+            # eig_fn = np.linalg.eigh
+        # else:
+            # dtype = np.complex64
+            # eig_fn = np.linalg.eig
 
-        if inc_odds:
-            zskip=1
-        else:
-            zskip=2
+        # if inc_odds:
+            # zskip=1
+        # else:
+            # zskip=2
+
+        dtype, eig_fn = (  (np.float64, np.linalg.eigh) if herm else (np.complex64, np.linalg.eig) )
+
+        zskip = 1 if inc_odds else 2
+
 
         lams = np.zeros((self.nx, self.nz), dtype=dtype)
         us = np.zeros((self.nx, self.ny, self.nz), dtype=dtype)
 
         for z in range(0, self.nz, zskip):
             lam, u = eig_fn(self.vol[..., z])
-
             lams[:, z] = lam
             us[:, :, z] = u
         return np.real(lams), np.real(us)
 
-    def convolve(self, kern_L=2, kern_n=5, std_x=1, std_y=1, std_z=1):
-        '''
-	scorpy.Vol.convolve():
-            Convolve the current vol with a guassian kernel and replace it.
-        Arguments:
-            kern_L : int
-                +/- upper and lower limit of the kernel.
-            kern_n : int
-                number of pixels in the kernel matrix.
-            std_x, std_y, std_z : float
-                standard deviation of the guassian in each x,y,z axis.
-        '''
-        # make linear spaces and meshes for each kernel direction
-        x_space = np.linspace(-kern_L, kern_L, kern_n)
-        y_space = np.linspace(-kern_L, kern_L, kern_n)
-        z_space = np.linspace(-kern_L, kern_L, kern_n)
 
 
-        x_mesh, y_mesh, z_mesh = np.meshgrid(x_space, y_space, z_space)
-
-
-        # calculates the guassian kernel and convolve
-        kern = np.exp(- (x_mesh**2 / (2 * std_x**2) + y_mesh ** 2 / (2 * std_y**2) + z_mesh**2 / (2 * std_z**2)))
-
-
-        blur = signal.fftconvolve(self.vol, kern)
-
-        # bring the volume in by half the kernal window width (removes edge effects)
-        kern_n_half = int((kern_n - 1) / 2)
-        blur = blur[kern_n_half:-kern_n_half, kern_n_half:-kern_n_half, kern_n_half:-kern_n_half]
-        self.vol = blur
-        return kern
-
-
-    def convolve_tophat(self, kern_L=2, kern_n=5, lim_x=1, lim_y=1, lim_z=1):
-        '''
-	scorpy.Vol.convolve_tophat():
-            Convolve the current vol with a tophat kernel and replace it.
-        Arguments:
-            kern_L : int
-                +/- upper and lower limit of the kernel.
-            kern_n : int
-                number of pixels in the kernel matrix.
-            lim_x, lim_y, lim_z : float
-                limits of the tophat in each x,y,z axis.
-        '''
-        # make linear spaces and meshes for each kernel direction
-        x_space = np.linspace(-kern_L, kern_L, kern_n)
-        y_space = np.linspace(-kern_L, kern_L, kern_n)
-        z_space = np.linspace(-kern_L, kern_L, kern_n)
-
-
-        x_mesh, y_mesh, z_mesh = np.meshgrid(x_space, y_space, z_space)
-
-        x_cond =  np.abs(x_mesh) <= lim_x
-        y_cond =  np.abs(y_mesh) <= lim_y
-        z_cond =  np.abs(z_mesh) <= lim_z
-
-
-        xy_cond = np.logical_and(x_cond, y_cond)
-        xyz_cond = np.logical_and(xy_cond, z_cond)
-
-
-
-
-
-
-
-
-
-        # calculates the  kernel and convolve
-        kern = np.zeros( (kern_n, kern_n, kern_n) )
-        kern[np.where(xyz_cond)] = 1
-        # kern[x_loc, y_loc, z_loc] = 1
-
-
-        blur = signal.fftconvolve(self.vol, kern)
-
-        # bring the volume in by half the kernal window width (removes edge effects)
-        kern_n_half = int((kern_n - 1) / 2)
-        blur = blur[kern_n_half:-kern_n_half, kern_n_half:-kern_n_half, kern_n_half:-kern_n_half]
-        self.vol = blur
-        return kern
-
-
-    def convolve2D(self,  kern_L=2, kern_n=5, std_y=1, std_z=1):
-
-        y_space = np.linspace(-kern_L, kern_L, kern_n)
-        z_space = np.linspace(-kern_L, kern_L, kern_n)
-
-        y_mesh, z_mesh = np.meshgrid( y_space, z_space)
-
-        kern = np.exp(- ( y_mesh ** 2 / (2 * std_y**2) + z_mesh**2 / (2 * std_z**2)))
-        kern_n_half = int((kern_n - 1) / 2)
-        blur = np.zeros(self.vol.shape)
-        for i, yz in enumerate(self.vol):
-            blur2D = signal.fftconvolve(yz, kern)
-            blur[i] = blur2D[kern_n_half:-kern_n_half, kern_n_half:-kern_n_half]
-
-        self.vol = blur
-
-
-
-
-
-    def normalize(self):
-        self.vol -=self.vol.min()
-        self.vol *=1/self.vol.max()
 
     def get_xy(self):
         '''
@@ -371,10 +268,6 @@ vol : numpy.ndarray
 
 
 
-    def make_mask(self):
-
-        loc = np.where(self.vol != 0)
-        self.vol[loc] = 1
 
 
 
@@ -443,22 +336,7 @@ vol : numpy.ndarray
 
         self.vol = new_vol
 
-
-
-    def zmean_subtraction(self):
-        ## add option to excluce theta=0
-
-        print(self.vol.shape)
-        vol_aligned = np.swapaxes(self.vol, 0,2)
-        print(vol_aligned.shape)
-
-        zmean = np.mean(vol_aligned, axis=0)
-        
-        vol_aligned -= zmean
-
-        self.vol = np.swapaxes(vol_aligned, 0, 2)
-
-        # return zmean
+       # return zmean
 
 
 

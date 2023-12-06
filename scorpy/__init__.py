@@ -1,3 +1,4 @@
+print('scorpy vNEW')
 from .vols.base.basevol import BaseVol
 from .vols.blqq.blqqvol import BlqqVol
 from .vols.corr.correlationvol import CorrelationVol
@@ -14,7 +15,7 @@ from .read.peak.peakdata import PeakData
 from .iqlm.iqlmhandler import IqlmHandler
 from .algo.algohandler import AlgoHandler
 
-from .utils.env import DATADIR, SCORPYDIR, PADFDIR
+# from .utils.env import DATADIR, SCORPYDIR, PADFDIR
 # from .utils.env import DATADIR, SCORPYDIR, PADFDIR
 
 
