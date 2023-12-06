@@ -2,8 +2,11 @@
 import numpy as np
 
 
+from .angle_between_funcs import *
 
-from ...utils.utils import angle_between_pol, angle_between_sph, angle_between_rect, index_x, verbose_dec
+
+
+
 
 class CorrelationVolCorr:
 
@@ -29,7 +32,7 @@ class CorrelationVolCorr:
 
 
     @verbose_dec
-    def correlate_scat_pol(self, qti,chopf=0, verbose=0 ):
+    def correlate_scat_pol(self, qti, verbose=0 ):
         '''
         scorpy.CorrelationVol.correlate_scat_pol():
             Correlate diffraction peaks in 2D polar coordinates.
@@ -57,17 +60,11 @@ class CorrelationVolCorr:
         nscats = qti.shape[0]
 
 
-
-#  DEBUG
-        # nscats = nscats - int(chopf*nscats)
-        # np.random.shuffle(qti)
-        # qti = qti[:nscats]
-
-
-
         ite = np.ones(nscats)
         q_inds = list(map(index_x, qti[:, 0], self.qmin * ite, self.qmax * ite, self.nq * ite))
 
+
+        angle_between_fn = angle_between_pol_cos if self.cos_sample else angle_between_pol
 
 
 
@@ -75,15 +72,12 @@ class CorrelationVolCorr:
             print(f'Peak: {i+1}/{nscats}')
             q1_ind = q_inds[i]
 
-
             for j, q2 in enumerate(qti[i:]):
                 # get q index
                 q2_ind = q_inds[i + j]
 
                 # get the angle between vectors
-                psi = angle_between_pol(q1[1], q2[1])
-                if self.cos_sample:
-                    psi = np.cos(psi)
+                psi = angle_between_fn(q1[1], q2[1])
 
                 #calculate psi index for angle between vectors
                 psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=self.zwrap)
@@ -96,7 +90,7 @@ class CorrelationVolCorr:
 
 
     @verbose_dec
-    def correlate_scat_rect(self, qxyzi, chopf=0, verbose=0):
+    def correlate_scat_rect(self, qxyzi, verbose=0):
         '''
         scorpy.CorrelationVol.correlate_scat_pol():
             Correlate diffraction peaks in 3D rectilinear coordinates.
@@ -118,24 +112,18 @@ class CorrelationVolCorr:
         qmags = qmags[ge_qmin]
 
 
-        
         # only correlate intensity greater then 0
         Igt0_loc = np.where(qxyzi[:,-1]>0)[0]
         qxyzi = qxyzi[Igt0_loc]
         qmags = qmags[Igt0_loc]
 
-
         nscats = qxyzi.shape[0]
-
-#  DEBUG
-        # nscats = nscats - int(chopf*nscats)
-        # np.random.shuffle(qxyzi)
-        # qxyzi = qxyzi[:nscats]
 
         # calculate q indices of every scattering vector
         ite = np.ones(nscats)
         q_inds = list(map(index_x, qmags, self.qmin * ite, self.qmax * ite, self.nq * ite))
 
+        angle_between_fn = angle_between_rect_cos if self.cos_sample else angle_between_rect
 
         for i, q1 in enumerate(qxyzi):
             print(f'Peak: {i+1}/{nscats}', end='\r')
@@ -148,10 +136,7 @@ class CorrelationVolCorr:
                 q2_ind = q_inds[i + j]
 
                 # get the angle between vectors
-                psi = angle_between_rect(q1[:3], q2[:3])
-
-                if self.cos_sample:
-                    psi = np.cos(psi)
+                psi = angle_between_fn(q1[:3], q2[:3])
 
                 #calculate psi index for angle between vectors
                 psi_ind = index_x(psi, self.zmin, self.zmax, self.npsi, wrap=self.zwrap)
@@ -191,16 +176,13 @@ class CorrelationVolCorr:
 
         nscats = qtpi.shape[0]
 
-##  DEBUG
-        # nscats_chop = int((1-chopf)*nscats)
-        # np.random.shuffle(qtpi)
-        # qtpi = qtpi[:nscats_chop]
-        # nscats = nscats_chop
 
         # calculate q indices of every scattering vector 
         ite = np.ones(nscats)
         q_inds = list(map(index_x, qtpi[:, 0], self.qmin * ite, self.qmax * ite, self.nq * ite))
 
+
+        angle_between_fn = angle_between_sph_cos if self.cos_sample else angle_between_sph
 
 
 
@@ -220,10 +202,7 @@ class CorrelationVolCorr:
                 phi2 = q2[2]
 
                 # get the angle between angluar coordinates
-                psi = angle_between_sph(theta1, theta2, phi1, phi2)
-
-                if self.cos_sample:
-                    psi = np.cos(psi)
+                psi = angle_between_fn(theta1, theta2, phi1, phi2)
 
 
                 #calculate psi index for angle between vectors

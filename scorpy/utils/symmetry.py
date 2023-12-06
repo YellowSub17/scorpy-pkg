@@ -322,7 +322,6 @@ def apply_sym(reflections, spg_code):
     elif HM_number >= 503 and HM_number <= 530:
         total_sym_mat = m_three_m()
     else:
-        # print(f'spg: {spg_code}, pg: {HM_number}')
         total_sym_mat = identity()
 
     new_reflections = np.zeros((len(total_sym_mat) * len(reflections), 4))

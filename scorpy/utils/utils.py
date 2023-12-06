@@ -38,8 +38,6 @@ def to_polar(im, rmax, cenx, ceny):
 
 def strerr2floaterrr(s):
 
-
-
     val, err = s.split('(')[0], s.split('(')[1][:-1]
 
     units = val.split('.')[0]
@@ -124,68 +122,6 @@ def index_x(x_val, x_min, x_max, nx, wrap=False):
             x_out = index_x(x_val, x_min + dx / 2, x_max - dx / 2, nx - 1) + 1
 
     return int(x_out)
-
-
-
-def angle_between_pol(t1, t2):
-    '''
-    Calculate angluar difference between two polar angles.
-
-    Arguments:
-        t1 (): Angle 1 [degrees]
-        t2 (): Angle 2 [degrees]
-
-    Returns:
-        psi (): Difference between t1 and t2, in radians between 0 and 180
-    '''
-    psi = np.abs((t1 - t2 + np.pi) % (np.pi*2) - np.pi)
-    return psi
-
-
-def angle_between_rect(q1, q2):
-    '''
-    Calculate angle between two vectors.
-
-    Arguments:
-        q1 (): Vector 1
-        q2 (): Vector 2
-
-    Returns:
-        psi (): Angle between q1 and q2 [radians]
-    '''
-    dot = np.dot(q1 / np.linalg.norm(q1), q2 / np.linalg.norm(q2))
-
-    if dot > 1:
-        dot = 1.0
-    elif dot < -1:
-        dot = -1.0
-
-    psi = np.arccos(dot)
-    return psi
-
-
-def angle_between_sph(theta1, theta2, phi1, phi2):
-    '''Angle between two vectors defined by spherical corrdinates.
-
-    Arguments:
-        theta1 (): inclination angle of first vector [radians]
-        theta2 (): inclination angle of second vector [radians]
-        phi1 (): azimuthal angle of first vector [radians]
-        phi2 (): azimuthal angle of second vector [radians]
-
-    Returns:
-        psi (): angle between vectors [radians]
-    '''
-    w1 = np.array([np.cos(phi1) * np.sin(theta1),
-                   np.sin(phi1) * np.sin(theta1),
-                   np.cos(theta1)])
-
-    w2 = np.array([np.cos(phi2) * np.sin(theta2),
-                   np.sin(phi2) * np.sin(theta2),
-                   np.cos(theta2)])
-
-    return angle_between_rect(w1, w2)
-
 
 # def cosinesim(v1, v2):
     # v1f, v2f = v1.flatten(), v2.flatten()
