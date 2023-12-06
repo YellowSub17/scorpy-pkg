@@ -6,9 +6,9 @@ import matplotlib.pyplot as plt
 from .basevol_props import BaseVolProps
 from .basevol_saveload import BaseVolSaveLoad
 from .basevol_plot import BaseVolPlot
-from .basevol_convolve import BaseVolProc
+from .basevol_proc import BaseVolProc
 
-from ...utils.utils import index_x
+from ...utils.convert_funcs import index_x
 
 
 
@@ -103,6 +103,12 @@ vol : numpy.ndarray
         return new_vol
 
 
+    def cosinesim(v):
+
+        assert (self.nx, self.ny, self.nz)==(v.nx, v.ny, v.nz), 'Vols not the same shape.'
+        v1f, v2f = self.vol.flatten(), v.vol.flatten()
+        sim = np.dot(v1f, v2f)/ (np.linalg.norm(v1f) * np.linalg.norm(v2f))
+        return sim
 
 
 

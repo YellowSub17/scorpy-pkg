@@ -2,7 +2,8 @@ from scipy import special
 import numpy as np
 import time
 
-from ...utils.utils import angle_between_pol, angle_between_sph, angle_between_rect, index_x, verbose_dec
+from ...utils.convert_funcs import index_x
+from ...utils.decorator_funcs import verbose_dec
 
 from ..base.basevol import BaseVol
 from .correlationvol_props import CorrelationVolProps

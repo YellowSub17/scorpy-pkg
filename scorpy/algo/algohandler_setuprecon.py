@@ -13,7 +13,7 @@ from ..vols.corr.correlationvol import CorrelationVol
 from ..vols.blqq.blqqvol import BlqqVol
 from ..iqlm.iqlmhandler import IqlmHandler
 
-from ..utils.utils import verbose_dec
+from ..utils.decorator_funcs import verbose_dec
 
 
 

@@ -1,8 +1,8 @@
 
 import CifFile as pycif
 import numpy as np
-from ...utils.utils import index_x, convert_rect2sph
-from ...utils.symmetry import apply_sym
+from ...utils.convert_funcs import index_x, convert_rect2sph
+from ...utils.sym_funcs import apply_sym
 import itertools
 
 from .cifdata_props import CifDataProperties

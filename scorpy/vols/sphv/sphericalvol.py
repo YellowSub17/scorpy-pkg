@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import time
 
 from ..base.basevol import BaseVol
-from ...utils.utils import index_x
+from ...utils.convert_funcs import index_x
 from .sphericalvol_props import SphericalVolProps
 from .sphericalvol_plot import SphericalVolPlot
 from .sphericalvol_saveload import SphericalVolSaveLoad

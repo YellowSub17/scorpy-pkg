@@ -5,7 +5,7 @@ import configparser as cfp
 from datetime import datetime
 import numpy as np
 
-from ...utils.utils import verbose_dec
+from ...utils.decorator_funcs import verbose_dec
 
 
 

@@ -17,7 +17,8 @@ from ..vols.sphv.sphericalvol import SphericalVol
 import matplotlib.pyplot as plt
 import numpy as np
 
-from ..utils.utils import strerr2floaterrr, verbose_dec
+from ..utils.str_funcs import strerr2floaterrr 
+from ..utils.decorator_funcs import verbose_dec
 import time
 
 

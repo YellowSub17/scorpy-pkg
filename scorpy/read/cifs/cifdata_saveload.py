@@ -4,7 +4,7 @@
 
 import CifFile as pycif
 import numpy as np
-from ...utils.utils import verbose_dec
+from ...utils.decorator_funcs import verbose_dec
 
 class CifDataSaveLoad:
 

@@ -3,8 +3,9 @@ import matplotlib.pyplot as plt
 import h5py
 import os
 import scipy as sp
-from ...utils.env import DATADIR
-from ...utils.utils import index_x, convert_rect2pol
+
+from ...utils.convert_funcs import index_x, convert_rect2pol
+
 
 from .peakdata_props import PeakDataProperties
 from .peakdata_plot import PeakDataPlot

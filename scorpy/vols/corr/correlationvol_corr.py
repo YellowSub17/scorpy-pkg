@@ -2,9 +2,10 @@
 import numpy as np
 
 
-from .angle_between_funcs import *
 
-
+from ...utils.convert_funcs import index_x
+from ...utils.decorator_funcs import verbose_dec
+from ...utils.angle_between_funcs import *
 
 
 
@@ -21,8 +22,6 @@ class CorrelationVolCorr:
             for j, f_qtrowj in enumerate(f_qt[i:]):
 
                 convolved_rows = f_qtrowi*f_qtrowj.conjugate()
-                ###todo add inverse fft
-
 
                 self.vol[i, j+i,:] += np.real(convolved_rows)
                 if j >0:

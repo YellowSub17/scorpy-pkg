@@ -2,7 +2,8 @@
 
 
 from ..utils.baseplot import BasePlot
-from ..utils.utils import strerr2floaterrr
+from ..utils.str_funcs import strerr2floaterrr
+from ..utils.decorator_funcs import verbose_dec
 
 from ..vols.sphv.sphericalvol import SphericalVol
 from ..read.cifs.cifdata import CifData
@@ -10,7 +11,6 @@ import CifFile as pycif
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.cm as cm
-from ..utils.utils import verbose_dec
 
 
 

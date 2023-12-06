@@ -5,7 +5,7 @@ from ..base.basevol import BaseVol
 from .blqqvol_props import BlqqVolProps
 from .blqqvol_plot import BlqqVolPlot
 from .blqqvol_saveload import BlqqVolSaveLoad
-from ...utils.utils import verbose_dec
+from ...utils.decorator_funcs import verbose_dec
 import time
 
 
