@@ -27,16 +27,16 @@ class AlgoHandlerRunRecon:
 
 
 
-        blqq_check1 = os.path.exists(self.blqq_data_path().with_suffix('.npy'))
-        blqq_check2 = os.path.exists(self.blqq_data_path().with_suffix('.dbin'))
+        blqq_check1 = os.path.exists(self.blqq_data_path()+'.npy')
+        blqq_check2 = os.path.exists(self.blqq_data_path()+'.dbin')
 
         assert blqq_check1 or blqq_check2, "Data BlqqVol not saved to algo folder"
         blqq = BlqqVol(path=self.blqq_data_path())
 
 
 
-        supp_check1 = os.path.exists(self.sphv_supp_loose_path().with_suffix('.npy'))
-        supp_check2 = os.path.exists(self.sphv_supp_loose_path().with_suffix('.dbin'))
+        supp_check1 = os.path.exists(self.sphv_supp_loose_path()+'.npy'))
+        supp_check2 = os.path.exists(self.sphv_supp_loose_path()+'.dbin'))
         assert supp_check1 or supp_check2, "Support SphericalVol not saved to algo folder"
         sphv_supp = SphericalVol(path=self.sphv_supp_loose_path())
 
@@ -96,13 +96,9 @@ class AlgoHandlerRunRecon:
                 shutil.rmtree(f'{self.path}/{sub_tag}')
                 os.mkdir(f'{self.path}/{sub_tag}')
                 os.mkdir(f'{self.path}/{sub_tag}/hkls')
-            
             else:
                 print('Cancelling run.')
                 return
-
-
-
 
 
         shutil.copyfile(f'{recipe}', f'{self.path}/{sub_tag}/recipe_{self.tag}_{sub_tag}.txt')
@@ -118,11 +114,7 @@ class AlgoHandlerRunRecon:
 
 
 
-
-
         self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_init.dbin')
-
-
 
 
 
@@ -150,7 +142,6 @@ class AlgoHandlerRunRecon:
 
                 self.sphv_iter.save(self.sphv_iter_path(sub_tag))
                 self.integrate_iter(sub_tag)
-
 
                 _,_, step = scheme(**kwargs)
                 count +=1
