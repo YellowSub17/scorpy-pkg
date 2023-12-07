@@ -8,7 +8,6 @@ from .basevol_saveload import BaseVolSaveLoad
 from .basevol_plot import BaseVolPlot
 from .basevol_proc import BaseVolProc
 
-from ...utils.convert_funcs import index_x
 
 
 
@@ -177,18 +176,6 @@ vol : numpy.ndarray
         return xy
 
 
-    def evaluate(self, xval, yval, zval):
-        '''
-        give x,y,z coords between return the intensity value there
-        '''
-
-        xind = index_x(xval, self.xmin, self.xmax, self.nq, self.xwrap)
-        yind = index_x(yval, self.ymin, self.ymax, self.nq, self.ywrap)
-        zind = index_x(zval, self.zmin, self.zmax, self.nq, self.zwrap)
-
-        return self.vol[xind, yind, zind]
-
-
 
 
     def get_index(self, x=None, y=None, z=None):
@@ -350,4 +337,16 @@ vol : numpy.ndarray
 
 
 
+
+
+    # def evaluate(self, xval, yval, zval):
+        # '''
+        # give x,y,z coords between return the intensity value there
+        # '''
+
+        # xind = index_x(xval, self.xmin, self.xmax, self.nq, self.xwrap)
+        # yind = index_x(yval, self.ymin, self.ymax, self.nq, self.ywrap)
+        # zind = index_x(zval, self.zmin, self.zmax, self.nq, self.zwrap)
+
+        # return self.vol[xind, yind, zind]
 

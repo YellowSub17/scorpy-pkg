@@ -1,7 +1,7 @@
 
 import CifFile as pycif
 import numpy as np
-from ...utils.convert_funcs import index_x, convert_rect2sph
+from ...utils.convert_funcs import index_x_wrap, index_x_nowrap, convert_rect2sph
 from ...utils.sym_funcs import apply_sym
 import itertools
 
@@ -132,11 +132,11 @@ class CifData(CifDataProperties, CifDataSaveLoad):
         assert I is not None, 'WARNING: No intensity found when reading cif.'
 
 
-        # apply symmetry to generate all bragg points
+        # asymetric reflection list
         asym_refl = np.array([h, k, l, I]).T
 
 
-        if skip_sym:
+        if skip_sym: #if we don't want care about symetric peaks
             sym_refl = asym_refl
             # remove 000 reflections
             loc_000 = np.all(sym_refl[:, :3] == 0, axis=1)
@@ -201,7 +201,6 @@ class CifData(CifDataProperties, CifDataSaveLoad):
         
         if qmax is None:
             qmax = inten_qmax
-
 
 
         loc = np.where(self.scat_sph[:, 0] <= qmax)
@@ -327,9 +326,9 @@ class CifData(CifDataProperties, CifDataSaveLoad):
         sph_qtp = sph_qtp[qloc]
 
         ite = np.ones( sph_qtp.shape[0])
-        q_inds = list(map(index_x, sph_qtp[:, 0], 0 * ite, sphv.qmax * ite, sphv.nq * ite))
-        theta_inds = list(map(index_x, sph_qtp[:, 1], sphv.ymin * ite, sphv.ymax * ite, sphv.ny * ite))
-        phi_inds = list(map(index_x, sph_qtp[:, 2], sphv.zmin * ite, sphv.zmax * ite, sphv.nz * ite, ite))
+        q_inds = list(map(index_x_nowrap, sph_qtp[:, 0], 0 * ite, sphv.qmax * ite, sphv.nq * ite))
+        theta_inds = list(map(index_x_nowrap, sph_qtp[:, 1], sphv.ymin * ite, sphv.ymax * ite, sphv.ny * ite))
+        phi_inds = list(map(index_x_wrap, sph_qtp[:, 2], sphv.zmin * ite, sphv.zmax * ite, sphv.nz * ite, ite))
 
 
         I = np.zeros(sph_qtp.shape[0])

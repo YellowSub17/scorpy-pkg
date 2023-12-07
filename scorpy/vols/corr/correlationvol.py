@@ -2,7 +2,6 @@ from scipy import special
 import numpy as np
 import time
 
-from ...utils.convert_funcs import index_x
 from ...utils.decorator_funcs import verbose_dec
 
 from ..base.basevol import BaseVol
@@ -11,6 +10,7 @@ from .correlationvol_plot import CorrelationVolPlot
 from .correlationvol_saveload import CorrelationVolSaveLoad
 from .correlationvol_fill import CorrelationVolFill
 from .correlationvol_corr import CorrelationVolCorr
+from .correlationvol_mpcorr import CorrelationVolMPCorr
 
 
 class CorrelationVol(BaseVol,               #Parent Vol Class
@@ -18,7 +18,8 @@ class CorrelationVol(BaseVol,               #Parent Vol Class
                      CorrelationVolSaveLoad,#Save and Load functionality
                      CorrelationVolPlot,    #Plotting
                      CorrelationVolFill,    #Fill from other objects
-                     CorrelationVolCorr     #Correlation scattering vectors
+                     CorrelationVolCorr,     #Correlation scattering vectors
+                     CorrelationVolMPCorr     #Correlation scattering vectors
                     ):
 
 

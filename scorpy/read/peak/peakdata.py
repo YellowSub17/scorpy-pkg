@@ -4,7 +4,7 @@ import h5py
 import os
 import scipy as sp
 
-from ...utils.convert_funcs import index_x, convert_rect2pol
+from ...utils.convert_funcs import index_x_nowrap, convert_rect2pol
 
 
 from .peakdata_props import PeakDataProperties
@@ -149,8 +149,8 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
 
         ite = np.ones( len(loc))
 
-        xinds = map(index_x, self.scat_rect[loc,0], -r*ite, r*ite, ite*npix)
-        yinds = map(index_x, self.scat_rect[loc,1], -r*ite, r*ite, ite*npix)
+        xinds = map(index_x_nowrap, self.scat_rect[loc,0], -r*ite, r*ite, ite*npix)
+        yinds = map(index_x_nowrap, self.scat_rect[loc,1], -r*ite, r*ite, ite*npix)
 
      
 

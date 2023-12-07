@@ -50,7 +50,7 @@ class CorrelationVolFill:
         '''
 
         assert self.qmax >= cif.qmax, 'cif.qmax > corr.qmax'
-        assert method in ['scat_sph', 'scat_rect'], 'Invalid correlation method.'
+        assert method in ['scat_sph', 'scat_rect',  'scat_rect_mp' ], 'Invalid correlation method.'
 
         nscats = cif.scat_rect.shape[0]
 
@@ -64,8 +64,8 @@ class CorrelationVolFill:
             self.correlate_scat_sph(cif.scat_sph, verbose=verbose-1)
         elif method == 'scat_rect':
             self.correlate_scat_rect(cif.scat_rect, verbose=verbose-1)
-        elif method == 'scat_pol':
-            self.correlate_scat_pol(cif.scat_pol, verbose=verbose-1)
+        elif method == 'scat_rect_mp':
+            self.correlate_scat_rect_mp(cif.scat_rect, verbose=verbose-1)
         print(f'Finished: {time.asctime()}')
         print('############')
         print('')

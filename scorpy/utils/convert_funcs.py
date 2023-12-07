@@ -2,38 +2,28 @@
 import numpy as np
 
 from skimage.transform import warp_polar
-
-def index_x(x_val, x_min, x_max, nx, wrap=False):
-    '''Find the index of a value in an array between a maximum and minimum value.
-
-    Arguments:
-        x_val (): Value to be indexed
-        x_min (): Minimum value in the range to index
-        x_max (): Maximum value in the range to index
-        nx (int): Number of bins in the range to index
-        wrap (bool): If True, values in the last index will be placed in the 0th index.
-
-    Returns:
-        x_out (int): Index that x_val should be place within the range.
-    '''
-
-    dx = (x_max - x_min) / nx
-    x_val = round(x_val, 14)
+import numba
 
 
-    if not wrap:
-        x_out = (x_val - x_min) / dx
-        if x_val == x_max:
-            x_out = nx - 1
-    else:
-        if x_val <= x_min + dx / 2 or x_val >= x_max - dx / 2:
-            x_out = 0
 
-        else:
-            x_out = index_x(x_val, x_min + dx / 2, x_max - dx / 2, nx - 1) + 1
+@numba.njit()
+def index_x_wrap(x_val, x_min, x_max, nx):
 
+    dx2 = (x_max - x_min) / (2*nx)
+    x_out2 =(x_val-x_min)/(dx2)
+    x_out = ( int(0.5*(x_out2+1)) %6)
     return int(x_out)
 
+
+
+@numba.njit()
+def index_x_nowrap(x_val, x_min, x_max, nx):
+    x_val = max(x_min, x_val)
+    x_val = min(x_max-1e-14, x_val)
+    x_val = round(x_val, 15)
+    dx = (x_max - x_min) / nx
+    x_out = (x_val -x_min)/dx
+    return int(x_out)
 
 
 def convert_rect2sph(xyz):
@@ -77,3 +67,33 @@ def to_polar(im, rmax, cenx, ceny):
 
 
 
+# def index_x(x_val, x_min, x_max, nx, wrap=False):
+    # '''Find the index of a value in an array between a maximum and minimum value.
+
+    # Arguments:
+        # x_val (): Value to be indexed
+        # x_min (): Minimum value in the range to index
+        # x_max (): Maximum value in the range to index
+        # nx (int): Number of bins in the range to index
+        # wrap (bool): If True, values in the last index will be placed in the 0th index.
+
+    # Returns:
+        # x_out (int): Index that x_val should be place within the range.
+    # '''
+
+    # dx = (x_max - x_min) / nx
+    # x_val = round(x_val, 14)
+
+
+    # if not wrap:
+        # x_out = (x_val - x_min) / dx
+        # if x_val == x_max:
+            # x_out = nx - 1
+    # else:
+        # if x_val <= x_min + dx / 2 or x_val >= x_max - dx / 2:
+            # x_out = 0
+
+        # else:
+            # x_out = index_x(x_val, x_min + dx / 2, x_max - dx / 2, nx - 1) + 1
+
+    # return int(x_out)
