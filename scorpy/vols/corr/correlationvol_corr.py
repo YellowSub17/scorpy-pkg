@@ -12,87 +12,63 @@ from ...utils.angle_between_funcs import *
 class CorrelationVolCorr:
 
 
+    print('SOMETHING IS WRONG IN THE CORRELATION AND YOU NEED TO FIX IT')
 
     @verbose_dec
-    def correlate_scat_rect(self, qxyzi, verbose=0):
+    def correlate_3D(self, xyz, I, meth='sum', verbose=0):
 
-        #magnitudes of the scattering list
-        qmags = np.linalg.norm(qxyzi[:,1:3], axis=1)
-
-        print(f'Removing vectors q>{self.qmax}.')
-        # only correlate less then qmax
-        le_qmax = np.where(qmags <= self.qmax)[0]
-        qxyzi = qxyzi[le_qmax]
-
-        print(f'Removing vectors q<{self.qmin}.')
-        # only correlate greater than qmin
-        ge_qmin = np.where(qmags >= self.qmin)[0]
-        qxyzi = qxyzi[ge_qmin]
-
-
-        print(f'Removing vectors I<=0.')
-        # only correlate intensity greater then 0
-        Igt0_loc = np.where(qxyzi[:,-1]>0)[0]
-        qxyzi = qxyzi[Igt0_loc]
-
-        #number of vectors
-        nvec = qxyzi.shape[0]
-        print(f'Remaining vectors {nvec}.')
-
-        xyz = qxyzi[:,1:3]
-        I = qxyzi[:,-1]
-
+        nvec = xyz.shape[0]
 
         norms = np.linalg.norm(xyz, axis=1)
         xyz_dot_xyz = xyz@xyz.T
 
+
         q1_sqr = np.outer(norms, np.ones(nvec))
         q2_sqr = np.outer(np.ones(nvec), norms)
+
         psi_sqr = xyz_dot_xyz/(q1_sqr*q2_sqr)
-        II_sqr = np.outer(I, I.T)
+
+        I_sqr = np.outer(I, I.T)
+
+
+        psi_sqr[np.where(psi_sqr > 1)] = 1
+        psi_sqr[np.where(psi_sqr < -1)] = -1
 
         if not self.cos_sample:
-            psi_sqr = np.acos(psi_sqr)
+            psi_sqr = np.arccos(psi_sqr)
+
+        if meth=='sum':
+            self.correlate_via_sum(q1_sqr, q2_sqr, psi_sqr, I_sqr, verbose=verbose-1)
+        else:
+            self.correlate_via_histdd(q1_sqr, q2_sqr, psi_sqr, I_sqr, verbose=verbose-1)
 
 
-        q1_flat = np.triu(q1_sqr, k=1).flatten()
-        q2_flat = np.triu(q2_sqr, k=1).flatten()
-        psi_flat= np.triu(psi_sqr, k=1).flatten()
-        II_flat= np.triu(II_sqr, k=1).flatten()
 
-        loc = np.where(q1_flat !=0)
 
-        q1_flat = q1_flat[loc]
-        q2_flat = q2_flat[loc]
-        psi_flat = psi_flat[loc]
-        II_flat = II_flat[loc]
+    @verbose_dec
+    def correlate_2D(self, q, t, I, meth='sum', verbose=0):
 
-        ite = np.ones(q1_flat.size)
+        nvec = q.shape[0]
 
-        q1_inds = list(map(index_x_nowrap, q1_flat, self.qmin*ite, self.qmax*ite, self.nq*ite))
-        q2_inds = list(map(index_x_nowrap, q2_flat, self.qmin*ite, self.qmax*ite, self.nq*ite))
-        psi_inds = list(map(index_x_nowrap, psi_flat, self.zmin*ite, self.zmax*ite, self.npsi*ite))
 
-        print(f'Filling q1 != q2')
-        for q1_ind, q2_ind, psi_ind, inten in zip(q1_inds, q2_inds, psi_inds, II_flat):
+        q1_sqr = np.outer(q, np.ones(nvec))
+        q2_sqr = np.outer(np.ones(nvec), q)
 
-            self.vol[q1_ind, q2_ind, psi_ind] += inten
-            self.vol[q2_ind, q1_ind, psi_ind] += inten
+        t1_sqr = np.outer(t, np.ones(nvec))
+        t2_sqr = np.outer(np.ones(nvec), t)
+        psi_sqr = np.abs( (t1_sqr - t2_sqr + np.pi) % (np.pi*2) - np.pi)
 
-        q1_diag = np.diag(q1_sqr)
-        q2_diag = np.diag(q2_sqr)
-        psi_diag = np.diag(psi_sqr)
-        II_diag = np.diag(II_sqr)
+        I_sqr = np.outer(I, I.T)
 
-        ite = np.ones(q1_diag.size)
+        if self.cos_sample:
+            psi_sqr = np.cos(psi_sqr)
+            psi_sqr[np.where(psi_sqr > 1)] = 1
+            psi_sqr[np.where(psi_sqr < -1)] = -1
 
-        q1_inds = list(map(index_x_nowrap, q1_diag, self.qmin*ite, self.qmax*ite, self.nq*ite))
-        q2_inds = list(map(index_x_nowrap, q2_diag, self.qmin*ite, self.qmax*ite, self.nq*ite))
-        psi_inds = list(map(index_x_nowrap, psi_diag, self.zmin*ite, self.zmax*ite, self.npsi*ite))
-
-        print(f'Filling q1 = q2')
-        for q1_ind, q2_ind, psi_ind, inten in zip(q1_inds, q2_inds, psi_inds, II_flat):
-            self.vol[q1_ind, q2_ind, psi_ind] += inten
+        if meth=='sum':
+            self.correlate_via_sum(q1_sqr, q2_sqr, psi_sqr, I_sqr, verbose=verbose-1)
+        else:
+            self.correlate_via_histdd(q1_sqr, q2_sqr, psi_sqr, I_sqr, verbose=verbose-1)
 
 
 
@@ -100,23 +76,90 @@ class CorrelationVolCorr:
 
 
 
+    @verbose_dec
+    def correlate_via_sum(self, q1_sqr, q2_sqr, psi_sqr, I_sqr, verbose=0):
+
+        q1_triu, q1_diag = self.get_triu_and_diag(q1_sqr)
+        q2_triu, q2_diag = self.get_triu_and_diag(q2_sqr)
+        psi_triu, psi_diag = self.get_triu_and_diag(psi_sqr)
+        I_triu, I_diag = self.get_triu_and_diag(I_sqr)
+
+        q1_inds, q2_inds, psi_inds = self.get_correlation_indices(q1_triu, q2_triu, psi_triu, verbose=verbose-1)
+
+        self.sum_into_vol(q1_inds, q2_inds, psi_inds, I_triu, sym=True, verbose=verbose-1)
+
+
+        q1_inds, q2_inds, psi_inds = self.get_correlation_indices(q1_diag, q2_diag, psi_diag, verbose=verbose-1)
+
+        self.sum_into_vol(q1_inds, q2_inds, psi_inds, I_diag, sym=False, verbose=verbose-1)
+
+
+
+    def correlate_via_histdd(self, q1_sqr, q2_sqr, psi_sqr, I_sqr, verbose=0):
+
+
+
+        q1q2psi_coords = np.array( [q1_sqr.flatten(), q2_sqr.flatten(), psi_sqr.flatten()]).T
+
+
+        corr, edges = np.histogramdd(q1q2psi_coords,
+                                    bins = (self.nq, self.nq, self.npsi),
+                                    range =[ (self.qmin, self.qmax),
+                                             (self.qmin, self.qmax),
+                                             (self.zmin, self.zmax)],
+                                    weights = I_sqr.flatten())
+        self.vol += corr
+
+    def get_triu_and_diag(self, sqr):
+
+        triu_flat = np.triu(sqr, k=1).flatten()
+        loc = np.where(triu_flat !=0)
+        triu_flat = triu_flat[loc]
+        diag = np.diag(sqr)
+
+        return triu_flat, diag
 
 
 
 
-    # @verbose_dec
-    # def correlate_scat_rect(self, qxyzi, verbose=0):
-        # '''
-        # scorpy.CorrelationVol.correlate_scat_pol():
-            # Correlate diffraction peaks in 3D rectilinear coordinates.
-        # Arguments:
-            # qxyzi : numpy.ndarray
-                # n by 4 array of n peaks to correlate. First 3 columns of array
-                # should be the reciprocal space coordinates of peaks (qx,qy,qz),
-                # and the last coloumn should be the intensity of the peak.
-        # '''
-        # qmags = np.linalg.norm(qxyzi[:, :3], axis=1)
-        # # only correlate less than qmax
+    @verbose_dec
+    def sum_into_vol(self, q1_inds, q2_inds, psi_inds, II, sym=False, verbose=0):
+
+        npts = len(q1_inds)
+        for i, (q1_ind, q2_ind, psi_ind, I) in enumerate(zip(q1_inds, q2_inds, psi_inds, II)):
+            print(f'{i}/{npts}', end='\r')
+            self.vol[q1_ind, q2_ind, psi_ind] += I
+            if sym:
+                self.vol[q2_ind, q1_ind, psi_ind] += I
+
+
+
+    @verbose_dec
+    def get_correlation_indices(self, q1_pts, q2_pts, psi_pts, verbose=0):
+
+        ite = np.ones(q1_pts.size)
+
+        q1_inds = list(map(index_x_nowrap, q1_pts, self.qmin*ite, self.qmax*ite, self.nq*ite))
+        q2_inds = list(map(index_x_nowrap, q2_pts, self.qmin*ite, self.qmax*ite, self.nq*ite))
+        psi_inds = list(map(index_x_nowrap, psi_pts, self.zmin*ite, self.zmax*ite, self.npsi*ite))
+
+        return q1_inds, q2_inds, psi_inds
+
+
+
+
+
+
+
+
+
+
+
+
+    @verbose_dec
+    def correlate_scat_rect(self, qxyzi, verbose=0):
+        qmags = np.linalg.norm(qxyzi[:, :3], axis=1)
+#         # only correlate less than qmax
         # le_qmax = np.where(qmags <= self.qmax)[0]
         # qxyzi = qxyzi[le_qmax]
         # qmags = qmags[le_qmax]
@@ -132,37 +175,37 @@ class CorrelationVolCorr:
         # qxyzi = qxyzi[Igt0_loc]
         # qmags = qmags[Igt0_loc]
 
-        # nscats = qxyzi.shape[0]
+        nscats = qxyzi.shape[0]
 
-        # # calculate q indices of every scattering vector
-        # ite = np.ones(nscats)
-        # q_inds = list(map(index_x_nowrap, qmags, self.qmin * ite, self.qmax * ite, self.nq * ite))
+        # calculate q indices of every scattering vector
+        ite = np.ones(nscats)
+        q_inds = list(map(index_x_nowrap, qmags, self.qmin * ite, self.qmax * ite, self.nq * ite))
 
-        # angle_between_fn = angle_between_rect_cos if self.cos_sample else angle_between_rect
-
-
+        angle_between_fn = angle_between_rect_cos if self.cos_sample else angle_between_rect
 
 
-        # for i, q1 in enumerate(qxyzi):
-            # print(f'Peak: {i+1}/{nscats}', end='\r')
 
-            # # get q index
-            # q1_ind = q_inds[i]
 
-            # for j, q2 in enumerate(qxyzi[i:]):
-                # # get q index
-                # q2_ind = q_inds[i + j]
+        for i, q1 in enumerate(qxyzi):
+            print(f'Peak: {i+1}/{nscats}', end='\r')
 
-                # # get the angle between vectors
-                # psi = angle_between_fn(q1[:3], q2[:3])
+            # get q index
+            q1_ind = q_inds[i]
 
-                # #calculate psi index for angle between vectors
-                # psi_ind = index_x_nowrap(psi, self.zmin, self.zmax, self.npsi)
+            for j, q2 in enumerate(qxyzi[i:]):
+                # get q index
+                q2_ind = q_inds[i + j]
 
-                # # fill the volume
-                # self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
-                # if j > 0:  # if not on diagonal
-                    # self.vol[q2_ind, q1_ind, psi_ind] += q1[-1] * q2[-1]
+                # get the angle between vectors
+                psi = angle_between_fn(q1[:3], q2[:3])
+
+                #calculate psi index for angle between vectors
+                psi_ind = index_x_nowrap(psi, self.zmin, self.zmax, self.npsi)
+
+                # fill the volume
+                self.vol[q1_ind, q2_ind, psi_ind] += q1[-1] * q2[-1]
+                if j > 0:  # if not on diagonal
+                    self.vol[q2_ind, q1_ind, psi_ind] += q1[-1] * q2[-1]
 
 
 

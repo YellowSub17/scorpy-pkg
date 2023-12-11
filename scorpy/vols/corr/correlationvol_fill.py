@@ -37,7 +37,7 @@ class CorrelationVolFill:
 
 
     @verbose_dec
-    def fill_from_cif(self, cif, method='scat_rect', verbose=0):
+    def fill_from_cif(self, cif, x=True, verbose=0):
         '''
         scorpy.CorrelationVol.fill_from_cif():
             Fill the CorrelationVol from a CifData object
@@ -49,26 +49,39 @@ class CorrelationVolFill:
                 to use the spherical or rectilinear coordinates of the CifData.
         '''
 
-        assert self.qmax >= cif.qmax, 'cif.qmax > corr.qmax'
-        assert method in ['scat_sph', 'scat_rect',  'scat_rect_mp' ], 'Invalid correlation method.'
-
-        nscats = cif.scat_rect.shape[0]
-
-        print('')
-        print('############')
-        print(f'Filling CorrelationVol from CifData via {method}.')
-        print(f'Correlating {nscats} vectors.')
-
+        print(f'Filling CorrelationVol from CifData.')
         print(f'Started: {time.asctime()}')
-        if method == 'scat_sph':
-            self.correlate_scat_sph(cif.scat_sph, verbose=verbose-1)
-        elif method == 'scat_rect':
-            self.correlate_scat_rect(cif.scat_rect, verbose=verbose-1)
-        elif method == 'scat_rect_mp':
-            self.correlate_scat_rect_mp(cif.scat_rect, verbose=verbose-1)
+
+
+        qxyzi = cif.scat_rect[:]
+        # qmags = cif.scat_sph[:,0]
+
+        # # only correlate less then qmax
+        # le_qmax_loc = np.where(qmags <= self.qmax)[0]
+        # qxyzi = qxyzi[le_qmax_loc]
+        # qmags = qmags[le_qmax_loc]
+
+        # # only correlate greater than qmin
+        # ge_qmin_loc = np.where(qmags >= self.qmin)[0]
+        # qxyzi = qxyzi[ge_qmin_loc]
+        # qmags = qmags[ge_qmin_loc]
+
+
+        # # only correlate intensity greater then 0
+        # Igt0_loc = np.where(qxyzi[:,-1]>0)[0]
+        # qxyzi = qxyzi[Igt0_loc]
+        # qmags = qmags[Igt0_loc]
+
+
+
+        print(f'Correlating {qxyzi.shape[0]} vectors.')
+
+        if x=='new':
+            self.correlate_3D(qxyzi[:,:-1], qxyzi[:,-1], verbose=verbose-1)
+        elif x=='old':
+            self.correlate_scat_rect(qxyzi, verbose=verbose-1)
+
         print(f'Finished: {time.asctime()}')
-        print('############')
-        print('')
 
 
 

@@ -10,7 +10,6 @@ from .correlationvol_plot import CorrelationVolPlot
 from .correlationvol_saveload import CorrelationVolSaveLoad
 from .correlationvol_fill import CorrelationVolFill
 from .correlationvol_corr import CorrelationVolCorr
-from .correlationvol_mpcorr import CorrelationVolMPCorr
 
 
 class CorrelationVol(BaseVol,               #Parent Vol Class
@@ -19,7 +18,6 @@ class CorrelationVol(BaseVol,               #Parent Vol Class
                      CorrelationVolPlot,    #Plotting
                      CorrelationVolFill,    #Fill from other objects
                      CorrelationVolCorr,     #Correlation scattering vectors
-                     CorrelationVolMPCorr     #Correlation scattering vectors
                     ):
 
 
