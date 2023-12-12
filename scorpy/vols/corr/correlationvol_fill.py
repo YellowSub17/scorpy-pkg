@@ -54,27 +54,27 @@ class CorrelationVolFill:
 
 
         qxyzi = cif.scat_rect[:]
-        # qmags = cif.scat_sph[:,0]
+        qmags = cif.scat_sph[:,0]
 
-        # # only correlate less then qmax
-        # le_qmax_loc = np.where(qmags <= self.qmax)[0]
-        # qxyzi = qxyzi[le_qmax_loc]
-        # qmags = qmags[le_qmax_loc]
+        # only correlate less then qmax
+        le_qmax_loc = np.where(qmags <= self.qmax)[0]
+        qxyzi = qxyzi[le_qmax_loc]
+        qmags = qmags[le_qmax_loc]
 
-        # # only correlate greater than qmin
-        # ge_qmin_loc = np.where(qmags >= self.qmin)[0]
-        # qxyzi = qxyzi[ge_qmin_loc]
-        # qmags = qmags[ge_qmin_loc]
-
-
-        # # only correlate intensity greater then 0
-        # Igt0_loc = np.where(qxyzi[:,-1]>0)[0]
-        # qxyzi = qxyzi[Igt0_loc]
-        # qmags = qmags[Igt0_loc]
+        # only correlate greater than qmin
+        ge_qmin_loc = np.where(qmags >= self.qmin)[0]
+        qxyzi = qxyzi[ge_qmin_loc]
+        qmags = qmags[ge_qmin_loc]
 
 
+        # only correlate intensity greater then 0
+        Igt0_loc = np.where(qxyzi[:,-1]>0)[0]
+        qxyzi = qxyzi[Igt0_loc]
+        qmags = qmags[Igt0_loc]
 
-        print(f'Correlating {qxyzi.shape[0]} vectors.')
+
+
+        # print(f'Correlating {qxyzi.shape[0]} vectors.')
 
         if x=='new':
             self.correlate_3D(qxyzi[:,:-1], qxyzi[:,-1], verbose=verbose-1)

@@ -12,7 +12,7 @@ from ...utils.angle_between_funcs import *
 class CorrelationVolCorr:
 
 
-    print('SOMETHING IS WRONG IN THE CORRELATION AND YOU NEED TO FIX IT')
+    # print('SOMETHING IS WRONG IN THE CORRELATION AND YOU NEED TO FIX IT')
 
     @verbose_dec
     def correlate_3D(self, xyz, I, meth='sum', verbose=0):
@@ -31,8 +31,9 @@ class CorrelationVolCorr:
         I_sqr = np.outer(I, I.T)
 
 
-        psi_sqr[np.where(psi_sqr > 1)] = 1
         psi_sqr[np.where(psi_sqr < -1)] = -1
+        psi_sqr[np.where(psi_sqr > 1)] = 1
+
 
         if not self.cos_sample:
             psi_sqr = np.arccos(psi_sqr)
@@ -90,7 +91,6 @@ class CorrelationVolCorr:
 
 
         q1_inds, q2_inds, psi_inds = self.get_correlation_indices(q1_diag, q2_diag, psi_diag, verbose=verbose-1)
-
         self.sum_into_vol(q1_inds, q2_inds, psi_inds, I_diag, sym=False, verbose=verbose-1)
 
 
@@ -113,7 +113,7 @@ class CorrelationVolCorr:
     def get_triu_and_diag(self, sqr):
 
         triu_flat = np.triu(sqr, k=1).flatten()
-        loc = np.where(triu_flat !=0)
+        loc = np.where(np.triu(np.ones(sqr.shape),k=1).flatten() !=0)
         triu_flat = triu_flat[loc]
         diag = np.diag(sqr)
 
@@ -123,14 +123,14 @@ class CorrelationVolCorr:
 
 
     @verbose_dec
-    def sum_into_vol(self, q1_inds, q2_inds, psi_inds, II, sym=False, verbose=0):
+    def sum_into_vol(self, q1_inds, q2_inds, psi_inds, IIs, sym=False, verbose=0):
 
         npts = len(q1_inds)
-        for i, (q1_ind, q2_ind, psi_ind, I) in enumerate(zip(q1_inds, q2_inds, psi_inds, II)):
-            print(f'{i}/{npts}', end='\r')
-            self.vol[q1_ind, q2_ind, psi_ind] += I
+        for i, (q1_ind, q2_ind, psi_ind, II) in enumerate(zip(q1_inds, q2_inds, psi_inds, IIs)):
+            # print(f'{i}/{npts}', end='\r')
+            self.vol[q1_ind, q2_ind, psi_ind] += II
             if sym:
-                self.vol[q2_ind, q1_ind, psi_ind] += I
+                self.vol[q2_ind, q1_ind, psi_ind] += II
 
 
 
