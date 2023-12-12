@@ -14,6 +14,7 @@ class BlqqVolSaveLoad:
     def _save_extra(self, f):
         f.write('[blqq]\n')
         f.write(f'qmax = {self.qmax}\n')
+        f.write(f'qmin = {self.qmin}\n')
         f.write(f'nq = {self.nq}\n')
         f.write(f'nl = {self.nl}\n')
         f.write(f'dq = {self.dq}\n')

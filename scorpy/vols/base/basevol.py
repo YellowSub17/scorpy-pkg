@@ -8,6 +8,7 @@ from .basevol_saveload import BaseVolSaveLoad
 from .basevol_plot import BaseVolPlot
 from .basevol_proc import BaseVolProc
 
+from ...utils.convert_funcs import index_x_nowrap, index_x_wrap
 
 
 
@@ -79,6 +80,30 @@ vol : numpy.ndarray
         v = copy.deepcopy(self)
         return v
 
+    def get_indices(self, pts, axis=0):
+
+        ite = np.ones(pts.size)
+        index_fn = index_x_wrap if self.wraps[axis] else index_x_nowrap
+
+        inds = list(map(index_fn, pts, self.mins[axis]*ite, self.maxs[axis]*ite, self.npts[axis]*ite ))
+
+        return inds
+
+
+
+    def sum_into_vol(self, x_inds, y_inds, z_inds, vals, sym=False, verbose=0):
+
+        npts = len(x_inds)
+        for i, (x_ind, y_ind, z_ind, val) in enumerate(zip(x_inds, y_inds, z_inds, vals)):
+            # print(f'{i}/{npts}', end='\r')
+            self.vol[x_ind, y_ind, z_ind] += val
+            if sym:
+                self.vol[x_ind, y_ind, z_ind] += val
+
+
+
+
+
     def crop(self, xi, yi, zi, xf, yf, zf):
 
         cropped_arr = self.vol[xi:xf, yi:yf, zi:zf]
@@ -102,7 +127,7 @@ vol : numpy.ndarray
         return new_vol
 
 
-    def cosinesim(v):
+    def cosinesim(self, v):
 
         assert (self.nx, self.ny, self.nz)==(v.nx, v.ny, v.nz), 'Vols not the same shape.'
         v1f, v2f = self.vol.flatten(), v.vol.flatten()
@@ -128,18 +153,6 @@ vol : numpy.ndarray
                 nx by ny by nz array of eigenvectors. yth column of the zth slice
                 of us is the eigen vector associated with the eigenvalue of the zth column in lams.
         '''
-        # if herm:
-            # dtype = np.float64
-            # eig_fn = np.linalg.eigh
-        # else:
-            # dtype = np.complex64
-            # eig_fn = np.linalg.eig
-
-        # if inc_odds:
-            # zskip=1
-        # else:
-            # zskip=2
-
         dtype, eig_fn = (  (np.float64, np.linalg.eigh) if herm else (np.complex64, np.linalg.eig) )
 
         zskip = 1 if inc_odds else 2

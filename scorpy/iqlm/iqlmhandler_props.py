@@ -21,6 +21,10 @@ class IqlmHandlerProps:
         return self._qmax
 
     @property
+    def qmin(self):
+        return self._qmin
+
+    @property
     def qpts(self):
         return np.linspace(0, self.qmax, self.nq + 1, endpoint=True)[:-1] + self.dq / 2
 
@@ -30,7 +34,7 @@ class IqlmHandlerProps:
 
     @property
     def dq(self):
-        return np.abs(self.qmax / self.nq)
+        return np.abs( (self.qmax-self.qmin) / self.nq)
 
     @property
     def vals(self):

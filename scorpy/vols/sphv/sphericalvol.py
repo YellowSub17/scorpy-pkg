@@ -24,19 +24,18 @@ class SphericalVol(BaseVol, SphericalVolProps, SphericalVolPlot, SphericalVolSav
          SphericalVol.fill_from_cif()
          SphericalVol.fill_from_scat_sph()
     """
-    def __init__(self, nq=100, ntheta=180, nphi=360, qmax=1, comp=False, path=None):
+    def __init__(self, nq=100, ntheta=180, nphi=360, qmax=1, qmin=0, comp=False, path=None):
 
         assert nphi == 2 * ntheta, 'nphi must be 2x ntheta for SphericalVol'
 
         self._nl = int(ntheta / 2)
 
 
-
         if path is not None:
             BaseVol.__init__(self, path=path)
         else:
             BaseVol.__init__(self, nx=nq, ny=ntheta, nz=nphi,
-                     xmin=0, ymin=0, zmin=0,
+                     xmin=qmin, ymin=0, zmin=0,
                      xmax=qmax, ymax=np.pi, zmax=2 * np.pi,
                      xwrap=False, ywrap=True, zwrap=True,
                      comp=comp, path=path)
@@ -44,6 +43,7 @@ class SphericalVol(BaseVol, SphericalVolProps, SphericalVolPlot, SphericalVolSav
     def _save_extra(self, f):
         f.write('[sphv]\n')
         f.write(f'qmax = {self.qmax}\n')
+        f.write(f'qmin = {self.qmin}\n')
         f.write(f'nq = {self.nq}\n')
         f.write(f'ntheta = {self.ntheta}\n')
         f.write(f'nphi = {self.nphi}\n')
@@ -68,7 +68,7 @@ class SphericalVol(BaseVol, SphericalVolProps, SphericalVolPlot, SphericalVolSav
         scat_sph = cif.scat_sph
         ite = np.ones(scat_sph[:, 0].shape)
 
-        q_inds = list(map(index_x_nowrap, scat_sph[:, 0], 0 * ite, self.qmax * ite, self.nq * ite))
+        q_inds = list(map(index_x_nowrap, scat_sph[:, 0], self.qmin * ite, self.qmax * ite, self.nq * ite))
         theta_inds = list(map(index_x_nowrap, scat_sph[:, 1], self.ymin * ite, self.ymax * ite, self.ny * ite))
         phi_inds = list(map(index_x_wrap, scat_sph[:, 2], self.zmin * ite, self.zmax * ite, self.nz * ite))
 
@@ -88,6 +88,7 @@ class SphericalVol(BaseVol, SphericalVolProps, SphericalVolPlot, SphericalVolSav
                 The IqlmHandler object to to fill the SphericalVol
         '''
         assert iqlm.qmax==self.qmax, 'IqlmHandler and SphericalVol have different qmax'
+        assert iqlm.qmin==self.qmin, 'IqlmHandler and SphericalVol have different qmin'
         assert iqlm.nl==self.nl, 'IqlmHandler and SphericalVol have different nl'
         assert iqlm.nq==self.nq, 'IqlmHandler and SphericalVol have different nq'
 

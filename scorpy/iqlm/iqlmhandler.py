@@ -9,10 +9,11 @@ from .iqlmhandler_plot import IqlmHandlerPlot
 
 class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
-    def __init__(self, nq, nl, qmax, inc_odds=True):
+    def __init__(self, nq, nl, qmax, qmin=0, inc_odds=True):
         self._nq = nq
         self._nl = nl
         self._qmax = qmax
+        self._qmin = qmin
         self._inc_odds = inc_odds
         self._vals = np.zeros( (self.nq, 2, self.nl, self.nl))
 

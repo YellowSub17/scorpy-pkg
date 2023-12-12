@@ -52,6 +52,18 @@ def convert_rect2pol(xy):
 
 
 
+def convert_sqr2triuanddiag(sqr):
+
+    triu_flat = np.triu(sqr, k=1).flatten()
+    loc = np.where(np.triu(np.ones(sqr.shape),k=1).flatten() !=0)
+    triu_flat = triu_flat[loc]
+    diag = np.diag(sqr)
+
+    return triu_flat, diag
+
+
+
+
 
 def convert_pol2rect(rphi):
     pass

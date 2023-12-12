@@ -37,20 +37,8 @@ class CorrelationVolFill:
 
 
     @verbose_dec
-    def fill_from_cif(self, cif, x=True, verbose=0):
-        '''
-        scorpy.CorrelationVol.fill_from_cif():
-            Fill the CorrelationVol from a CifData object
-        Arguments:
-            cif : scorpy.CifData
-                The CifData object to to fill the CorrelationVol
-            method : str
-                Method to fill the correlation volume. Either "scat_sph" or "scat_rect"
-                to use the spherical or rectilinear coordinates of the CifData.
-        '''
+    def fill_from_cif(self, cif, verbose=0):
 
-        print(f'Filling CorrelationVol from CifData.')
-        print(f'Started: {time.asctime()}')
 
 
         qxyzi = cif.scat_rect[:]
@@ -73,50 +61,47 @@ class CorrelationVolFill:
         qmags = qmags[Igt0_loc]
 
 
+        print(f'Filling CorrelationVol from CifData.')
+        print(f'Started: {time.asctime()}')
+        print(f'Correlating {qxyzi.shape[0]} vectors.')
 
-        # print(f'Correlating {qxyzi.shape[0]} vectors.')
-
-        if x=='new':
-            self.correlate_3D(qxyzi[:,:-1], qxyzi[:,-1], verbose=verbose-1)
-        elif x=='old':
-            self.correlate_scat_rect(qxyzi, verbose=verbose-1)
+        self.correlate_3D(qxyzi[:,:-1], qxyzi[:,-1], verbose=verbose-1)
 
         print(f'Finished: {time.asctime()}')
 
 
 
     @verbose_dec
-    def fill_from_peakdata(self, pk, method='scat_qpol', verbose=0):
-        '''
-        scorpy.CorrelationVol.fill_from_peakdata():
-            Fill the CorrelationVol from a PeakData object.
-        Arguments:
-            pk : scorpy.PeakData
-                The PeakData object to to fill the CorrelationVol
-            method : str
-                Method to fill the correlation volume. Either "scat_sph" or "scat_pol"
-                to use the spherical or polar coordinates of the PeakData.
-            verbose : bool
-                Flag for printing extra information to the screen while correlating.
-        '''
+    def fill_from_peakdata(self, pk, verbose=0):
 
-        # assert self.qmax >= pk.qmax, 'pk.qmax > corr.qmax'
-        assert method in ['scat_qpol', 'scat_sph'], 'Invalid correlation method.'
+        qti = pk.scat_qpol[:]
+        qmags = qti[:,0]
+
+        # only correlate less then qmax
+        le_qmax_loc = np.where(qmags <= self.qmax)[0]
+        qti = qti[le_qmax_loc]
+        qmags = qmags[le_qmax_loc]
+
+        # only correlate greater than qmin
+        ge_qmin_loc = np.where(qmags >= self.qmin)[0]
+        qti = qti[ge_qmin_loc]
+        qmags = qmags[ge_qmin_loc]
 
 
-        nscats = pk.scat_qpol.shape[0]
+        # only correlate intensity greater then 0
+        Igt0_loc = np.where(qti[:,-1]>0)[0]
+        qti = qti[Igt0_loc]
+        qmags = qmags[Igt0_loc]
 
-        print('############')
-        print(f'Filling CorrelationVol from Peakdata via {method}.')
-        print(f'Correlating {nscats} peaks.')
 
-        print(f'Started: {time.asctime()}\n')
-        if method=='scat_qpol':
-            self.correlate_scat_pol(pk.scat_qpol, verbose=verbose-1)
-        if method=='scat_sph':
-            self.correlate_scat_sph(pk.scat_sph, verbose=verbose-1)
+
+        print(f'Filling CorrelationVol from Peakdata.')
+        print(f'Started: {time.asctime()}')
+        print(f'Correlating {qti.shape[0]} peaks.')
+
+        self.correlate_2D(qti[:,0], qti[:,1], qti[:,2], verbose=verbose-1)
+
         print(f'Finished: {time.asctime()}')
-        print('############')
 
 
 

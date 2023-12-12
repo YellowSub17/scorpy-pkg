@@ -6,7 +6,7 @@ class BaseVolProps:
     @property
     def nx(self):
         '''
-	scorpy.Vol.nx:
+    scorpy.Vol.nx:
             Number of voxels in x-axis direction.
         '''
         return int(self._nx)
@@ -14,7 +14,7 @@ class BaseVolProps:
     @property
     def ny(self):
         '''
-	scorpy.Vol.ny:
+    scorpy.Vol.ny:
             Number of voxels in y-axis direction.
         '''
         return int(self._ny)
@@ -22,15 +22,21 @@ class BaseVolProps:
     @property
     def nz(self):
         '''
-	scorpy.Vol.nz:
+    scorpy.Vol.nz:
             Number of voxels in z-axis direction.
         '''
         return int(self._nz)
 
+
+    @property
+    def npts(self):
+        return (self.nx, self.ny, self.nz)
+
+
     @property
     def xmin(self):
         '''
-	scorpy.Vol.xmin:
+    scorpy.Vol.xmin:
             Minimum value of x-axis.
         '''
         return self._xmin
@@ -38,7 +44,7 @@ class BaseVolProps:
     @property
     def ymin(self):
         '''
-	scorpy.Vol.ymin:
+    scorpy.Vol.ymin:
             Minimum value of y-axis.
         '''
         return self._ymin
@@ -46,15 +52,21 @@ class BaseVolProps:
     @property
     def zmin(self):
         '''
-	scorpy.Vol.zmin:
+    scorpy.Vol.zmin:
             Minimum value of z-axis.
         '''
         return self._zmin
 
+
+    @property
+    def mins(self):
+        return (self.xmin, self.ymin, self.zmin)
+
+
     @property
     def xmax(self):
         '''
-	scorpy.Vol.xmax:
+    scorpy.Vol.xmax:
             Maximum value of x-axis.
         '''
         return self._xmax
@@ -62,7 +74,7 @@ class BaseVolProps:
     @property
     def ymax(self):
         '''
-	scorpy.Vol.ymax:
+    scorpy.Vol.ymax:
             Maximum value of y-axis.
         '''
         return self._ymax
@@ -70,15 +82,19 @@ class BaseVolProps:
     @property
     def zmax(self):
         '''
-	scorpy.Vol.zmax:
+    scorpy.Vol.zmax:
             Maximum value of z-axis.
         '''
         return self._zmax
 
     @property
+    def maxs(self):
+        return (self.xmax, self.ymax, self.zmax)
+
+    @property
     def xwrap(self):
         '''
-	scorpy.Vol.xwrap:
+    scorpy.Vol.xwrap:
             Describes if x-axis is periodic or not.
         '''
         return self._xwrap
@@ -86,7 +102,7 @@ class BaseVolProps:
     @property
     def ywrap(self):
         '''
-	scorpy.Vol.ywrap:
+    scorpy.Vol.ywrap:
             Describes if y-axis is periodic or not.
         '''
         return self._ywrap
@@ -94,15 +110,19 @@ class BaseVolProps:
     @property
     def zwrap(self):
         '''
-	scorpy.Vol.zwrap:
+    scorpy.Vol.zwrap:
             Describes if z-axis is periodic or not.
         '''
         return self._zwrap
 
     @property
+    def wraps(self):
+        return (self.xwrap, self.ywrap, self.zwrap)
+
+    @property
     def dx(self):
         '''
-	scorpy.Vol.dx:
+    scorpy.Vol.dx:
             Size of voxel in x-axis
         '''
         return np.abs((self.xmax - self.xmin) / (self.nx))
@@ -110,7 +130,7 @@ class BaseVolProps:
     @property
     def dy(self):
         '''
-	scorpy.Vol.dy:
+    scorpy.Vol.dy:
             Size of voxel in y-axis
         '''
         return np.abs((self.ymax - self.ymin) / (self.ny))
@@ -118,15 +138,19 @@ class BaseVolProps:
     @property
     def dz(self):
         '''
-	scorpy.Vol.dz:
+    scorpy.Vol.dz:
             Size of voxel in y-axis
         '''
         return np.abs((self.zmax - self.zmin) / (self.nz))
 
     @property
+    def ds(self):
+        return (self.dx, self.dy, self.dz)
+
+    @property
     def xpts(self):
         '''
-	scorpy.Vol.xpts:
+    scorpy.Vol.xpts:
             Array of sample points on the x-axis. Dependant on wrapping.
         '''
         if self.xwrap:
@@ -137,7 +161,7 @@ class BaseVolProps:
     @property
     def ypts(self):
         '''
-	scorpy.Vol.ypts:
+    scorpy.Vol.ypts:
             Array of sample points on the y-axis. Dependant on wrapping.
         '''
         if self.ywrap:
@@ -148,7 +172,7 @@ class BaseVolProps:
     @property
     def zpts(self):
         '''
-	scorpy.Vol.zpts:
+    scorpy.Vol.zpts:
             Array of sample points on the z-axis. Dependant on wrapping
         '''
         if self.zwrap:
@@ -159,7 +183,7 @@ class BaseVolProps:
     @property
     def comp(self):
         '''
-	scorpy.Vol.comp:
+    scorpy.Vol.comp:
             Describes dtype of volume, complex or real.
         '''
         return self._comp

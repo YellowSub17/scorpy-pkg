@@ -23,10 +23,10 @@ class BlqqVol(BaseVol, BlqqVolProps):
         BlqqVol.plot_q1q2()
     """
 
-    def __init__(self, nq=100, nl=90, qmax=1, inc_odds=True, path=None, comp=False):
+    def __init__(self, nq=100, nl=90, qmax=1, qmin=0, inc_odds=True, path=None, comp=False):
 
         BaseVol.__init__(self, nx=nq, ny=nq, nz=nl,
-                     xmin=0, ymin=0, zmin=0,
+                     xmin=qmin, ymin=qmin, zmin=0,
                      xmax=qmax, ymax=qmax, zmax=nl - 1,
                      xwrap=False, ywrap=False, zwrap=False,
                      comp=False, path=path)
@@ -55,6 +55,7 @@ class BlqqVol(BaseVol, BlqqVolProps):
 
         assert corr.nq == self.nq, 'CorrelationVol and BlqqVol have different nq'
         assert corr.qmax == self.qmax, 'CorrelationVol and BlqqVol have different qmax'
+        assert corr.qmin == self.qmin, 'CorrelationVol and BlqqVol have different qmin'
 
         print('')
         print('############')
@@ -116,6 +117,7 @@ class BlqqVol(BaseVol, BlqqVolProps):
         '''
         assert iqlm.nq == self.nq, 'IqlmHandler and BlqqVol have different nq'
         assert iqlm.qmax == self.qmax, 'IqlmHandler and BlqqVol have different qmax'
+        assert iqlm.qmin == self.qmin, 'IqlmHandler and BlqqVol have different qmin'
 
 
 

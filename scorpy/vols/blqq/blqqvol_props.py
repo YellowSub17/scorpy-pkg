@@ -5,7 +5,7 @@ class BlqqVolProps:
     @property
     def nq(self):
         '''
-	scorpy.BlqqVol.nx:
+    scorpy.BlqqVol.nx:
             Number of voxels in q-axis directions.
         '''
         return self.nx
@@ -13,7 +13,7 @@ class BlqqVolProps:
     @property
     def nl(self):
         '''
-	scorpy.BlqqVol.dq:
+    scorpy.BlqqVol.dq:
             Number of spherical harmonics.
         '''
         return self.nz
@@ -21,15 +21,25 @@ class BlqqVolProps:
     @property
     def qmax(self):
         '''
-	scorpy.BlqqVol.qmax:
+    scorpy.BlqqVol.qmax:
             Maximum value of q-axes.
         '''
         return self.xmax
 
     @property
+    def qmin(self):
+        '''
+    scorpy.BlqqVol.qmax:
+            Minimum value of q-axes.
+        '''
+        return self.xmin
+
+
+
+    @property
     def dq(self):
         '''
-	scorpy.BlqqVol.dq:
+    scorpy.BlqqVol.dq:
             Size of a voxel in q-axis
         '''
         return self.dx
@@ -37,7 +47,7 @@ class BlqqVolProps:
     @property
     def qpts(self):
         '''
-	scorpy.CorrelationVol.qpts:
+    scorpy.CorrelationVol.qpts:
             Array of sample points on the q-axis.
         '''
         return self.xpts
