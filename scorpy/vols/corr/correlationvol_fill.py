@@ -37,8 +37,7 @@ class CorrelationVolFill:
 
 
     @verbose_dec
-    def fill_from_cif(self, cif, verbose=0):
-
+    def fill_from_cif(self, cif, n_chunks=1, verbose=0):
 
 
         qxyzi = cif.scat_rect[:]
@@ -65,7 +64,7 @@ class CorrelationVolFill:
         print(f'Started: {time.asctime()}')
         print(f'Correlating {qxyzi.shape[0]} vectors.')
 
-        self.correlate_3D(qxyzi[:,:-1], qxyzi[:,-1], verbose=verbose-1)
+        self.correlate_3D(qxyzi[:,:-1], qxyzi[:,-1], n_chunks=n_chunks, verbose=verbose-1)
 
         print(f'Finished: {time.asctime()}')
 

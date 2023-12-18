@@ -8,7 +8,6 @@ import numba
 
 @numba.njit()
 def index_x_wrap(x_val, x_min, x_max, nx):
-
     dx2 = (x_max - x_min) / (2*nx)
     x_out2 =(x_val-x_min)/(dx2)
     x_out = ( int(0.5*(x_out2+1)) %6)
@@ -24,6 +23,40 @@ def index_x_nowrap(x_val, x_min, x_max, nx):
     dx = (x_max - x_min) / nx
     x_out = (x_val -x_min)/dx
     return int(x_out)
+
+
+def index_xs(x_vals, x_min, x_max, nx, wrap=False):
+    if wrap:
+
+        dx2 = (x_max -x_min)/ (2*nx)
+        x_out2 =(x_vals-x_min)/(dx2)
+
+        x_out =  (x_out2+1)*0.5
+        x_out = x_out.astype(int)%6
+        return x_out.astype(int)
+
+    else:
+
+        x_vals =np.maximum(x_vals, x_min)
+        x_vals =np.minimum(x_vals, x_max-1e-14)
+
+        x_vals = np.round(x_vals, 15)
+        dx = (x_max - x_min) / nx
+        x_out = (x_vals - x_min)/dx
+        return x_out.astype(int)
+
+
+# def index_xs_wrap(x_vals, x_min, x_max, nx):
+    # dx2 = (x_max -x_min)/ (2*nx)
+    # x_out2 =(x_vals-x_min)/(dx2)
+
+    # x_out =  (x_out2+1)*0.5
+    # x_out = x_out.astype(int)%6
+    # return x_out.astype(int)
+
+
+
+
 
 
 def convert_rect2sph(xyz):
@@ -52,14 +85,14 @@ def convert_rect2pol(xy):
 
 
 
-def convert_sqr2triuanddiag(sqr):
+def convert_sqr2trianddiag(sqr):
 
-    triu_flat = np.triu(sqr, k=1).flatten()
-    loc = np.where(np.triu(np.ones(sqr.shape),k=1).flatten() !=0)
-    triu_flat = triu_flat[loc]
+    tri_flat = np.tril(sqr, k=-1).flatten()
+    loc = np.where(np.tril(np.ones(sqr.shape),k=-1).flatten() !=0)
+    tri_flat = tri_flat[loc]
     diag = np.diag(sqr)
 
-    return triu_flat, diag
+    return tri_flat, diag
 
 
 

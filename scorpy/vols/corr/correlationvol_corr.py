@@ -3,49 +3,62 @@ import numpy as np
 
 
 
-from ...utils.convert_funcs import index_x_nowrap, convert_sqr2triuanddiag
+from ...utils.convert_funcs import index_x_nowrap, convert_sqr2trianddiag
 from ...utils.decorator_funcs import verbose_dec
 
 
 
 class CorrelationVolCorr:
 
-
-
     @verbose_dec
-    def correlate_3D(self, xyz, I, meth='sum', verbose=0):
+    def correlate_3D(self, xyz, I, n_chunks=1, verbose=0):
 
-        nvec = xyz.shape[0]
-
-        norms = np.linalg.norm(xyz, axis=1)
-        xyz_dot_xyz = xyz@xyz.T
+        xyz_q2s = np.array_split(xyz, n_chunks)
+        I_q2s = np.array_split(I, n_chunks)
 
 
-        q1_sqr = np.outer(norms, np.ones(nvec))
-        q2_sqr = np.outer(np.ones(nvec), norms)
+        q2_counter=0
+        for i_chunk,  (xyz_q2, I_q2) in enumerate(zip( xyz_q2s, I_q2s)):
 
-        psi_sqr = xyz_dot_xyz/(q1_sqr*q2_sqr)
+            if n_chunks>1:
+                print(f'Chunk: {i_chunk+1}/{n_chunks}')
 
-        I_sqr = np.outer(I, I.T)
-
-
-        psi_sqr[np.where(psi_sqr < -1)] = -1
-        psi_sqr[np.where(psi_sqr > 1)] = 1
+            xyz_q1 = xyz[q2_counter:]
+            I_q1 = I[q2_counter:]
 
 
-        if not self.cos_sample:
-            psi_sqr = np.arccos(psi_sqr)
+            nvec_q1 = xyz_q1.shape[0]
+            nvec_q2 = xyz_q2.shape[0]
+            q2_counter+= nvec_q2
 
-        if meth=='sum':
+
+
+
+            norms_q1 = np.linalg.norm(xyz_q1, axis=1)
+            norms_q2 = np.linalg.norm(xyz_q2, axis=1)
+
+            xyz_dot_xyz = xyz_q1@xyz_q2.T
+
+            q1_sqr = np.outer(norms_q1, np.ones(nvec_q2))
+            q2_sqr = np.outer(np.ones(nvec_q1), norms_q2)
+            psi_sqr = xyz_dot_xyz/(q1_sqr*q2_sqr)
+            I_sqr = np.outer(I_q1, I_q2)
+
+
+            psi_sqr[np.where(psi_sqr < -1)] = -1
+            psi_sqr[np.where(psi_sqr > 1)] = 1
+
+
+            if not self.cos_sample:
+                psi_sqr = np.arccos(psi_sqr)
+
             self.correlate_via_sum(q1_sqr, q2_sqr, psi_sqr, I_sqr, verbose=verbose-1)
-        else:
-            self.correlate_via_histdd(q1_sqr, q2_sqr, psi_sqr, I_sqr, verbose=verbose-1)
 
 
 
 
     @verbose_dec
-    def correlate_2D(self, q, t, I, meth='sum', verbose=0):
+    def correlate_2D(self, q, t, I, verbose=0):
 
         nvec = q.shape[0]
 
@@ -64,10 +77,7 @@ class CorrelationVolCorr:
             psi_sqr[np.where(psi_sqr > 1)] = 1
             psi_sqr[np.where(psi_sqr < -1)] = -1
 
-        if meth=='sum':
-            self.correlate_via_sum(q1_sqr, q2_sqr, psi_sqr, I_sqr, verbose=verbose-1)
-        else:
-            self.correlate_via_histdd(q1_sqr, q2_sqr, psi_sqr, I_sqr, verbose=verbose-1)
+        self.correlate_via_sum(q1_sqr, q2_sqr, psi_sqr, I_sqr, verbose=verbose-1)
 
 
 
@@ -78,26 +88,23 @@ class CorrelationVolCorr:
     @verbose_dec
     def correlate_via_sum(self, q1_sqr, q2_sqr, psi_sqr, I_sqr, verbose=0):
 
-        q1_triu, q1_diag = convert_sqr2triuanddiag(q1_sqr)
-        q2_triu, q2_diag = convert_sqr2triuanddiag(q2_sqr)
-        psi_triu, psi_diag = convert_sqr2triuanddiag(psi_sqr)
-        I_triu, I_diag = convert_sqr2triuanddiag(I_sqr)
-
-        # q1_inds, q2_inds, psi_inds = self.get_correlation_indices(q1_triu, q2_triu, psi_triu, verbose=verbose-1)
-
-        q1_inds = self.get_indices(q1_triu, axis=0)
-        q2_inds = self.get_indices(q2_triu, axis=1)
-        psi_inds = self.get_indices(psi_triu, axis=2)
-
-        self.sum_into_vol(q1_inds, q2_inds, psi_inds, I_triu, sym=True, verbose=verbose-1)
+        q1_tri, q1_diag = convert_sqr2trianddiag(q1_sqr)
+        q2_tri, q2_diag = convert_sqr2trianddiag(q2_sqr)
+        psi_tri, psi_diag = convert_sqr2trianddiag(psi_sqr)
+        I_tri, I_diag = convert_sqr2trianddiag(I_sqr)
 
 
-        # q1_inds, q2_inds, psi_inds = self.get_correlation_indices(q1_diag, q2_diag, psi_diag, verbose=verbose-1)
+        print('Generating indices.')
+        q1_inds_tri = self.get_indices(q1_tri, axis=0)
+        q2_inds_tri = self.get_indices(q2_tri, axis=1)
+        psi_inds_tri = self.get_indices(psi_tri, axis=2)
+        q1_inds_diag = self.get_indices(q1_diag, axis=0)
+        q2_inds_diag = self.get_indices(q2_diag, axis=1)
+        psi_inds_diag = self.get_indices(psi_diag, axis=2)
 
-        q1_inds = self.get_indices(q1_diag, axis=0)
-        q2_inds = self.get_indices(q2_diag, axis=1)
-        psi_inds = self.get_indices(psi_diag, axis=2)
-        self.sum_into_vol(q1_inds, q2_inds, psi_inds, I_diag, sym=False, verbose=verbose-1)
+
+        self.sum_into_vol(q1_inds_tri, q2_inds_tri, psi_inds_tri, I_tri, sym=True, verbose=verbose-1)
+        self.sum_into_vol(q1_inds_diag, q2_inds_diag, psi_inds_diag, I_diag, sym=False, verbose=verbose-1)
 
 
 
@@ -340,5 +347,33 @@ class CorrelationVolCorr:
                     # self.vol[j+i, i,:] += np.real(convolved_rows)
 
 
+
+
+    # @verbose_dec
+    # def correlate_3D(self, xyz, I, verbose=0):
+
+        # print(f'Not chunking.')
+
+        # nvec = xyz.shape[0]
+
+        # norms = np.linalg.norm(xyz, axis=1)
+        # xyz_dot_xyz = xyz@xyz.T
+
+
+        # q1_sqr = np.outer(norms, np.ones(nvec))
+        # q2_sqr = np.outer(np.ones(nvec), norms)
+        # psi_sqr = xyz_dot_xyz/(q1_sqr*q2_sqr)
+        # I_sqr = np.outer(I, I.T)
+
+
+        # psi_sqr[np.where(psi_sqr < -1)] = -1
+        # psi_sqr[np.where(psi_sqr > 1)] = 1
+
+
+        # if not self.cos_sample:
+            # psi_sqr = np.arccos(psi_sqr)
+
+
+        # self.correlate_via_sum(q1_sqr, q2_sqr, psi_sqr, I_sqr, verbose=verbose-1)
 
 

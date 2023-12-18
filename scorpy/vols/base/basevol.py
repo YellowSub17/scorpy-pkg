@@ -8,7 +8,7 @@ from .basevol_saveload import BaseVolSaveLoad
 from .basevol_plot import BaseVolPlot
 from .basevol_proc import BaseVolProc
 
-from ...utils.convert_funcs import index_x_nowrap, index_x_wrap
+from ...utils.convert_funcs import index_xs
 
 
 
@@ -82,10 +82,7 @@ vol : numpy.ndarray
 
     def get_indices(self, pts, axis=0):
 
-        ite = np.ones(pts.size)
-        index_fn = index_x_wrap if self.wraps[axis] else index_x_nowrap
-
-        inds = list(map(index_fn, pts, self.mins[axis]*ite, self.maxs[axis]*ite, self.npts[axis]*ite ))
+        inds = index_xs(pts, self.mins[axis], self.maxs[axis], self.npts[axis], self.wraps[axis])
 
         return inds
 
@@ -93,9 +90,9 @@ vol : numpy.ndarray
 
     def sum_into_vol(self, x_inds, y_inds, z_inds, vals, sym=False, verbose=0):
 
-        npts = len(x_inds)
+        print(f'Summing {len(x_inds)} points.')
         for i, (x_ind, y_ind, z_ind, val) in enumerate(zip(x_inds, y_inds, z_inds, vals)):
-            # print(f'{i}/{npts}', end='\r')
+            print(f'{i}', end='\r')
             self.vol[x_ind, y_ind, z_ind] += val
             if sym:
                 self.vol[x_ind, y_ind, z_ind] += val
@@ -138,7 +135,7 @@ vol : numpy.ndarray
 
     def get_eig(self, herm=False, inc_odds=True):
         '''
-	scorpy.Vol.get_eig():
+    scorpy.Vol.get_eig():
             Calcualte the eigenvectors and eigenvalues of the x and y axes.
         Arguments:
             herm : bool
@@ -241,7 +238,7 @@ vol : numpy.ndarray
 
     def ls_pts(self, thresh=0, inds=False):
         '''
-	scorpy.Vol.ls_pts():
+        scorpy.Vol.ls_pts():
             List the points of intensity in the volume above a treshold.
         Arguments:
             thresh : float
