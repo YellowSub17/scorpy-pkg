@@ -328,7 +328,7 @@ class CifData(CifDataProperties, CifDataSaveLoad):
         ite = np.ones( sph_qtp.shape[0])
         q_inds = list(map(index_x_nowrap, sph_qtp[:, 0], 0 * ite, sphv.qmax * ite, sphv.nq * ite))
         theta_inds = list(map(index_x_nowrap, sph_qtp[:, 1], sphv.ymin * ite, sphv.ymax * ite, sphv.ny * ite))
-        phi_inds = list(map(index_x_wrap, sph_qtp[:, 2], sphv.zmin * ite, sphv.zmax * ite, sphv.nz * ite, ite))
+        phi_inds = list(map(index_x_wrap, sph_qtp[:, 2], sphv.zmin * ite, sphv.zmax * ite, sphv.nz * ite))
 
 
         I = np.zeros(sph_qtp.shape[0])

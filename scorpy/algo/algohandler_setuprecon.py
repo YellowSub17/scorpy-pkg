@@ -33,7 +33,7 @@ class AlgoHandlerSetupRecon:
 
         if self.qmax is None:
             self.qmax = cif_targ.qmax
-        sphv_targ = SphericalVol(nq=self.nq, ntheta=self.nl*2, nphi=self.nl*4, qmax=self.qmax)
+        sphv_targ = SphericalVol(nq=self.nq, ntheta=self.nl*2, nphi=self.nl*4, qmax=self.qmax, qmin=self.qmin)
         sphv_targ.fill_from_cif(cif_targ)
         sphv_targ.save(self.cif_targ_path())
 
@@ -49,7 +49,7 @@ class AlgoHandlerSetupRecon:
         assert self.qmax is not None, "Cannot make support, qmax required"
 
         cif_supp = CifData(ciffname, rotk=self.rotk, rottheta=self.rottheta)
-        sphv_supp_tight = SphericalVol(nq=self.nq, ntheta=self.nl*2, nphi=self.nl*4, qmax=self.qmax)
+        sphv_supp_tight = SphericalVol(nq=self.nq, ntheta=self.nl*2, nphi=self.nl*4, qmax=self.qmax, qmin=self.qmin)
         sphv_supp_tight.vol+=1
         cif_supp.fill_from_sphv(sphv_supp_tight)
         sphv_supp_tight.vol*=0
@@ -140,9 +140,9 @@ class AlgoHandlerSetupRecon:
 
         cif_targ = CifData(f'{self.path}/{self.tag}_targ-sf.cif', qmax=self.qmax, rotk=self.rotk, rottheta=self.rottheta)
 
-        corr_data = CorrelationVol(self.nq, self.npsi, self.qmax)
+        corr_data = CorrelationVol(self.nq, self.npsi, self.qmax, self.qmin)
         corr_data.fill_from_cif(cif_targ, verbose=verbose-1)
-        blqq_data = BlqqVol(self.nq, self.nl, self.qmax)
+        blqq_data = BlqqVol(self.nq, self.nl, self.qmax, self.qmin)
         blqq_data.fill_from_corr(corr_data, rcond=self.pinv_rcond, verbose=verbose-1)
         blqq_data.vol[:,:,self.lcrop:] = 0
 

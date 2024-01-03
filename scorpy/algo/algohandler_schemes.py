@@ -43,7 +43,6 @@ class AlgoHandlerSchemes:
 
         sphv_f = self.sphv_iter.copy()
 
-
         err = np.linalg.norm(sphv_f.vol - sphv_i.vol)
         return sphv_i, sphv_f, err
 
@@ -72,7 +71,6 @@ class AlgoHandlerSchemes:
 
     def DM(self, beta=0.7, gamma_m=None, gamma_s=None, sphv_i=None):
         '''Difference Map'''
-
 
 
         if sphv_i is None:

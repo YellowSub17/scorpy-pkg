@@ -65,7 +65,7 @@ class AlgoHandlerRunRecon:
         self.supp_notloc = np.where(sphv_supp.vol == 0 )
 
         # save base
-        self.iqlm_base = IqlmHandler(self.nq, self.nl, self.qmax,self.qmin, True)
+        self.iqlm_base = IqlmHandler(self.nq, self.nl, self.qmax, self.qmin)
         self.sphv_base = SphericalVol(self.nq, self.nl*2, self.nl*4, self.qmax, self.qmin)
 
 
@@ -75,8 +75,6 @@ class AlgoHandlerRunRecon:
 
         print(f'Running Recon {self.tag}_{sub_tag}')
         print(f'Started: {time.asctime()}')
-
-
 
 
 

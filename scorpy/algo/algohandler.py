@@ -93,7 +93,7 @@ class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerPaths, Alg
         f.write('[algo]\n')
         f.write(f'nq = {self.nq}\n')
         f.write(f'qmax = {self.qmax}\n')
-        f.write(f'qmax = {self.qmin}\n')
+        f.write(f'qmin = {self.qmin}\n')
         f.write(f'npsi = {self.npsi}\n')
         f.write(f'nl = {self.nl}\n')
         f.write(f'lcrop = {self.lcrop}\n')

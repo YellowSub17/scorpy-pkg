@@ -23,7 +23,7 @@ class BlqqVol(BaseVol, BlqqVolProps):
         BlqqVol.plot_q1q2()
     """
 
-    def __init__(self, nq=100, nl=90, qmax=1, qmin=0, inc_odds=True, path=None, comp=False):
+    def __init__(self, nq=100, nl=90, qmax=1, qmin=0, path=None, comp=False):
 
         BaseVol.__init__(self, nx=nq, ny=nq, nz=nl,
                      xmin=qmin, ymin=qmin, zmin=0,
@@ -31,7 +31,6 @@ class BlqqVol(BaseVol, BlqqVolProps):
                      xwrap=False, ywrap=False, zwrap=False,
                      comp=False, path=path)
 
-        self._inc_odds = inc_odds
         self.plot_q1q2 = self.plot_xy
 
 
@@ -62,10 +61,6 @@ class BlqqVol(BaseVol, BlqqVolProps):
         print(f'Filling BlqqVol from CorrelationVol via Pseudo Matrix Inversion.')
         print(f'Started: {time.asctime()}')
 
-        if self.inc_odds:
-            lskip = 1
-        else:
-            lskip = 2
 
         ## legendre argument is -1 to 1
         if corr.cos_sample:
@@ -77,7 +72,7 @@ class BlqqVol(BaseVol, BlqqVolProps):
         fmat = np.zeros((corr.npsi, self.nl))
 
         # for every spherical harmonic
-        for l in range(0, self.nl, lskip):
+        for l in range(0, self.nl):
             leg_vals = special.eval_legendre(l, args)
             fmat[:, l] = leg_vals
 
@@ -128,8 +123,6 @@ class BlqqVol(BaseVol, BlqqVolProps):
 
                 multi = q1_coeffs * q2_coeffs
 
-                if not self.inc_odds:
-                    multi[:,1::2,:] =0
 
                 self.vol[i, j + i, :] = multi.sum(axis=0).sum(axis=1)[:self.nl]
                 if j > 0:
