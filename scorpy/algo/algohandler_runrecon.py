@@ -43,6 +43,7 @@ class AlgoHandlerRunRecon:
 
         assert blqq.nq == sphv_supp.nq == self.nq
         assert blqq.qmax == sphv_supp.qmax == self.qmax
+        assert blqq.qmin == sphv_supp.qmin == self.qmin
         assert blqq.nl*2 == sphv_supp.ntheta
         assert blqq.nl*4 == sphv_supp.nphi
         assert self.nl == blqq.nl
@@ -64,8 +65,8 @@ class AlgoHandlerRunRecon:
         self.supp_notloc = np.where(sphv_supp.vol == 0 )
 
         # save base
-        self.iqlm_base = IqlmHandler(self.nq, self.nl, self.qmax, True)
-        self.sphv_base = SphericalVol(self.nq, self.nl*2, self.nl*4, self.qmax)
+        self.iqlm_base = IqlmHandler(self.nq, self.nl, self.qmax,self.qmin, True)
+        self.sphv_base = SphericalVol(self.nq, self.nl*2, self.nl*4, self.qmax, self.qmin)
 
 
     @verbose_dec
@@ -108,13 +109,12 @@ class AlgoHandlerRunRecon:
             self.sphv_iter = sphv_init.copy()
         else:
             self.sphv_iter = self.sphv_base.copy()
-            self.sphv_iter.vol = 2*np.random.random(self.sphv_iter.vol.shape)-1
+            # self.sphv_iter.vol = 2*np.random.random(self.sphv_iter.vol.shape)-1
+            self.sphv_iter.vol = np.random.random(self.sphv_iter.vol.shape)
 
 
 
-
-
-        self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_init.dbin')
+        self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_init')
 
 
 

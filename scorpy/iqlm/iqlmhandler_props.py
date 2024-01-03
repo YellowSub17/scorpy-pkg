@@ -26,7 +26,7 @@ class IqlmHandlerProps:
 
     @property
     def qpts(self):
-        return np.linspace(0, self.qmax, self.nq + 1, endpoint=True)[:-1] + self.dq / 2
+        return np.linspace(self.qmin, self.qmax, self.nq + 1, endpoint=True)[:-1] + self.dq / 2
 
     @property
     def lpts(self):

@@ -31,7 +31,7 @@ class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerPaths, Alg
 
 
 
-    def __init__(self, tag, path, nq=256, qmax=None, npsi=360*32, nl=180, lcrop=45,
+    def __init__(self, tag, path, nq=256, qmax=None, qmin=None, npsi=360*32, nl=180, lcrop=45,
                  dxsupp=2, pinv_rcond=0.1, eig_rcond=1e-15, lossy_iqlm=True, lossy_sphv=True,
                  rotk=[1,1,1], rottheta=np.radians(30), overwrite=0):
 
@@ -41,6 +41,7 @@ class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerPaths, Alg
 
         self.nq = nq
         self.qmax = qmax
+        self.qmin = qmin
         self.npsi = npsi
         self.nl = nl
         self.lcrop = lcrop
@@ -92,6 +93,7 @@ class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerPaths, Alg
         f.write('[algo]\n')
         f.write(f'nq = {self.nq}\n')
         f.write(f'qmax = {self.qmax}\n')
+        f.write(f'qmax = {self.qmin}\n')
         f.write(f'npsi = {self.npsi}\n')
         f.write(f'nl = {self.nl}\n')
         f.write(f'lcrop = {self.lcrop}\n')
@@ -117,6 +119,12 @@ class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerPaths, Alg
             self.qmax = None
         else:
             self.qmax = float(config['algo']['qmax'])
+
+        qmin = config['algo']['qmin']
+        if qmin == "None":
+            self.qmin = None
+        else:
+            self.qmin = float(config['algo']['qmin'])
         self.npsi = int(config['algo']['npsi'])
         self.nl = int(config['algo']['nl'])
         self.lcrop = int(config['algo']['lcrop'])
