@@ -21,6 +21,7 @@ Use the following commands to set up a conda environment.
     conda install -c conda-forge scipy --yes
     conda install -c conda-forge scikit-image --yes
     conda install -c conda-forge regex --yes
+    conda install -c conda-forge numba --yes
 
 To setup auto reload in ipython.
 
