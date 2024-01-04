@@ -64,16 +64,37 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
         #initiailize new values
         new_vals = np.zeros( (self.nq, 2, self.nl, self.nl))
 
-        for n in range(self.nq):
-            for cs in range(0,2):
+        for cs in range(0,2):
+            for n in range(self.nq):
                 for l in range(0, self.nl):
-                    ulq = bl_u[:,n, l]
+                    unl_q = bl_u[:,n, l]
                     for m in range(l+1):
 
-                        i_q = self.vals[:,cs, l, m]
-                        x = np.dot(i_q, ulq)
+                        ilm_q = self.vals[:,cs, l, m]
+                        x = np.dot(ilm_q, unl_q)
 
                         new_vals[n, cs, l, m] = x
+        self.vals = new_vals
+
+    def calc_knlm2(self, bl_u):
+        '''
+        transform from the spherical harmonics iqlm to k-space coefficients knlm
+        '''
+        #initiailize new values
+        new_vals = np.zeros( (self.nq, 2, self.nl, self.nl))
+
+        for cs in range(0,2):
+            for n in range(self.nq):
+                for l in range(0, self.nl):
+                    ulq = bl_u[:,n, l]
+
+                    ulq_sqr = np.outer(ul)
+
+
+                    i_q = self.vals[:,cs, l, m]
+                    x = np.dot(i_q, ulq)
+
+                    new_vals[n, cs, l, m] = x
         self.vals = new_vals
 
 

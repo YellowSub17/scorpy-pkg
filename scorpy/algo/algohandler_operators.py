@@ -40,6 +40,130 @@ class AlgoHandlerOperators:
         return self.Ref_fn(self.Ps, gamma, sphv_i)
 
 
+    
+    def Pm_timed(self, sphv_i=None):
+
+        import time
+
+        times = []
+
+        times.append(time.time())
+        print('timed')
+
+        if sphv_i is None:
+            sphv_i = self.sphv_iter.copy()
+        else:
+            self.sphv_iter = sphv_i.copy()
+
+        times.append(time.time())
+        print('timed')
+
+
+        ##### Convert spherical coordinates to harmonic coeff.
+        self.iqlm_iter = self.iqlm_base.copy()
+        self.iqlm_iter.fill_from_sphv(self.sphv_iter)
+
+        times.append(time.time())
+        print('timed')
+
+        ##### get low pass filtered spherical coordinates
+        self.sphv_lm = self.sphv_base.copy()
+        self.sphv_lm.fill_from_iqlm(self.iqlm_iter)
+
+        times.append(time.time())
+        print('timed')
+
+        ##### difference lost between low pass filtered and original coords.
+        self.sphv_diff = self.sphv_base.copy()
+        self.sphv_diff.vol = self.sphv_iter.vol - self.sphv_lm.vol
+
+        times.append(time.time())
+        print('timed')
+
+        ##### Transform K[I_(q, l, m)]
+        self.knlm = self.iqlm_iter.copy()
+        self.knlm.calc_knlm(self.us)
+
+        times.append(time.time())
+        print('timed')
+
+        ##### Inverse Transform K-1[ K[ I(q, l, m)] ]
+        self.ikqlm = self.knlm.copy()
+        self.ikqlm.calc_iqlmp(self.us)
+
+        times.append(time.time())
+        print('timed')
+
+        ##### difference lost over K transformation
+        self.iqlm_diff = self.iqlm_base.copy()
+        self.iqlm_diff.vals = self.iqlm_iter.vals - self.ikqlm.vals
+
+        times.append(time.time())
+        print('timed')
+
+        ##### Calculate K' after modifered by lamda
+        self.knlmp = self.knlm.copy()
+        # print('RM ME: uncomment calc_knlmp')
+        self.knlmp.calc_knlmp(self.lams)
+
+        times.append(time.time())
+        print('timed')
+
+        ##### Inverse K' to I(q, l, m)
+        self.iqlmp = self.knlmp.copy()
+        self.iqlmp.calc_iqlmp(self.us)
+
+        times.append(time.time())
+        print('timed')
+
+        ##### Add in difference lost over K trasnformation
+        self.iqlm_add = self.iqlmp.copy()
+        if self.lossy_iqlm:
+            self.iqlm_add.vals += self.iqlm_diff.vals
+
+        times.append(time.time())
+        print('timed')
+
+
+        ##### calculate the spherical coordinates deom new harmonics
+        self.sphvp = self.sphv_base.copy()
+        self.sphvp.fill_from_iqlm(self.iqlm_add)
+
+        times.append(time.time())
+        print('timed')
+
+
+        ##### Add in difference lost over low pass filter 
+        self.sphv_add = self.sphvp.copy()
+        if self.lossy_sphv:
+            self.sphv_add.vol += self.sphv_diff.vol
+
+        times.append(time.time())
+        print('timed')
+
+        ##### replace iterating volume
+        self.sphv_iter = self.sphv_add.copy()
+
+        times.append(time.time())
+        print('timed')
+
+        ##### copy final output
+        sphv_f = self.sphv_iter.copy()
+
+        times.append(time.time())
+        print('timed')
+
+        err = np.linalg.norm(sphv_f.vol - sphv_i.vol)
+
+        times.append(time.time())
+        print('timed')
+
+        ##### retrun input and output
+        return sphv_i, sphv_f, err, times
+
+
+
+
 
 
 
