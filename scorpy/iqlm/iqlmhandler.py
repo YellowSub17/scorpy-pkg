@@ -56,45 +56,6 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
             self.vals[iq] = coeffs
 
 
-
-    def calc_knlm(self, bl_u):
-        '''
-        transform from the spherical harmonics iqlm to k-space coefficients knlm
-        '''
-        #initiailize new values
-        new_vals = np.zeros( (self.nq, 2, self.nl, self.nl))
-
-        for cs in range(0,2):
-            for n in range(self.nq):
-                for l in range(0, self.nl):
-                    unl_q = bl_u[:,n, l]
-                    for m in range(l+1):
-
-                        ilm_q = self.vals[:,cs, l, m]
-                        x = np.dot(ilm_q, unl_q)
-
-                        new_vals[n, cs, l, m] = x
-        self.vals = new_vals
-
-    def calc_iqlmp(self, bl_u):
-        '''
-        transform from k-space coefficients knlm to spherical harmonics iqlm
-        '''
-        #initiailize new values
-        new_vals = np.zeros( (self.nq, 2, self.nl, self.nl))
-
-        for q_ind in range(self.nq):
-            for cs in range(0,2):
-                for l in range(0, self.nl):
-                    ulq = bl_u[q_ind,  :,l]
-                    for m in range(l+1):
-                        kp = self.vals[:,cs,l,m]
-                        ku = np.dot(ulq, kp)
-
-                        new_vals[q_ind, cs, l, m] = ku
-        self.vals = new_vals
-
-
     def calc_knlmp(self, bl_l):
         '''
         calculate modified k-space coefficients knlm'
@@ -119,7 +80,7 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
 
 
-    def calc_knlm2(self, bl_u):
+    def calc_knlm(self, bl_u):
         '''
         transform from the spherical harmonics iqlm to k-space coefficients knlm
         '''
@@ -137,7 +98,10 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
         self.vals = new_vals
 
 
-    def calc_iqlmp2(self, bl_u):
+
+
+
+    def calc_iqlmp(self, bl_u):
         '''
         transform from k-space coefficients knlm to spherical harmonics iqlm
         '''
@@ -156,8 +120,6 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
                 #algorithms: phase retriaval of partial coherence 
                 #(harmonic m is " coherent modal" value 
-        # print("ned_0_count", "donk_0_count", "both_0_count")
-        # print(ned_0_count, donk_0_count, both_0_count)
 
 
 

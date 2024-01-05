@@ -1,3 +1,4 @@
+import itertools
 import numpy as np
 from scipy import special
 from skimage.transform import warp_polar
@@ -47,8 +48,90 @@ HM_NUMBER_DICT = {
     "C 1 2 1": 9,
     "F D 3 M": 499,
     "F M -3 M": 523,
+    "X": 9999999,
 }
 
+
+
+def fill_missing(reflections):
+
+    # max bragg index for hkl
+    h_max = np.max(np.abs(reflections[:,0]))
+    k_max = np.max(np.abs(reflections[:,1]))
+    l_max = np.max(np.abs(reflections[:,2]))
+
+    # ranges of hkl
+    h_ite = np.arange(-h_max, h_max+1)
+    k_ite = np.arange(-k_max, k_max+1)
+    l_ite = np.arange(-l_max, l_max+1)
+
+    #3D cube of bragg points 
+    all_bragg_hkl = np.array(list(itertools.product(h_ite, k_ite, l_ite)))
+    loc_000 = np.all(all_bragg_hkl == 0, axis=1)  # remove 000 reflection
+    all_bragg_hkl = all_bragg_hkl[~loc_000]
+
+
+    # init list of bragg reflections
+    filled_bragg = np.zeros( (all_bragg_hkl.shape[0], 4))
+    for i, bragg_pt in enumerate(all_bragg_hkl):    #for each bragg reflection
+        filled_bragg[i,:-1] = bragg_pt          #fill hkl
+        loc = np.where( (reflections[:,:-1]==bragg_pt).all(axis=1))[0] #find reflection in original list
+        if len(loc)==1: #if reflection is in the original list
+            filled_bragg[i,-1] = reflections[loc,-1] #add intensity of original list
+    return filled_bragg
+
+
+
+def apply_sym(reflections, spg_code):
+    # Look up the space group number of the cell
+
+    if spg_code in HM_NUMBER_DICT.keys():
+        HM_number = HM_NUMBER_DICT[spg_code.upper()]
+    else:
+        print('WARNING: Missing space group in scorpy.utils.sym_funcs.HM_NUMBER_DICT')
+        print(f'spg_code')
+        HM_number = -1
+
+    if HM_number == 1 or HM_number == 2:
+        total_sym_mat = friedel()
+    elif HM_number >= 3 and HM_number <= 107:
+        total_sym_mat = two_over_m()
+    elif HM_number >= 108 and HM_number <= 348:
+        total_sym_mat = mmm()
+    elif HM_number >= 349 and HM_number <= 365:
+        total_sym_mat = four_over_m()
+    elif HM_number >= 366 and HM_number <= 429:
+        total_sym_mat = four_over_mmm()
+    elif HM_number >= 430 and HM_number <= 437:
+        total_sym_mat = three_bar()
+    elif HM_number >= 438 and HM_number <= 461:
+        total_sym_mat = three_bar_m()
+    elif HM_number >= 462 and HM_number <= 470:
+        total_sym_mat = six_over_m()
+    elif HM_number >= 471 and HM_number <= 488:
+        total_sym_mat = six_over_mmm()
+    elif HM_number >= 489 and HM_number <= 502:
+        total_sym_mat = m_three()
+    elif HM_number >= 503 and HM_number <= 530:
+        total_sym_mat = m_three_m()
+    else:
+        total_sym_mat = identity() #In all other cases, don't apply symmetry
+
+    new_reflections = np.zeros((len(total_sym_mat) * len(reflections), 4))
+
+    for i, orig_reflection in enumerate(reflections):
+        for j, sym_op in enumerate(total_sym_mat):
+            new_reflection = np.matmul(sym_op, orig_reflection[:3].T)
+            new_reflections[len(reflections) * j + i, :3] = new_reflection
+            new_reflections[len(reflections) * j + i, 3] = orig_reflection[3]
+
+    # remove 000 reflections
+    loc_000 = np.all(new_reflections[:, :3] == 0, axis=1)
+    new_reflections = new_reflections[~loc_000]
+    # get unique reflections
+    new_reflections = np.unique(new_reflections, axis=0)
+
+    return new_reflections
 
 
 def identity():
@@ -291,51 +374,4 @@ def loop_generators(total_sym_mat, multiplicity, ops_ind):
     return total_sym_mat
 
 
-def apply_sym(reflections, spg_code):
-    # Look up the space group number of the cell
 
-    if spg_code in HM_NUMBER_DICT.keys():
-        HM_number = HM_NUMBER_DICT[spg_code.upper()]
-    else:
-        HM_number = -1
-
-    if HM_number == 1 or HM_number == 2:
-        total_sym_mat = friedel()
-    elif HM_number >= 3 and HM_number <= 107:
-        total_sym_mat = two_over_m()
-    elif HM_number >= 108 and HM_number <= 348:
-        total_sym_mat = mmm()
-    elif HM_number >= 349 and HM_number <= 365:
-        total_sym_mat = four_over_m()
-    elif HM_number >= 366 and HM_number <= 429:
-        total_sym_mat = four_over_mmm()
-    elif HM_number >= 430 and HM_number <= 437:
-        total_sym_mat = three_bar()
-    elif HM_number >= 438 and HM_number <= 461:
-        total_sym_mat = three_bar_m()
-    elif HM_number >= 462 and HM_number <= 470:
-        total_sym_mat = six_over_m()
-    elif HM_number >= 471 and HM_number <= 488:
-        total_sym_mat = six_over_mmm()
-    elif HM_number >= 489 and HM_number <= 502:
-        total_sym_mat = m_three()
-    elif HM_number >= 503 and HM_number <= 530:
-        total_sym_mat = m_three_m()
-    else:
-        total_sym_mat = identity()
-
-    new_reflections = np.zeros((len(total_sym_mat) * len(reflections), 4))
-
-    for i, orig_reflection in enumerate(reflections):
-        for j, sym_op in enumerate(total_sym_mat):
-            new_reflection = np.matmul(sym_op, orig_reflection[:3].T)
-            new_reflections[len(reflections) * j + i, :3] = new_reflection
-            new_reflections[len(reflections) * j + i, 3] = orig_reflection[3]
-
-    # remove 000 reflections
-    loc_000 = np.all(new_reflections[:, :3] == 0, axis=1)
-    new_reflections = new_reflections[~loc_000]
-    # get unique reflections
-    new_reflections = np.unique(new_reflections, axis=0)
-
-    return new_reflections
