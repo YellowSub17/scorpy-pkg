@@ -107,8 +107,8 @@ class AlgoHandlerRunRecon:
             self.sphv_iter = sphv_init.copy()
         else:
             self.sphv_iter = self.sphv_base.copy()
-            # self.sphv_iter.vol = 2*np.random.random(self.sphv_iter.vol.shape)-1
-            self.sphv_iter.vol = np.random.random(self.sphv_iter.vol.shape)
+            self.sphv_iter.vol = 2*np.random.random(self.sphv_iter.vol.shape)-1
+            # self.sphv_iter.vol = np.random.random(self.sphv_iter.vol.shape)
 
 
 

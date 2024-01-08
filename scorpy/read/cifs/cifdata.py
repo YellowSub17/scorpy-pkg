@@ -2,7 +2,6 @@
 import CifFile as pycif
 import numpy as np
 from ...utils.convert_funcs import index_x_wrap, index_x_nowrap, convert_rect2sph
-from ...utils.sym_funcs import apply_sym, fill_missing
 import itertools
 
 from .cifdata_props import CifDataProperties
@@ -94,74 +93,12 @@ class CifData(CifDataProperties, CifDataSaveLoad, CifDataFill):
 
 
 
+
+        self.calc_scat(cif_dict, sep)
+
+
+        self.crop_qmax(qmax)
+
+
         ### get bragg indices
-
-
-        h = np.array(cif_dict[f'_refln{sep}index_h']).astype(float).astype(np.int32)
-        k = np.array(cif_dict[f'_refln{sep}index_k']).astype(float).astype(np.int32)
-        l = np.array(cif_dict[f'_refln{sep}index_l']).astype(float).astype(np.int32)
-
-
-
-        inten_pow_dict = {f'_refln{sep}intensity_meas':1,
-                          f'_refln{sep}f_squared_meas':1,
-                          f'_refln{sep}f_meas_au':2}
-
-
-        inten_key = list(set(inten_pow_dict.keys()).intersection(cif_dict.keys()))[0]
-
-
-        I = np.array(cif_dict[inten_key])
-        I = I.astype(float)**inten_pow_dict[inten_key]
-
-        # asymetric reflection list
-        asym_refl = np.array([h, k, l, I]).T
-
-
-
-        sym_refl = apply_sym(asym_refl, self.spg)
-
-        if fill_peaks:
-            sym_refl = fill_missing(sym_refl)
-
-
-
-        #bragg points
-        self._scat_bragg = sym_refl
-
-
-        ##### Reciprocal Space Units
-        self._scat_rect = np.zeros(self.scat_bragg.shape)
-        self._scat_rect[:, :-1] = np.matmul(self.scat_bragg[:, :-1], np.array([self.ast, self.bst, self.cst]))
-        self._scat_rect[:, -1] = self.scat_bragg[:,-1]
-
-
-        ##### Spherical Coordinates
-        self._scat_sph = np.zeros(self.scat_rect.shape)
-        self._scat_sph[:, :-1] = convert_rect2sph(self.scat_rect[:,:3])
-        self._scat_sph[:, -1] = self.scat_bragg[:,-1]
-
-
-        inten_loc = np.where(self._scat_sph[:,-1] != 0)[0] #positions that have intensity
-        inten_qmax = self._scat_sph[inten_loc,0].max() #maximum q value of the positions with intensity
-
-
-        if qmax is None:
-            qmax = inten_qmax
-
-
-        loc = np.where(self.scat_sph[:, 0] <= qmax)
-        self._scat_rect = self._scat_rect[loc]
-        self._scat_bragg = self._scat_bragg[loc]
-        self._scat_sph = self._scat_sph[loc]
-
-
-        self._qmax = np.round(np.max(self.scat_sph[:,0]), 14)
-
-        self._scat_bragg = np.round(self.scat_bragg, 14)
-        self._scat_sph = np.round(self.scat_sph, 14)
-        self._scat_rect = np.round(self.scat_rect, 14)
-
-
-
 
