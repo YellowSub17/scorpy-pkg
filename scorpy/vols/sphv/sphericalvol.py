@@ -65,14 +65,21 @@ class SphericalVol(BaseVol, SphericalVolProps, SphericalVolPlot, SphericalVolSav
                 The CifData object to to fill the SphericalVol
         '''
         assert self.qmax >= cif.qmax, 'cif.qmax > sphv.qmax'
-        scat_sph = cif.scat_sph
-        ite = np.ones(scat_sph[:, 0].shape)
+        # scat_sph = cif.scat_sph
+        # ite = np.ones(scat_sph[:, 0].shape)
 
-        q_inds = list(map(index_x_nowrap, scat_sph[:, 0], self.qmin * ite, self.qmax * ite, self.nq * ite))
-        theta_inds = list(map(index_x_nowrap, scat_sph[:, 1], self.ymin * ite, self.ymax * ite, self.ny * ite))
-        phi_inds = list(map(index_x_wrap, scat_sph[:, 2], self.zmin * ite, self.zmax * ite, self.nz * ite))
+        # q_inds = list(map(index_x_nowrap, scat_sph[:, 0], self.qmin * ite, self.qmax * ite, self.nq * ite))
+        # theta_inds = list(map(index_x_nowrap, scat_sph[:, 1], self.ymin * ite, self.ymax * ite, self.ny * ite))
+        # phi_inds = list(map(index_x_wrap, scat_sph[:, 2], self.zmin * ite, self.zmax * ite, self.nz * ite))
 
-        intens = scat_sph[:, -1]
+        q_inds = self.get_indices(cif.scat_sph[:,0], axis=0)
+        theta_inds = self.get_indices(cif.scat_sph[:,1], axis=1)
+        phi_inds = self.get_indices(cif.scat_sph[:,2], axis=2)
+
+
+
+
+        intens = cif.scat_sph[:, -1]
         for q_ind, theta_ind, phi_ind, I in zip(q_inds, theta_inds, phi_inds, intens):
             self.vol[q_ind, theta_ind, phi_ind] += I
 

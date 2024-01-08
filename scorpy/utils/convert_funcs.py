@@ -32,7 +32,7 @@ def index_xs(x_vals, x_min, x_max, nx, wrap=False):
         x_out2 =(x_vals-x_min)/(dx2)
 
         x_out =  (x_out2+1)*0.5
-        x_out = x_out.astype(int)%6
+        x_out = x_out.astype(int)%nx
         return x_out.astype(int)
 
     else:
