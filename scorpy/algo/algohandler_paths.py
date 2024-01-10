@@ -30,6 +30,9 @@ class AlgoHandlerPaths:
     def cif_targ_path(self):
         return f'{self.path}/{self.tag}_targ-sf.cif'
 
+    def cif_supp_path(self):
+        return f'{self.path}/{self.tag}_supp-sf.cif'
+
 
 
 
@@ -49,6 +52,9 @@ class AlgoHandlerPaths:
 
     def hkls_path(self, sub_tag):
         return f'{self.path}/{sub_tag}/hkls'
+
+    def hkl_targ_path(self):
+        return f'{self.path}/{self.tag}.hkl'
 
     def hkl_count_path(self, sub_tag, count=-1):
         if count is None:

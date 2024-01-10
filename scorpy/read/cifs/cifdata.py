@@ -94,10 +94,8 @@ class CifData(CifDataProperties, CifDataSaveLoad, CifDataFill):
 
 
 
-        self.calc_scat(cif_dict, sep)
+        self.calc_scat(cif_dict, sep, qmax=qmax, fill_peaks=fill_peaks)
 
-
-        self.crop_qmax(qmax)
 
 
         ### get bragg indices

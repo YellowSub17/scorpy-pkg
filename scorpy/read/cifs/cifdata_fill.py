@@ -14,7 +14,7 @@ class CifDataFill:
 
 
 
-    def calc_scat(self, cif_dict, sep, fill_peaks=False ):
+    def calc_scat(self, cif_dict, sep, qmax=None, fill_peaks=False ):
 
 
         h = np.array(cif_dict[f'_refln{sep}index_h']).astype(float).astype(np.int32)
@@ -63,9 +63,6 @@ class CifDataFill:
 
 
 
-    def crop_qmax(self, qmax=None):
-
-
         inten_loc = np.where(self.scat_sph[:,-1] != 0)[0] #positions that have intensity
         inten_qmax = self.scat_sph[inten_loc,0].max() #maximum q value of the positions with intensity
 
@@ -103,7 +100,7 @@ class CifDataFill:
         cif_dict['_refln.index_l'] =  hklI[:,2]
         cif_dict['_refln.intensity_meas'] = hklI[:,-1]
 
-        self.calc_scat(cif_dict, sep='.', fill_peaks=False)
+        self.calc_scat(cif_dict, sep='.',qmax=qmax, fill_peaks=False)
 
 
 
@@ -132,7 +129,7 @@ class CifDataFill:
         cif_dict['_refln.index_l'] =  ls
         cif_dict['_refln.intensity_meas'] = Is
 
-        self.calc_scat(cif_dict, sep='.', fill_peaks=False)
+        self.calc_scat(cif_dict, sep='.',qmax=qmax, fill_peaks=False)
 
         # self._calc_scat(cif_dict, qmax=qmax, skip_sym=skip_sym, fill_peaks=fill_peaks)
 
@@ -156,7 +153,7 @@ class CifDataFill:
         cif_dict['_refln.intensity_meas'] = hklI[inten_loc[0],3]
 
 
-        self.calc_scat(cif_dict, sep='.', fill_peaks=False)
+        self.calc_scat(cif_dict, sep='.',qmax=qmax, fill_peaks=False)
 
         # hklI = np.genfromtxt(path, skip_header=3, skip_footer=1, usecols=(0,1,2,3))
         # cif_dict = {}
@@ -227,9 +224,11 @@ class CifDataFill:
         cif_dict['_refln.index_l'] =  bragg_xyz[:,2]
         cif_dict['_refln.intensity_meas'] = I
 
-        self.calc_scat(cif_dict, qmax=sphv.qmax, skip_sym=True, fill_peaks=False)
+        # self.calc_scat(cif_dict, qmax=sphv.qmax, skip_sym=True, fill_peaks=False)
 
 
+
+        self.calc_scat(cif_dict, '.',qmax=sphv.qmax, fill_peaks=False)
 
 
 

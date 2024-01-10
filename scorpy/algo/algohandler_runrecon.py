@@ -37,7 +37,7 @@ class AlgoHandlerRunRecon:
 
         supp_check1 = os.path.exists(self.sphv_supp_loose_path()+'.npy')
         supp_check2 = os.path.exists(self.sphv_supp_loose_path()+'.dbin')
-        assert supp_check1 or supp_check2, "Support SphericalVol not saved to algo folder"
+        assert supp_check1 or supp_check2, "Loose support SphericalVol not saved to algo folder"
         sphv_supp = SphericalVol(path=self.sphv_supp_loose_path())
 
 
@@ -74,7 +74,7 @@ class AlgoHandlerRunRecon:
 
 
         print(f'Running Recon {self.tag}_{sub_tag}')
-        print(f'Started: {time.asctime()}')
+        print(f'Started: {time.asctime()}'),[]
 
 
 
@@ -95,9 +95,11 @@ class AlgoHandlerRunRecon:
                 shutil.rmtree(f'{self.path}/{sub_tag}')
                 os.mkdir(f'{self.path}/{sub_tag}')
                 os.mkdir(f'{self.path}/{sub_tag}/hkls')
-            else:
-                print('Cancelling run.')
-                return
+        else:
+            print(f'Subtag {sub_tag} exists. Cancelling run.')
+            return
+
+
 
 
         shutil.copyfile(f'{recipe}', f'{self.path}/{sub_tag}/recipe_{self.tag}_{sub_tag}.txt')
@@ -112,7 +114,7 @@ class AlgoHandlerRunRecon:
 
 
 
-        self.sphv_iter.save(f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_init')
+        self.sphv_iter.save(self.sphv_init_path(sub_tag))
 
 
 
@@ -168,7 +170,7 @@ class AlgoHandlerRunRecon:
         sphv_integrated.integrate_peaks(sphv_supp_tight, self.dxsupp)
         sphv_integrated.save(self.sphv_final_path(sub_tag))
 
-        cif_integrated = CifData(self.cif_targ_path(), rotk=self.rotk, rottheta=self.rottheta)
+        cif_integrated = CifData(self.cif_supp_path(), rotk=self.rotk, rottheta=self.rottheta)
         cif_integrated.fill_from_sphv(sphv_integrated)
         cif_integrated.save(self.cif_final_path(sub_tag))
         cif_integrated.save_shelx_hkl(self.hkl_count_path(sub_tag, count=None))

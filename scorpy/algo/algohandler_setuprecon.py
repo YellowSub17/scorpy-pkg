@@ -28,13 +28,14 @@ class AlgoHandlerSetupRecon:
 
         cif_targ = CifData(ciffname, qmax=self.qmax, rotk=self.rotk, rottheta=self.rottheta)
         cif_targ.save(self.cif_targ_path())
+        cif_targ.save_shelx_hkl(self.hkl_targ_path())
 
         if self.qmax is None:
             self.qmax = cif_targ.qmax
+
         sphv_targ = SphericalVol(nq=self.nq, ntheta=self.nl*2, nphi=self.nl*4, qmax=self.qmax, qmin=self.qmin)
         sphv_targ.fill_from_cif(cif_targ)
-        sphv_targ.save(self.cif_targ_path())
-
+        sphv_targ.save(self.sphv_targ_path())
 
         self.save_params()
 
@@ -50,10 +51,10 @@ class AlgoHandlerSetupRecon:
         sphv_supp_tight = SphericalVol(nq=self.nq, ntheta=self.nl*2, nphi=self.nl*4, qmax=self.qmax, qmin=self.qmin)
         sphv_supp_tight.vol+=1
         cif_supp.fill_from_sphv(sphv_supp_tight)
+        cif_supp.save(self.cif_supp_path())
         sphv_supp_tight.vol*=0
         sphv_supp_tight.fill_from_cif(cif_supp)
 
-        # sphv_supp_tight.save(f'{self.path}/sphv_{self.tag}_supp_tight.dbin')
         sphv_supp_tight.save(self.sphv_supp_tight_path())
 
 
@@ -90,7 +91,7 @@ class AlgoHandlerSetupRecon:
     def make_data(self,  verbose=0, save_corr=True):
         print('Making Data')
 
-        cif_targ = CifData(f'{self.path}/{self.tag}_targ-sf.cif', qmax=self.qmax, rotk=self.rotk, rottheta=self.rottheta)
+        cif_targ = CifData(self.cif_targ_path(), qmax=self.qmax, rotk=self.rotk, rottheta=self.rottheta)
 
         corr_data = CorrelationVol(self.nq, self.npsi, self.qmax, self.qmin)
         corr_data.fill_from_cif(cif_targ, verbose=verbose-1)
