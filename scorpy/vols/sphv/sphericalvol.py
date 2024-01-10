@@ -65,12 +65,7 @@ class SphericalVol(BaseVol, SphericalVolProps, SphericalVolPlot, SphericalVolSav
                 The CifData object to to fill the SphericalVol
         '''
         assert self.qmax >= cif.qmax, 'cif.qmax > sphv.qmax'
-        # scat_sph = cif.scat_sph
-        # ite = np.ones(scat_sph[:, 0].shape)
 
-        # q_inds = list(map(index_x_nowrap, scat_sph[:, 0], self.qmin * ite, self.qmax * ite, self.nq * ite))
-        # theta_inds = list(map(index_x_nowrap, scat_sph[:, 1], self.ymin * ite, self.ymax * ite, self.ny * ite))
-        # phi_inds = list(map(index_x_wrap, scat_sph[:, 2], self.zmin * ite, self.zmax * ite, self.nz * ite))
 
         q_inds = self.get_indices(cif.scat_sph[:,0], axis=0)
         theta_inds = self.get_indices(cif.scat_sph[:,1], axis=1)

@@ -46,7 +46,7 @@ class AlgoHandlerSetupRecon:
 
         assert self.qmax is not None, "Cannot make support, qmax required"
 
-        cif_supp = CifData(ciffname, rotk=self.rotk, rottheta=self.rottheta)
+        cif_supp = CifData(ciffname, rotk=self.rotk, rottheta=self.rottheta, qmax=self.qmax)
         sphv_supp_tight = SphericalVol(nq=self.nq, ntheta=self.nl*2, nphi=self.nl*4, qmax=self.qmax, qmin=self.qmin)
         sphv_supp_tight.vol+=1
         cif_supp.fill_from_sphv(sphv_supp_tight)

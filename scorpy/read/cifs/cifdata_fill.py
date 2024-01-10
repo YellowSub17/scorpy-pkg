@@ -22,7 +22,6 @@ class CifDataFill:
         l = np.array(cif_dict[f'_refln{sep}index_l']).astype(float).astype(np.int32)
 
 
-
         inten_pow_dict = {f'_refln{sep}intensity_meas':1,
                           f'_refln{sep}f_squared_meas':1,
                           f'_refln{sep}f_meas_au':2}
@@ -228,7 +227,7 @@ class CifDataFill:
         cif_dict['_refln.index_l'] =  bragg_xyz[:,2]
         cif_dict['_refln.intensity_meas'] = I
 
-        # self._calc_scat(cif_dict, qmax=sphv.qmax, skip_sym=True, fill_peaks=False)
+        self.calc_scat(cif_dict, qmax=sphv.qmax, skip_sym=True, fill_peaks=False)
 
 
 

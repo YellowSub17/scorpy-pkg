@@ -146,7 +146,7 @@ class AlgoHandlerRunRecon:
 
         self.sphv_iter.save(self.sphv_iter_path(sub_tag))
         self.integrate_iter(sub_tag)
-        cif_integrated = CifData(self.cif_targ_path(), rotk=self.rotk, rottheta=self.rottheta)
+        # cif_integrated = CifData(self.cif_targ_path(), rotk=self.rotk, rottheta=self.rottheta)
 
 
 
