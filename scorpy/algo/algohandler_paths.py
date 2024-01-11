@@ -9,7 +9,7 @@ import os
 
 class AlgoHandlerPaths:
 
-    def params_path(self):
+    def algo_params_path(self):
         return f'{self.path}/algo_{self.tag}_params.txt'
 
     def sphv_supp_tight_path(self):
@@ -34,6 +34,8 @@ class AlgoHandlerPaths:
         return f'{self.path}/{self.tag}_supp-sf.cif'
 
 
+    def hkl_targ_path(self):
+        return f'{self.path}/{self.tag}_targ.hkl'
 
 
 
@@ -53,8 +55,6 @@ class AlgoHandlerPaths:
     def hkls_path(self, sub_tag):
         return f'{self.path}/{sub_tag}/hkls'
 
-    def hkl_targ_path(self):
-        return f'{self.path}/{self.tag}.hkl'
 
     def hkl_count_path(self, sub_tag, count=-1):
         if count is None:
@@ -72,9 +72,6 @@ class AlgoHandlerPaths:
         return f'{self.path}/{sub_tag}/{self.tag}_{sub_tag}_inten_rfs.npy'
     def rfs_shelx_path(self, sub_tag):
         return f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_shelx_rfs.npy'
-
-
-
 
 
 

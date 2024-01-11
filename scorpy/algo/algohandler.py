@@ -87,7 +87,7 @@ class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerPaths, Alg
 
 
     def save_params(self):
-        f = open(f'{self.params_path()}', 'w')
+        f = open(self.algo_params_path(), 'w')
         f.write('##Scorpy Algo Config File\n')
         f.write(f'## Created: {datetime.now().strftime("%Y/%m/%d %H:%M")}\n\n')
         f.write('[algo]\n')
@@ -110,7 +110,7 @@ class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerPaths, Alg
     def load_params(self):
 
         config = cfp.ConfigParser()
-        config.read(f'{self.params_path()}')
+        config.read(self.algo_params_path())
 
         self.nq = int(config['algo']['nq'])
 
