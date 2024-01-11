@@ -15,6 +15,7 @@ from .algohandler_paths import AlgoHandlerPaths
 from .algohandler_runrecon import AlgoHandlerRunRecon
 from .algohandler_setuprecon import AlgoHandlerSetupRecon
 from .algohandler_postrecon import AlgoHandlerPostRecon
+from .algohandler_shelx import AlgoHandlerShelx
 
 from ..vols.sphv.sphericalvol import SphericalVol
 from ..iqlm.iqlmhandler import IqlmHandler
@@ -26,7 +27,11 @@ import shutil
 # from pathlib import Path
 
 
-class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,AlgoHandlerPaths, AlgoHandlerRunRecon, AlgoHandlerSetupRecon, AlgoHandlerPostRecon, AlgoHandlerPlot):
+class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,
+                  AlgoHandlerPaths,
+                  AlgoHandlerRunRecon, AlgoHandlerSetupRecon, AlgoHandlerPostRecon,
+                  AlgoHandlerShelx,
+                  AlgoHandlerPlot):
 
 
 

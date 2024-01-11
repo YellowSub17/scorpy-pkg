@@ -61,17 +61,21 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
             self.vals[iq] = coeffs
 
 
-    def calc_knlmp(self, bl_l):
+    def calc_knlmp(self, bl_l, nl=None):
         '''
         calculate modified k-space coefficients knlm'
         '''
         #initiailize new values
+
+
         new_vals = np.zeros( (self.nq, 2, self.nl, self.nl))
 
+        if nl is None:
+            nl = self.nl
         
 
         for q_ind in range(self.nq):
-            for l in range(0, self.nl):
+            for l in range(0, nl):
 
                 ned = bl_l[q_ind,l]
 
@@ -87,15 +91,18 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
 
 
-    def calc_knlm(self, bl_u):
+    def calc_knlm(self, bl_u, nl=None):
         '''
         transform from the spherical harmonics iqlm to k-space coefficients knlm
         '''
         #initiailize new values
         new_vals = np.zeros( (self.nq, 2, self.nl, self.nl))
 
+        if nl is None:
+            nl=self.nl
+
         for cs in range(0,2):
-            for l in range(0, self.nl):
+            for l in range(0, nl):
                 ul_nq = bl_u[:,:, l]
                 for m in range(l+1 ):
                     ilm_q = self.vals[:,cs, l, m]
@@ -108,15 +115,18 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
 
 
-    def calc_iqlmp(self, bl_u):
+    def calc_iqlmp(self, bl_u, nl=None):
         '''
         transform from k-space coefficients knlm to spherical harmonics iqlm
         '''
         #initiailize new values
         new_vals = np.zeros( (self.nq, 2, self.nl, self.nl))
 
+        if nl is None:
+            nl=self.nl
+
         for cs in range(0,2):
-            for l in range(0, self.nl):
+            for l in range(0, nl):
                 ul_nq = bl_u[:, :,l]
                 for m in range(l+1):
                     kp = self.vals[:,cs,l,m]
