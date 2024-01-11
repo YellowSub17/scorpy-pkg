@@ -91,12 +91,19 @@ class SphericalVol(BaseVol, SphericalVolProps, SphericalVolPlot, SphericalVolSav
         '''
         assert iqlm.qmax==self.qmax, 'IqlmHandler and SphericalVol have different qmax'
         assert iqlm.qmin==self.qmin, 'IqlmHandler and SphericalVol have different qmin'
-        assert iqlm.nl==self.nl, 'IqlmHandler and SphericalVol have different nl'
         assert iqlm.nq==self.nq, 'IqlmHandler and SphericalVol have different nq'
 
-        for q_ind in range(self.nq):
-            coeffs = iqlm.vals[q_ind]
-            pysh_grid =pysh.shclasses.SHCoeffs.from_array(coeffs).expand()
+
+        if iqlm.nl<self.nl:
+            vals = np.zeros((self.nq, 2, self.nl, self.nl))
+            vals[:, :, :iqlm.nl, :iqlm.nl] = iqlm.vals
+        else:
+            vals = iqlm.vals[:,:,:self.nl, :self.nl]
+
+        for q_ind, q_coeffs in enumerate(vals):
+            # coeffs = iqlm.vals[q_ind, :, :self.nl, :self.nl]
+            # print(coeffs.shape)
+            pysh_grid =pysh.shclasses.SHCoeffs.from_array(q_coeffs).expand()
             self.vol[q_ind,...] = pysh_grid.to_array()[:-1,:-1]
 
 

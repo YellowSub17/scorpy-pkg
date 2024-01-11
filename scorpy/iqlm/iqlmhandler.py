@@ -49,9 +49,14 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
     def fill_from_sphv(self, sphv):
 
+
+        assert sphv.qmax==self.qmax, 'IqlmHandler and SphericalVol have different qmax'
+        assert sphv.qmin==self.qmin, 'IqlmHandler and SphericalVol have different qmin'
+        assert sphv.nq==self.nq, 'IqlmHandler and SphericalVol have different nq'
+
         for iq, q_slice in enumerate(sphv.vol):
             pysh_grid = pysh.shclasses.DHRealGrid(q_slice)
-            coeffs = pysh_grid.expand(csphase=1).coeffs
+            coeffs = pysh_grid.expand(csphase=1).coeffs[:, :self.nl, :self.nl]
 
             self.vals[iq] = coeffs
 
@@ -62,6 +67,8 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
         '''
         #initiailize new values
         new_vals = np.zeros( (self.nq, 2, self.nl, self.nl))
+
+        
 
         for q_ind in range(self.nq):
             for l in range(0, self.nl):
