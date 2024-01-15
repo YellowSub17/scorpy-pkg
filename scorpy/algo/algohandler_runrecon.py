@@ -33,6 +33,8 @@ class AlgoHandlerRunRecon:
         assert blqq_check1 or blqq_check2, "Data BlqqVol not saved to algo folder"
         blqq = BlqqVol(path=self.blqq_data_path())
 
+        blqq.vol = blqq.vol[:,:,:self.lcrop]
+
 
 
         supp_check1 = os.path.exists(self.sphv_supp_loose_path()+'.npy')

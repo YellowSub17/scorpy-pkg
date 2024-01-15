@@ -118,7 +118,7 @@ class BaseVolSaveLoad:
 
         elif fpath.suffix == '.npy':
 
-            coo_loc = np.where(self.vol>0)
+            coo_loc = np.where(self.vol != 0)
             # coo_arr = np.zeros( (coo_loc[0].shape[0], 4) )
             coo_arr = np.array( [ coo_loc[0], coo_loc[1], coo_loc[2], self.vol[coo_loc] ]).T
 

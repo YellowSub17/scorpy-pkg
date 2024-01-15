@@ -50,13 +50,10 @@ class AlgoHandlerPostRecon:
         It = np.array(scats[:n_scats])[:,-1]
         If = cif_final.scat_bragg[loc, -1]
 
-        # It = cif_targ.scat_bragg[:, -1]
-        # If = cif_targ.scat_bragg[:, -1]
-
-
-
 
         return It, If
+
+
 
 
 

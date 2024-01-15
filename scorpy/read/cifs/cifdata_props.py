@@ -1,4 +1,6 @@
 
+import numpy as np
+
 class CifDataProperties:
 
     @property
@@ -21,6 +23,10 @@ class CifDataProperties:
         Direct lattice vector c
         '''
         return self._c
+
+    @property
+    def inten_loc(self):
+        return np.where(self.scat_bragg[:,-1]>0)
     
     @property
     def a_mag(self):

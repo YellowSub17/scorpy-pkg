@@ -11,17 +11,17 @@ from ...utils.decorator_funcs import verbose_dec
 class CorrelationVolCorr:
 
     @verbose_dec
-    def correlate_3D(self, xyz, I, n_chunks=1, verbose=0):
+    def correlate_3D(self, xyz, I, nchunks=1, verbose=0):
 
-        xyz_q2s = np.array_split(xyz, n_chunks)
-        I_q2s = np.array_split(I, n_chunks)
+        xyz_q2s = np.array_split(xyz, nchunks)
+        I_q2s = np.array_split(I, nchunks)
 
 
         q2_counter=0
         for i_chunk,  (xyz_q2, I_q2) in enumerate(zip( xyz_q2s, I_q2s)):
 
-            if n_chunks>1:
-                print(f'Chunk: {i_chunk+1}/{n_chunks}')
+            if nchunks>1:
+                print(f'Chunk: {i_chunk+1}/{nchunks}')
 
             xyz_q1 = xyz[q2_counter:]
             I_q1 = I[q2_counter:]

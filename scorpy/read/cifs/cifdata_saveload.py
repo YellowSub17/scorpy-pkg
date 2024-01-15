@@ -36,10 +36,15 @@ class CifDataSaveLoad:
 
     def save_shelx_hkl(self, path):
 
-        self.scat_bragg[:,-1] /=np.max(self.scat_bragg[:,-1])
-        self.scat_bragg[:,-1] *=9999.99
+        
+        I_loc = np.where(self.scat_bragg[:,3]>=0)
+        hklI = self.scat_bragg[I_loc]
+
+        hklI[:,-1] /=np.max(hklI[:,-1])
+        hklI[:,-1] *=9999.99
         f = open(path, 'w')
-        for bragg_pt in self.scat_bragg:
+        for bragg_pt in hklI:
+
 
             line = '%4d%4d%4d%8.2f%8.2f\n' % (round(bragg_pt[0]), round(bragg_pt[1]), round(bragg_pt[2]), bragg_pt[3], 0)
 
@@ -56,8 +61,10 @@ class CifDataSaveLoad:
         f.write('Symmetry: 1\n')
         f.write('\th\tk\tl\tI\tphase\tsigma(I)\tnmeas\n')
 
+        I_loc = np.where(self.scat_bragg[:,3]>=0)
+        hklI = self.scat_bragg[I_loc]
 
-        for bragg_pt in self.scat_bragg:
+        for bragg_pt in hklI:
 
             line = f'\t{int(bragg_pt[0])}\t{int(bragg_pt[1])}\t{int(bragg_pt[2])}\t{round(bragg_pt[3],16)}\t-\t0.0\t1\n'
 

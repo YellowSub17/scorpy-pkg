@@ -53,33 +53,6 @@ HM_NUMBER_DICT = {
 
 
 
-def fill_missing(reflections):
-
-    # max bragg index for hkl
-    h_max = np.max(np.abs(reflections[:,0]))
-    k_max = np.max(np.abs(reflections[:,1]))
-    l_max = np.max(np.abs(reflections[:,2]))
-
-    # ranges of hkl
-    h_ite = np.arange(-h_max, h_max+1)
-    k_ite = np.arange(-k_max, k_max+1)
-    l_ite = np.arange(-l_max, l_max+1)
-
-    #3D cube of bragg points 
-    all_bragg_hkl = np.array(list(itertools.product(h_ite, k_ite, l_ite)))
-    loc_000 = np.all(all_bragg_hkl == 0, axis=1)  # remove 000 reflection
-    all_bragg_hkl = all_bragg_hkl[~loc_000]
-
-
-    # init list of bragg reflections
-    filled_bragg = np.zeros( (all_bragg_hkl.shape[0], 4))
-    for i, bragg_pt in enumerate(all_bragg_hkl):    #for each bragg reflection
-        filled_bragg[i,:-1] = bragg_pt          #fill hkl
-        loc = np.where( (reflections[:,:-1]==bragg_pt).all(axis=1))[0] #find reflection in original list
-        if len(loc)==1: #if reflection is in the original list
-            filled_bragg[i,-1] = reflections[loc,-1] #add intensity of original list
-    return filled_bragg
-
 
 
 def apply_sym(reflections, spg_code):

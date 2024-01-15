@@ -1,4 +1,5 @@
 
+import numpy as np
 
 from ...utils.baseplot import BasePlot
 
@@ -18,13 +19,19 @@ class BaseVolPlot(BasePlot):
 
 
 
-    def plot_sumax(self, axis, **new_kwargs):
+    def plot_sumax(self, axis,nansum=False, **new_kwargs):
         '''Sum the values through an axis and plot the image.
         Arguments:
             axis : int
                 Axis through which to integrate through.
         '''
-        im = self.vol.sum(axis=axis)
+
+        if nansum:
+            im = np.nansum(self.vol, axis=axis)
+        else:
+            if np.isnan(self.vol).any():
+                print('plot_sumax: warning, nan is in vol')
+            im = np.sum(self.vol, axis=axis)
 
 
         if 'extent' not in new_kwargs.keys():

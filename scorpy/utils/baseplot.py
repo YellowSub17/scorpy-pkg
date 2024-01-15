@@ -54,6 +54,7 @@ class BasePlot:
                     'save':None,
                     'xticks': True,
                     'yticks': True,
+                    'nanval': None,
                 }
 
         kwargs.update(new_kwargs)
@@ -64,6 +65,8 @@ class BasePlot:
             kwargs['fig'] = plt.figure()
             kwargs['axes'] = plt.gca()
 
+        if kwargs['nanval'] is not None:
+            im[np.isnan(im)] = kwargs['nanval']
         #Preprocessing: log intensity scale
         if kwargs['log']:
             im = np.log10(np.abs(im)+1)

@@ -82,6 +82,7 @@ class SphericalVol(BaseVol, SphericalVolProps, SphericalVolPlot, SphericalVolSav
 
 
 
+
     def fill_from_iqlm(self, iqlm):
         '''scorpy.SphericalVol.fill_from_iqlm():
         Fill the SphericalVol from a IqlmHandler object

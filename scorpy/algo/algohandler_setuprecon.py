@@ -22,41 +22,44 @@ class AlgoHandlerSetupRecon:
 
 
     @verbose_dec
-    def make_target(self, ciffname, verbose=0):
+    def save_targets(self, cif_fname, verbose=0):
 
-        print('Making Target')
+        print('Saving Targets')
 
-        cif_targ = CifData(ciffname, qmax=self.qmax, rotk=self.rotk, rottheta=self.rottheta)
+        cif_targ = CifData(path=cif_fname,qmax=self.qmax, fill_missing=True, rotk=self.rotk, rottheta=self.rottheta)
         cif_targ.save(self.cif_targ_path())
-        cif_targ.save_shelx_hkl(self.hkl_targ_path())
+        # cif_targ.save_shelx_hkl(self.hkl_targ_path())
 
-        if self.qmax is None:
-            self.qmax = cif_targ.qmax
+        # cif_targ = CifData(path=self.cif_targ_path(), rotk=self.rotk, rottheta=self.rottheta)
+
 
         sphv_targ = SphericalVol(nq=self.nq, ntheta=self.nl*2, nphi=self.nl*4, qmax=self.qmax, qmin=self.qmin)
         sphv_targ.fill_from_cif(cif_targ)
         sphv_targ.save(self.sphv_targ_path())
 
-        self.save_params()
+
+
 
 
 
     @verbose_dec
-    def make_support(self, ciffname, verbose=0):
+    def make_support(self, verbose=0):
         print('Making Support')
 
-        assert self.qmax is not None, "Cannot make support, qmax required"
+        cif_supp = CifData(path=self.cif_targ_path(),  rotk=self.rotk, rottheta=self.rottheta)
+        cif_supp.make_support()
 
-        cif_supp = CifData(ciffname, rotk=self.rotk, rottheta=self.rottheta, qmax=self.qmax)
-        sphv_supp_tight = SphericalVol(nq=self.nq, ntheta=self.nl*2, nphi=self.nl*4, qmax=self.qmax, qmin=self.qmin)
-        sphv_supp_tight.vol+=1
-        cif_supp.fill_from_sphv(sphv_supp_tight)
         cif_supp.save(self.cif_supp_path())
-        sphv_supp_tight.vol*=0
+
+
+        sphv_supp_tight = SphericalVol(nq=self.nq, ntheta=self.nl*2, nphi=self.nl*4, qmax=self.qmax, qmin=self.qmin)
         sphv_supp_tight.fill_from_cif(cif_supp)
 
-        sphv_supp_tight.save(self.sphv_supp_tight_path())
+        tight_overlaps = np.where(sphv_supp_tight.vol>1)
+        if len(tight_overlaps[0])>0:
+            print('OVERLAP IN TIGHT SUPPORT')
 
+        sphv_supp_tight.save(self.sphv_supp_tight_path())
 
         sphv_supp_loose = sphv_supp_tight.copy()
         sphv_supp_loose.vol *=0
@@ -76,9 +79,14 @@ class AlgoHandlerSetupRecon:
                 sphv_supp_loose.vol[xul[0]:xul[1], yul[0]:yul[1], zul[0]:] += 1
                 sphv_supp_loose.vol[xul[0]:xul[1], yul[0]:yul[1], 0:zul[1]] += 1
 
-        overlaps = np.where(sphv_supp_loose.vol>1)
-        if len(overlaps[0])>0:
-            print('OVERLAP IN SUPPORT')
+        # overlaps = np.where(sphv_supp_loose.vol>1)
+        # if len(overlaps[0])>0:
+            # print('OVERLAP IN SUPPORT')
+
+
+        loose_overlaps = np.where(sphv_supp_loose.vol>1)
+        if len(loose_overlaps[0])>0:
+            print('OVERLAP IN LOOSE SUPPORT')
 
 
         sphv_supp_loose.save(self.sphv_supp_loose_path())
@@ -88,16 +96,16 @@ class AlgoHandlerSetupRecon:
 
 
     @verbose_dec
-    def make_data(self,  verbose=0, save_corr=True):
+    def make_data(self,  verbose=0, save_corr=True, corr_nchunks=1):
         print('Making Data')
 
-        cif_targ = CifData(self.cif_targ_path(), qmax=self.qmax, rotk=self.rotk, rottheta=self.rottheta)
+        cif_targ = CifData(path=self.cif_targ_path(),  rotk=self.rotk, rottheta=self.rottheta)
 
         corr_data = CorrelationVol(self.nq, self.npsi, self.qmax, self.qmin)
-        corr_data.fill_from_cif(cif_targ, verbose=verbose-1)
+        corr_data.fill_from_cif(cif_targ, nchunks=corr_nchunks, verbose=verbose-1)
         blqq_data = BlqqVol(self.nq, self.nl, self.qmax, self.qmin)
         blqq_data.fill_from_corr(corr_data, rcond=self.pinv_rcond, verbose=verbose-1)
-        blqq_data.vol[:,:,self.lcrop:] = 0
+        # blqq_data.vol[:,:,self.lcrop:] = 0
 
         blqq_data.save(self.blqq_data_path())
 
