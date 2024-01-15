@@ -33,7 +33,7 @@ class AlgoHandlerRunRecon:
         assert blqq_check1 or blqq_check2, "Data BlqqVol not saved to algo folder"
         blqq = BlqqVol(path=self.blqq_data_path())
 
-        blqq.vol = blqq.vol[:,:,:self.lcrop]
+        blqq.vol[:,:,self.lcrop:] = 0
 
 
 
@@ -172,7 +172,7 @@ class AlgoHandlerRunRecon:
         sphv_integrated.integrate_peaks(sphv_supp_tight, self.dxsupp)
         sphv_integrated.save(self.sphv_final_path(sub_tag))
 
-        cif_integrated = CifData(self.cif_supp_path(), rotk=self.rotk, rottheta=self.rottheta)
+        cif_integrated = CifData(path=self.cif_supp_path(), rotk=self.rotk, rottheta=self.rottheta)
         cif_integrated.fill_from_sphv(sphv_integrated)
         cif_integrated.save(self.cif_final_path(sub_tag))
         cif_integrated.save_shelx_hkl(self.hkl_count_path(sub_tag, count=None))

@@ -79,10 +79,6 @@ class AlgoHandlerSetupRecon:
                 sphv_supp_loose.vol[xul[0]:xul[1], yul[0]:yul[1], zul[0]:] += 1
                 sphv_supp_loose.vol[xul[0]:xul[1], yul[0]:yul[1], 0:zul[1]] += 1
 
-        # overlaps = np.where(sphv_supp_loose.vol>1)
-        # if len(overlaps[0])>0:
-            # print('OVERLAP IN SUPPORT')
-
 
         loose_overlaps = np.where(sphv_supp_loose.vol>1)
         if len(loose_overlaps[0])>0:
