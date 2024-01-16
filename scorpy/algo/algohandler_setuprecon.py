@@ -22,13 +22,15 @@ class AlgoHandlerSetupRecon:
 
 
     @verbose_dec
-    def save_targets(self, cif_fname, verbose=0):
+    def make_targets(self, cif_fname, verbose=0):
 
         print('Saving Targets')
 
+
+        assert os.path.exists(cif_fname), "Cannot save targe, cif doesn't exist."
         cif_targ = CifData(path=cif_fname,qmax=self.qmax, fill_missing=True, rotk=self.rotk, rottheta=self.rottheta)
         cif_targ.save(self.cif_targ_path())
-        # cif_targ.save_shelx_hkl(self.hkl_targ_path())
+        cif_targ.save_shelx_hkl(self.hkl_targ_path())
 
         # cif_targ = CifData(path=self.cif_targ_path(), rotk=self.rotk, rottheta=self.rottheta)
 
@@ -43,8 +45,10 @@ class AlgoHandlerSetupRecon:
 
 
     @verbose_dec
-    def make_support(self, verbose=0):
+    def make_support_from_target(self, verbose=0):
         print('Making Support')
+
+        assert os.path.exists(self.cif_targ_path()), "Cannot make support from target if target cif doesn't exist."
 
         cif_supp = CifData(path=self.cif_targ_path(),  rotk=self.rotk, rottheta=self.rottheta)
         cif_supp.make_support()
@@ -92,16 +96,16 @@ class AlgoHandlerSetupRecon:
 
 
     @verbose_dec
-    def make_data(self,  verbose=0, save_corr=True, corr_nchunks=1):
+    def make_data_from_target(self,  verbose=0, save_corr=True, corr_nchunks=1):
         print('Making Data')
 
+        assert os.path.exists(self.cif_targ_path()), "Cannot make data from target if target cif doesn't exist."
         cif_targ = CifData(path=self.cif_targ_path(),  rotk=self.rotk, rottheta=self.rottheta)
 
         corr_data = CorrelationVol(self.nq, self.npsi, self.qmax, self.qmin)
         corr_data.fill_from_cif(cif_targ, nchunks=corr_nchunks, verbose=verbose-1)
         blqq_data = BlqqVol(self.nq, self.nl, self.qmax, self.qmin)
         blqq_data.fill_from_corr(corr_data, rcond=self.pinv_rcond, verbose=verbose-1)
-        # blqq_data.vol[:,:,self.lcrop:] = 0
 
         blqq_data.save(self.blqq_data_path())
 

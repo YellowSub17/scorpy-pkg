@@ -16,9 +16,10 @@ from .algohandler_runrecon import AlgoHandlerRunRecon
 from .algohandler_setuprecon import AlgoHandlerSetupRecon
 from .algohandler_postrecon import AlgoHandlerPostRecon
 from .algohandler_shelx import AlgoHandlerShelx
+from .algohandler_props import AlgoHandlerProps
 
-from ..vols.sphv.sphericalvol import SphericalVol
-from ..iqlm.iqlmhandler import IqlmHandler
+# from ..vols.sphv.sphericalvol import SphericalVol
+# from ..iqlm.iqlmhandler import IqlmHandler
 
 
 
@@ -28,7 +29,7 @@ import shutil
 
 
 class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,
-                  AlgoHandlerPaths,
+                  AlgoHandlerPaths, AlgoHandlerProps,
                   AlgoHandlerRunRecon, AlgoHandlerSetupRecon, AlgoHandlerPostRecon,
                   AlgoHandlerShelx,
                   AlgoHandlerPlot):
@@ -41,22 +42,23 @@ class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,
                  rotk=[1,1,1], rottheta=np.radians(30), overwrite=0):
 
 
-        self.tag = tag
-        self.path = f'{path}/{tag}'
+        self._tag = tag
+        self._path = f'{path}/{tag}'
 
-        self.nq = nq
-        self.qmax = qmax
-        self.qmin = qmin
-        self.npsi = npsi
-        self.nl = nl
-        self.lcrop = lcrop
-        self.dxsupp = dxsupp
-        self.pinv_rcond = pinv_rcond
-        self.eig_rcond = eig_rcond
-        self.lossy_iqlm = lossy_iqlm
-        self.lossy_sphv = lossy_sphv
-        self.rotk = rotk
-        self.rottheta = rottheta
+        self._nq = nq
+        self._qmax = qmax
+        self._qmin = qmin
+        self._npsi = npsi
+        self._nl = nl
+        self._lcrop = lcrop
+        self._dxsupp = dxsupp
+        self._pinv_rcond = pinv_rcond
+        self._eig_rcond = eig_rcond
+        self._lossy_iqlm = lossy_iqlm
+        self._lossy_sphv = lossy_sphv
+        self._rotk = rotk
+        self._rottheta = rottheta
+
 
 
 
@@ -117,31 +119,31 @@ class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,
         config = cfp.ConfigParser()
         config.read(self.algo_params_path())
 
-        self.nq = int(config['algo']['nq'])
+        self._nq = int(config['algo']['nq'])
 
         qmax = config['algo']['qmax']
         if qmax == "None":
-            self.qmax = None
+            self._qmax = None
         else:
-            self.qmax = float(config['algo']['qmax'])
+            self._qmax = float(config['algo']['qmax'])
 
         qmin = config['algo']['qmin']
         if qmin == "None":
-            self.qmin = None
+            self._qmin = None
         else:
-            self.qmin = float(config['algo']['qmin'])
-        self.npsi = int(config['algo']['npsi'])
-        self.nl = int(config['algo']['nl'])
-        self.lcrop = int(config['algo']['lcrop'])
-        self.dxsupp = int(config['algo']['dxsupp'])
+            self._qmin = float(config['algo']['qmin'])
+        self._npsi = int(config['algo']['npsi'])
+        self._nl = int(config['algo']['nl'])
+        self._lcrop = int(config['algo']['lcrop'])
+        self._dxsupp = int(config['algo']['dxsupp'])
 
-        self.rotk = eval(config['algo']['rotk'])
-        self.rottheta = float(config['algo']['rottheta'])
-        self.pinv_rcond = float(config['algo']['pinv_rcond'])
-        self.eig_rcond = float(config['algo']['eig_rcond'])
+        self._rotk = eval(config['algo']['rotk'])
+        self._rottheta = float(config['algo']['rottheta'])
+        self._pinv_rcond = float(config['algo']['pinv_rcond'])
+        self._eig_rcond = float(config['algo']['eig_rcond'])
 
-        self.lossy_iqlm = config.getboolean('algo', 'lossy_iqlm')
-        self.lossy_sphv = config.getboolean('algo', 'lossy_sphv')
+        self._lossy_iqlm = config.getboolean('algo', 'lossy_iqlm')
+        self._lossy_sphv = config.getboolean('algo', 'lossy_sphv')
 
 
 

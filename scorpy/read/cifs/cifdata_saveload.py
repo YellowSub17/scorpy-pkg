@@ -37,10 +37,11 @@ class CifDataSaveLoad:
     def save_shelx_hkl(self, path):
 
         
-        I_loc = np.where(self.scat_bragg[:,3]>=0)
-        hklI = self.scat_bragg[I_loc]
+        # I_loc = np.where(self.scat_bragg[:,3]!=0)
+        # hklI = self.scat_bragg[I_loc]
+        hklI = np.abs(self.scat_bragg[:])
 
-        hklI[:,-1] /=np.max(hklI[:,-1])
+        hklI[:,-1] /=np.nanmax(hklI[:,-1])
         hklI[:,-1] *=9999.99
         f = open(path, 'w')
         for bragg_pt in hklI:

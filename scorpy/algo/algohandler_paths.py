@@ -38,22 +38,27 @@ class AlgoHandlerPaths:
         return f'{self.path}/{self.tag}_targ.hkl'
 
 
+    def sub_tag_path(self, sub_tag):
+        return f'{self.path}/{sub_tag}'
+
+    def recipe_path(self, sub_tag):
+        return f'{self.sub_tag_path(sub_tag)}/recipe_{self.tag}_{sub_tag}.txt'
 
     def sphv_init_path(self, sub_tag):
-        return f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_init'
+        return f'{self.sub_tag_path(sub_tag)}/sphv_{self.tag}_{sub_tag}_init'
 
     def sphv_iter_path(self, sub_tag):
-        return f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_iter'
+        return f'{self.sub_tag_path(sub_tag)}/sphv_{self.tag}_{sub_tag}_iter'
 
     def cif_final_path(self, sub_tag):
-        return f'{self.path}/{sub_tag}/{self.tag}_{sub_tag}_final-sf.cif'
+        return f'{self.sub_tag_path(sub_tag)}/{self.tag}_{sub_tag}_final-sf.cif'
 
     def sphv_final_path(self, sub_tag):
-        return f'{self.path}/{sub_tag}/sphv_{self.tag}_{sub_tag}_final'
+        return f'{self.sub_tag_path(sub_tag)}/sphv_{self.tag}_{sub_tag}_final'
 
 
     def hkls_path(self, sub_tag):
-        return f'{self.path}/{sub_tag}/hkls'
+        return f'{self.sub_tag_path(sub_tag)}/hkls'
 
 
     def hkl_count_path(self, sub_tag, count=-1):
@@ -68,21 +73,21 @@ class AlgoHandlerPaths:
 
 
 
-    def rfs_inten_path(self, sub_tag):
-        return f'{self.path}/{sub_tag}/{self.tag}_{sub_tag}_inten_rfs.npy'
-    def rfs_shelx_path(self, sub_tag):
-        return f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_shelx_rfs.npy'
+    # def rfs_inten_path(self, sub_tag):
+        # return f'{self.sub_tag_path(sub_tag)}/{self.tag}_{sub_tag}_inten_rfs.npy'
+    # def rfs_shelx_path(self, sub_tag):
+        # return f'{self.sub_tag_path(sub_tag)}/shelx/{self.tag}_{sub_tag}_shelx_rfs.npy'
 
 
 
-    def mean_dxyzs_path(self, sub_tag):
-        return f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_mean_dxyzs.npy'
-    def min_dxyzs_path(self, sub_tag):
-        return f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_min_dxyzs.npy'
-    def max_dxyzs_path(self, sub_tag):
-        return f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_max_dxyzs.npy'
-    def std_dxyzs_path(self, sub_tag):
-        return f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_std_dxyzs.npy'
+    # def mean_dxyzs_path(self, sub_tag):
+        # return f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_mean_dxyzs.npy'
+    # def min_dxyzs_path(self, sub_tag):
+        # return f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_min_dxyzs.npy'
+    # def max_dxyzs_path(self, sub_tag):
+        # return f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_max_dxyzs.npy'
+    # def std_dxyzs_path(self, sub_tag):
+        # return f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_std_dxyzs.npy'
 
 
 
@@ -90,31 +95,31 @@ class AlgoHandlerPaths:
 
 
 
-    def mean_bond_distances_path(self, sub_tag):
-        return f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_mean_bond_distances.npy'
+    # def mean_bond_distances_path(self, sub_tag):
+        # return f'{self.sub_tag_path(sub_tag)}/shelx/{self.tag}_{sub_tag}_mean_bond_distances.npy'
 
-    def max_bond_distances_path(self, sub_tag):
-        return f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_max_bond_distances.npy'
+    # def max_bond_distances_path(self, sub_tag):
+        # return f'{self.sub_tag_path(sub_tag)}/shelx/{self.tag}_{sub_tag}_max_bond_distances.npy'
 
-    def min_bond_distances_path(self, sub_tag):
-        return f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_min_bond_distances.npy'
+    # def min_bond_distances_path(self, sub_tag):
+        # return f'{self.sub_tag_path(sub_tag)}/shelx/{self.tag}_{sub_tag}_min_bond_distances.npy'
 
-    def std_bond_distances_path(self, sub_tag):
-        return f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_std_bond_distances.npy'
+    # def std_bond_distances_path(self, sub_tag):
+        # return f'{self.sub_tag_path(sub_tag)}/shelx/{self.tag}_{sub_tag}_std_bond_distances.npy'
 
 
 
-    def mean_bond_angles_path(self, sub_tag):
-        return f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_mean_bond_angles.npy'
+    # def mean_bond_angles_path(self, sub_tag):
+        # return f'{self.sub_tag_path(sub_tag)}/shelx/{self.tag}_{sub_tag}_mean_bond_angles.npy'
 
-    def max_bond_angles_path(self, sub_tag):
-        return f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_max_bond_angles.npy'
+    # def max_bond_angles_path(self, sub_tag):
+        # return f'{self.sub_tag_path(sub_tag)}/shelx/{self.tag}_{sub_tag}_max_bond_angles.npy'
 
-    def min_bond_angles_path(self, sub_tag):
-        return f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_min_bond_angles.npy'
+    # def min_bond_angles_path(self, sub_tag):
+        # return f'{self.sub_tag_path(sub_tag)}/shelx/{self.tag}_{sub_tag}_min_bond_angles.npy'
 
-    def std_bond_angles_path(self, sub_tag):
-        return f'{self.path}/{sub_tag}/shelx/{self.tag}_{sub_tag}_std_bond_angles.npy'
+    # def std_bond_angles_path(self, sub_tag):
+        # return f'{self.sub_tag_path(sub_tag)}/shelx/{self.tag}_{sub_tag}_std_bond_angles.npy'
 
 
 
