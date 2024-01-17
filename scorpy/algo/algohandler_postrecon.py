@@ -44,7 +44,7 @@ class AlgoHandlerPostRecon:
         return hklI[:,-2]*sf
 
 
-    def get_hkl_count_intensity(self,sub_tag, count, norm=True):
+    def get_count_hkl_intensity(self,sub_tag, count, norm=True):
 
         hkl_file= self.hkl_count_path(sub_tag, count)
         x = np.fromfile(hkl_file, dtype=float, count=-1, sep=' ')[:-7]
@@ -61,7 +61,7 @@ class AlgoHandlerPostRecon:
 
         rfs = np.zeros(len(counts))
         for i, count in enumerate(counts):
-            count_inten = self.get_hkl_count_intensity(sub_tag, count, norm=False)
+            count_inten = self.get_count_hkl_intensity(sub_tag, count, norm=False)
             rf = np.nansum(np.abs(targ_inten - count_inten))/np.nansum(np.abs(count_inten))
             rfs[i] = rf
         return rfs
