@@ -62,7 +62,7 @@ def apply_sym(reflections, spg_code):
         HM_number = HM_NUMBER_DICT[spg_code.upper()]
     else:
         print('WARNING: Missing space group in scorpy.utils.sym_funcs.HM_NUMBER_DICT')
-        print(f'spg_code')
+        print(f'{spg_code}')
         HM_number = -1
 
     if HM_number == 1 or HM_number == 2:
@@ -89,6 +89,8 @@ def apply_sym(reflections, spg_code):
         total_sym_mat = m_three_m()
     else:
         total_sym_mat = identity() #In all other cases, don't apply symmetry
+
+
 
     new_reflections = np.zeros((len(total_sym_mat) * len(reflections), 4))
 

@@ -108,6 +108,11 @@ class AlgoHandlerRunRecon:
                 shutil.rmtree(f'{self.path}/{sub_tag}')
                 os.mkdir(f'{self.path}/{sub_tag}')
                 os.mkdir(f'{self.path}/{sub_tag}/hkls')
+
+            else:
+                print(f'Subtag {sub_tag} exists. Cancelling run.')
+                return
+
         else:
             print(f'Subtag {sub_tag} exists. Cancelling run.')
             return

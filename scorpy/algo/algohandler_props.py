@@ -94,6 +94,9 @@ class AlgoHandlerProps:
 
 
 
+    def sphv_supp_loose(self):
+        return SphericalVol(path=self.sphv_supp_loose_path())
+
 
 
 

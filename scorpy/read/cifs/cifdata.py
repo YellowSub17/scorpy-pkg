@@ -15,7 +15,7 @@ class CifData(CifDataProperties, CifDataSaveLoad, CifDataFill):
 
     def __init__(self,a_mag=1, b_mag=1, c_mag=1,
                  alpha=90, beta=90, gamma=90,
-                 spg='X', qmax=None, rotk=[1,0,0], rottheta=0, fill_missing=False, path=None):
+                 spg=None, qmax=None, rotk=[1,0,0], rottheta=0, fill_missing=False, path=None):
 
 
         if path is not None:
@@ -58,7 +58,10 @@ class CifData(CifDataProperties, CifDataSaveLoad, CifDataFill):
             self._b_mag = b_mag
             self._c_mag = c_mag
 
-            self._spg = spg
+            if spg is None:
+                self._spg = 'X'
+            else:
+                self._spg = spg
            
 
 
