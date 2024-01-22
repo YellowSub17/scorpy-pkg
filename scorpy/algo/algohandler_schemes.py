@@ -108,7 +108,7 @@ class AlgoHandlerSchemes:
 
 
 
-    def ASR(self, gamma_m=1, gamma_s=1, sphv_i=None):
+    def ASR(self, sphv_i=None):
         '''Averaged Successive Reflections'''
 
         if sphv_i is None:

@@ -90,7 +90,7 @@ vol : numpy.ndarray
 
     def sum_into_vol(self, x_inds, y_inds, z_inds, vals, sym=False, verbose=0):
 
-        print(f'Summing {len(x_inds)} points.')
+        # print(f'Summing {len(x_inds)} points.')
         for i, (x_ind, y_ind, z_ind, val) in enumerate(zip(x_inds, y_inds, z_inds, vals)):
             print(f'{i}', end='\r')
             self.vol[x_ind, y_ind, z_ind] += val

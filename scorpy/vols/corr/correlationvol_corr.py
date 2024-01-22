@@ -41,9 +41,18 @@ class CorrelationVolCorr:
 
             q1_sqr = np.outer(norms_q1, np.ones(nvec_q2))
             q2_sqr = np.outer(np.ones(nvec_q1), norms_q2)
-            psi_sqr = xyz_dot_xyz/(q1_sqr*q2_sqr)
-            I_sqr = np.outer(I_q1, I_q2)
 
+            # del norms_q1
+            # del norms_q2
+
+
+            q1q2_sqr = q1_sqr*q2_sqr
+
+            psi_sqr = xyz_dot_xyz/q1q2_sqr
+            # psi_sqr = xyz_dot_xyz/(q1_sqr*q2_sqr)
+
+
+            I_sqr = np.outer(I_q1, I_q2)
 
             psi_sqr[np.where(psi_sqr < -1)] = -1
             psi_sqr[np.where(psi_sqr > 1)] = 1
@@ -87,20 +96,25 @@ class CorrelationVolCorr:
 
     @verbose_dec
     def correlate_via_sum(self, q1_sqr, q2_sqr, psi_sqr, I_sqr, verbose=0):
-
         q1_tri, q1_diag = convert_sqr2trianddiag(q1_sqr)
-        q2_tri, q2_diag = convert_sqr2trianddiag(q2_sqr)
-        psi_tri, psi_diag = convert_sqr2trianddiag(psi_sqr)
-        I_tri, I_diag = convert_sqr2trianddiag(I_sqr)
-
-
-        print('Generating indices.')
         q1_inds_tri = self.get_indices(q1_tri, axis=0)
-        q2_inds_tri = self.get_indices(q2_tri, axis=1)
-        psi_inds_tri = self.get_indices(psi_tri, axis=2)
+        del q1_tri
         q1_inds_diag = self.get_indices(q1_diag, axis=0)
+        del q1_diag
+
+        q2_tri, q2_diag = convert_sqr2trianddiag(q2_sqr)
+        q2_inds_tri = self.get_indices(q2_tri, axis=1)
+        del q2_tri
         q2_inds_diag = self.get_indices(q2_diag, axis=1)
+        del q2_diag
+
+        psi_tri, psi_diag = convert_sqr2trianddiag(psi_sqr)
+        psi_inds_tri = self.get_indices(psi_tri, axis=2)
+        del psi_tri
         psi_inds_diag = self.get_indices(psi_diag, axis=2)
+        del psi_diag
+
+        I_tri, I_diag = convert_sqr2trianddiag(I_sqr)
 
 
         self.sum_into_vol(q1_inds_tri, q2_inds_tri, psi_inds_tri, I_tri, sym=True, verbose=verbose-1)
