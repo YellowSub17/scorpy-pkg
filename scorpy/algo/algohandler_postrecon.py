@@ -57,11 +57,11 @@ class AlgoHandlerPostRecon:
 
     def calc_rfs(self, sub_tag, counts):
 
-        targ_inten = self.get_target_hkl_intensity(norm=False)
+        targ_inten = self.get_target_hkl_intensity(norm=True)
 
         rfs = np.zeros(len(counts))
         for i, count in enumerate(counts):
-            count_inten = self.get_count_hkl_intensity(sub_tag, count, norm=False)
+            count_inten = self.get_count_hkl_intensity(sub_tag, count, norm=True)
             rf = np.nansum(np.abs(targ_inten - count_inten))/np.nansum(np.abs(count_inten))
             rfs[i] = rf
         return rfs
