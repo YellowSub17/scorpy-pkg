@@ -127,11 +127,16 @@ class AlgoHandler(AlgoHandlerOperators, AlgoHandlerSchemes,
         else:
             self._qmax = float(config['algo']['qmax'])
 
-        qmin = config['algo']['qmin']
-        if qmin == "None":
-            self._qmin = None
+        if 'qmin' in config['algo'].keys():
+            qmin = config['algo']['qmin']
+            if qmin == "None":
+                self._qmin = None
+            else:
+                self._qmin = float(config['algo']['qmin'])
         else:
-            self._qmin = float(config['algo']['qmin'])
+            self._qmin=0
+
+
         self._npsi = int(config['algo']['npsi'])
         self._nl = int(config['algo']['nl'])
         self._lcrop = int(config['algo']['lcrop'])
