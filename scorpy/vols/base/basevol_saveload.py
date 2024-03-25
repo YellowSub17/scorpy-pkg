@@ -51,6 +51,9 @@ class BaseVolSaveLoad:
         # print('loading')
 
         fpath = Path(fpath)
+
+        assert fpath.with_suffix('.log').exists(), f'log doesnt exist:\n{str(fpath.with_suffix(".log"))}'
+
         self._read_log(fpath)
 
 
