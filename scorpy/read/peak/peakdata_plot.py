@@ -17,7 +17,7 @@ class PeakDataPlot:
 
 
 
-    def plot_peaks(self, intenthresh=0, scatter=False, cmap=None, sizes=None,  peakr=None, fig=None, ax=None, xysf=1):
+    def plot_peaks(self, intenthresh=0,marker='o', color=None, scatter=False, cmap=None, sizes=None,  peakr=None, fig=None, ax=None, xysf=1):
 
         
         if fig is None:
@@ -29,17 +29,19 @@ class PeakDataPlot:
 
         x = self.scat_rect[:,0]*xysf
         y = self.scat_rect[:,1]*xysf
-        colors = self.scat_rect[:,-1]
-        marker = 'o'
+        if color is None:
+            colors = self.scat_rect[:,-1]
+            loc = np.where(colors>intenthresh)
+            x = x[loc]
+            y = y[loc]
+            colors = colors[loc]
+        else:
+            colors=color
 
 
 
-        loc = np.where(colors>intenthresh)
 
-        x = x[loc]
-        y = y[loc]
 
-        colors = colors[loc]
 
 
         if sizes is not None:
@@ -132,13 +134,13 @@ class PeakDataPlot:
             # add the rectangle object to the plot
             ax.add_patch(rect)
 
-            # plot an X in the (0,0) corner, add a label here as well
-            ax.plot(panel['corner_xy'][0] / (self.res*sf),
-                     panel['corner_xy'][1] / (self.res*sf), 'rx')
+            # # # plot an X in the (0,0) corner, add a label here as well
+            # ax.plot(panel['corner_xy'][0] / (self.res*sf),
+                     # panel['corner_xy'][1] / (self.res*sf), 'rx')
 
-            if panel_label:
-                ax.text(panel['corner_xy'][0] / (self.res*sf), panel['corner_xy']
-                         [1] / (self.res*sf), panel['name'], fontsize=6)
+            # if panel_label:
+                # ax.text(panel['corner_xy'][0] / (self.res*sf), panel['corner_xy']
+                         # [1] / (self.res*sf), panel['name'], fontsize=6)
 
             if fs_ss_arrow:
                 ax.arrow(panel['corner_xy'][0] / (self.res*sf),panel['corner_xy'][1] / (self.res*sf),
