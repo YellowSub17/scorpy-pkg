@@ -84,11 +84,10 @@ class CifData(CifDataProperties, CifDataSaveLoad, CifDataFill):
         s = np.sin(rottheta)
 
 
-        abc = np.zeros((3,3))
+        abc = np.zeros((3,3), dtype=float)
         for i, (unit, mag) in enumerate(zip(units, mags)):
             #rodriguiz formula
             rot_unit =  c*unit + (1-c)*np.dot(unit, rotk)*rotk + s*(np.cross(rotk, unit))
-
             abc[i] = rot_unit*mag
 
         abc = np.round(abc, 14)
