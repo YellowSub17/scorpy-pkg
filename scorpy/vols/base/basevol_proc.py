@@ -139,4 +139,19 @@ class BaseVolProc:
         self.vol = blur
 
 
+    def get_line(self, axis, ind1, ind2, ind1_d=0, ind2_d=0):
+
+        if axis%3==0:
+            lin = self.vol[:,ind1:ind1+ind1_d+1,ind2:ind2+ind2_d+1].sum(axis=(1,2))
+        if axis%3==1:
+            lin = self.vol[ind1:ind1+ind1_d+1,:,ind2:ind2+ind2_d+1].sum(axis=(0,2))
+        if axis%3==2:
+            lin = self.vol[ind1:ind1+ind1_d+1,ind2:ind2+ind2_d+1,:].sum(axis=(0,1))
+
+        return lin
+
+
+
+
+
 
