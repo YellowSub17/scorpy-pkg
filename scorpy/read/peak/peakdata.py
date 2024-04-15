@@ -4,7 +4,7 @@ import h5py
 import os
 import scipy as sp
 
-from ...utils.convert_funcs import index_x_nowrap, convert_rect2pol
+from ...utils.convert_funcs import index_x_nowrap, convert_rect2pol, convert_sph2rect
 
 
 from .peakdata_props import PeakDataProperties
@@ -119,6 +119,12 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
         self._scat_qpol = np.array([q_mag , rphi[:,1], intens ]).T
 
         self._scat_sph = np.array([q_mag, saldin_sph_theta, rphi[:,1], intens ]).T
+
+        qxyzi = np.zeros( (q_mag.shape[0], 4) )
+        qxyzi[:,:-1] = convert_sph2rect(self.scat_sph[:,:-1])
+        qxyzi[:,-1] = self.scat_sph[:,-1]
+        
+        self._scat_qxyz = qxyzi
 
 
 

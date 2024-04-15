@@ -102,7 +102,17 @@ def convert_pol2rect(rphi):
     pass
 
 def convert_sph2rect(rtp):
-    pass
+
+    sinp = np.sin(rtp[:,2])
+    cosp = np.cos(rtp[:,2])
+    cost = np.cos(rtp[:,1])
+    sint = np.sin(rtp[:,1])
+
+    x = rtp[:,0]*sint*cosp
+    y = rtp[:,0]*sint*sinp
+    z = rtp[:,0]*cost
+    
+    return np.array([x,y,z]).T
 
 
 

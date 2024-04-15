@@ -119,3 +119,12 @@ class PeakDataProperties:
 
 
 
+    @property
+    def scat_qxyz(self):
+        '''
+        scattering tpol
+        '''
+        return self._scat_qxyz
+
+
+

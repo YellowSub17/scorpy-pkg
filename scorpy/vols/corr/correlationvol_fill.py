@@ -109,6 +109,41 @@ class CorrelationVolFill:
 
 
 
+    @verbose_dec
+    def fill_from_peakdata_saldin(self, pk, nchunks=1, verbose=0):
+
+
+        qxyzi = pk.scat_qxyz[:]
+        qmags = pk.scat_sph[:,0]
+
+        # only correlate less then qmax
+        le_qmax_loc = np.where(qmags <= self.qmax)[0]
+        qxyzi = qxyzi[le_qmax_loc]
+        qmags = qmags[le_qmax_loc]
+
+        # only correlate greater than qmin
+        ge_qmin_loc = np.where(qmags >= self.qmin)[0]
+        qxyzi = qxyzi[ge_qmin_loc]
+        qmags = qmags[ge_qmin_loc]
+
+
+        # only correlate intensity greater then 0
+        Igt0_loc = np.where(qxyzi[:,-1]>0)[0]
+        qxyzi = qxyzi[Igt0_loc]
+        qmags = qmags[Igt0_loc]
+
+
+
+
+        print(f'Filling CorrelationVol from PeakData (Saldin Style).')
+        print(f'Started: {time.asctime()}')
+        print(f'Correlating {qxyzi.shape[0]} vectors.')
+
+        self.correlate_3D(qxyzi[:,:-1], qxyzi[:,-1], nchunks=nchunks, verbose=verbose-1)
+
+        print(f'Finished: {time.asctime()}')
+
+
 
 
     @verbose_dec
