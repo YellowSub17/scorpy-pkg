@@ -210,8 +210,6 @@ class ExpGeom:
 
             loc = np.where(np.logical_and(pix_fs_in_panel_cond, pix_ss_in_panel_cond))
 
-   
-            
 
             nfs = panel['max_fs'] -panel['min_fs']
             nss = panel['max_ss'] -panel['min_ss']

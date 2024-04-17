@@ -93,19 +93,37 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
 
 
 
+    # def wavelength(self):
+        # return (4.135667e-15 * 2.99792e8 *1e10) / self.photon_energy  # A
+
+    # def k(self):
+        # return (2 * np.pi) / self.wavelength # 1/A
+
+
 
 
 
     def calc_scat(self, xyz_pixel, intens):
 
 
+
+        # rphi = convert_rect2pol(xyz_pixel[:,0:2])
+        # diff_cone_angle = np.arctan2(rphi[:,0], xyz_pixel[:, 2])
+        # q_mag = 2*self.k*np.sin(0.5*diff_cone_angle)
+        # saldin_sph_theta = np.pi/2 - np.arcsin((q_mag)/(2*self.k))
+
+
+
+        xyz_pixel[:,2] +=2
+        p_e =0.3*self.photon_energy
         rphi = convert_rect2pol(xyz_pixel[:,0:2])
-
         diff_cone_angle = np.arctan2(rphi[:,0], xyz_pixel[:, 2])
-        q_mag = 2*self.k*np.sin(0.5*diff_cone_angle)
 
-        saldin_sph_theta = np.pi/2 - np.arcsin((q_mag)/(2*self.k))
+        lam = (4.135667e-15 * 2.99792e8 *1e10) / p_e # A
+        k =  (2 * np.pi) / lam # 1/A
 
+        q_mag = 2*k*np.sin(0.5*diff_cone_angle)
+        saldin_sph_theta = np.pi/2 - np.arcsin((q_mag)/(2*k))
 
 
 
@@ -133,8 +151,15 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
         return 2*self.k*np.sin(theta/2)
 
     def convert_q2r(self, q):
-        arcs = np.arcsin(q/(2*self.k))
-        return np.tan(2*arcs)*self.clen
+
+        p_e =0.3*self.photon_energy
+        lam = (4.135667e-15 * 2.99792e8 *1e10) / p_e # A
+        k =  (2 * np.pi) / lam # 1/A
+        arcs = np.arcsin(q/(2*k))
+        return np.tan(2*arcs)*( self.clen +2)
+
+        # arcs = np.arcsin(q/(2*self.k))
+        # return np.tan(2*arcs)*self.clen
 
 
 
