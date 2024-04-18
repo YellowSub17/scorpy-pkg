@@ -16,7 +16,7 @@ from .expgeom import ExpGeom
 
 class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
 
-    def __init__(self, datapath, geompath, data=None):
+    def __init__(self, datapath, geompath, data=None, clen_sf=1, pe_sf=1):
         '''
         handler for a peaks.txt file
         df: dataframe of the peak data, or str file path to txt
@@ -26,6 +26,8 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
         self._geompath = geompath
 
         self.geom_params = self.parse_geom_file()
+        self.clen_sf = clen_sf
+        self.pe_sf = pe_sf
 
 
         self._datapath = datapath
@@ -114,8 +116,8 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
 
 
 
-        xyz_pixel[:,2] +=2
-        p_e =0.3*self.photon_energy
+        xyz_pixel[:,2] *=self.clen_sf
+        p_e =self.photon_energy*self.pe_sf
         rphi = convert_rect2pol(xyz_pixel[:,0:2])
         diff_cone_angle = np.arctan2(rphi[:,0], xyz_pixel[:, 2])
 
@@ -124,6 +126,33 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
 
         q_mag = 2*k*np.sin(0.5*diff_cone_angle)
         saldin_sph_theta = np.pi/2 - np.arcsin((q_mag)/(2*k))
+
+
+
+
+        # xyz_pixel[:,2] +=2
+        # p_e =0.3*self.photon_energy
+        # rphi = convert_rect2pol(xyz_pixel[:,0:2])
+        # diff_cone_angle = np.arctan2(rphi[:,0], xyz_pixel[:, 2])
+
+        # lam = (4.135667e-15 * 2.99792e8 *1e10) / p_e # A
+        # k =  (2 * np.pi) / lam # 1/A
+
+        # q_mag = 2*k*np.sin(0.5*diff_cone_angle)
+        # saldin_sph_theta = np.pi/2 - np.arcsin((q_mag)/(2*k))
+
+
+
+        # xyz_pixel[:,2] -=0.2
+        # p_e =1.6*self.photon_energy
+        # rphi = convert_rect2pol(xyz_pixel[:,0:2])
+        # diff_cone_angle = np.arctan2(rphi[:,0], xyz_pixel[:, 2])
+
+        # lam = (4.135667e-15 * 2.99792e8 *1e10) / p_e # A
+        # k =  (2 * np.pi) / lam # 1/A
+
+        # q_mag = 2*k*np.sin(0.5*diff_cone_angle)
+        # saldin_sph_theta = np.pi/2 - np.arcsin((q_mag)/(2*k))
 
 
 
@@ -152,11 +181,23 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
 
     def convert_q2r(self, q):
 
-        p_e =0.3*self.photon_energy
+        p_e =self.pe_sf*self.photon_energy
         lam = (4.135667e-15 * 2.99792e8 *1e10) / p_e # A
         k =  (2 * np.pi) / lam # 1/A
         arcs = np.arcsin(q/(2*k))
-        return np.tan(2*arcs)*( self.clen +2)
+        return np.tan(2*arcs)*( self.clen *self.clen_sf)
+
+        # p_e =1.6*self.photon_energy
+        # lam = (4.135667e-15 * 2.99792e8 *1e10) / p_e # A
+        # k =  (2 * np.pi) / lam # 1/A
+        # arcs = np.arcsin(q/(2*k))
+        # return np.tan(2*arcs)*( self.clen -0.2)
+
+        # p_e =0.3*self.photon_energy
+        # lam = (4.135667e-15 * 2.99792e8 *1e10) / p_e # A
+        # k =  (2 * np.pi) / lam # 1/A
+        # arcs = np.arcsin(q/(2*k))
+        # return np.tan(2*arcs)*( self.clen +2)
 
         # arcs = np.arcsin(q/(2*self.k))
         # return np.tan(2*arcs)*self.clen
