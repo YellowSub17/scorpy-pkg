@@ -63,6 +63,38 @@ class CorrelationVol(BaseVol,               #Parent Vol Class
         self.vol *= (q1q1*q2q2)
 
 
+    def correction2d(self, k=4.71299756039):
+
+        q1q1, q2q2, psipsi = np.meshgrid(self.qpts, self.qpts, self.psipts)
+
+        tq1 = np.pi/2 - np.arcsin(q1q1/(2*k))
+        tq2 = np.pi/2 - np.arcsin(q2q2/(2*k))
+        
+        ned = np.sin(tq1)*np.sin(tq2)*np.sin(psipsi)
+
+            
+
+    # k =4.71299756039
+    # tq = np.pi/2 - np.arcsin(corr2d.qpts/(2*k))
+    # tq1, tq2, dpsi = np.meshgrid(tq, tq, corr2d.psipts)
+    # ned = np.sin(tq1)*np.sin(tq2)*np.sin(dpsi)
+    # sqr = np.sin(tq1)*np.sin(tq2)*np.cos(dpsi)+np.cos(tq1)*np.cos(tq2)
+    # donk = np.sqrt(1- sqr**2)
+
+
+
+
+
+    def inv_qpsi_correction(self):
+
+        q1q1, q2q2, psipsi = np.meshgrid(self.qpts, self.qpts, self.psipts)
+
+        self.vol /= np.sin(psipsi)
+        self.vol /= (q1q1*q2q2)
+
+
+
+
 
 
 

@@ -125,34 +125,9 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
         k =  (2 * np.pi) / lam # 1/A
 
         q_mag = 2*k*np.sin(0.5*diff_cone_angle)
+
+
         saldin_sph_theta = np.pi/2 - np.arcsin((q_mag)/(2*k))
-
-
-
-
-        # xyz_pixel[:,2] +=2
-        # p_e =0.3*self.photon_energy
-        # rphi = convert_rect2pol(xyz_pixel[:,0:2])
-        # diff_cone_angle = np.arctan2(rphi[:,0], xyz_pixel[:, 2])
-
-        # lam = (4.135667e-15 * 2.99792e8 *1e10) / p_e # A
-        # k =  (2 * np.pi) / lam # 1/A
-
-        # q_mag = 2*k*np.sin(0.5*diff_cone_angle)
-        # saldin_sph_theta = np.pi/2 - np.arcsin((q_mag)/(2*k))
-
-
-
-        # xyz_pixel[:,2] -=0.2
-        # p_e =1.6*self.photon_energy
-        # rphi = convert_rect2pol(xyz_pixel[:,0:2])
-        # diff_cone_angle = np.arctan2(rphi[:,0], xyz_pixel[:, 2])
-
-        # lam = (4.135667e-15 * 2.99792e8 *1e10) / p_e # A
-        # k =  (2 * np.pi) / lam # 1/A
-
-        # q_mag = 2*k*np.sin(0.5*diff_cone_angle)
-        # saldin_sph_theta = np.pi/2 - np.arcsin((q_mag)/(2*k))
 
 
 

@@ -42,6 +42,7 @@ class BasePlot:
                     'log':False,
                     'cmap':'viridis',
                     'cb':True,
+                    'cbar_aspect':None,
                     'vminmax':(None, None),
                     'xlabel':'',
                     'ylabel':'',
@@ -103,7 +104,10 @@ class BasePlot:
         # Add colorbar
         if kwargs['cb']:
             norm = Normalize(vmin, vmax, clip=False)
-            kwargs['fig'].colorbar(ScalarMappable(norm, cmap=kwargs['cmap']), ax=kwargs['axes'])
+            if kwargs['cbar_aspect'] is None:
+                kwargs['fig'].colorbar(ScalarMappable(norm, cmap=kwargs['cmap']), ax=kwargs['axes'])
+            else:
+                kwargs['fig'].colorbar(ScalarMappable(norm, cmap=kwargs['cmap']), ax=kwargs['axes'], aspect=kwargs['cbar_aspect'])
 
         # Set colorlimits
         for axes_im in kwargs['axes'].get_images():
