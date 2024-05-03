@@ -55,47 +55,48 @@ class CorrelationVol(BaseVol,               #Parent Vol Class
 
 
 
-    def qpsi_correction(self):
+    def sinpsi_correction(self, times=True):
+        _, _, psipsi = np.meshgrid(self.qpts, self.qpts, self.psipts)
+        if times:
+            self.vol *= np.sin(psipsi)
+        else:
+            self.vol /= np.sin(psipsi)
 
+    def qq_correction(self, times=True):
+        q1q1, q2q2, _  = np.meshgrid(self.qpts, self.qpts, self.psipts)
+
+        if times:
+            self.vol *= q1q1*q2q2
+        else:
+            self.vol /= q1q1*q2q2
+
+
+    def dq_correction(self, k=4.71299756039, times=True):
         q1q1, q2q2, psipsi = np.meshgrid(self.qpts, self.qpts, self.psipts)
 
-        self.vol *= np.sin(psipsi)
-        self.vol *= (q1q1*q2q2)
+        ned = 2*( 4*k**4 -6*k**2*q1q1**2 + q1q1**4) * 2*(4*k**4 -6*k**2*q2q2**2 + q2q2**4)
+        donk = ( np.abs(k)*( 4*k**2-q1q1**2 )**(1.5)) *(  np.abs(k)*( 4*k**2-q2q2**2 )**(1.5))
+        if times:
+            self.vol *= donk/ned
+        else:
+            self.vol /= donk/ned
 
 
-    def correction2d(self, k=4.71299756039):
+
+    def dpsi_correction(self, k=4.71299756039, times=True):
 
         q1q1, q2q2, psipsi = np.meshgrid(self.qpts, self.qpts, self.psipts)
-
         tq1 = np.pi/2 - np.arcsin(q1q1/(2*k))
         tq2 = np.pi/2 - np.arcsin(q2q2/(2*k))
-        
+
         ned = np.sin(tq1)*np.sin(tq2)*np.sin(psipsi)
 
-            
-
-    # k =4.71299756039
-    # tq = np.pi/2 - np.arcsin(corr2d.qpts/(2*k))
-    # tq1, tq2, dpsi = np.meshgrid(tq, tq, corr2d.psipts)
-    # ned = np.sin(tq1)*np.sin(tq2)*np.sin(dpsi)
-    # sqr = np.sin(tq1)*np.sin(tq2)*np.cos(dpsi)+np.cos(tq1)*np.cos(tq2)
-    # donk = np.sqrt(1- sqr**2)
-
-
-
-
-
-    def inv_qpsi_correction(self):
-
-        q1q1, q2q2, psipsi = np.meshgrid(self.qpts, self.qpts, self.psipts)
-
-        self.vol /= np.sin(psipsi)
-        self.vol /= (q1q1*q2q2)
-
-
-
-
-
+        sqr = np.sin(tq1)*np.sin(tq2)*np.cos(psipsi) + np.cos(tq1)*np.cos(tq2)
+        donk = np.sqrt(1-sqr**2)
+        if times:
+            self.vol *= donk/ned
+        else:
+            self.vol /= donk/ned
 
 
 
