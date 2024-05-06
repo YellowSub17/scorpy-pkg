@@ -56,6 +56,14 @@ class CorrelationVol(BaseVol,               #Parent Vol Class
 
 
 
+    def rm_selfcorr(self):
+        nq_a = np.arange(0, self.nq)
+
+        if self.cos_sample:
+            self.vol[nx, nx, -1] = 0
+        else:
+            self.vol[nx, nx, 0] = 0
+
     def correction2d(self, times=True):
 
         q1q1, q2q2, psipsi = np.meshgrid(self.qpts, self.qpts, self.psipts)
