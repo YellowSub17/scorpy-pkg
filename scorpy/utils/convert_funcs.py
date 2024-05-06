@@ -59,15 +59,15 @@ def index_xs(x_vals, x_min, x_max, nx, wrap=False):
 
 
 
-def convert_rect2sph(xyz):
-    '''
-    convert an (x,y,z) point to (r, theta, phi)
-    '''
-    r = np.linalg.norm(xyz, axis=1)
-    theta = np.arctan2(np.linalg.norm(xyz[:, :2], axis=1), xyz[:, 2])  # 0 -> pi (NS)
-    phi = np.arctan2(xyz[:,1], xyz[:,0])
-    phi[np.where(phi < 0)] = phi[np.where(phi < 0)] + 2 * np.pi  # 0 -> 2pi (EW)
-    return np.array([r, theta, phi]).T
+
+def convert_sqr2trianddiag(sqr):
+
+    tri_flat = np.tril(sqr, k=-1).flatten()
+    loc = np.where(np.tril(np.ones(sqr.shape),k=-1).flatten() !=0)
+    tri_flat = tri_flat[loc]
+    diag = np.diag(sqr)
+
+    return tri_flat, diag
 
 
 
@@ -85,21 +85,23 @@ def convert_rect2pol(xy):
 
 
 
-def convert_sqr2trianddiag(sqr):
-
-    tri_flat = np.tril(sqr, k=-1).flatten()
-    loc = np.where(np.tril(np.ones(sqr.shape),k=-1).flatten() !=0)
-    tri_flat = tri_flat[loc]
-    diag = np.diag(sqr)
-
-    return tri_flat, diag
-
-
-
 
 
 def convert_pol2rect(rphi):
-    pass
+    assert False, 'NOT IMPLEMENTED'
+
+
+
+def convert_rect2sph(xyz):
+    '''
+    convert an (x,y,z) point to (r, theta, phi)
+    '''
+    r = np.linalg.norm(xyz, axis=1)
+    theta = np.arctan2(np.linalg.norm(xyz[:, :2], axis=1), xyz[:, 2])  # 0 -> pi (NS)
+    phi = np.arctan2(xyz[:,1], xyz[:,0])
+    phi[np.where(phi < 0)] = phi[np.where(phi < 0)] + 2 * np.pi  # 0 -> 2pi (EW)
+    return np.array([r, theta, phi]).T
+
 
 def convert_sph2rect(rtp):
 
