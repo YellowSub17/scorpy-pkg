@@ -60,9 +60,9 @@ class CorrelationVol(BaseVol,               #Parent Vol Class
         nq_a = np.arange(0, self.nq)
 
         if self.cos_sample:
-            self.vol[nx, nx, -1] = 0
+            self.vol[nq_a, nq_a, -1] = 0
         else:
-            self.vol[nx, nx, 0] = 0
+            self.vol[nq_a, nq_a, 0] = 0
 
     def correction2d(self, times=True):
 
