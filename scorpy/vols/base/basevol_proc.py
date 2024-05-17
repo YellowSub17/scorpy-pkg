@@ -152,6 +152,7 @@ class BaseVolProc:
 
 
 
+        lin2 = corr2d.get_line(2, peak_ll, peak_l, diff, diff)
 
 
 

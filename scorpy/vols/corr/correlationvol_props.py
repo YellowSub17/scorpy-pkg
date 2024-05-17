@@ -36,6 +36,24 @@ class CorrelationVolProps:
         return self.xmin
 
     @property
+    def psimax(self):
+        '''
+	scorpy.CorrelationVol.qmax:
+            Maximum value of psi axis.
+        '''
+        return self.zmax
+
+    @property
+    def psimin(self):
+        '''
+	scorpy.CorrelationVol.qmin:
+            Minimum value of psi axis.
+        '''
+        return self.zmin
+
+
+
+    @property
     def dq(self):
         '''
 	scorpy.CorrelationVol.dq:

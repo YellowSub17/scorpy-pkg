@@ -86,6 +86,9 @@ class BlqqVol(BaseVol, BlqqVolProps):
         for iq1 in range(self.nq):
             print(f'q index: {iq1+1}/{self.nq}', end='\r')
             for iq2 in range(iq1, self.nq):
+
+                ####TODO:
+                #### FMATRIX WITH EWS correlation needs to be calculated at every 
                 dot = np.dot(fmat_inv, corr.vol[iq1, iq2, :])
                 self.vol[iq1, iq2, :] = dot
                 if iq2 > iq1:

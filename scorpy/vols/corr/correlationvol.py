@@ -97,13 +97,13 @@ class CorrelationVol(BaseVol,               #Parent Vol Class
 
 
 
-    # def qq_correction(self, times=True):
-        # q1q1, q2q2, _  = np.meshgrid(self.qpts, self.qpts, self.psipts)
+    def qq_correction(self, times=True):
+        q1q1, q2q2, _  = np.meshgrid(self.qpts, self.qpts, self.psipts)
 
-        # if times:
-            # self.vol *= q1q1*q2q2
-        # else:
-            # self.vol /= q1q1*q2q2
+        if times:
+            self.vol *= q1q1*q2q2
+        else:
+            self.vol /= q1q1*q2q2
 
 
     # def dq_correction(self, k=4.71299756039, times=True):
