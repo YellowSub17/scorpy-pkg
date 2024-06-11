@@ -1,8 +1,14 @@
 # SCORPY
 
 
-
 Scattering CORrelation in PYthon 
+
+[Read the paper!](https://journals.iucr.org/m/issues/2024/04/00/it5033/index.html)
+
+Citation:
+    Adams, P., Greaves, T. L. & Martin, A. V. (2024). Crystal structure via fluctuation scattering. IUCrJ, 11.
+    https://journals.iucr.org/m/issues/2024/04/00/it5033/index.html
+
 
 
 ## Conda Setup (Requirements)
