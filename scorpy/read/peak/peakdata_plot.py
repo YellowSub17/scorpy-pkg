@@ -17,7 +17,7 @@ class PeakDataPlot:
 
 
 
-    def plot_peaks(self, intenthresh=0,marker='o', color=None, scatter=False, cmap=None, sizes=None,  peakr=None, fig=None, ax=None, xysf=1):
+    def plot_peaks(self, intenthresh=0,marker='o', color=None, scatter=False, cmap=None, sizes=None,  peakr=None, fig=None, ax=None, xysf=1, isf=1):
 
         
         if fig is None:
@@ -30,7 +30,7 @@ class PeakDataPlot:
         x = self.scat_rect[:,0]*xysf
         y = self.scat_rect[:,1]*xysf
         if color is None:
-            colors = self.scat_rect[:,-1]
+            colors = self.scat_rect[:,-1]*isf
             loc = np.where(colors>intenthresh)
             x = x[loc]
             y = y[loc]
@@ -50,6 +50,7 @@ class PeakDataPlot:
             sizes = 15
 
         cax = ax.scatter(x, y, c=colors, s=sizes, cmap=cmap, marker=marker)
+        return cax
         # cbar = fig.colorbar(cax)
 
 
