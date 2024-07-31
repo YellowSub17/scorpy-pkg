@@ -145,9 +145,12 @@ class AlgoHandlerRunRecon:
         count = 0
         for line in recipe_file:
 
+            assert len(line) < 64, 'RECIPE LINE ERROR. Lines must be less than 64 characters.'
             terms = line.split()
             if terms == [] or line[0]=='#':
                 continue
+            assert terms[0].isnumeric(),  'RECIPE LINE ERROR. First term must be numeric'
+            assert terms[1] in dir(self),  'RECIPE LINE ERROR. Second term must be a class method'
             niter = int(terms[0])
             scheme = eval('self.'+terms[1])
 
