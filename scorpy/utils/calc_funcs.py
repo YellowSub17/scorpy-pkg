@@ -10,6 +10,9 @@ def rfactor(It, If):
 
 
 
+def saldin_theta(q, k):
+    return np.pi/2 - np.arcsin(q/(2*k))
+
 
 
 
