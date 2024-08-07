@@ -107,50 +107,48 @@ class PeakDataPlot:
 
         for panel in self.panels:
 
-            # rect_width = np.linalg.norm(panel['fs_xy']) * \
-                # (panel['max_fs'] - panel['min_fs']) / (self.res*sf)
-            # rect_height = np.linalg.norm(panel['ss_xy'])* \
-                # (panel['max_ss'] - panel['min_ss']) / (self.res*sf)
-
-
-            rect_width = panel['fs_xy'][1] * \
+            rect_width = np.linalg.norm(panel['fs_xy']) * \
                 (panel['max_fs'] - panel['min_fs']) / (self.res*sf)
-            rect_height = panel['ss_xy'][0] * \
+
+            rect_height = np.linalg.norm(panel['ss_xy'])* \
                 (panel['max_ss'] - panel['min_ss']) / (self.res*sf)
 
-            rect_rot = np.degrees(np.arctan2( np.abs(panel['fs_xy'][1]), panel['fs_xy'][0]))
+
+            # rect_width = panel['fs_xy'][1] * \
+                # (panel['max_fs'] - panel['min_fs']) / (self.res*sf)
+            # rect_height = panel['ss_xy'][0] * \
+                # (panel['max_ss'] - panel['min_ss']) / (self.res*sf)
+
+            rect_rot = np.degrees(np.arctan2( panel['fs_xy'][1], panel['fs_xy'][0]))
 
             # corner of the panel
             rect_x = panel['corner_xy'][0] / (self.res*sf)
             rect_y = panel['corner_xy'][1] / (self.res*sf)
 
             # rectangle object
-            #temp fix for p11 stuff
-            # rect = patches.Rectangle((rect_x, rect_y), rect_width, rect_height, angle=rect_rot,
-                                     # fill=False, ec='red', alpha=1, lw=1)
-
-            rect = patches.Rectangle((rect_x, rect_y), rect_width, -rect_height, angle=rect_rot,
+            rect = patches.Rectangle((rect_x, rect_y), rect_width, rect_height, angle=rect_rot,
                                      fill=False, ec='red', alpha=1, lw=1)
+
 
             # add the rectangle object to the plot
             ax.add_patch(rect)
 
             # # # plot an X in the (0,0) corner, add a label here as well
-            # ax.plot(panel['corner_xy'][0] / (self.res*sf),
-                     # panel['corner_xy'][1] / (self.res*sf), 'rx')
+            ax.plot(panel['corner_xy'][0] / (self.res*sf),
+                     panel['corner_xy'][1] / (self.res*sf), 'rx')
 
-            # if panel_label:
-                # ax.text(panel['corner_xy'][0] / (self.res*sf), panel['corner_xy']
-                         # [1] / (self.res*sf), panel['name'], fontsize=6)
+            if panel_label:
+                ax.text(panel['corner_xy'][0] / (self.res*sf), panel['corner_xy']
+                         [1] / (self.res*sf), panel['name'], fontsize=6)
 
             if fs_ss_arrow:
                 ax.arrow(panel['corner_xy'][0] / (self.res*sf),panel['corner_xy'][1] / (self.res*sf),
-                          30*panel['fs_xy'][0]/(self.res*sf), 30*panel['fs_xy'][1]/(self.res*sf),
+                          panel['fs_xy'][0]/(self.res*sf), panel['fs_xy'][1]/(self.res*sf),
                          color='blue')
 
-                ax.arrow(panel['corner_xy'][1] / (self.res*sf),panel['corner_xy'][0] / (self.res*sf),
-                          30*panel['ss_xy'][0]/(self.res*sf), 30*panel['ss_xy'][1]/(self.res*sf),
-                         color='blue')
+                ax.arrow(panel['corner_xy'][0] / (self.res*sf),panel['corner_xy'][1] / (self.res*sf),
+                          panel['ss_xy'][0]/(self.res*sf), panel['ss_xy'][1]/(self.res*sf),
+                         color='green')
 
         cross_hair = 30/(self.res*sf)
 
