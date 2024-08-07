@@ -159,6 +159,7 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
         p_e =self.pe_sf*self.photon_energy
         lam = (4.135667e-15 * 2.99792e8 *1e10) / p_e # A
         k =  (2 * np.pi) / lam # 1/A
+        print(q/(2*k))
         arcs = np.arcsin(q/(2*k))
         return np.tan(2*arcs)*( self.clen *self.clen_sf)
 
