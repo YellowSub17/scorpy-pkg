@@ -215,11 +215,15 @@ vol : numpy.ndarray
 
 
 
-    def get_integrated_xy_line(self, xy_lower, xy_upper):
+    def get_integrated_xy_line(self, xy_lower, xy_upper, ind=False):
         xy = self.get_xy()
 
-        xy_lower_ind = self.get_index(x=xy_lower)
-        xy_upper_ind = self.get_index(x=xy_upper)
+        if not ind:
+            xy_lower_ind = self.get_index(x=xy_lower)
+            xy_upper_ind = self.get_index(x=xy_upper)
+        else:
+            xy_lower_ind = xy_lower
+            xy_upper_ind = xy_upper
 
 
         inte = np.sum(xy[xy_lower_ind:xy_upper_ind, :], axis=0)
