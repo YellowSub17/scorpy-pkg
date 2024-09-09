@@ -124,6 +124,8 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
         lam = (4.135667e-15 * 2.99792e8 *1e10) / p_e # A
         k =  (2 * np.pi) / lam # 1/A
 
+        print(f'{k=}')
+
         q_mag = 2*k*np.sin(0.5*diff_cone_angle)
 
 
@@ -151,7 +153,7 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
 
 
     def convert_r2q(self, r):
-        theta = np.arctan2(r, self.clen)
+        theta = np.arctan2(r, self.clen*self.clen_sf)
         return 2*self.k*np.sin(theta/2)
 
     def convert_q2r(self, q):
@@ -159,7 +161,7 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
         p_e =self.pe_sf*self.photon_energy
         lam = (4.135667e-15 * 2.99792e8 *1e10) / p_e # A
         k =  (2 * np.pi) / lam # 1/A
-        print(q/(2*k))
+        # print(q/(2*k))
         arcs = np.arcsin(q/(2*k))
         return np.tan(2*arcs)*( self.clen *self.clen_sf)
 
