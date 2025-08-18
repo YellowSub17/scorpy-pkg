@@ -34,6 +34,10 @@ class CorrelationVolFill:
             self.correlate_convolve(qt, verbose=verbose-1)
 
 
+    def fill_from_dragonfly_photons(self, photons_h5, det_h5):
+        pass
+
+
 
 
     @verbose_dec
