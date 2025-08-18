@@ -9,6 +9,7 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 from scipy import special
+import h5py
 
 class CorrelationVolFill:
 
@@ -34,8 +35,51 @@ class CorrelationVolFill:
             self.correlate_convolve(qt, verbose=verbose-1)
 
 
-    def fill_from_dragonfly_photons(self, photons_h5, det_h5):
-        pass
+    @verbose_dec
+    def fill_from_dragonfly_photons(self, photons_h5, det_h5, frame_max=None, verbose=0):
+        print('Loading photons')
+        f = h5py.File(photons_h5)
+        num_pix = f['/num_pix'][...]
+        place_ones = f['/place_ones'][...]
+        count_multi = f['/count_multi'][...]
+        place_multi = f['/place_multi'][...]
+        f.close()
+
+        print('Loading detector')
+        f = h5py.File(det_h5)
+        corr = f['/corr'][...]
+        detd = f['/detd'][...]
+        ewald_rad = f['/ewald_rad'][...]
+        mask = f['/mask'][...]
+        qx = f['/qx'][...]
+        qy = f['/qy'][...]
+        qz = f['/qz'][...]
+        f.close()
+
+        if frame_max is None:
+            frame_max=len(place_ones)
+
+        for i_frame, (frame_place_ones, frame_place_multi, frame_counts_multi) in enumerate(zip(place_ones[:frame_max], place_multi[:frame_max], count_multi[:frame_max])):
+            print(f'Frame: \t\t{i_frame}/{frame_max}', end='\r')
+
+            npeaks_frame = frame_place_ones.size + frame_place_multi.size
+            peak_list = np.zeros( (npeaks_frame, 4) )
+
+            for i_peak, peak_pix_i in enumerate(place_ones[i_frame]):
+                peak_list[i_peak, :3] = [qx[peak_pix_i], qy[peak_pix_i], qz[peak_pix_i]]
+                peak_list[i_peak, -1] = 1
+
+            for j_peak, peak_pix_i in enumerate(place_multi[i_frame]):
+                peak_list[i_peak+j_peak+1,:3] = [qx[peak_pix_i], qy[peak_pix_i], qz[peak_pix_i]]
+                peak_list[i_peak+j_peak+1, -1] = count_multi[i_frame][j_peak]
+
+            self.correlate_3D(peak_list[:,:-1], peak_list[:,-1], verbose=verbose-1)
+
+
+
+
+
+
 
 
 
