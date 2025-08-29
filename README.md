@@ -38,6 +38,11 @@ This will create a link from your python site-package directory to an egg-info d
     cd scorpy-pkg
     pip install -e .
 
+## Example scripts
+
+See this other repo for a collection of scripts demonstrating scorpy
+
+    https://github.com/YellowSub17/scorpy-tute
 
 
 
