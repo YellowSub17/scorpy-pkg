@@ -15,19 +15,20 @@ Citation:
 
 Use the following commands to set up a conda environment.
 
+
     conda deactivate
-    conda create -n phd python==3.9 --yes
-    conda activate phd
-    #conda install -c conda-forge ipython --yes
-    conda install -c conda-forge numpy==1.26.4 --yes
-    conda install -c conda-forge matplotlib==3.8.4 --yes
-    conda install -c conda-forge pyshtools=4.12.2 --yes
-    conda install -c conda-forge h5py==3.11 --yes
-    conda install -c conda-forge pycifrw==4.4.6 --yes
-    conda install -c conda-forge scipy==1.13.1 --yes
-    conda install -c conda-forge scikit-image==0.24.0 --yes
-    conda install -c conda-forge regex==2024.5.15 --yes
-    conda install -c conda-forge numba==0.60.0 --yes
+    conda create -n scorpy python=3.13 --yes
+    conda activate scorpy --yes
+    conda install numpy --yes
+    conda install matplotlib --yes
+    conda install h5py --yes
+    conda install scikit-image --yes
+    conda install regex --yes
+    conda install numba --yes
+    conda install conda-forge::pyshtools --yes
+    conda install conda-forge::pycifrw --yes
+
+
 
 ## Installation 
 
