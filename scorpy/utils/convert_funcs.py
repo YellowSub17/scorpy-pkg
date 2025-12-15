@@ -46,17 +46,6 @@ def index_xs(x_vals, x_min, x_max, nx, wrap=False):
         return x_out.astype(int)
 
 
-# def index_xs_wrap(x_vals, x_min, x_max, nx):
-    # dx2 = (x_max -x_min)/ (2*nx)
-    # x_out2 =(x_vals-x_min)/(dx2)
-
-    # x_out =  (x_out2+1)*0.5
-    # x_out = x_out.astype(int)%6
-    # return x_out.astype(int)
-
-
-
-
 
 
 
@@ -123,34 +112,3 @@ def to_polar(im, rmax, cenx, ceny):
     return np.rot90(x, k=3)
 
 
-
-# def index_x(x_val, x_min, x_max, nx, wrap=False):
-    # '''Find the index of a value in an array between a maximum and minimum value.
-
-    # Arguments:
-        # x_val (): Value to be indexed
-        # x_min (): Minimum value in the range to index
-        # x_max (): Maximum value in the range to index
-        # nx (int): Number of bins in the range to index
-        # wrap (bool): If True, values in the last index will be placed in the 0th index.
-
-    # Returns:
-        # x_out (int): Index that x_val should be place within the range.
-    # '''
-
-    # dx = (x_max - x_min) / nx
-    # x_val = round(x_val, 14)
-
-
-    # if not wrap:
-        # x_out = (x_val - x_min) / dx
-        # if x_val == x_max:
-            # x_out = nx - 1
-    # else:
-        # if x_val <= x_min + dx / 2 or x_val >= x_max - dx / 2:
-            # x_out = 0
-
-        # else:
-            # x_out = index_x(x_val, x_min + dx / 2, x_max - dx / 2, nx - 1) + 1
-
-    # return int(x_out)

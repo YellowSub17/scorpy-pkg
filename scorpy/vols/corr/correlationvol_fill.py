@@ -17,6 +17,7 @@ class CorrelationVolFill:
 
 
 
+
     @verbose_dec
     def fill_from_detector_imgs(self, imgs, cenx, ceny, verbose=0):
         '''
@@ -33,6 +34,8 @@ class CorrelationVolFill:
         for img in imgs:
             qt = to_polar(img, rmax=self.nq, cenx=cenx, ceny=ceny)
             self.correlate_convolve(qt, verbose=verbose-1)
+
+        
 
 
     @verbose_dec
@@ -249,9 +252,6 @@ class CorrelationVolFill:
         print(f'Filling ended: {time.asctime()}')
         print('############')
         print('')
-
-
-
 
 
 

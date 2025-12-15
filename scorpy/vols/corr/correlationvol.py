@@ -64,6 +64,7 @@ class CorrelationVol(BaseVol,               #Parent Vol Class
         else:
             self.vol[nq_a, nq_a, 0] = 0
 
+
     def correction2d(self, times=True):
 
         q1q1, q2q2, psipsi = np.meshgrid(self.qpts, self.qpts, self.psipts)
