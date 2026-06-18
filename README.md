@@ -26,8 +26,6 @@ Use the following commands to set up a conda environment.
 
     conda create -n scorpy python=3.13 numpy=2.3.5 matplotlib=3.10.8 h5py=3.15.1 conda-forge::pyshtools=4.13.1 conda-forge::pycifrw=5.0.1 --yes
     conda activate scorpy
-    pip install -e .
-
 
 
 ## Installation 
@@ -37,7 +35,15 @@ This will create a link from your python site-package directory to an egg-info d
 
     git clone https://github.com/YellowSub17/scorpy-pkg.git
     cd scorpy-pkg
-    pip install -e .
+    pip install -e .   # For standard runtime usage:
+    pip install -e .[docs] # OR for development and documentation tools (installs Sphinx + Theme):
+
+
+
+
+
+pip install -e .
+
 
 
 

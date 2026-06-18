@@ -4,8 +4,6 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "scorpy"
-author = "Patrick Adams",
-author_email = "patrick.adams@icm.uu.se",
 version = "0.1.0"
 description = "Scattering Correlation for Python"
 requires-python = ">=3.13.11" 
@@ -15,4 +13,10 @@ dependencies = [
     "h5py==3.15.1",
     "pyshtools==4.13.1",
     "pycifrw==5.0.1"
+]
+
+[project.optional-dependencies]
+docs = [
+    "sphinx>=7.0.0",
+    "pydata-sphinx-theme>=0.15.0",
 ]
