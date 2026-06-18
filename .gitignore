@@ -4,6 +4,8 @@ __pycache__/
 tests/data/
 .ipynb_checkpoints/
 
+*.DS_Store
+
 
 *.bkup
 *.dbin
