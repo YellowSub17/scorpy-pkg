@@ -1,29 +1,26 @@
-
 from pathlib import Path
-
 import configparser as cfp
 from datetime import datetime
 import numpy as np
-
 from ...utils.decorator_funcs import verbose_dec
 
 
-
 class BaseVolSaveLoad:
+    """File parsing subsystem handling serialization and storage of volumetric metadata and data."""
 
+    def _read_log(self, fpath: str | Path):
+        """Parse configuration attributes from a matching log file companion.
 
-    def _read_log(self, fpath):
-
-
-
+        Parameters
+        ----------
+        fpath : str or Path
+            Filepath reference tracking targeted storage records.
+        """
         fpath = Path(fpath)
-
-
         logpath = Path(fpath.parent) / f'{fpath.stem}.log'
 
         config = cfp.ConfigParser()
         config.read(logpath)
-
 
         self._nx = int(config['vol']['nx'])
         self._ny = int(config['vol']['ny'])
@@ -44,154 +41,138 @@ class BaseVolSaveLoad:
         self._comp = config.getboolean('vol', 'comp')
         self._load_extra(config)
 
+    def _load(self, fpath: str | Path):
+        """Load metadata logs and reconstruction streams from binary records.
 
+        Parameters
+        ----------
+        fpath : str or Path
+            Filepath target pointing toward data pools.
 
-
-    def _load(self, fpath):
-        # print('loading')
-
+        Raises
+        ------
+        AssertionError
+            If companion metadata configuration logs do not match or are missing.
+        """
         fpath = Path(fpath)
-
         assert fpath.with_suffix('.log').exists(), f'log doesnt exist:\n{str(fpath.with_suffix(".log"))}'
 
         self._read_log(fpath)
-
-
         assert fpath.suffix in ['.dbin', '.npy', ''], f'Failed to file: {fpath}[".npy"|".dbin"|""]'
 
-        if fpath.suffix =='':
+        if fpath.suffix == '':
             dbin_path = fpath.with_suffix('.dbin')
             npy_path = fpath.with_suffix('.npy')
-
 
             if dbin_path.exists() and npy_path.exists():
                 dbin_size = dbin_path.stat().st_size
                 npy_size = npy_path.stat().st_size
-
-                if dbin_size > npy_size:
-                    fpath=npy_path
-                else:
-                    fpath=dbin_path
-
+                fpath = npy_path if dbin_size > npy_size else dbin_path
             elif dbin_path.exists():
                 fpath = dbin_path
             elif npy_path.exists():
                 fpath = npy_path
-
             else:
-                print('i dont know how you got here')
                 assert False, 'fpath.suffix is "" but dbin and npy dont exist.'
 
-
-        if fpath.suffix =='.dbin':
-
+        if fpath.suffix == '.dbin':
             if self.comp:
                 file_vol = np.fromfile(fpath, dtype=np.complex64)
             else:
                 file_vol = np.fromfile(fpath)
-
-
-            # print(file_vol)
             self._vol = file_vol.reshape((self.nx, self.ny, self.nz))
 
-
-        elif fpath.suffix =='.npy':
+        elif fpath.suffix == '.npy':
             coo_arr = np.load(fpath)
-            self._vol = np.zeros( (self.nx, self.ny, self.nz) )
-            xi, yi, zi = coo_arr[:,0].astype(int), coo_arr[:,1].astype(int),coo_arr[:,2].astype(int),
-            self._vol[xi, yi, zi] = coo_arr[:,-1]
+            self._vol = np.zeros((self.nx, self.ny, self.nz))
+            xi, yi, zi = coo_arr[:, 0].astype(int), coo_arr[:, 1].astype(int), coo_arr[:, 2].astype(int)
+            self._vol[xi, yi, zi] = coo_arr[:, -1]
 
+    def save(self, fpath: str | Path):
+        """Export volumetric datasets along with metadata configurations.
 
-
-
-
-
-    def save(self, fpath):
-
+        Parameters
+        ----------
+        fpath : str or Path
+            Output filepath target descriptor. If no file extension is provided,
+            the format is selected automatically based on file size optimization.
+        """
         fpath = Path(fpath)
-
         if fpath.suffix == '':
             fpath = fpath.with_suffix(self.file_size())
-
-
 
         if fpath.suffix == '.dbin':
             flat_vol = self.vol.flatten()
             flat_vol.tofile(fpath)
-
         elif fpath.suffix == '.npy':
-
             coo_loc = np.where(self.vol != 0)
-            # coo_arr = np.zeros( (coo_loc[0].shape[0], 4) )
-            coo_arr = np.array( [ coo_loc[0], coo_loc[1], coo_loc[2], self.vol[coo_loc] ]).T
-
+            coo_arr = np.array([coo_loc[0], coo_loc[1], coo_loc[2], self.vol[coo_loc]]).T
             np.save(fpath, coo_arr)
 
         self.write_log(fpath)
 
-    def write_log(self, fpath):
+    def write_log(self, fpath: str | Path):
+        """Serialize metadata profiles into a structured `.log` INI layout file.
 
+        Parameters
+        ----------
+        fpath : str or Path
+            Reference filepath location marking log creation lines.
+        """
         fpath = Path(fpath)
-
-
         logpath = Path(fpath.parent) / f'{fpath.stem}.log'
 
-        # write log
-        f = open(logpath, 'w')
-        f.write('##Scorpy Vol Config File\n')
-        f.write(f'## Created: {datetime.now().strftime("%Y/%m/%d %H:%M")}\n\n')
-        f.write('[vol]\n')
-        f.write(f'nx = {self.nx}\n')
-        f.write(f'ny = {self.ny}\n')
-        f.write(f'nz = {self.nz}\n')
-        f.write(f'xmin = {self.xmin}\n')
-        f.write(f'ymin = {self.ymin}\n')
-        f.write(f'zmin = {self.zmin}\n')
-        f.write(f'xmax = {self.xmax}\n')
-        f.write(f'ymax = {self.ymax}\n')
-        f.write(f'zmax = {self.zmax}\n')
-        f.write(f'xwrap = {self.xwrap}\n')
-        f.write(f'ywrap = {self.ywrap}\n')
-        f.write(f'zwrap = {self.zwrap}\n')
-        f.write(f'dx = {self.dx}\n')
-        f.write(f'dy = {self.dy}\n')
-        f.write(f'dz = {self.dz}\n')
-        f.write(f'comp = {self.comp}\n')
-        f.write('\n')
-        self._save_extra(f)
-        f.close()
-
-
-
-
+        with open(logpath, 'w') as f:
+            f.write('##Scorpy Vol Config File\n')
+            f.write(f'## Created: {datetime.now().strftime("%Y/%m/%d %H:%M")}\n\n')
+            f.write('[vol]\n')
+            f.write(f'nx = {self.nx}\n')
+            f.write(f'ny = {self.ny}\n')
+            f.write(f'nz = {self.nz}\n')
+            f.write(f'xmin = {self.xmin}\n')
+            f.write(f'ymin = {self.ymin}\n')
+            f.write(f'zmin = {self.zmin}\n')
+            f.write(f'xmax = {self.xmax}\n')
+            f.write(f'ymax = {self.ymax}\n')
+            f.write(f'zmax = {self.zmax}\n')
+            f.write(f'xwrap = {self.xwrap}\n')
+            f.write(f'ywrap = {self.ywrap}\n')
+            f.write(f'zwrap = {self.zwrap}\n')
+            f.write(f'dx = {self.dx}\n')
+            f.write(f'dy = {self.dy}\n')
+            f.write(f'dz = {self.dz}\n')
+            f.write(f'comp = {self.comp}\n')
+            f.write('\n')
+            self._save_extra(f)
 
     def _save_extra(self, f):
-
+        """Hook for saving additional metadata in subclasses."""
         pass
 
     def _load_extra(self, config):
-
+        """Hook for parsing additional metadata in subclasses."""
         pass
 
+    def file_size(self, verbose: int = 1) -> str:
+        """Estimate and compare file size footprints to select an optimal file extension.
 
-    def file_size(self, verbose=1):
+        Compares uncompressed raw arrays (`.dbin`) vs coordinate sparse arrays (`.npy`).
 
+        Parameters
+        ----------
+        verbose : int, default 1
+            Controls output print tracking info statements.
 
-        dbin_size = self.vol.size*self.vol.itemsize
+        Returns
+        -------
+        str
+            The recommended file extension string ('.npy' or '.dbin').
+        """
+        dbin_size = self.vol.size * self.vol.itemsize
+        coo_loc = np.where(self.vol > 0)
+        coo_size = self.vol.itemsize * 4 * len(coo_loc[0])
 
-        coo_loc = np.where(self.vol>0)
-
-        coo_size = self.vol.itemsize*4*len(coo_loc[0])
-
-        # print('File sizes:')
-        # print(f'.dbin:\t{dbin_size/1e3} KB')
-        # print(f'.npy:\t{coo_size/1e3} KB')
-
-        if dbin_size>coo_size:
+        if dbin_size > coo_size:
             return '.npy'
         else:
             return '.dbin'
-
-
-
-
