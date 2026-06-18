@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scorpy"
+author = "Patrick Adams",
+author_email = "patrick.adams@icm.uu.se",
+version = "0.1.0"
+description = "Scattering Correlation for Python"
+requires-python = ">=3.13.11" 
+dependencies = [
+    "numpy==2.3.5",
+    "matplotlib==3.10.8",
+    "h5py==3.15.1",
+    "pyshtools==4.13.1",
+    "pycifrw==5.0.1"
+]
