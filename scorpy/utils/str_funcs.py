@@ -1,6 +1,5 @@
 
 
-import regex as re
 
 
 def strerr2floaterrr(s):
@@ -32,16 +31,6 @@ def concat_file(f):
             single_file_str +=line
 
     return single_file_str
-
-
-
-
-def grep(s, reg, fn=None):
-    # print(f'greping reg: {reg}')
-    found = re.findall(reg, s)
-    if fn is not None:
-        found = list(map(fn, found))
-    return found
 
 
 

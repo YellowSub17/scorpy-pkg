@@ -5,7 +5,6 @@
 import numpy as np
 import math
 
-import numba
 
 
 
@@ -40,7 +39,6 @@ def angle_between_rect_cos(q1, q2):
         dot = -1.0
     return dot
 
-@numba.njit
 def angle_between_rect_cos_x(x1, x2, x3, y1, y2, y3):
     magx = math.sqrt( x1**2 + x2**2 + x3**2 )
     magy = math.sqrt( y1**2 + y2**2 + y3**2 )
@@ -55,7 +53,6 @@ def angle_between_rect_cos_x(x1, x2, x3, y1, y2, y3):
     return dot
 
 
-@numba.njit
 def angle_between_rect_x(x1, x2, x3, y1, y2, y3):
     magx = math.sqrt( x1**2 + x2**2 + x3**2 )
     magy = math.sqrt( y1**2 + y2**2 + y3**2 )

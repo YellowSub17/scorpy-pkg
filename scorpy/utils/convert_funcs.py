@@ -1,12 +1,9 @@
 
 import numpy as np
 
-from skimage.transform import warp_polar
-import numba
 
 
 
-@numba.njit()
 def index_x_wrap(x_val, x_min, x_max, nx):
     dx2 = (x_max - x_min) / (2*nx)
     x_out2 =(x_val-x_min)/(dx2)
@@ -15,7 +12,6 @@ def index_x_wrap(x_val, x_min, x_max, nx):
 
 
 
-@numba.njit()
 def index_x_nowrap(x_val, x_min, x_max, nx):
     x_val = max(x_min, x_val)
     x_val = min(x_max-1e-14, x_val)
@@ -107,8 +103,8 @@ def convert_sph2rect(rtp):
 
 
 
-def to_polar(im, rmax, cenx, ceny):
-    x = warp_polar( im, center=(cenx,ceny), radius=rmax)
-    return np.rot90(x, k=3)
+# def to_polar(im, rmax, cenx, ceny):
+    # x = warp_polar( im, center=(cenx,ceny), radius=rmax)
+    # return np.rot90(x, k=3)
 
 

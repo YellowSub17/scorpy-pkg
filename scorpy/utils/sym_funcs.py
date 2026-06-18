@@ -1,7 +1,6 @@
 import itertools
 import numpy as np
 from scipy import special
-from skimage.transform import warp_polar
 
 
 

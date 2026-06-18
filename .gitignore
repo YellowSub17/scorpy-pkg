@@ -2,11 +2,13 @@ data/
 __pycache__/
 
 tests/data/
+.ipynb_checkpoints/
 
 
 *.bkup
 *.dbin
 *.egg-info
+
 
 *.png
 *.aux

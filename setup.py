@@ -7,7 +7,7 @@ setuptools.setup(
     name="scorpy-pkg-YellowSub17",
     version="0.0.1",
     author="Patrick Adams",
-    author_email="s3826109@student.rmit.edu.au",
+    author_email="patrick.adams@icm.uu.se",
     description="Scattering Correlation for Python",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -16,7 +16,6 @@ setuptools.setup(
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-
     ],
-    python_requires='>=3.6',
+    # python_requires='>=3.6',
 )

@@ -1,7 +1,7 @@
-# SCORPY
+# SCORPY v2
 
 
-Scattering CORrelation in PYthon 
+Scattering CORrelation in PYthon
 
 [Read the paper!](https://journals.iucr.org/m/issues/2024/04/00/it5033/index.html)
 
@@ -16,9 +16,6 @@ Citation:
     numpy 2.3.5
     matplotlib 3.10.8
     h5py 3.15.1
-    skimage 0.25.2
-    regex 2025.11.3
-    numba 0.63.1
     pyshtools 4.13.1
     pycifrw 5.0.1
 
@@ -33,9 +30,6 @@ Use the following commands to set up a conda environment.
     conda install numpy --yes
     conda install matplotlib --yes
     conda install h5py --yes
-    conda install scikit-image --yes
-    conda install regex --yes
-    conda install numba --yes
     conda install conda-forge::pyshtools --yes
     conda install conda-forge::pycifrw --yes
 
