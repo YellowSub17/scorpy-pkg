@@ -2,7 +2,7 @@
 
 
 from ..utils.baseplot import BasePlot
-from ..utils.str_funcs import strerr2floaterrr
+# from ..utils.str_funcs import strerr2floaterrr
 from ..utils.decorator_funcs import verbose_dec
 
 from ..vols.sphv.sphericalvol import SphericalVol

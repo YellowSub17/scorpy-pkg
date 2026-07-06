@@ -135,19 +135,3 @@ class CorrelationVolCorr:
         self.sum_into_vol(q1_inds_diag, q2_inds_diag, psi_inds_diag, I_diag, sym=False, verbose=verbose-1)
 
 
-
-    def correlate_via_histdd(self, q1_sqr, q2_sqr, psi_sqr, I_sqr, verbose=0):
-
-
-
-        q1q2psi_coords = np.array( [q1_sqr.flatten(), q2_sqr.flatten(), psi_sqr.flatten()]).T
-
-
-        corr, edges = np.histogramdd(q1q2psi_coords,
-                                    bins = (self.nq, self.nq, self.npsi),
-                                    range =[ (self.qmin, self.qmax),
-                                             (self.qmin, self.qmax),
-                                             (self.zmin, self.zmax)],
-                                    weights = I_sqr.flatten())
-        self.vol += corr
-
