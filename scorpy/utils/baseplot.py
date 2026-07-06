@@ -8,9 +8,7 @@ import matplotlib.cm as cm
 from matplotlib.colors import Normalize
 
 
-
-
-from scipy.ndimage.filters import gaussian_filter
+from scipy.ndimage import gaussian_filter
 
 class BasePlot:
 
@@ -192,12 +190,4 @@ class BasePlot:
 
 
 
-
-
-
-
-def cosinesim(v1, v2):
-    v1f, v2f = v1.flatten(), v2.flatten()
-    sim = np.dot(v1f, v2f)/ (np.linalg.norm(v1f) * np.linalg.norm(v2f))
-    return sim
 

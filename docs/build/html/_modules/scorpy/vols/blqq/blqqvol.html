@@ -1,0 +1,330 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scorpy.vols.blqq.blqqvol &mdash; scorpy 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            scorpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">scorpy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">scorpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">scorpy.vols.blqq.blqqvol</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scorpy.vols.blqq.blqqvol</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">special</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..base.basevol</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseVol</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.blqqvol_props</span><span class="w"> </span><span class="kn">import</span> <span class="n">BlqqVolProps</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.blqqvol_plot</span><span class="w"> </span><span class="kn">import</span> <span class="n">BlqqVolPlot</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.blqqvol_saveload</span><span class="w"> </span><span class="kn">import</span> <span class="n">BlqqVolSaveLoad</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">...utils.decorator_funcs</span><span class="w"> </span><span class="kn">import</span> <span class="n">verbose_dec</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+
+<div class="viewcode-block" id="BlqqVol">
+<a class="viewcode-back" href="../../../../scorpy.html#scorpy.BlqqVol">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BlqqVol</span><span class="p">(</span><span class="n">BaseVol</span><span class="p">,</span> <span class="n">BlqqVolProps</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;scorpy.Blqq:</span>
+<span class="sd">    A representaion of a Harmonic Order Correlation function.</span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        nq, nl : int</span>
+<span class="sd">        qmax : float</span>
+<span class="sd">        dq : float</span>
+<span class="sd">        qpts : numpy.array</span>
+<span class="sd">    Methods:</span>
+<span class="sd">        BlqqVol.fill_from_corr()</span>
+<span class="sd">        BlqqVol.fill_from_sphv()</span>
+<span class="sd">        BlqqVol.plot_q1q2()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nq</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">nl</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">qmax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">qmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comp</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="n">BaseVol</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="n">nq</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="n">nq</span><span class="p">,</span> <span class="n">nz</span><span class="o">=</span><span class="n">nl</span><span class="p">,</span>
+                     <span class="n">xmin</span><span class="o">=</span><span class="n">qmin</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="n">qmin</span><span class="p">,</span> <span class="n">zmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                     <span class="n">xmax</span><span class="o">=</span><span class="n">qmax</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="n">qmax</span><span class="p">,</span> <span class="n">zmax</span><span class="o">=</span><span class="n">nl</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                     <span class="n">xwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ywrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">zwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                     <span class="n">comp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_q1q2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_xy</span>
+
+
+
+
+
+
+    <span class="nd">@verbose_dec</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fill_from_corr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">corr</span><span class="p">,</span> <span class="n">rcond</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        scorpy.BlqqVol.fill_from_corr():</span>
+<span class="sd">            Fill the Blqq from a CorrelationVol object</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            corr : scorpy.CorrelationVol</span>
+<span class="sd">                The CorrelationVol object to to fill from.</span>
+<span class="sd">            inc_odds : bool</span>
+<span class="sd">                Flag for including odd order harmonic functions in calculation.</span>
+<span class="sd">            rcond : float</span>
+<span class="sd">                Condition number scale for SVD calculation.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">assert</span> <span class="n">corr</span><span class="o">.</span><span class="n">nq</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">nq</span><span class="p">,</span> <span class="s1">&#39;CorrelationVol and BlqqVol have different nq&#39;</span>
+        <span class="k">assert</span> <span class="n">corr</span><span class="o">.</span><span class="n">qmax</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">qmax</span><span class="p">,</span> <span class="s1">&#39;CorrelationVol and BlqqVol have different qmax&#39;</span>
+        <span class="k">assert</span> <span class="n">corr</span><span class="o">.</span><span class="n">qmin</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">qmin</span><span class="p">,</span> <span class="s1">&#39;CorrelationVol and BlqqVol have different qmin&#39;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;############&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Filling BlqqVol from CorrelationVol via Pseudo Matrix Inversion.&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Started: </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">asctime</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+
+        <span class="c1">## legendre argument is -1 to 1</span>
+        <span class="k">if</span> <span class="n">corr</span><span class="o">.</span><span class="n">cos_sample</span><span class="p">:</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">psipts</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">corr</span><span class="o">.</span><span class="n">psipts</span><span class="p">)</span>
+
+        <span class="c1"># initialze fmat matrix</span>
+        <span class="n">fmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">corr</span><span class="o">.</span><span class="n">npsi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nl</span><span class="p">))</span>
+
+        <span class="c1"># for every spherical harmonic</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nl</span><span class="p">):</span>
+            <span class="n">leg_vals</span> <span class="o">=</span> <span class="n">special</span><span class="o">.</span><span class="n">eval_legendre</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+            <span class="n">fmat</span><span class="p">[:,</span> <span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">leg_vals</span>
+
+        <span class="c1">#if rcond is given, use it, else, use default</span>
+        <span class="k">if</span> <span class="n">rcond</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fmat_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">fmat</span><span class="p">,</span> <span class="n">rcond</span><span class="o">=</span><span class="n">rcond</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fmat_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">fmat</span><span class="p">)</span>
+
+
+        <span class="k">for</span> <span class="n">iq1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nq</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;q index: </span><span class="si">{</span><span class="n">iq1</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nq</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">iq2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iq1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nq</span><span class="p">):</span>
+
+                <span class="n">dot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">fmat_inv</span><span class="p">,</span> <span class="n">corr</span><span class="o">.</span><span class="n">vol</span><span class="p">[</span><span class="n">iq1</span><span class="p">,</span> <span class="n">iq2</span><span class="p">,</span> <span class="p">:])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">vol</span><span class="p">[</span><span class="n">iq1</span><span class="p">,</span> <span class="n">iq2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">dot</span>
+                <span class="k">if</span> <span class="n">iq2</span> <span class="o">&gt;</span> <span class="n">iq1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">vol</span><span class="p">[</span><span class="n">iq2</span><span class="p">,</span> <span class="n">iq1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">dot</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\x1b</span><span class="s1">[2K&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Ended: </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">asctime</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;############&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="nd">@verbose_dec</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fill_from_corr_ews_fmat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">corr</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mf">0.107</span><span class="p">,</span> <span class="n">rcond</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        scorpy.BlqqVol.fill_from_corr():</span>
+<span class="sd">            Fill the Blqq from a CorrelationVol object, accounting for ews</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            corr : scorpy.CorrelationVol</span>
+<span class="sd">                The CorrelationVol object to to fill from.</span>
+<span class="sd">            k : wavenumber</span>
+<span class="sd">                default is 1.33keV -&gt; 9.322 A -&gt; k=0.107</span>
+<span class="sd">            inc_odds : bool</span>
+<span class="sd">                Flag for including odd order harmonic functions in calculation.</span>
+<span class="sd">            rcond : float</span>
+<span class="sd">                Condition number scale for SVD calculation.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">assert</span> <span class="n">corr</span><span class="o">.</span><span class="n">nq</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">nq</span><span class="p">,</span> <span class="s1">&#39;CorrelationVol and BlqqVol have different nq&#39;</span>
+        <span class="k">assert</span> <span class="n">corr</span><span class="o">.</span><span class="n">qmax</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">qmax</span><span class="p">,</span> <span class="s1">&#39;CorrelationVol and BlqqVol have different qmax&#39;</span>
+        <span class="k">assert</span> <span class="n">corr</span><span class="o">.</span><span class="n">qmin</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">qmin</span><span class="p">,</span> <span class="s1">&#39;CorrelationVol and BlqqVol have different qmin&#39;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;############&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Filling BlqqVol from CorrelationVol via Pseudo Matrix Inversion.&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;F matrix will include EWS correction.&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Started: </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">asctime</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+
+
+
+        <span class="n">t1s</span> <span class="o">=</span> <span class="n">saldin_theta</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">corr</span><span class="o">.</span><span class="n">qmin</span><span class="p">,</span> <span class="n">corr</span><span class="o">.</span><span class="n">qmax</span><span class="p">,</span> <span class="n">corr</span><span class="o">.</span><span class="n">npsi</span><span class="p">),</span> <span class="n">k</span><span class="p">)</span>
+        <span class="n">t2s</span> <span class="o">=</span> <span class="n">saldin_theta</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">corr</span><span class="o">.</span><span class="n">qmin</span><span class="p">,</span> <span class="n">corr</span><span class="o">.</span><span class="n">qmax</span><span class="p">,</span> <span class="n">corr</span><span class="o">.</span><span class="n">npsi</span><span class="p">),</span> <span class="n">k</span><span class="p">)</span>
+
+        <span class="c1">## legendre argument is -1 to 1</span>
+        <span class="k">if</span> <span class="n">corr</span><span class="o">.</span><span class="n">cos_sample</span><span class="p">:</span>
+            <span class="n">phis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">corr</span><span class="o">.</span><span class="n">psipts</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">phi</span> <span class="o">=</span><span class="n">corr</span><span class="o">.</span><span class="n">psipts</span>
+
+    
+        
+        <span class="n">psi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t1s</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t2s</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t1s</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t2s</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phis</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
+
+        <span class="c1"># initialze fmat matrix</span>
+        <span class="n">fmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">corr</span><span class="o">.</span><span class="n">npsi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nl</span><span class="p">))</span>
+
+        <span class="c1"># for every spherical harmonic</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nl</span><span class="p">,</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">leg_vals</span> <span class="o">=</span> <span class="n">special</span><span class="o">.</span><span class="n">eval_legendre</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+            <span class="n">fmat</span><span class="p">[:,</span> <span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">leg_vals</span>
+
+        <span class="c1">#if rcond is given, use it, else, use default</span>
+        <span class="k">if</span> <span class="n">rcond</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fmat_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">fmat</span><span class="p">,</span> <span class="n">rcond</span><span class="o">=</span><span class="n">rcond</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fmat_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">fmat</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">fmat</span>
+
+
+
+
+        <span class="c1"># for iq1 in range(self.nq):</span>
+            <span class="c1"># print(f&#39;q index: {iq1+1}/{self.nq}&#39;, end=&#39;\r&#39;)</span>
+            <span class="c1"># for iq2 in range(iq1, self.nq):</span>
+
+                <span class="c1"># # t1 = saldin_theta(corr.qpts[</span>
+
+                <span class="c1"># ####TODO:</span>
+                <span class="c1"># #### FMATRIX WITH EWS correlation needs to be calculated at every </span>
+
+                <span class="c1"># dot = np.dot(fmat_inv, corr.vol[iq1, iq2, :])</span>
+                <span class="c1"># self.vol[iq1, iq2, :] = dot</span>
+                <span class="c1"># if iq2 &gt; iq1:</span>
+                    <span class="c1"># self.vol[iq2, iq1, :] = dot</span>
+
+        <span class="c1"># print(&#39;\x1b[2K&#39;, end=&#39;\r&#39;)</span>
+        <span class="c1"># print(f&#39;Ended: {time.asctime()}&#39;)</span>
+        <span class="c1"># print(&#39;############&#39;)</span>
+        <span class="c1"># print(&#39;&#39;)</span>
+
+
+
+
+
+
+
+<div class="viewcode-block" id="BlqqVol.fill_from_iqlm">
+<a class="viewcode-back" href="../../../../scorpy.html#scorpy.BlqqVol.fill_from_iqlm">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fill_from_iqlm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iqlm</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        scorpy.BlqqVol.fill_from_iqlm():</span>
+<span class="sd">            Fill the Blqq from a IqlmHandler object</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            iqlm : scorpy.IqlmHandler</span>
+<span class="sd">                The IqlmHandler object to to fill from.</span>
+<span class="sd">            inc_odds : bool</span>
+<span class="sd">                Flag for including odd order harmonic functions in calculation.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">assert</span> <span class="n">iqlm</span><span class="o">.</span><span class="n">nq</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">nq</span><span class="p">,</span> <span class="s1">&#39;IqlmHandler and BlqqVol have different nq&#39;</span>
+        <span class="k">assert</span> <span class="n">iqlm</span><span class="o">.</span><span class="n">qmax</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">qmax</span><span class="p">,</span> <span class="s1">&#39;IqlmHandler and BlqqVol have different qmax&#39;</span>
+        <span class="k">assert</span> <span class="n">iqlm</span><span class="o">.</span><span class="n">qmin</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">qmin</span><span class="p">,</span> <span class="s1">&#39;IqlmHandler and BlqqVol have different qmin&#39;</span>
+
+
+
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">q1_coeffs</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">iqlm</span><span class="o">.</span><span class="n">vals</span><span class="p">):</span>
+
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">q2_coeffs</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">iqlm</span><span class="o">.</span><span class="n">vals</span><span class="p">[</span><span class="n">i</span><span class="p">:]):</span>
+
+                <span class="n">multi</span> <span class="o">=</span> <span class="n">q1_coeffs</span> <span class="o">*</span> <span class="n">q2_coeffs</span>
+
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">vol</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">multi</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[:</span><span class="bp">self</span><span class="o">.</span><span class="n">nl</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">vol</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">multi</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[:</span><span class="bp">self</span><span class="o">.</span><span class="n">nl</span><span class="p">]</span></div>
+</div>
+
+
+
+
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">saldin_theta</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">q</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">k</span><span class="p">))</span>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Patrick Adams.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

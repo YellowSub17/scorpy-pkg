@@ -1,0 +1,861 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scorpy package &mdash; scorpy 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="scorpy" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            scorpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">scorpy</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">scorpy package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-scorpy">Module contents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#scorpy.AlgoHandler"><code class="docutils literal notranslate"><span class="pre">AlgoHandler</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scorpy.BaseVol"><code class="docutils literal notranslate"><span class="pre">BaseVol</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scorpy.BlqqVol"><code class="docutils literal notranslate"><span class="pre">BlqqVol</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scorpy.CifData"><code class="docutils literal notranslate"><span class="pre">CifData</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scorpy.CorrelationVol"><code class="docutils literal notranslate"><span class="pre">CorrelationVol</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scorpy.IqlmHandler"><code class="docutils literal notranslate"><span class="pre">IqlmHandler</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scorpy.PeakData"><code class="docutils literal notranslate"><span class="pre">PeakData</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scorpy.SphericalVol"><code class="docutils literal notranslate"><span class="pre">SphericalVol</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">scorpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">scorpy</a></li>
+      <li class="breadcrumb-item active">scorpy package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/scorpy.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="scorpy-package">
+<h1>scorpy package<a class="headerlink" href="#scorpy-package" title="Link to this heading"></a></h1>
+<section id="module-scorpy">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-scorpy" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="scorpy.AlgoHandler">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">scorpy.</span></span><span class="sig-name descname"><span class="pre">AlgoHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">npsi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">11520</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">180</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lcrop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">45</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxsupp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pinv_rcond</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eig_rcond</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lossy_iqlm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lossy_sphv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rottheta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">np.float64(0.5235987755982988)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/algo/algohandler.html#AlgoHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.AlgoHandler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AlgoHandlerOperators</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">AlgoHandlerSchemes</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">AlgoHandlerPaths</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">AlgoHandlerProps</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">AlgoHandlerRunRecon</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">AlgoHandlerSetupRecon</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">AlgoHandlerPostRecon</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">AlgoHandlerShelx</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">AlgoHandlerPlot</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.AlgoHandler.load_params">
+<span class="sig-name descname"><span class="pre">load_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/algo/algohandler.html#AlgoHandler.load_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.AlgoHandler.load_params" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.AlgoHandler.save_params">
+<span class="sig-name descname"><span class="pre">save_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/algo/algohandler.html#AlgoHandler.save_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.AlgoHandler.save_params" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="scorpy.BaseVol">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">scorpy.</span></span><span class="sig-name descname"><span class="pre">BaseVol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmax</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymax</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmax</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xwrap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ywrap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zwrap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/vols/base/basevol.html#BaseVol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.BaseVol" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseVolProps</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseVolPlot</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseVolSaveLoad</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseVolProc</span></code></p>
+<p>A comprehensive representation of an arbitrary 3D volume or spatial function.</p>
+<p>Combines metadata management properties, mathematical processing operations,
+file I/O handlers, and 2D visualization pipelines.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nx</strong> (<em>int</em><em>, </em><em>default 10</em>) – Voxel resolution profile counts matching grid dimensions.</p></li>
+<li><p><strong>ny</strong> (<em>int</em><em>, </em><em>default 10</em>) – Voxel resolution profile counts matching grid dimensions.</p></li>
+<li><p><strong>nz</strong> (<em>int</em><em>, </em><em>default 10</em>) – Voxel resolution profile counts matching grid dimensions.</p></li>
+<li><p><strong>xmin</strong> (<em>float</em><em>, </em><em>default 0</em>) – Minimum physical dimension boundaries tracking baseline configurations.</p></li>
+<li><p><strong>ymin</strong> (<em>float</em><em>, </em><em>default 0</em>) – Minimum physical dimension boundaries tracking baseline configurations.</p></li>
+<li><p><strong>zmin</strong> (<em>float</em><em>, </em><em>default 0</em>) – Minimum physical dimension boundaries tracking baseline configurations.</p></li>
+<li><p><strong>xmax</strong> (<em>float</em><em>, </em><em>default 1</em>) – Maximum physical boundaries tracking grid coordinates.</p></li>
+<li><p><strong>ymax</strong> (<em>float</em><em>, </em><em>default 1</em>) – Maximum physical boundaries tracking grid coordinates.</p></li>
+<li><p><strong>zmax</strong> (<em>float</em><em>, </em><em>default 1</em>) – Maximum physical boundaries tracking grid coordinates.</p></li>
+<li><p><strong>xwrap</strong> (<em>bool</em><em>, </em><em>default False</em>) – Periodic boundary wrapping status conditions indicators.</p></li>
+<li><p><strong>ywrap</strong> (<em>bool</em><em>, </em><em>default False</em>) – Periodic boundary wrapping status conditions indicators.</p></li>
+<li><p><strong>zwrap</strong> (<em>bool</em><em>, </em><em>default False</em>) – Periodic boundary wrapping status conditions indicators.</p></li>
+<li><p><strong>comp</strong> (<em>bool</em><em>, </em><em>default False</em>) – If True, initializes internal data buffers using complex floating numbers.</p></li>
+<li><p><strong>path</strong> (<em>str</em><em> or </em><em>Path</em><em>, </em><em>optional</em>) – Target tracking file destination to load and populating instances immediately.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.BaseVol.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/vols/base/basevol.html#BaseVol.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.BaseVol.copy" title="Link to this definition"></a></dt>
+<dd><p>Generate an independent deep copy of the active volumetric object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A deep copy instance replica containing identical elements.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#scorpy.BaseVol" title="scorpy.BaseVol">BaseVol</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.BaseVol.cosinesim">
+<span class="sig-name descname"><span class="pre">cosinesim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/scorpy/vols/base/basevol.html#BaseVol.cosinesim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.BaseVol.cosinesim" title="Link to this definition"></a></dt>
+<dd><p>Compute the Cosine Similarity metric against another matching volume array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>v</strong> (<a class="reference internal" href="#scorpy.BaseVol" title="scorpy.BaseVol"><em>BaseVol</em></a>) – Target volumetric object container used during matching checks.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Computed similarity calculation values falling within [-1.0, 1.0].</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>AssertionError</strong> – If comparing instances with mismatching shapes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.BaseVol.crop">
+<span class="sig-name descname"><span class="pre">crop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/vols/base/basevol.html#BaseVol.crop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.BaseVol.crop" title="Link to this definition"></a></dt>
+<dd><p>Extract a sub-volume box window and build a new BaseVol object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xi</strong> (<em>int</em>) – Lower coordinate bounds tracking start markers.</p></li>
+<li><p><strong>yi</strong> (<em>int</em>) – Lower coordinate bounds tracking start markers.</p></li>
+<li><p><strong>zi</strong> (<em>int</em>) – Lower coordinate bounds tracking start markers.</p></li>
+<li><p><strong>xf</strong> (<em>int</em>) – Upper boundary offsets marking slicing terminations.</p></li>
+<li><p><strong>yf</strong> (<em>int</em>) – Upper boundary offsets marking slicing terminations.</p></li>
+<li><p><strong>zf</strong> (<em>int</em>) – Upper boundary offsets marking slicing terminations.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A newly initialized BaseVol container managing the extracted sub-volume.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#scorpy.BaseVol" title="scorpy.BaseVol">BaseVol</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.BaseVol.get_eig">
+<span class="sig-name descname"><span class="pre">get_eig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">herm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inc_odds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/scorpy/vols/base/basevol.html#BaseVol.get_eig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.BaseVol.get_eig" title="Link to this definition"></a></dt>
+<dd><p>Calculate eigenvectors and eigenvalues slice-by-slice along the z-axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>herm</strong> (<em>bool</em><em>, </em><em>default False</em>) – If True, optimizes extraction targeting internal Hermitian matrix assumptions.</p></li>
+<li><p><strong>inc_odds</strong> (<em>bool</em><em>, </em><em>default True</em>) – If False, skips every other odd z-slice index step.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>lams</strong> (<em>np.ndarray</em>) – Matrix records holding real eigenvalue outputs tracker.</p></li>
+<li><p><strong>us</strong> (<em>np.ndarray</em>) – Calculated array tracks mapping structural eigenvectors.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.BaseVol.get_index">
+<span class="sig-name descname"><span class="pre">get_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/scorpy/vols/base/basevol.html#BaseVol.get_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.BaseVol.get_index" title="Link to this definition"></a></dt>
+<dd><p>Find the closest integer coordinate grid index matching a physical coordinate value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>float</em><em>, </em><em>optional</em>) – Physical lookup value target location tracking x components.</p></li>
+<li><p><strong>y</strong> (<em>float</em><em>, </em><em>optional</em>) – Physical lookup value target location tracking y components.</p></li>
+<li><p><strong>z</strong> (<em>float</em><em>, </em><em>optional</em>) – Physical lookup value target location tracking z components.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The closest array index match found. Returns None if no input parameter is supplied.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.BaseVol.get_indices">
+<span class="sig-name descname"><span class="pre">get_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/scorpy/vols/base/basevol.html#BaseVol.get_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.BaseVol.get_indices" title="Link to this definition"></a></dt>
+<dd><p>Map raw coordinate points to their closest corresponding integer array grid indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pts</strong> (<em>np.ndarray</em>) – Target array pool matching spatial location components.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>default 0</em>) – Target tracking dimension reference identifier (0 for x, 1 for y, 2 for z).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Mapped integer index positions array pool records.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.BaseVol.get_integrated_xy_line">
+<span class="sig-name descname"><span class="pre">get_integrated_xy_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xy_lower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xy_upper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/scorpy/vols/base/basevol.html#BaseVol.get_integrated_xy_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.BaseVol.get_integrated_xy_line" title="Link to this definition"></a></dt>
+<dd><p>Extract a line projection across the diagonal x=y plane by integrating within bounds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xy_lower</strong> (<em>float</em><em> or </em><em>int</em>) – Lower spatial boundary track or integer array index position.</p></li>
+<li><p><strong>xy_upper</strong> (<em>float</em><em> or </em><em>int</em>) – Upper spatial boundary track or integer array index position.</p></li>
+<li><p><strong>ind</strong> (<em>bool</em><em>, </em><em>default False</em>) – If True, treats the input bounds directly as integer indices instead of coordinates.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Integrated array values tracking line segments.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.BaseVol.get_xy">
+<span class="sig-name descname"><span class="pre">get_xy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/scorpy/vols/base/basevol.html#BaseVol.get_xy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.BaseVol.get_xy" title="Link to this definition"></a></dt>
+<dd><p>Extract the structural diagonal x=y plane across the tracking spatial volume.</p>
+<p>Requires identical dimensions profiles along both x and y spatial parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A 2D matrix projection containing extracted diagonal slices.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.ndarray</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>AssertionError</strong> – If x and y grid boundaries or wrapping profiles are not identical.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.BaseVol.integrate_region">
+<span class="sig-name descname"><span class="pre">integrate_region</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ptx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ptz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'disk'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/scorpy/vols/base/basevol.html#BaseVol.integrate_region"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.BaseVol.integrate_region" title="Link to this definition"></a></dt>
+<dd><p>Calculate spatial regional integrations inside shapes surrounding a target coordinate point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ptx</strong> (<em>float</em>) – Center coordinates of the targeted integration window.</p></li>
+<li><p><strong>pty</strong> (<em>float</em>) – Center coordinates of the targeted integration window.</p></li>
+<li><p><strong>ptz</strong> (<em>float</em>) – Center coordinates of the targeted integration window.</p></li>
+<li><p><strong>dx</strong> (<em>float</em>) – Symmetric spatial tracking range dimensions offsets profile radius scales.</p></li>
+<li><p><strong>dy</strong> (<em>float</em>) – Symmetric spatial tracking range dimensions offsets profile radius scales.</p></li>
+<li><p><strong>dz</strong> (<em>float</em>) – Symmetric spatial tracking range dimensions offsets profile radius scales.</p></li>
+<li><p><strong>shape</strong> (<em>{'disk'</em><em>, </em><em>'rect'}</em><em>, </em><em>default 'disk'</em>) – The spatial profile shape geometry template to use for integration.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>total_sum</strong> (<em>float</em>) – Accumulated regional intensity value summation.</p></li>
+<li><p><strong>loc</strong> (<em>tuple of np.ndarray</em>) – Numpy index masking references tracking localized elements.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.BaseVol.ls_pts">
+<span class="sig-name descname"><span class="pre">ls_pts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thresh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/scorpy/vols/base/basevol.html#BaseVol.ls_pts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.BaseVol.ls_pts" title="Link to this definition"></a></dt>
+<dd><p>Filter and list data points that exceed a specified intensity threshold.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>thresh</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – Minimum intensity value used as a threshold filter.</p></li>
+<li><p><strong>inds</strong> (<em>bool</em><em>, </em><em>default False</em>) – If True, the first three columns of the output will contain raw integer array indices.
+If False, columns contain converted physical spatial coordinates instead.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An N x 4 array. The first three columns represent positions (x, y, z),
+and the final column stores the signal intensity at that position.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.BaseVol.sum_into_vol">
+<span class="sig-name descname"><span class="pre">sum_into_vol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_inds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_inds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_inds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/vols/base/basevol.html#BaseVol.sum_into_vol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.BaseVol.sum_into_vol" title="Link to this definition"></a></dt>
+<dd><p>Incorporate and accumulate external scattered values directly into the 3D grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_inds</strong> (<em>np.ndarray</em>) – Array collection tracking grid offset indices along x.</p></li>
+<li><p><strong>y_inds</strong> (<em>np.ndarray</em>) – Array collection tracking grid offset indices along y.</p></li>
+<li><p><strong>z_inds</strong> (<em>np.ndarray</em>) – Array collection tracking grid offset indices along z.</p></li>
+<li><p><strong>vals</strong> (<em>np.ndarray</em>) – Numeric components accumulation tracking data payloads.</p></li>
+<li><p><strong>sym</strong> (<em>bool</em><em>, </em><em>default False</em>) – If True, applies duplicate operations to enforce symmetric accumulation behavior.</p></li>
+<li><p><strong>verbose</strong> (<em>int</em><em>, </em><em>default 0</em>) – Controls console runtime print updates status settings.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="scorpy.BlqqVol">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">scorpy.</span></span><span class="sig-name descname"><span class="pre">BlqqVol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">90</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/vols/blqq/blqqvol.html#BlqqVol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.BlqqVol" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#scorpy.BaseVol" title="scorpy.vols.base.basevol.BaseVol"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseVol</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">BlqqVolProps</span></code></p>
+<p>scorpy.Blqq:
+A representaion of a Harmonic Order Correlation function.
+.. attribute:: nq, nl</p>
+<blockquote>
+<div><p>int</p>
+</div></blockquote>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scorpy.BlqqVol.qmax">
+<span class="sig-name descname"><span class="pre">qmax</span></span><a class="headerlink" href="#scorpy.BlqqVol.qmax" title="Link to this definition"></a></dt>
+<dd><p>float</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scorpy.BlqqVol.dq">
+<span class="sig-name descname"><span class="pre">dq</span></span><a class="headerlink" href="#scorpy.BlqqVol.dq" title="Link to this definition"></a></dt>
+<dd><p>float</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scorpy.BlqqVol.qpts">
+<span class="sig-name descname"><span class="pre">qpts</span></span><a class="headerlink" href="#scorpy.BlqqVol.qpts" title="Link to this definition"></a></dt>
+<dd><p>numpy.array</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.BlqqVol.fill_from_corr">
+<span class="sig-name descname"><span class="pre">fill_from_corr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#scorpy.BlqqVol.fill_from_corr" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.BlqqVol.fill_from_sphv">
+<span class="sig-name descname"><span class="pre">fill_from_sphv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#scorpy.BlqqVol.fill_from_sphv" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.BlqqVol.plot_q1q2">
+<span class="sig-name descname"><span class="pre">plot_q1q2</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#scorpy.BlqqVol.plot_q1q2" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">fill_from_corr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.BlqqVol.fill_from_corr_ews_fmat">
+<span class="sig-name descname"><span class="pre">fill_from_corr_ews_fmat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#scorpy.BlqqVol.fill_from_corr_ews_fmat" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.BlqqVol.fill_from_iqlm">
+<span class="sig-name descname"><span class="pre">fill_from_iqlm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iqlm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/vols/blqq/blqqvol.html#BlqqVol.fill_from_iqlm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.BlqqVol.fill_from_iqlm" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>scorpy.BlqqVol.fill_from_iqlm():</dt><dd><p>Fill the Blqq from a IqlmHandler object</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iqlm</strong> – scorpy.IqlmHandler
+The IqlmHandler object to to fill from.</p></li>
+<li><p><strong>inc_odds</strong> – bool
+Flag for including odd order harmonic functions in calculation.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="scorpy.CifData">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">scorpy.</span></span><span class="sig-name descname"><span class="pre">CifData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a_mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b_mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">90</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">90</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">90</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rottheta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/read/cifs/cifdata.html#CifData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.CifData" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">CifDataProperties</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CifDataSaveLoad</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CifDataFill</span></code></p>
+<p>Main core model representing unit cell geometries, angles, orientations, and parsing strategies.</p>
+<p>Inherits direct spatial properties, save/load features, and array expansion methods.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="scorpy.CorrelationVol">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">scorpy.</span></span><span class="sig-name descname"><span class="pre">CorrelationVol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">npsi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">180</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cos_sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/vols/corr/correlationvol.html#CorrelationVol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.CorrelationVol" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#scorpy.BaseVol" title="scorpy.vols.base.basevol.BaseVol"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseVol</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CorrelationVolProps</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CorrelationVolSaveLoad</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CorrelationVolPlot</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CorrelationVolFill</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CorrelationVolCorr</span></code></p>
+<p>A representation of the scattering correlation function.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scorpy.CorrelationVol.nq">
+<span class="sig-name descname"><span class="pre">nq</span></span><a class="headerlink" href="#scorpy.CorrelationVol.nq" title="Link to this definition"></a></dt>
+<dd><p>Number of voxels in the q-axis directions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scorpy.CorrelationVol.npsi">
+<span class="sig-name descname"><span class="pre">npsi</span></span><a class="headerlink" href="#scorpy.CorrelationVol.npsi" title="Link to this definition"></a></dt>
+<dd><p>Number of voxels in the psi-axis direction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scorpy.CorrelationVol.qmax">
+<span class="sig-name descname"><span class="pre">qmax</span></span><a class="headerlink" href="#scorpy.CorrelationVol.qmax" title="Link to this definition"></a></dt>
+<dd><p>Maximum value of the q-axes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scorpy.CorrelationVol.qmin">
+<span class="sig-name descname"><span class="pre">qmin</span></span><a class="headerlink" href="#scorpy.CorrelationVol.qmin" title="Link to this definition"></a></dt>
+<dd><p>Minimum value of the q-axes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scorpy.CorrelationVol.dq">
+<span class="sig-name descname"><span class="pre">dq</span></span><a class="headerlink" href="#scorpy.CorrelationVol.dq" title="Link to this definition"></a></dt>
+<dd><p>Size of a voxel in the q-axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scorpy.CorrelationVol.dpsi">
+<span class="sig-name descname"><span class="pre">dpsi</span></span><a class="headerlink" href="#scorpy.CorrelationVol.dpsi" title="Link to this definition"></a></dt>
+<dd><p>Size of a voxel in the psi-axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scorpy.CorrelationVol.qpts">
+<span class="sig-name descname"><span class="pre">qpts</span></span><a class="headerlink" href="#scorpy.CorrelationVol.qpts" title="Link to this definition"></a></dt>
+<dd><p>Array of sample points on the q-axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scorpy.CorrelationVol.psipts">
+<span class="sig-name descname"><span class="pre">psipts</span></span><a class="headerlink" href="#scorpy.CorrelationVol.psipts" title="Link to this definition"></a></dt>
+<dd><p>Array of sample points on the psi-axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.CorrelationVol.fill_from_cif">
+<span class="sig-name descname"><span class="pre">fill_from_cif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cif</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nchunks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#scorpy.CorrelationVol.fill_from_cif" title="Link to this definition"></a></dt>
+<dd><p>Fill the CorrelationVol from a CifData object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.CorrelationVol.fill_from_blqq">
+<span class="sig-name descname"><span class="pre">fill_from_blqq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blqq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inc_odds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#scorpy.CorrelationVol.fill_from_blqq" title="Link to this definition"></a></dt>
+<dd><p>Fill the CorrelationVol from a BlqqVol object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.CorrelationVol.fill_from_peakdata">
+<span class="sig-name descname"><span class="pre">fill_from_peakdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pk</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#scorpy.CorrelationVol.fill_from_peakdata" title="Link to this definition"></a></dt>
+<dd><p>Fill the CorrelationVol from a PeakData object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.CorrelationVol.correlate_2D">
+<span class="sig-name descname"><span class="pre">correlate_2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">I</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#scorpy.CorrelationVol.correlate_2D" title="Link to this definition"></a></dt>
+<dd><p>Correlate a set of 2D (q, theta) scattering peaks.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.CorrelationVol.correlate_3D">
+<span class="sig-name descname"><span class="pre">correlate_3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">I</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nchunks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#scorpy.CorrelationVol.correlate_3D" title="Link to this definition"></a></dt>
+<dd><p>Correlate a set of 3D scattering vectors.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.CorrelationVol.plot_q1q2">
+<span class="sig-name descname"><span class="pre">plot_q1q2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">...</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#scorpy.CorrelationVol.plot_q1q2" title="Link to this definition"></a></dt>
+<dd><p>Plot a q1-q2 slice of the correlation volume.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.CorrelationVol.correction2d">
+<span class="sig-name descname"><span class="pre">correction2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">times</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/vols/corr/correlationvol.html#CorrelationVol.correction2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.CorrelationVol.correction2d" title="Link to this definition"></a></dt>
+<dd><p>Apply (or remove) the 2D solid-angle correction factor to the volume.</p>
+<p>Multiplies (or divides) <code class="docutils literal notranslate"><span class="pre">self.vol</span></code> by <code class="docutils literal notranslate"><span class="pre">sin(psi)</span> <span class="pre">*</span> <span class="pre">q1</span> <span class="pre">*</span> <span class="pre">q2</span></code>
+at every voxel, computed from a meshgrid of the q and psi sample
+points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>times</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, multiply <code class="docutils literal notranslate"><span class="pre">self.vol</span></code> by the correction factor; if
+False, divide by it (default True).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">self.vol</span></code> is updated in place.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.CorrelationVol.qq_correction">
+<span class="sig-name descname"><span class="pre">qq_correction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">times</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/vols/corr/correlationvol.html#CorrelationVol.qq_correction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.CorrelationVol.qq_correction" title="Link to this definition"></a></dt>
+<dd><p>Apply (or remove) the q1*q2 correction factor to the volume.</p>
+<p>Multiplies (or divides) <code class="docutils literal notranslate"><span class="pre">self.vol</span></code> by <code class="docutils literal notranslate"><span class="pre">q1</span> <span class="pre">*</span> <span class="pre">q2</span></code> at every
+voxel, computed from a meshgrid of the q sample points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>times</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, multiply <code class="docutils literal notranslate"><span class="pre">self.vol</span></code> by the correction factor; if
+False, divide by it (default True).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">self.vol</span></code> is updated in place.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.CorrelationVol.rm_selfcorr">
+<span class="sig-name descname"><span class="pre">rm_selfcorr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/vols/corr/correlationvol.html#CorrelationVol.rm_selfcorr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.CorrelationVol.rm_selfcorr" title="Link to this definition"></a></dt>
+<dd><p>Remove the self-correlation terms from the correlation volume.</p>
+<p>Zeros the <code class="docutils literal notranslate"><span class="pre">self.vol</span></code> entries where q1 == q2 and psi == 0 (or
+psi == 1 if <code class="docutils literal notranslate"><span class="pre">cos_sample</span></code> is True) for every q index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">self.vol</span></code> is updated in place.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="scorpy.IqlmHandler">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">scorpy.</span></span><span class="sig-name descname"><span class="pre">IqlmHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/iqlm/iqlmhandler.html#IqlmHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.IqlmHandler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">IqlmHandlerProps</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">IqlmHandlerPlot</span></code></p>
+<p>Handler for transforming, evaluating, and plotting data mapped to spherical harmonics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nq</strong> (<em>int</em>) – Number of grid points on the q-axis.</p></li>
+<li><p><strong>nl</strong> (<em>int</em>) – Maximum degree limit for spherical harmonics.</p></li>
+<li><p><strong>qmax</strong> (<em>float</em>) – Maximum bound of the q-axis range.</p></li>
+<li><p><strong>qmin</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum bound of the q-axis range. Default is 0.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.IqlmHandler.calc_iqlmp">
+<span class="sig-name descname"><span class="pre">calc_iqlmp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bl_u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/iqlm/iqlmhandler.html#IqlmHandler.calc_iqlmp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.IqlmHandler.calc_iqlmp" title="Link to this definition"></a></dt>
+<dd><p>Transform k-space coefficients knlm back into spherical harmonics iqlm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bl_u</strong> (<em>numpy.ndarray</em>) – Eigenvectors of the Blqq matrices indexed by <cite>[q, q_prime, l]</cite>.</p></li>
+<li><p><strong>nl</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum degree index up to which the calculation is executed.
+If None, defaults to <cite>self.nl</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.IqlmHandler.calc_knlm">
+<span class="sig-name descname"><span class="pre">calc_knlm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bl_u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/iqlm/iqlmhandler.html#IqlmHandler.calc_knlm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.IqlmHandler.calc_knlm" title="Link to this definition"></a></dt>
+<dd><p>Transform spherical harmonics iqlm to k-space coefficients knlm via dot product projection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bl_u</strong> (<em>numpy.ndarray</em>) – Eigenvectors of the Blqq matrices indexed by <cite>[q, q_prime, l]</cite>.</p></li>
+<li><p><strong>nl</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum degree index up to which the calculation is executed.
+If None, defaults to <cite>self.nl</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.IqlmHandler.calc_knlmp">
+<span class="sig-name descname"><span class="pre">calc_knlmp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bl_l</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/iqlm/iqlmhandler.html#IqlmHandler.calc_knlmp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.IqlmHandler.calc_knlmp" title="Link to this definition"></a></dt>
+<dd><p>Calculate and normalize modified k-space coefficients knlm’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bl_l</strong> (<em>numpy.ndarray</em>) – Eigenvalues of the Blqq matrices indexed by <cite>[q_ind, l]</cite>.</p></li>
+<li><p><strong>nl</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum degree index up to which the calculation is executed.
+If None, defaults to <cite>self.nl</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.IqlmHandler.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/iqlm/iqlmhandler.html#IqlmHandler.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.IqlmHandler.copy" title="Link to this definition"></a></dt>
+<dd><p>Create a deep copy of the current IqlmHandler instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A fully decoupled duplicate instance of the current object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#scorpy.IqlmHandler" title="scorpy.IqlmHandler">IqlmHandler</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.IqlmHandler.fill_from_sphv">
+<span class="sig-name descname"><span class="pre">fill_from_sphv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sphv</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/iqlm/iqlmhandler.html#IqlmHandler.fill_from_sphv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.IqlmHandler.fill_from_sphv" title="Link to this definition"></a></dt>
+<dd><p>Populate values by expanding a SphericalVol volume into spherical harmonic coefficients.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sphv</strong> (<em>SphericalVol-like object</em>) – An object holding a 3D spherical volume. Must share matching <cite>qmax</cite>,
+<cite>qmin</cite>, and <cite>nq</cite> configuration properties with this handler.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>AssertionError</strong> – If there is a dimension or spatial bounds mismatch between <cite>sphv</cite> and this handler.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="scorpy.PeakData">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">scorpy.</span></span><span class="sig-name descname"><span class="pre">PeakData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datapath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geompath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clen_sf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pe_sf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/read/peak/peakdata.html#PeakData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.PeakData" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PeakDataProperties</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">PeakDataPlot</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ExpGeom</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.PeakData.calc_scat">
+<span class="sig-name descname"><span class="pre">calc_scat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyz_pixel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/read/peak/peakdata.html#PeakData.calc_scat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.PeakData.calc_scat" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.PeakData.convert_q2r">
+<span class="sig-name descname"><span class="pre">convert_q2r</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/read/peak/peakdata.html#PeakData.convert_q2r"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.PeakData.convert_q2r" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.PeakData.convert_r2q">
+<span class="sig-name descname"><span class="pre">convert_r2q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/read/peak/peakdata.html#PeakData.convert_r2q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.PeakData.convert_r2q" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.PeakData.integrate_peaks">
+<span class="sig-name descname"><span class="pre">integrate_peaks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/read/peak/peakdata.html#PeakData.integrate_peaks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.PeakData.integrate_peaks" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.PeakData.make_im">
+<span class="sig-name descname"><span class="pre">make_im</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">npix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bool_inten</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/read/peak/peakdata.html#PeakData.make_im"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.PeakData.make_im" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="scorpy.SphericalVol">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">scorpy.</span></span><span class="sig-name descname"><span class="pre">SphericalVol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ntheta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">180</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nphi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">360</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/vols/sphv/sphericalvol.html#SphericalVol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.SphericalVol" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#scorpy.BaseVol" title="scorpy.vols.base.basevol.BaseVol"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseVol</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SphericalVolProps</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SphericalVolPlot</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SphericalVolSaveLoad</span></code></p>
+<p>scorpy.SphericalVol:
+A representaion of the spherical coordinate function.
+.. attribute:: nq, ntheta, nphi</p>
+<blockquote>
+<div><p>int</p>
+</div></blockquote>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scorpy.SphericalVol.qmax">
+<span class="sig-name descname"><span class="pre">qmax</span></span><a class="headerlink" href="#scorpy.SphericalVol.qmax" title="Link to this definition"></a></dt>
+<dd><p>float</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">dq,</span> <span class="pre">dtheta,</span> <span class="pre">dphi</span></span></dt>
+<dd><p>float</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">qpts,</span> <span class="pre">thetapts,</span> <span class="pre">phipts</span></span></dt>
+<dd><p>numpy.array</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.SphericalVol.fill_from_cif">
+<span class="sig-name descname"><span class="pre">fill_from_cif</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/vols/sphv/sphericalvol.html#SphericalVol.fill_from_cif"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.SphericalVol.fill_from_cif" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.SphericalVol.fill_from_scat_sph">
+<span class="sig-name descname"><span class="pre">fill_from_scat_sph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#scorpy.SphericalVol.fill_from_scat_sph" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.SphericalVol.expand_bragg_peaks">
+<span class="sig-name descname"><span class="pre">expand_bragg_peaks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dpix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/vols/sphv/sphericalvol.html#SphericalVol.expand_bragg_peaks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.SphericalVol.expand_bragg_peaks" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">fill_from_cif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cif</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/vols/sphv/sphericalvol.html#SphericalVol.fill_from_cif"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dd><p>scorpy.SphericalVol.fill_from_cif():
+Fill the SphericalVol from a CifData object
+:param cif: scorpy.CifData</p>
+<blockquote>
+<div><p>The CifData object to to fill the SphericalVol</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.SphericalVol.fill_from_iqlm">
+<span class="sig-name descname"><span class="pre">fill_from_iqlm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iqlm</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/vols/sphv/sphericalvol.html#SphericalVol.fill_from_iqlm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.SphericalVol.fill_from_iqlm" title="Link to this definition"></a></dt>
+<dd><p>scorpy.SphericalVol.fill_from_iqlm():
+Fill the SphericalVol from a IqlmHandler object
+:param iqlm: scorpy.Iqlm</p>
+<blockquote>
+<div><p>The IqlmHandler object to to fill the SphericalVol</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scorpy.SphericalVol.integrate_bragg_peaks">
+<span class="sig-name descname"><span class="pre">integrate_bragg_peaks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask_vol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scorpy/vols/sphv/sphericalvol.html#SphericalVol.integrate_bragg_peaks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scorpy.SphericalVol.integrate_bragg_peaks" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="scorpy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Patrick Adams.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

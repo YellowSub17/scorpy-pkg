@@ -1,4 +1,3 @@
-
 import CifFile as pycif
 import numpy as np
 from ...utils.convert_funcs import index_x_wrap, index_x_nowrap, convert_rect2sph
@@ -9,42 +8,90 @@ from .cifdata_saveload import CifDataSaveLoad
 from .cifdata_fill import CifDataFill
 
 
-
-
 class CifData(CifDataProperties, CifDataSaveLoad, CifDataFill):
+    """Main core model representing unit cell geometries, angles, orientations, and parsing strategies.
 
-    def __init__(self,a_mag=1, b_mag=1, c_mag=1,
-                 alpha=90, beta=90, gamma=90,
-                 spg=None, qmax=None, rotk=[1,0,0], rottheta=0, fill_missing=False, path=None):
+    Inherits direct spatial properties, save/load features, and array expansion methods.
+    """
 
+    def __init__(
+        self,
+        a_mag=1,
+        b_mag=1,
+        c_mag=1,
+        alpha=90,
+        beta=90,
+        gamma=90,
+        spg=None,
+        qmax=None,
+        rotk=[1, 0, 0],
+        rottheta=0,
+        fill_missing=False,
+        path=None,
+    ):
+        """Initialize unit cell geometric configurations, structural vectors, and optional parsing profiles.
+
+        Parameters
+        ----------
+        a_mag : float, default 1
+            Length of lattice side vector 'a'.
+        b_mag : float, default 1
+            Length of lattice side vector 'b'.
+        c_mag : float, default 1
+            Length of lattice side vector 'c'.
+        alpha : float, default 90
+            Angle between b and c axes in degrees.
+        beta : float, default 90
+            Angle between a and c axes in degrees.
+        gamma : float, default 90
+            Angle between a and b axes in degrees.
+        spg : str, optional
+            Space group identifier notation. If None and a path is supplied, it reads from files.
+        qmax : float, optional
+            Maximum allowed scalar resolution limit cut-off value.
+        rotk : array_like, default [1, 0, 0]
+            Rotational orientation unit vector vector component indices.
+        rottheta : float, default 0
+            Lattice alignment rotation theta transformation values in radians.
+        fill_missing : bool, default False
+            Whether unassigned grid point gaps within maximum dimensions initialize as NaN.
+        path : str, optional
+            Local filesystem string location target containing a CIF file structure to populate attributes.
+        """
 
         if path is not None:
 
-            starcif = pycif.ReadCif(f'{path}')
+            starcif = pycif.ReadCif(f"{path}")
             vk = starcif.visible_keys[0]
 
             cif_dict = dict(starcif[vk])
-            sep = '_' if '_cell_angle_alpha' in cif_dict.keys() else '.'
+            sep = "_" if "_cell_angle_alpha" in cif_dict.keys() else "."
 
             if spg is None:
-                spg_keys = {f'_symmetry{sep}space_group_name_h-m', '_space_group_name_h-m_alt'}
+                spg_keys = {
+                    f"_symmetry{sep}space_group_name_h-m",
+                    "_space_group_name_h-m_alt",
+                }
                 spg_key = list(spg_keys.intersection(cif_dict.keys()))[0]
                 self._spg = cif_dict[spg_key].upper()
             else:
                 self._spg = spg.upper()
 
-
-
-
             ### get cell angles
-            self._alpha = np.radians(float(cif_dict[f'_cell{sep}angle_alpha'].split('(')[0]))
-            self._beta = np.radians(float(cif_dict[f'_cell{sep}angle_beta'].split('(')[0]))
-            self._gamma = np.radians(float(cif_dict[f'_cell{sep}angle_gamma'].split('(')[0]))
+            self._alpha = np.radians(
+                float(cif_dict[f"_cell{sep}angle_alpha"].split("(")[0])
+            )
+            self._beta = np.radians(
+                float(cif_dict[f"_cell{sep}angle_beta"].split("(")[0])
+            )
+            self._gamma = np.radians(
+                float(cif_dict[f"_cell{sep}angle_gamma"].split("(")[0])
+            )
 
             ### get cell sides
-            self._a_mag = float(cif_dict[f'_cell{sep}length_a'].split('(')[0])
-            self._b_mag = float(cif_dict[f'_cell{sep}length_b'].split('(')[0])
-            self._c_mag = float(cif_dict[f'_cell{sep}length_c'].split('(')[0])
+            self._a_mag = float(cif_dict[f"_cell{sep}length_a"].split("(")[0])
+            self._b_mag = float(cif_dict[f"_cell{sep}length_b"].split("(")[0])
+            self._c_mag = float(cif_dict[f"_cell{sep}length_c"].split("(")[0])
 
         else:
 
@@ -59,36 +106,49 @@ class CifData(CifDataProperties, CifDataSaveLoad, CifDataFill):
             self._c_mag = c_mag
 
             if spg is None:
-                self._spg = 'X'
+                self._spg = "X"
             else:
                 self._spg = spg
-           
-
 
         ### calculate lattice vectors
         a_unit = np.array([1.0, 0.0, 0.0])
         b_unit = np.array([np.cos(self.gamma), np.sin(self.gamma), 0])
-        c_unit = np.array([
-            np.cos(self.beta),
-            (np.cos(self.alpha) - np.cos(self.beta) * np.cos(self.gamma)) / np.sin(self.gamma),
-            np.sqrt(1 - np.cos(self.beta)**2 - ( (np.cos(self.alpha) - np.cos(self.beta) * np.cos(self.gamma)) / np.sin(self.gamma))**2)
-        ])
-
+        c_unit = np.array(
+            [
+                np.cos(self.beta),
+                (np.cos(self.alpha) - np.cos(self.beta) * np.cos(self.gamma))
+                / np.sin(self.gamma),
+                np.sqrt(
+                    1
+                    - np.cos(self.beta) ** 2
+                    - (
+                        (
+                            np.cos(self.alpha)
+                            - np.cos(self.beta) * np.cos(self.gamma)
+                        )
+                        / np.sin(self.gamma)
+                    )
+                    ** 2
+                ),
+            ]
+        )
 
         units = [a_unit, b_unit, c_unit]
         mags = [self.a_mag, self.b_mag, self.c_mag]
 
-
-        rotk = rotk/np.linalg.norm(rotk)
+        rotk = rotk / np.linalg.norm(rotk)
         c = np.cos(rottheta)
         s = np.sin(rottheta)
 
-
-        abc = np.zeros((3,3), dtype=float)
+        abc = np.zeros((3, 3), dtype=float)
         for i, (unit, mag) in enumerate(zip(units, mags)):
-            #rodriguiz formula
-            rot_unit =  c*unit + (1-c)*np.dot(unit, rotk)*rotk + s*(np.cross(rotk, unit))
-            abc[i] = rot_unit*mag
+            # rodriguiz formula
+            rot_unit = (
+                c * unit
+                + (1 - c) * np.dot(unit, rotk) * rotk
+                + s * (np.cross(rotk, unit))
+            )
+            abc[i] = rot_unit * mag
 
         abc = np.round(abc, 14)
 
@@ -108,11 +168,7 @@ class CifData(CifDataProperties, CifDataSaveLoad, CifDataFill):
         self._bst_mag = np.linalg.norm(self._bst)
         self._cst_mag = np.linalg.norm(self._cst)
 
-
         self._qmax = qmax
 
         if path is not None:
             self.fill_from_cifdict(cif_dict, sep, fill_missing)
-
-
-

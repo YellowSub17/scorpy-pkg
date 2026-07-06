@@ -108,7 +108,6 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
     def calc_scat(self, xyz_pixel, intens):
 
 
-
         # rphi = convert_rect2pol(xyz_pixel[:,0:2])
         # diff_cone_angle = np.arctan2(rphi[:,0], xyz_pixel[:, 2])
         # q_mag = 2*self.k*np.sin(0.5*diff_cone_angle)

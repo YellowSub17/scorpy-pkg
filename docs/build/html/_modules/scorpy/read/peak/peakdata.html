@@ -1,0 +1,408 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scorpy.read.peak.peakdata &mdash; scorpy 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            scorpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">scorpy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">scorpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">scorpy.read.peak.peakdata</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scorpy.read.peak.peakdata</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">h5py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sp</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">...utils.convert_funcs</span><span class="w"> </span><span class="kn">import</span> <span class="n">index_x_nowrap</span>
+
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.peakdata_props</span><span class="w"> </span><span class="kn">import</span> <span class="n">PeakDataProperties</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.peakdata_plot</span><span class="w"> </span><span class="kn">import</span> <span class="n">PeakDataPlot</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.expgeom</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExpGeom</span>
+
+
+
+
+<div class="viewcode-block" id="PeakData">
+<a class="viewcode-back" href="../../../../scorpy.html#scorpy.PeakData">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PeakData</span><span class="p">(</span><span class="n">PeakDataProperties</span><span class="p">,</span> <span class="n">PeakDataPlot</span><span class="p">,</span> <span class="n">ExpGeom</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datapath</span><span class="p">,</span> <span class="n">geompath</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clen_sf</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">pe_sf</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        handler for a peaks.txt file</span>
+<span class="sd">        df: dataframe of the peak data, or str file path to txt</span>
+<span class="sd">        geo: ExpGeom object associated to experiement geomtery</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_geompath</span> <span class="o">=</span> <span class="n">geompath</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">geom_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_geom_file</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clen_sf</span> <span class="o">=</span> <span class="n">clen_sf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pe_sf</span> <span class="o">=</span> <span class="n">pe_sf</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_datapath</span> <span class="o">=</span> <span class="n">datapath</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">datapath</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loading list of npz.&#39;</span><span class="p">)</span>
+
+            <span class="n">data_coo</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">load_npz</span><span class="p">(</span><span class="n">datapath</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">data_shape</span> <span class="o">=</span> <span class="n">data_coo</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">data_shape</span><span class="p">)</span>
+
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">datapathf</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datapath</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datapath</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">data_coo</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">load_npz</span><span class="p">(</span><span class="n">datapathf</span><span class="p">)</span>
+                <span class="n">data</span> <span class="o">+=</span> <span class="n">data_coo</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+                <span class="c1"># print( i, len(datapathf), end=&#39;\r&#39; )</span>
+
+
+            <span class="n">ss_pixels</span><span class="p">,</span> <span class="n">fs_pixels</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># fs is the cols</span>
+            <span class="n">intens</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">ss_pixels</span><span class="p">,</span> <span class="n">fs_pixels</span><span class="p">]</span>
+            <span class="n">scat_fs_ss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="n">fs_pixels</span><span class="p">,</span> <span class="n">ss_pixels</span><span class="p">,</span> <span class="n">intens</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+            <span class="n">xyz_pixel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fsss2xyz</span><span class="p">(</span><span class="n">scat_fs_ss</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calc_scat</span><span class="p">(</span><span class="n">xyz_pixel</span><span class="p">,</span> <span class="n">intens</span><span class="p">)</span>
+
+
+
+            
+
+
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">datapath</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">datapath</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;.h5&#39;</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datapath</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5file</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">h5file</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">geom_params</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]][:]</span>
+                <span class="n">ss_pixels</span><span class="p">,</span> <span class="n">fs_pixels</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># fs is the cols</span>
+                <span class="n">intens</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">ss_pixels</span><span class="p">,</span> <span class="n">fs_pixels</span><span class="p">]</span>
+                <span class="n">scat_fs_ss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="n">fs_pixels</span><span class="p">,</span> <span class="n">ss_pixels</span><span class="p">,</span> <span class="n">intens</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+                <span class="n">xyz_pixel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fsss2xyz</span><span class="p">(</span><span class="n">scat_fs_ss</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">calc_scat</span><span class="p">(</span><span class="n">xyz_pixel</span><span class="p">,</span> <span class="n">intens</span><span class="p">)</span>
+
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">datapath</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;.npz&#39;</span><span class="p">:</span>
+                <span class="n">data_coo</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">load_npz</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datapath</span><span class="p">)</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">data_coo</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+                <span class="n">ss_pixels</span><span class="p">,</span> <span class="n">fs_pixels</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># fs is the cols</span>
+                <span class="n">intens</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">ss_pixels</span><span class="p">,</span> <span class="n">fs_pixels</span><span class="p">]</span>
+                <span class="n">scat_fs_ss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="n">fs_pixels</span><span class="p">,</span> <span class="n">ss_pixels</span><span class="p">,</span> <span class="n">intens</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+                <span class="n">xyz_pixel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fsss2xyz</span><span class="p">(</span><span class="n">scat_fs_ss</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">calc_scat</span><span class="p">(</span><span class="n">xyz_pixel</span><span class="p">,</span> <span class="n">intens</span><span class="p">)</span>
+
+
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">datapath</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;.npy&#39;</span><span class="p">:</span>
+                <span class="n">scat_fs_ss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datapath</span><span class="p">)</span>
+                <span class="n">xyz_pixel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fsss2xyz</span><span class="p">(</span><span class="n">scat_fs_ss</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">calc_scat</span><span class="p">(</span><span class="n">xyz_pixel</span><span class="p">,</span> <span class="n">scat_fs_ss</span><span class="p">[:,</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+
+
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+
+
+    <span class="c1"># def wavelength(self):</span>
+        <span class="c1"># return (4.135667e-15 * 2.99792e8 *1e10) / self.photon_energy  # A</span>
+
+    <span class="c1"># def k(self):</span>
+        <span class="c1"># return (2 * np.pi) / self.wavelength # 1/A</span>
+
+
+
+
+
+<div class="viewcode-block" id="PeakData.calc_scat">
+<a class="viewcode-back" href="../../../../scorpy.html#scorpy.PeakData.calc_scat">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_scat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xyz_pixel</span><span class="p">,</span> <span class="n">intens</span><span class="p">):</span>
+
+
+        <span class="c1"># rphi = convert_rect2pol(xyz_pixel[:,0:2])</span>
+        <span class="c1"># diff_cone_angle = np.arctan2(rphi[:,0], xyz_pixel[:, 2])</span>
+        <span class="c1"># q_mag = 2*self.k*np.sin(0.5*diff_cone_angle)</span>
+        <span class="c1"># saldin_sph_theta = np.pi/2 - np.arcsin((q_mag)/(2*self.k))</span>
+
+
+
+        <span class="n">xyz_pixel</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">*=</span><span class="bp">self</span><span class="o">.</span><span class="n">clen_sf</span>
+        <span class="n">p_e</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">photon_energy</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">pe_sf</span>
+        <span class="n">rphi</span> <span class="o">=</span> <span class="n">convert_rect2pol</span><span class="p">(</span><span class="n">xyz_pixel</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">diff_cone_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">rphi</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">xyz_pixel</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span>
+
+        <span class="n">lam</span> <span class="o">=</span> <span class="p">(</span><span class="mf">4.135667e-15</span> <span class="o">*</span> <span class="mf">2.99792e8</span> <span class="o">*</span><span class="mf">1e10</span><span class="p">)</span> <span class="o">/</span> <span class="n">p_e</span> <span class="c1"># A</span>
+        <span class="n">k</span> <span class="o">=</span>  <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="n">lam</span> <span class="c1"># 1/A</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">q_mag</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">k</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">diff_cone_angle</span><span class="p">)</span>
+
+
+        <span class="n">saldin_sph_theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">((</span><span class="n">q_mag</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">k</span><span class="p">))</span>
+
+
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scat_rect</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="n">xyz_pixel</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">xyz_pixel</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">xyz_pixel</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span> <span class="n">intens</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scat_rpol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="n">rphi</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">rphi</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">intens</span> <span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scat_tpol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">diff_cone_angle</span><span class="p">,</span> <span class="n">rphi</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">intens</span> <span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scat_qpol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">q_mag</span> <span class="p">,</span> <span class="n">rphi</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">intens</span> <span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scat_sph</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">q_mag</span><span class="p">,</span> <span class="n">saldin_sph_theta</span><span class="p">,</span> <span class="n">rphi</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">intens</span> <span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="n">qxyzi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="p">(</span><span class="n">q_mag</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span> <span class="p">)</span>
+        <span class="n">qxyzi</span><span class="p">[:,:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_sph2rect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scat_sph</span><span class="p">[:,:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">qxyzi</span><span class="p">[:,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scat_sph</span><span class="p">[:,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scat_qxyz</span> <span class="o">=</span> <span class="n">qxyzi</span></div>
+
+
+
+
+<div class="viewcode-block" id="PeakData.convert_r2q">
+<a class="viewcode-back" href="../../../../scorpy.html#scorpy.PeakData.convert_r2q">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert_r2q</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">clen</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">clen_sf</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PeakData.convert_q2r">
+<a class="viewcode-back" href="../../../../scorpy.html#scorpy.PeakData.convert_q2r">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert_q2r</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+
+        <span class="n">p_e</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pe_sf</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">photon_energy</span>
+        <span class="n">lam</span> <span class="o">=</span> <span class="p">(</span><span class="mf">4.135667e-15</span> <span class="o">*</span> <span class="mf">2.99792e8</span> <span class="o">*</span><span class="mf">1e10</span><span class="p">)</span> <span class="o">/</span> <span class="n">p_e</span> <span class="c1"># A</span>
+        <span class="n">k</span> <span class="o">=</span>  <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="n">lam</span> <span class="c1"># 1/A</span>
+        <span class="c1"># print(q/(2*k))</span>
+        <span class="n">arcs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">q</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">k</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">arcs</span><span class="p">)</span><span class="o">*</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">clen</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">clen_sf</span><span class="p">)</span></div>
+
+
+        <span class="c1"># p_e =1.6*self.photon_energy</span>
+        <span class="c1"># lam = (4.135667e-15 * 2.99792e8 *1e10) / p_e # A</span>
+        <span class="c1"># k =  (2 * np.pi) / lam # 1/A</span>
+        <span class="c1"># arcs = np.arcsin(q/(2*k))</span>
+        <span class="c1"># return np.tan(2*arcs)*( self.clen -0.2)</span>
+
+        <span class="c1"># p_e =0.3*self.photon_energy</span>
+        <span class="c1"># lam = (4.135667e-15 * 2.99792e8 *1e10) / p_e # A</span>
+        <span class="c1"># k =  (2 * np.pi) / lam # 1/A</span>
+        <span class="c1"># arcs = np.arcsin(q/(2*k))</span>
+        <span class="c1"># return np.tan(2*arcs)*( self.clen +2)</span>
+
+        <span class="c1"># arcs = np.arcsin(q/(2*self.k))</span>
+        <span class="c1"># return np.tan(2*arcs)*self.clen</span>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="viewcode-block" id="PeakData.make_im">
+<a class="viewcode-back" href="../../../../scorpy.html#scorpy.PeakData.make_im">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_im</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">npix</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">bool_inten</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="n">im</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="p">(</span><span class="n">npix</span><span class="p">,</span><span class="n">npix</span><span class="p">)</span> <span class="p">)</span>
+
+        <span class="n">loc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scat_rect</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">&lt;</span><span class="n">r</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">ite</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span> <span class="nb">len</span><span class="p">(</span><span class="n">loc</span><span class="p">))</span>
+
+        <span class="n">xinds</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">index_x_nowrap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scat_rect</span><span class="p">[</span><span class="n">loc</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="n">r</span><span class="o">*</span><span class="n">ite</span><span class="p">,</span> <span class="n">r</span><span class="o">*</span><span class="n">ite</span><span class="p">,</span> <span class="n">ite</span><span class="o">*</span><span class="n">npix</span><span class="p">)</span>
+        <span class="n">yinds</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">index_x_nowrap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scat_rect</span><span class="p">[</span><span class="n">loc</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="n">r</span><span class="o">*</span><span class="n">ite</span><span class="p">,</span> <span class="n">r</span><span class="o">*</span><span class="n">ite</span><span class="p">,</span> <span class="n">ite</span><span class="o">*</span><span class="n">npix</span><span class="p">)</span>
+
+     
+
+        <span class="k">for</span> <span class="n">xind</span><span class="p">,</span> <span class="n">yind</span><span class="p">,</span> <span class="n">inten</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xinds</span><span class="p">,</span> <span class="n">yinds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scat_rect</span><span class="p">[</span><span class="n">loc</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">im</span><span class="p">[</span><span class="n">xind</span><span class="p">,</span> <span class="n">yind</span><span class="p">]</span> <span class="o">+=</span> <span class="n">inten</span>
+
+        <span class="k">if</span> <span class="n">bool_inten</span><span class="p">:</span>
+            <span class="n">im</span><span class="p">[</span><span class="n">im</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">im</span><span class="p">[</span><span class="n">im</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">fname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">flat_im</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+            <span class="n">flat_im</span><span class="o">.</span><span class="n">tofile</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">im</span><span class="o">.</span><span class="n">T</span></div>
+
+
+
+
+
+
+<div class="viewcode-block" id="PeakData.integrate_peaks">
+<a class="viewcode-back" href="../../../../scorpy.html#scorpy.PeakData.integrate_peaks">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">integrate_peaks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+
+        <span class="n">pixels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scat_rect</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">scat_rect</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">argsort</span><span class="p">()]</span>
+
+        <span class="n">pixel_averaged_bool</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">pixels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">pixels</span> <span class="o">=</span> <span class="n">pixels</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">integrated_peaks_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pixel</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pixels</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="n">pixel_averaged_bool</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">dxypixels</span> <span class="o">=</span> <span class="n">pixels</span> <span class="o">-</span> <span class="n">pixel</span>
+
+            <span class="n">dr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dxypixels</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">loc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dr</span><span class="o">&lt;</span><span class="n">r</span><span class="p">)</span>
+            <span class="n">pixel_averaged_bool</span><span class="p">[</span><span class="n">loc</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">integrated_peaks_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pixel</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">peak</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">pixels</span><span class="p">[</span><span class="n">loc</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">pixels</span><span class="p">[</span><span class="n">loc</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+                <span class="n">peak</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pixels</span><span class="p">[</span><span class="n">loc</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">integrated_peaks_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">peak</span><span class="p">)</span>
+
+
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">integrated_peaks_list</span><span class="p">)</span></div>
+</div>
+
+
+
+
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_sph2rect</span><span class="p">(</span><span class="n">rtp</span><span class="p">):</span>
+
+    <span class="n">sinp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rtp</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">cosp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">rtp</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">cost</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">rtp</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sint</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rtp</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">rtp</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">sint</span><span class="o">*</span><span class="n">cosp</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">rtp</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">sint</span><span class="o">*</span><span class="n">sinp</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">rtp</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">cost</span>
+    
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_rect2pol</span><span class="p">(</span><span class="n">xy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    convert an (x,y) point to (r, phi)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">xy</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">xy</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span> <span class="c1"># angular polar coordinate of pixel</span>
+    <span class="n">phi</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">phi</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="n">phi</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">phi</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="c1">#angle measures from 0 to 2pi radians</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="p">,</span> <span class="n">phi</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Patrick Adams.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

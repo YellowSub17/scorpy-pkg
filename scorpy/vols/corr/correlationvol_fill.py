@@ -1,6 +1,5 @@
 
 
-
 from ...utils.decorator_funcs import verbose_dec
 import time
 import numpy as np
@@ -11,6 +10,11 @@ from scipy import special
 import h5py
 
 class CorrelationVolFill:
+    """
+    Mixin class providing methods to fill a CorrelationVol from various
+    data sources (detector images, dragonfly photon files, CIF data,
+    peak data, and BlqqVol objects).
+    """
 
 
 
@@ -19,16 +23,28 @@ class CorrelationVolFill:
 
     @verbose_dec
     def fill_from_detector_imgs(self, imgs, cenx, ceny, verbose=0):
-        '''
-        scorpy.CorrelationVol.fill_from_detector_imgs():
-            Fill the CorrelationVol from a collection of 2D detector image
+        """
+        Fill the CorrelationVol from a collection of 2D detector images.
 
-        Arguments:
-            img : np.array
-            rmax : int
-            cenx : float
-            ceny : float
-        '''
+        Each image is converted to polar (q, theta) coordinates and
+        correlated via FFT convolution.
+
+        Parameters
+        ----------
+        imgs : iterable of numpy.ndarray
+            Collection of 2D detector images to correlate.
+        cenx : float
+            x-coordinate of the beam center on the detector.
+        ceny : float
+            y-coordinate of the beam center on the detector.
+        verbose : int, optional
+            Verbosity level for progress printing (default 0).
+
+        Returns
+        -------
+        None
+            ``self.vol`` is updated in place.
+        """
 
         for img in imgs:
             qt = to_polar(img, rmax=self.nq, cenx=cenx, ceny=ceny)
@@ -39,6 +55,35 @@ class CorrelationVolFill:
 
     @verbose_dec
     def fill_from_dragonfly_photons(self, photons_h5, det_h5, frame_max=None, verbose=0):
+        """
+        Fill the CorrelationVol from Dragonfly photon and detector files.
+
+        Loads sparse photon-count data from a Dragonfly-format photons
+        HDF5 file and geometry from a detector HDF5 file, reconstructs
+        per-frame peak lists of Cartesian scattering vectors and
+        intensities, and correlates each frame via ``correlate_3D``.
+
+        Parameters
+        ----------
+        photons_h5 : str
+            Path to the Dragonfly-format photons HDF5 file, containing
+            ``num_pix``, ``place_ones``, ``count_multi`` and
+            ``place_multi`` datasets.
+        det_h5 : str
+            Path to the detector geometry HDF5 file, containing
+            ``corr``, ``detd``, ``ewald_rad``, ``mask``, ``qx``, ``qy``
+            and ``qz`` datasets.
+        frame_max : int, optional
+            Maximum number of frames to process. If None, all frames in
+            the photons file are processed (default None).
+        verbose : int, optional
+            Verbosity level for progress printing (default 0).
+
+        Returns
+        -------
+        None
+            ``self.vol`` is updated in place.
+        """
         print('Loading photons')
         f = h5py.File(photons_h5)
         num_pix = f['/num_pix'][...]
@@ -88,6 +133,30 @@ class CorrelationVolFill:
 
     @verbose_dec
     def fill_from_cif(self, cif, nchunks=1, verbose=0):
+        """
+        Fill the CorrelationVol from a CifData object.
+
+        Filters the scattering vectors in ``cif`` to those with q
+        magnitude between ``self.qmin`` and ``self.qmax`` and intensity
+        greater than zero, then correlates the remaining vectors via
+        ``correlate_3D``.
+
+        Parameters
+        ----------
+        cif : CifData
+            The CifData object providing scattering vectors
+            (``scat_rect``) and magnitudes (``scat_sph``) to correlate.
+        nchunks : int, optional
+            Number of chunks to split the vectors into during
+            correlation, to limit memory usage (default 1).
+        verbose : int, optional
+            Verbosity level for progress printing (default 0).
+
+        Returns
+        -------
+        None
+            ``self.vol`` is updated in place.
+        """
 
 
         qxyzi = cif.scat_rect[:]
@@ -125,6 +194,26 @@ class CorrelationVolFill:
 
     @verbose_dec
     def fill_from_peakdata(self, pk, verbose=0):
+        """
+        Fill the CorrelationVol from a PeakData object (2D peaks).
+
+        Filters the peaks in ``pk`` to those with q magnitude between
+        ``self.qmin`` and ``self.qmax`` and intensity greater than zero,
+        then correlates the remaining peaks via ``correlate_2D``.
+
+        Parameters
+        ----------
+        pk : PeakData
+            The PeakData object providing peaks in (q, theta, I) polar
+            form (``scat_qpol``) to correlate.
+        verbose : int, optional
+            Verbosity level for progress printing (default 0).
+
+        Returns
+        -------
+        None
+            ``self.vol`` is updated in place.
+        """
 
         qti = pk.scat_qpol[:]
         qmags = qti[:,0]
@@ -161,6 +250,31 @@ class CorrelationVolFill:
 
     @verbose_dec
     def fill_from_peakdata_saldin(self, pk, nchunks=1, verbose=0):
+        """
+        Fill the CorrelationVol from a PeakData object (Saldin-style, 3D).
+
+        Filters the peaks in ``pk`` to those with q magnitude between
+        ``self.qmin`` and ``self.qmax`` and intensity greater than zero,
+        then correlates the remaining peaks' Cartesian scattering
+        vectors via ``correlate_3D``.
+
+        Parameters
+        ----------
+        pk : PeakData
+            The PeakData object providing Cartesian scattering vectors
+            (``scat_qxyz``) and spherical magnitudes (``scat_sph``) to
+            correlate.
+        nchunks : int, optional
+            Number of chunks to split the vectors into during
+            correlation, to limit memory usage (default 1).
+        verbose : int, optional
+            Verbosity level for progress printing (default 0).
+
+        Returns
+        -------
+        None
+            ``self.vol`` is updated in place.
+        """
 
 
         qxyzi = pk.scat_qxyz[:]
@@ -198,15 +312,29 @@ class CorrelationVolFill:
 
     @verbose_dec
     def fill_from_blqq(self, blqq, inc_odds=True, verbose=0):
-        '''
-        scorpy.CorrelationVol.fill_from_blqq():
-            Fill the CorrelationVol from a BlqqVol object.
-        Arguments:
-            blqq : BlqqVol
-                The BlqqVol object to to fill the CorrelationVol.
-            inc_odds : bool
-                Flag for including odd order harmonics in the calculation.
-        '''
+        """
+        Fill the CorrelationVol from a BlqqVol object.
+
+        Reconstructs the correlation volume from the spherical harmonic
+        expansion coefficients stored in ``blqq`` via matrix
+        multiplication with Legendre polynomial values.
+
+        Parameters
+        ----------
+        blqq : BlqqVol
+            The BlqqVol object used to fill the CorrelationVol. Must
+            have the same ``nq`` and ``qmax`` as ``self``.
+        inc_odds : bool, optional
+            Flag for including odd order harmonics in the calculation
+            (default True).
+        verbose : int, optional
+            Verbosity level for progress printing (default 0).
+
+        Returns
+        -------
+        None
+            ``self.vol`` is updated in place.
+        """
         assert self.nq == blqq.nq, 'BlqqVol and CorrelationVol have different nq'
         assert self.qmax == blqq.qmax, 'BlqqVol and CorrelationVol have different qmax'
 
@@ -251,6 +379,3 @@ class CorrelationVolFill:
         print(f'Filling ended: {time.asctime()}')
         print('############')
         print('')
-
-
-
