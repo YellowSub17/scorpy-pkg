@@ -118,7 +118,7 @@ class BaseVol(BaseVolProps, BaseVolPlot, BaseVolSaveLoad, BaseVolProc):
                 self.vol[x_ind, y_ind, z_ind] += val
 
     def crop(self, xi: int, yi: int, zi: int, xf: int, yf: int, zf: int):
-        """Extract a sub-volume box window and build a new scaled BaseVol object.
+        """Extract a sub-volume box window and build a new BaseVol object.
 
         Parameters
         ----------

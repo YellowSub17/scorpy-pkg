@@ -3,8 +3,6 @@ import numpy as np
 
 
 
-
-
 class IqlmHandlerProps:
 
 
@@ -46,7 +44,6 @@ class IqlmHandlerProps:
         mask = np.ones(self.vals.shape)
         mask[np.where(mm>ll)] = 0
         return mask
-
 
     @vals.setter
     def vals(self, new_vals):

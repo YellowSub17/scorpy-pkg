@@ -153,15 +153,10 @@ class BaseVolSaveLoad:
         """Hook for parsing additional metadata in subclasses."""
         pass
 
-    def file_size(self, verbose: int = 1) -> str:
+    def file_size(self) -> str:
         """Estimate and compare file size footprints to select an optimal file extension.
 
         Compares uncompressed raw arrays (`.dbin`) vs coordinate sparse arrays (`.npy`).
-
-        Parameters
-        ----------
-        verbose : int, default 1
-            Controls output print tracking info statements.
 
         Returns
         -------

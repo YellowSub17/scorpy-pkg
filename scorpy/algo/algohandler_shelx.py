@@ -7,7 +7,6 @@ import CifFile as pycif
 import shutil
 import os
 from ..read.cifs.cifdata import CifData
-from ..utils.str_funcs import strerr2floaterrr 
 
 
 

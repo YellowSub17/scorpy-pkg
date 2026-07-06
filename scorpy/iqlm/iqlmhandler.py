@@ -21,31 +21,6 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
         return copy.deepcopy(self)
 
 
-    # def _check_qlm(self, q, l, m):
-        # assert abs(m) <= l, 'Cannot set harmonic for M > L.'
-        # assert q < self.nq, 'q index out of range'
-        # assert l < self.nl, 'l index out of range'
-        # if m < 0:
-            # cs=1
-        # else:
-            # cs=0
-        # return cs
-
-
-    # def get_val(self, q, l, m):
-        # cs = self._check_qlm(q, l, m)
-        # return self.vals[q, cs, l, abs(m)]
-
-    # def set_val(self, q, l, m, val=1):
-        # cs = self._check_qlm(q, l, m)
-        # self.vals[q, cs, l, abs(m)] = val
-
-    # def add_val(self, q, l, m, val=1):
-        # cs = self._check_qlm(q, l, m)
-        # self.vals[q, cs, l, abs(m)] += val
-
-
-
 
     def fill_from_sphv(self, sphv):
 
@@ -72,7 +47,6 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
         if nl is None:
             nl = self.nl
-        
 
         for q_ind in range(self.nq):
             for l in range(0, nl):
@@ -134,10 +108,5 @@ class IqlmHandler(IqlmHandlerProps, IqlmHandlerPlot):
 
                     new_vals[:, cs, l, m] = ku
         self.vals = new_vals
-
-                #algorithms: phase retriaval of partial coherence 
-                #(harmonic m is " coherent modal" value 
-
-
 
 

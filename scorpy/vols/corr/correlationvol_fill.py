@@ -2,7 +2,6 @@
 
 
 from ...utils.decorator_funcs import verbose_dec
-from ...utils.convert_funcs import to_polar
 import time
 import numpy as np
 

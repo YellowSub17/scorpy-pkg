@@ -4,7 +4,7 @@ import h5py
 import os
 import scipy as sp
 
-from ...utils.convert_funcs import index_x_nowrap, convert_rect2pol, convert_sph2rect
+from ...utils.convert_funcs import index_x_nowrap
 
 
 from .peakdata_props import PeakDataProperties
@@ -256,6 +256,35 @@ class PeakData(PeakDataProperties, PeakDataPlot, ExpGeom):
 
 
 
+
+
+
+def convert_sph2rect(rtp):
+
+    sinp = np.sin(rtp[:,2])
+    cosp = np.cos(rtp[:,2])
+    cost = np.cos(rtp[:,1])
+    sint = np.sin(rtp[:,1])
+
+    x = rtp[:,0]*sint*cosp
+    y = rtp[:,0]*sint*sinp
+    z = rtp[:,0]*cost
+    
+    return np.array([x,y,z]).T
+
+
+
+
+def convert_rect2pol(xy):
+    '''
+    convert an (x,y) point to (r, phi)
+    '''
+    r = np.linalg.norm(xy, axis=1)
+
+    phi = np.arctan2(xy[:, 1], xy[:, 0]) # angular polar coordinate of pixel
+    phi[np.where(phi < 0)] = phi[np.where(phi < 0)] + 2*np.pi #angle measures from 0 to 2pi radians
+
+    return np.array([r, phi]).T
 
 
 

@@ -45,36 +45,6 @@ def index_xs(x_vals, x_min, x_max, nx, wrap=False):
 
 
 
-def convert_sqr2trianddiag(sqr):
-
-    tri_flat = np.tril(sqr, k=-1).flatten()
-    loc = np.where(np.tril(np.ones(sqr.shape),k=-1).flatten() !=0)
-    tri_flat = tri_flat[loc]
-    diag = np.diag(sqr)
-
-    return tri_flat, diag
-
-
-
-def convert_rect2pol(xy):
-    '''
-    convert an (x,y) point to (r, phi)
-    '''
-    r = np.linalg.norm(xy, axis=1)
-
-    phi = np.arctan2(xy[:, 1], xy[:, 0]) # angular polar coordinate of pixel
-    phi[np.where(phi < 0)] = phi[np.where(phi < 0)] + 2*np.pi #angle measures from 0 to 2pi radians
-
-    return np.array([r, phi]).T
-
-
-
-
-
-
-def convert_pol2rect(rphi):
-    assert False, 'NOT IMPLEMENTED'
-
 
 
 def convert_rect2sph(xyz):
@@ -86,25 +56,5 @@ def convert_rect2sph(xyz):
     phi = np.arctan2(xyz[:,1], xyz[:,0])
     phi[np.where(phi < 0)] = phi[np.where(phi < 0)] + 2 * np.pi  # 0 -> 2pi (EW)
     return np.array([r, theta, phi]).T
-
-
-def convert_sph2rect(rtp):
-
-    sinp = np.sin(rtp[:,2])
-    cosp = np.cos(rtp[:,2])
-    cost = np.cos(rtp[:,1])
-    sint = np.sin(rtp[:,1])
-
-    x = rtp[:,0]*sint*cosp
-    y = rtp[:,0]*sint*sinp
-    z = rtp[:,0]*cost
-    
-    return np.array([x,y,z]).T
-
-
-
-# def to_polar(im, rmax, cenx, ceny):
-    # x = warp_polar( im, center=(cenx,ceny), radius=rmax)
-    # return np.rot90(x, k=3)
 
 

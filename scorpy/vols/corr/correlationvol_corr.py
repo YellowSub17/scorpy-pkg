@@ -3,7 +3,7 @@ import numpy as np
 
 
 
-from ...utils.convert_funcs import index_x_nowrap, convert_sqr2trianddiag
+from ...utils.convert_funcs import index_x_nowrap
 from ...utils.decorator_funcs import verbose_dec
 
 
@@ -133,5 +133,17 @@ class CorrelationVolCorr:
 
         self.sum_into_vol(q1_inds_tri, q2_inds_tri, psi_inds_tri, I_tri, sym=True, verbose=verbose-1)
         self.sum_into_vol(q1_inds_diag, q2_inds_diag, psi_inds_diag, I_diag, sym=False, verbose=verbose-1)
+
+
+
+
+def convert_sqr2trianddiag(sqr):
+
+    tri_flat = np.tril(sqr, k=-1).flatten()
+    loc = np.where(np.tril(np.ones(sqr.shape),k=-1).flatten() !=0)
+    tri_flat = tri_flat[loc]
+    diag = np.diag(sqr)
+
+    return tri_flat, diag
 
 

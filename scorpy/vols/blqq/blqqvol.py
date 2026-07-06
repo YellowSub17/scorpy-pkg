@@ -6,7 +6,6 @@ from .blqqvol_props import BlqqVolProps
 from .blqqvol_plot import BlqqVolPlot
 from .blqqvol_saveload import BlqqVolSaveLoad
 from ...utils.decorator_funcs import verbose_dec
-from ...utils.calc_funcs import saldin_theta
 import time
 
 
@@ -216,5 +215,9 @@ class BlqqVol(BaseVol, BlqqVolProps):
 
 
 
+
+
+def saldin_theta(q, k):
+    return np.pi/2 - np.arcsin(q/(2*k))
 
 
