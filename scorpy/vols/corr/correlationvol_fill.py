@@ -50,7 +50,6 @@ class CorrelationVolFill:
             qt = to_polar(img, rmax=self.nq, cenx=cenx, ceny=ceny)
             self.correlate_convolve(qt, verbose=verbose-1)
 
-        
 
 
     @verbose_dec

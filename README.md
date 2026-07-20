@@ -42,7 +42,10 @@ This will create a link from your python site-package directory to an egg-info d
 
 
 
-pip install -e .
+## Editors Notes
+
+Currently experimenting with potentially breaking changes to this code base. General clean up, docs and tests. If you want a working version, try a commit from circa 2019-2020.
+
 
 
 

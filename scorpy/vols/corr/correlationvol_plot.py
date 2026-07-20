@@ -1,5 +1,7 @@
 
 from ...utils.baseplot import BasePlot
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 class CorrelationVolPlot(BasePlot):
@@ -10,4 +12,6 @@ class CorrelationVolPlot(BasePlot):
     modification.
     """
 
-    pass
+    def plot_char_c(self, c):
+        plt.plot(self.psipts, c/(2*np.sin(self.psipts/2)))
+
